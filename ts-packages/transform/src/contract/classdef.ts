@@ -63,9 +63,11 @@ export class ClassInterpreter {
     }
 
     resolveFieldMembers(): void {
+        console.log("+++++this.className:", this.className)
         this.classPrototype.instanceMembers &&
             this.classPrototype.instanceMembers.forEach((element, _) => {
                 if (element.kind == ElementKind.FIELD_PROTOTYPE) {
+                    console.log("++++++++element.field:", element.name)
                     this.fields.push(new FieldDef(<FieldPrototype>element));
                 }
             });

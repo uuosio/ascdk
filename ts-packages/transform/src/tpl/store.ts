@@ -1,10 +1,20 @@
-export const storeTpl = `{{export}}class {{className}} {
+export const storeTpl = `{{export}}class {{className}} extends chain.Serializer {
   {{#each fields}}
-  private {{varName}}: {{{type.plainTypeNode}}} | null = null;
+  private {{name}}: {{{type.plainType}}};
   {{/each}}
 
-  {{#each fields}}
-  {{{storeGetter .}}}
-  {{{storeSetter .}}}
-  {{/each}}
+  serialize(): u8[] {
+    let enc = new chain.Encoder(10);
+    {{#each fields}}
+    {{{serialize .}}}
+    {{/each}}
+    return enc.getBytes();
+  }
+
+  deserialize(data: u8[]): void {
+    let dec = new chain.Decoder(data);
+    {{#each fields}}
+    {{{deserialize .}}}
+    {{/each}}
+  }
 }`;

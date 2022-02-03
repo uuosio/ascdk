@@ -134,6 +134,7 @@ Handlebars.registerHelper("storeGetter", function (field: FieldDef) {
         code.push(`     if (this.${field.varName} === null) {`);
         code.push(`       this.${field.varName} = new ${field.type.instanceType}("${field.selector.key}");`);
     } else {
+        console.log("+++++++field.type.plainType:", field.type.plainType);
         code.push(`get ${field.name}(): ${field.type.plainType} {`);
         code.push(`    if (this.${field.varName} === null) {`);
         if (field.decorators.isIgnore) {
@@ -157,6 +158,30 @@ Handlebars.registerHelper("storeGetter", function (field: FieldDef) {
         code.push(`     return this.${field.varName}!;`);
     }
     code.push("  }");
+    return code.join(EOL);
+});
+
+Handlebars.registerHelper("serialize", function (field: FieldDef) {
+    let code: string[] = [];
+    if (field.type.typeKind == TypeKindEnum.ARRAY) {
+    } else if (field.type.typeKind == TypeKindEnum.MAP) {
+    } else {
+        if (field.type.plainType == 'u32') {
+            code.push(`enc.packU32(this.${field.name})`)
+        }
+    }
+    return code.join(EOL);
+});
+
+Handlebars.registerHelper("deserialize", function (field: FieldDef) {
+    let code: string[] = [];
+    if (field.type.typeKind == TypeKindEnum.ARRAY) {
+    } else if (field.type.typeKind == TypeKindEnum.MAP) {
+    } else {
+        if (field.type.plainType == 'u32') {
+            code.push(`this.${field.name} = dec.unpackU32()`)
+        }
+    }
     return code.join(EOL);
 });
 

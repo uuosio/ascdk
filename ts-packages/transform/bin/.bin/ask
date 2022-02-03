@@ -18,13 +18,14 @@ const asc = module.exports = require("ask-transform/src/asc/asc.js");
 // const asc = module.exports = require("assemblyscript/cli/asc.js");
 const path = require("path");
 const ARGS = [
-    "--importMemory",
+    // "--importMemory",
     "--initialMemory",
-    "2",
-    "--maximumMemory",
-    "16",
-    "--noExportMemory",
+    "1",
+    // "--maximumMemory",
+    // "16",
+    // "--noExportMemory",
     "--runtime",
+    "stub",
     "--use",
     "abort= ",
     "-O2",

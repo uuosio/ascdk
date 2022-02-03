@@ -41,7 +41,8 @@ var APIOptionImpl = /** @class */ (function () {
                 }).forEach(function (item) {
                     text_1 = modifySourceText(text_1, item);
                 });
-                let importLang = `import * as ${CONFIG.module} from "ask-lang";\n`;
+                // let importLang1 = `import * as ${CONFIG.module} from "ask-lang";\n`;
+                let importLang = `import * as chain from "as-chain";\n`;
                 text_1 = importLang + text_1;
                 sourceModifier.fileExtension.set(filename, text_1);
                 // console.log(`The file ${filename} extension: ${text_1}`);
