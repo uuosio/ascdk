@@ -163,28 +163,26 @@ export class MessageDecoratorNodeDef extends DecoratorNodeDef {
     mutates = "true";
     selector = "";
 
+    notify = false;
+    actionName = ""
     constructor(decorator: DecoratorNode) {
         super(decorator);
         if (decorator.args) {
-            decorator.args.forEach(expression => {
-                let identifier = AstUtil.getIdentifier(expression);
-                if (identifier == 'payable') {
-                    this.payable = true;
-                } else if (identifier == 'mutates') {
-                    this.mutates = AstUtil.getBinaryExprRight(expression);
-                    DecoratorUtil.checkMutates(decorator, this.mutates);
-                } else if (identifier == 'selector') {
-                    this.selector = Strings.removeQuotation(AstUtil.getBinaryExprRight(expression));
-                    DecoratorUtil.checkSelecrot(decorator, this.selector);
-                } else {
-                    DecoratorUtil.throwNoArguException(decorator, identifier);
-                }
-            });
-        }
-        if (this.payable && this.mutates == 'false') {
-            throw new Error(`Decorator: ${decorator.name.range.toString()} arguments mutates and payable can only exist one. Trace: ${RangeUtil.location(decorator.range)} `);
-        }
+            if (decorator.args.length == 0 || decorator.args.length > 2) {
+                throw new Error(`Decorator: Invalid action decorator. Trace: ${RangeUtil.location(decorator.range)} `)
+            }
 
+            //TODO: verify name
+            this.actionName = AstUtil.getIdentifier(decorator.args[0]);
+            if (decorator.args.length != 2) {
+                return;
+            }
+
+            let notify = AstUtil.getBinaryExprRight(decorator.args[1])
+            if (notify == 'true') {
+                this.notify = true;
+            }
+        }
     }
 }
 
@@ -285,6 +283,46 @@ export class MessageFunctionDef extends FunctionDef {
         if (this.messageDecorator.selector) {
             this.selector.setShortHex(this.messageDecorator.selector);
         }
+        this.metadata = this.createMetadata();
+    }
+
+    public createMetadata(): MessageSpec {
+        let args: ArgumentSpec[] = this.parameters.map(item => {
+            let type = MetadataUtil.createTypeSpec(item.type);
+            return new ArgumentSpec(type!, item.name);
+        });
+        let msgSpec = new MessageSpec([this.methodName],
+            this.selector.short,
+            args,
+            MetadataUtil.createTypeSpec(this.returnType), this.doc);
+        msgSpec.setMutates(this.mutatable);
+        msgSpec.setPayable(this.messageDecorator.payable);
+        return msgSpec;
+    }
+}
+
+export class DBIndexFunctionDef extends FunctionDef {
+    messageDecorator: DecoratorNodeDef;
+    bodyRange: Range;
+    mutatable = true;
+    selector: KeySelector;
+    metadata: MessageSpec;
+
+    constructor(funcPrototype: FunctionPrototype, indexType: i32) {
+        super(funcPrototype);
+        AstUtil.checkPublic(this.declaration);
+        let decoratorKind: ContractDecoratorKind
+        if (indexType == 0) {
+            decoratorKind = ContractDecoratorKind.PRIMARY;
+        } else {
+            decoratorKind = ContractDecoratorKind.SECONDARY;
+        }
+        let msgDecorator = AstUtil.getSpecifyDecorator(funcPrototype.declaration, decoratorKind);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.messageDecorator = new DecoratorNodeDef(msgDecorator!);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.selector = new KeySelector(this.methodName);
+        this.bodyRange = this.funcProto.bodyNode!.range;
         this.metadata = this.createMetadata();
     }
 

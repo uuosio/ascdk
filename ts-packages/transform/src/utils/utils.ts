@@ -14,7 +14,10 @@ import {
     FieldPrototype,
     NamedTypeNode,
     Range,
-    CommonFlags
+    CommonFlags,
+    LiteralExpression,
+    LiteralKind,
+    StringLiteralExpression
 } from "assemblyscript";
 import { getCustomDecoratorKind } from "../contract/decorator";
 import { DocDecoratorNodeDef } from "../contract/elementdef";
@@ -35,6 +38,22 @@ export class ElementUtil {
             let clzPrototype = <ClassPrototype>element;
             return clzPrototype.declaration.range.source.sourceKind == SourceKind.USER_ENTRY &&
                 AstUtil.hasSpecifyDecorator(clzPrototype.declaration, ContractDecoratorKind.CONTRACT);
+        }
+        return false;
+    }
+
+    static isTableClassPrototype(element: Element): boolean {
+        if (element.kind == ElementKind.CLASS_PROTOTYPE) {
+            let clzPrototype = <ClassPrototype>element;
+            return AstUtil.hasSpecifyDecorator(clzPrototype.declaration, ContractDecoratorKind.TABLE);
+        }
+        return false;
+    }
+
+    static isSerializerClassPrototype(element: Element): boolean {
+        if (element.kind == ElementKind.CLASS_PROTOTYPE) {
+            let clzPrototype = <ClassPrototype>element;
+            return AstUtil.hasSpecifyDecorator(clzPrototype.declaration, ContractDecoratorKind.SERIALIZER);
         }
         return false;
     }
@@ -108,7 +127,24 @@ export class ElementUtil {
         }
         return false;
     }
+
+    static isPrimaryFuncPrototype(element: Element): boolean {
+        if (element.kind == ElementKind.FUNCTION_PROTOTYPE) {
+            let funcType = <FunctionPrototype>element;
+            return AstUtil.hasSpecifyDecorator(funcType.declaration, ContractDecoratorKind.PRIMARY);
+        }
+        return false;
+    }
+
+    static isSecondaryFuncPrototype(element: Element): boolean {
+        if (element.kind == ElementKind.FUNCTION_PROTOTYPE) {
+            let funcType = <FunctionPrototype>element;
+            return AstUtil.hasSpecifyDecorator(funcType.declaration, ContractDecoratorKind.SECONDARY);
+        }
+        return false;
+    }
 }
+
 export class AstUtil {
     static isVoid(type: NamedTypeNode): boolean {
         return type.name.range.toString() == "void";
@@ -119,6 +155,11 @@ export class AstUtil {
             return (<IdentifierExpression>expression).text;
         } else if (expression.kind == NodeKind.BINARY) {
             return (<BinaryExpression>expression).left.range.toString();
+        } else if (expression.kind == NodeKind.LITERAL) {
+            let literal = <LiteralExpression>expression;
+            if (literal.literalKind == LiteralKind.STRING) {
+                return (<StringLiteralExpression>literal).value;
+            }
         }
         return "";
     }
@@ -254,4 +295,74 @@ export class DecoratorUtil {
     public static throwNoArguException(decorator: DecoratorNode, identifier: string): void {
         throw new Error(`Decorator: ${decorator.name.range.toString()} should not contain argument ${identifier}. Trace: ${RangeUtil.location(decorator.range)} `);
     } 
+}
+
+
+export class EosioUtils {
+    public static arrayToHex = (data: Uint8Array): string => {
+        let result = '';
+        for (const x of data) {
+            result += ('00' + x.toString(16)).slice(-2);
+        }
+        return result.toUpperCase();
+    };
+
+    public static arrayToHexReverse = (data: Uint8Array): string => {
+        let result = '';
+        for (let i=data.length-1; i>=0; i--) {
+            let x = data[i];
+            result += ('00' + x.toString(16)).slice(-2);
+        }
+        return result.toUpperCase();
+    };
+
+    public static nameToHexString(s: string): string {
+        let name = this.nameToBytes(s);
+        return '0x' + this.arrayToHexReverse(name);
+    }
+
+    public static isValidName(s: string): boolean {
+        if (typeof s !== 'string') {
+            throw new Error('Expected string containing name');
+        }
+        const regex = new RegExp(/^[.1-5a-z]{0,12}$/);
+        if (!regex.test(s)) {
+            return false;
+        }
+        return true
+    }
+
+    public static nameToBytes(s: string): Uint8Array {
+        if (typeof s !== 'string') {
+            throw new Error('Expected string containing name');
+        }
+        const regex = new RegExp(/^[.1-5a-z]{0,12}?$/);
+        if (!regex.test(s)) {
+            throw new Error('Name should be less than 13 characters and only contain the following symbols .12345abcdefghijklmnopqrstuvwxyz'); // eslint-disable-line
+        }
+        const charToSymbol = (c: number): number => {
+            if (c >= 'a'.charCodeAt(0) && c <= 'z'.charCodeAt(0)) {
+                return (c - 'a'.charCodeAt(0)) + 6;
+            }
+            if (c >= '1'.charCodeAt(0) && c <= '5'.charCodeAt(0)) {
+                return (c - '1'.charCodeAt(0)) + 1;
+            }
+            return 0;
+        };
+        const a = new Uint8Array(8);
+        let bit = 63;
+        for (let i = 0; i < s.length; ++i) {
+            let c = charToSymbol(s.charCodeAt(i));
+            if (bit < 5) {
+                c = c << 1;
+            }
+            for (let j = 4; j >= 0; --j) {
+                if (bit >= 0) {
+                    a[Math.floor(bit / 8)] |= ((c >> j) & 1) << (bit % 8);
+                    --bit;
+                }
+            }
+        }
+        return a;
+    }
 }

@@ -10,11 +10,12 @@ import {
 import { ElementUtil } from "../utils/utils";
 
 import { ProgramAnalyzar } from "./analyzer";
-import { ClassInterpreter, ContractInterpreter, DynamicIntercepter, EventInterpreter, StorageInterpreter } from "./classdef";
+import { ClassInterpreter, ContractInterpreter, DynamicIntercepter, EventInterpreter, SerializerInterpreter, StorageInterpreter, TableInterpreter } from "./classdef";
 import { NamedTypeNodeDef } from "./typedef";
 import { MetadataGenerator } from "../metadata/generator";
 import { ProgramDiagnostic } from "../diagnostic/diagnostic";
 import { TypeKindEnum } from "../enums/customtype";
+import { RangeUtil } from "../utils/utils";
 
 export class ContractProgram {
     program: Program;
@@ -24,6 +25,9 @@ export class ContractProgram {
     storages: StorageInterpreter[] = [];
     dynamics: DynamicIntercepter[] = [];
     codecs: ClassInterpreter[]  = [];
+
+    tables: TableInterpreter[] = [];
+    serializers: SerializerInterpreter[] = [];
     
     public definedTypeMap: Map<string, NamedTypeNodeDef> = new Map<string, NamedTypeNodeDef>();
 
@@ -55,6 +59,9 @@ export class ContractProgram {
             if (ElementUtil.isTopContractClass(element)) {
                 countContract ++;
                 this.contract = new ContractInterpreter(<ClassPrototype>element);
+                if (countContract > 1) {
+                    throw Error(`Only one Contract class allowed! Trace ${RangeUtil.location(this.contract.declaration.range)}`);
+                }
             }
             if (ElementUtil.isStoreClassPrototype(element)) {
                 this.storages.push(new StorageInterpreter(<ClassPrototype>element));
@@ -68,6 +75,16 @@ export class ContractProgram {
                 let dynamicInterpreter = new DynamicIntercepter(<ClassPrototype>element);
                 this.dynamics.push(dynamicInterpreter);
             }
+
+            if (ElementUtil.isTableClassPrototype(element)) {
+                let intercepter = new TableInterpreter(<ClassPrototype>element);
+                this.tables.push(intercepter);
+            }
+            
+            if (ElementUtil.isSerializerClassPrototype(element)) {
+                let intercepter = new SerializerInterpreter(<ClassPrototype>element);
+                this.serializers.push(intercepter);
+            }            
         });
         if (countContract != 1) {
             throw new Error(`The entry file should contain only one '@contract', in fact it has ${countContract}`);

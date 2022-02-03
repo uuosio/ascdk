@@ -1,10 +1,10 @@
-export const storeTpl = `{{export}}class {{className}} extends chain.Serializer {
+export const storeTpl = `{{export}}class {{className}} extends _chain.Serializer {
   {{#each fields}}
   private {{name}}: {{{type.plainType}}};
   {{/each}}
 
   serialize(): u8[] {
-    let enc = new chain.Encoder(10);
+    let enc = new _chain.Encoder(10);
     {{#each fields}}
     {{{serialize .}}}
     {{/each}}
@@ -12,7 +12,7 @@ export const storeTpl = `{{export}}class {{className}} extends chain.Serializer 
   }
 
   deserialize(data: u8[]): void {
-    let dec = new chain.Decoder(data);
+    let dec = new _chain.Decoder(data);
     {{#each fields}}
     {{{deserialize .}}}
     {{/each}}

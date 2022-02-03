@@ -18,12 +18,13 @@ import {
 import { ElementUtil, DecoratorUtil } from "../utils/utils";
 
 import { Strings } from "../utils/primitiveutil";
-import { ConstructorDef, FieldDef, FunctionDef, MessageFunctionDef} from "./elementdef";
+import { ConstructorDef, FieldDef, FunctionDef, MessageFunctionDef, DBIndexFunctionDef} from "./elementdef";
 import { ArrayLayout, CellLayout, CryptoHasher, FieldLayout, HashingStrategy, HashLayout, StructLayout } from "contract-metadata/src/layouts";
 import { NamedTypeNodeDef } from "./typedef";
 import { TypeHelper } from "../utils/typeutil";
 import { TypeKindEnum } from "../enums/customtype";
 import { KeySelector } from "../preprocess/selector";
+import { RangeUtil } from "../utils/utils";
 
 export interface Matadata {
     /**
@@ -68,6 +69,7 @@ export class ClassInterpreter {
             this.classPrototype.instanceMembers.forEach((element, _) => {
                 if (element.kind == ElementKind.FIELD_PROTOTYPE) {
                     console.log("++++++++element.field:", element.name)
+                    console.log("++++++++element.decoratorNodes:", element.decoratorNodes)
                     this.fields.push(new FieldDef(<FieldPrototype>element));
                 }
             });
@@ -146,6 +148,68 @@ export class ContractInterpreter extends ClassInterpreter {
         });
     }
 }
+
+export class TableInterpreter extends ClassInterpreter {
+    // The first case is lower.
+    version: string;
+    cntrFuncDefs: FunctionDef[] = [];
+    primaryFuncDef: FunctionDef | null = null;
+    secondaryFuncDefs: FunctionDef[] = [];
+
+    constructor(clzPrototype: ClassPrototype) {
+        super(clzPrototype);
+        this.version = "1.0";
+        this.resolveFieldMembers();
+        this.resolveContractClass();
+    }
+
+    private resolveContractClass(): void {
+        this.classPrototype.instanceMembers &&
+            this.classPrototype.instanceMembers.forEach((instance, _) => {
+                if (ElementUtil.isPrimaryFuncPrototype(instance)) {
+                    if (this.primaryFuncDef) {
+                        throw Error(`More than one primary function defined! Trace: ${RangeUtil.location(instance.declaration.range)}`);
+                    }
+                    console.log("+++++++primary function:", instance.name);
+                    this.primaryFuncDef = new DBIndexFunctionDef(<FunctionPrototype>instance, 0);
+                }
+                if (ElementUtil.isSecondaryFuncPrototype(instance)) {
+                    console.log("+++++++secondary function:", instance.name);
+                    let msgFunc = new DBIndexFunctionDef(<FunctionPrototype>instance, 1);
+                    this.secondaryFuncDefs.push(msgFunc);
+                }
+            });
+    }
+
+    public genTypeSequence(typeNodeMap: Map<string, NamedTypeNodeDef>): void {
+        this.cntrFuncDefs.forEach(funcDef => {
+            funcDef.genTypeSequence(typeNodeMap);
+        });
+        this.secondaryFuncDefs.forEach(funcDef => {
+            funcDef.genTypeSequence(typeNodeMap);
+        });
+    }
+}
+
+export class SerializerInterpreter extends ClassInterpreter implements Matadata {
+    index = 0;
+    constructor(clzPrototype: ClassPrototype) {
+        super(clzPrototype);
+        this.resolveFieldMembers();
+        this.resolveFunctionMembers();
+    }
+
+    createMetadata(): EventSpec {
+        let eventParams: EventParamSpec[] = [];
+        this.fields.forEach(item => {
+            let type = new TypeSpec(item.type.index, item.type.plainType);
+            let param = new EventParamSpec(item.decorators.isTopic, type.toMetadata(), item.doc, item.name);
+            eventParams.push(param);
+        });
+        return new EventSpec(this.className, eventParams, []);
+    }
+}
+
 export class EventInterpreter extends ClassInterpreter implements Matadata {
     index = 0;
     constructor(clzPrototype: ClassPrototype) {

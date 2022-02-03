@@ -1,3 +1,5 @@
+import { Name } from "./name"
+
 export abstract class Serializer {
     abstract serialize(): u8[];
     abstract deserialize(data: u8[]): void;
@@ -11,9 +13,13 @@ export class Encoder {
         this.buf = new Array(bufferSize);
     }
   
-    packU32(n: u32): void {
+    packNumber<T>(n: T): void {
         store<u32>(changetype<ArrayBufferView>(this.buf).dataStart + this.pos, n);
         this.pos += 4;
+    }
+
+    packName(n: Name): void {
+        this.pack<u64>(n.N);
     }
   
     getBytes(): u8[] {
@@ -30,8 +36,15 @@ export class Decoder {
       this.pos = 0;
     }
   
-    unpackU32(): u32 {
-      return load<u32>(changetype<ArrayBufferView>(this.buf).dataStart + this.pos)
+    unpackNumber<T>(): T {
+      let value = load<T>(changetype<ArrayBufferView>(this.buf).dataStart + this.pos)
+      this.pos += sizeof<T>();
+      return value;
+    }
+
+    unpackName(): Name {
+        let n = this.unpack<u64>()
+        return new Name(n);
     }
 }
 

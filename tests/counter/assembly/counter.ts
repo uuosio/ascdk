@@ -1,34 +1,56 @@
-@storage
-class Stored {
-    value: u32;
+import * as chain from "as-chain"
+
+@table("mydata")
+class MyData {
+    primary: u64;
+    count: u64;
+    
+    @primary
+    getPrimary(): u64 {
+
+    }
+
+    @secondary
+    getByCount(): u64 {
+
+    }
 }
 
-@contract
-class Incrementer {
-    private stored: Stored;
+@contract("hello")
+class MyContract {
+    receiver: chain.Name;
+    firstReceiver: chain.Name;
+    action: chain.Name
 
-    constructor() {
-        this.stored = new Stored();
+    constructor(receiver: chain.Name, firstReceiver: chain.Name, action: chain.Name) {
+        this.receiver = receiver;
+        this.firstReceiver = firstReceiver;
+        this.action = action;
     }
 
-    @constructor
-    default(initValue: u32): void {
-        //this.stored.value = initValue;
-    }
-
-    @message
-    inc(): void {
+    @message("inccc", notify=true)
+    inc(n: u32, m: u32): void {
         // let v = this.stored.value;
         // this.stored.value = ++v;
     }
 
-    @message(mutates = false)
-    get(): u32 {
-        return this.stored.value;
+    @message("dec")
+    dec(n: u32, m: u32): u32 {
+        return 0;
     }
 
-    apply(receiver: u64, firstReceiver: u64, action: u64): void {
-        chain.sayHello();
-        chain.printString("goodbye, world!");
+    @message("dec2")
+    dec2(n: u32, m: u32): void {
+        chain.printui(n);
+        chain.printString(" ");
+        chain.printui(m);
+    }
+
+    @message("zzzzzzzzzzzz")
+    fullname(n: u32, m: u32): void {
+        chain.printString("fullname test:");
+        chain.printui(n);
+        chain.printString(":");
+        chain.printui(m);
     }
 }

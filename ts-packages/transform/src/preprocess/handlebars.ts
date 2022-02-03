@@ -1,10 +1,11 @@
 import Handlebars from "handlebars";
 import { CONFIG } from "../config/compile";
 import { ClassInterpreter, EventInterpreter } from "../contract/classdef";
-import { FieldDef, FunctionDef } from "../contract/elementdef";
+import { FieldDef, FunctionDef, ParameterNodeDef, MessageFunctionDef } from "../contract/elementdef";
 import { NamedTypeNodeDef } from "../contract/typedef";
 import { TypeKindEnum } from "../enums/customtype";
 import { TypeHelper } from "../utils/typeutil";
+import { EosioUtils } from "../utils/utils";
 import { KeySelector } from "./selector";
 
 const WIN = process.platform === "win32";
@@ -167,7 +168,7 @@ Handlebars.registerHelper("serialize", function (field: FieldDef) {
     } else if (field.type.typeKind == TypeKindEnum.MAP) {
     } else {
         if (field.type.plainType == 'u32') {
-            code.push(`enc.packU32(this.${field.name})`)
+            code.push(`enc.packNumber<u32>(this.${field.name})`)
         }
     }
     return code.join(EOL);
@@ -179,10 +180,71 @@ Handlebars.registerHelper("deserialize", function (field: FieldDef) {
     } else if (field.type.typeKind == TypeKindEnum.MAP) {
     } else {
         if (field.type.plainType == 'u32') {
-            code.push(`this.${field.name} = dec.unpackU32()`)
+            code.push(`this.${field.name} = dec.unpackNumber<u32>()`)
         }
     }
     return code.join(EOL);
+});
+
+Handlebars.registerHelper("generateActionMember", function (fn: ParameterNodeDef) {
+    let code: string[] = [];
+    code.push(` ${fn.name}: ${fn.type.plainType};`);
+    return code.join(EOL);
+});
+
+Handlebars.registerHelper("actionParameterSerialize", function (field: ParameterNodeDef) {
+    let code: string[] = [];
+    if (field.type.typeKind == TypeKindEnum.ARRAY) {
+    } else if (field.type.typeKind == TypeKindEnum.MAP) {
+    } else {
+        if (field.type.plainType == 'u32') {
+            code.push(`enc.packNumber<u32>(this.${field.name})`)
+        }
+    }
+    return code.join(EOL);
+});
+
+Handlebars.registerHelper("actionParameterDeserialize", function (field: ParameterNodeDef) {
+    let code: string[] = [];
+    if (field.type.typeKind == TypeKindEnum.ARRAY) {
+    } else if (field.type.typeKind == TypeKindEnum.MAP) {
+    } else {
+        if (field.type.plainType == 'u32') {
+            code.push(`this.${field.name} = dec.unpackNumber<u32>()`)
+        }
+    }
+    return code.join(EOL);
+});
+
+function handleAction(action: MessageFunctionDef): string {
+    let code: string[] = [];
+
+    let parameters: string[] = [];
+    action.parameters.forEach(parameter => {
+        parameters.push(`args.${parameter.name}`, )
+    })
+    let actionName = action.messageDecorator.actionName;
+    let actionNameHex = EosioUtils.nameToHexString(actionName);
+    code.push(`if (action == ${actionNameHex}) {`)
+    code.push(`        let args = new ${action.methodName}Action();`)
+    code.push(`        args.deserialize(actionData);`)
+    code.push(`        mycontract.${action.methodName}(${parameters.join(',')})`)
+    code.push(`      }`)
+    return code.join(EOL);    
+}
+
+Handlebars.registerHelper("handleAction", function (action: MessageFunctionDef) {
+    if (action.messageDecorator.notify) {
+        return;
+    }
+    return handleAction(action);
+});
+
+Handlebars.registerHelper("handleNotifyAction", function (action: MessageFunctionDef) {
+    if (!action.messageDecorator.notify) {
+        return;
+    }
+    return handleAction(action);
 });
 
 /**

@@ -8,10 +8,14 @@ export function N2S(n: u64): string {
 
 export class Name {
     N: u64;
-    @inline constructor(s: string) {
-        this.N = S2N(s);
+
+    @inline constructor(n: u64) {
+        this.N = n;
     }
 
+    static fromString(s: string): Name {
+        return new Name(S2N(s));
+    }
     toString(): string {
         return N2S(this.N)
     }
