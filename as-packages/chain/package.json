@@ -1,0 +1,41 @@
+{
+  "name": "as-chain",
+  "version": "0.0.1",
+  "description": "chain module for assemblyscript",
+  "main": "js/index.js",
+  "types": "assembly/index.ts",
+  "author": "learnforpractice <learnforpractice@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uuosio/as-chain.git"
+  },
+  "bugs": {
+    "url": "https://github.com/uuosio/as-chain/issues"
+  },
+  "keywords": [
+    "wasm",
+    "webassembly",
+    "assemblyscript"
+  ],
+  "scripts": {
+    "build": "yarn build:release",
+    "build:debug": "npx asc assembly/index.ts -b build/debug/chain.wasm -t build/debug/chain.wat --debug --sourceMap --runtime stub",
+    "build:release": "npx asc assembly/index.ts -b build/release/chain.wasm -t build/release/chain.wat -O3 --sourceMap --runtime stub",
+    "test": "asp --verbose",
+    "test:ci": "asp 2> /dev/null"
+  },
+  "devDependencies": {
+    "@as-pect/cli": "^6.2.0",
+    "assemblyscript": "^0.19.4",
+    "typescript": "^4.3.4"
+  },
+  "files": [
+    "assembly/",
+    "build/",
+    "README.md",
+    "LICENSE",
+    "package.json",
+    "yarn.lock"
+  ]
+}

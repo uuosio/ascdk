@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "baseUrl": "./",
+    "paths": {},
+    "typeRoots": ["tests/types", "node_modules/@types", "node_modules"],
+    "types": ["webassembly", "node", "ava"],
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  }
+}

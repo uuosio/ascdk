@@ -1,0 +1,1 @@
+chain module for assemblyscript
