@@ -206,7 +206,7 @@ Handlebars.registerHelper("constructor", function(event: EventInterpreter) {
         body = body.replace(/(.*)}/, `        this.emit();${EOL}  }`);
         return body;
     } else {
-        let code =[];
+        let code: string[] =[];
         code.push(` constructor() {`);
         code.push(`     super();`);
         code.push(`     this.emit();`);
@@ -242,7 +242,7 @@ Handlebars.registerHelper("selector", function (context, options) {
  * Register the tag of join.
  */
 Handlebars.registerHelper("joinParams", function (context) {
-    var data = [];
+    var data: string[] = [];
     for (var i = 0, j = context.length; i < j; i++) {
         if (context[i].type.codecType == "ScaleString") {
             data.push("p" + i + ".toString()");
@@ -256,8 +256,8 @@ Handlebars.registerHelper("joinParams", function (context) {
 });
 
 Handlebars.registerHelper("generateFunction", function (fn: FunctionDef) {
-    let funParams = [];
-    let funVarious = [];
+    let funParams: string[] = [];
+    let funVarious: string[] = [];
     for (let i = 0; i < fn.parameters.length; i++) {
         let param = fn.parameters[i];
         funParams.push(`p${i}: ${param.type.plainType}`);

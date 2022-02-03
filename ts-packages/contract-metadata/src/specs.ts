@@ -25,7 +25,7 @@ interface Def<T> {
     readonly def: T;
 }
 
-export type ILayout = IStructLayout | ICellLayout | IHashLayout | IArrayLayout | StructLayout;
+export type ILayout = IStructLayout | ICellLayout | IHashLayout | IArrayLayout;
 
 export interface IStructLayout {
     struct: ArrayFieldLayout;

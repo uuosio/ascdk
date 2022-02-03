@@ -9,7 +9,7 @@ export class KeySelector {
         this.key = key;
         // remove 0x
         let hexStr = blake2AsHex(key, 256).substring(2);
-        let selectorArr = [];
+        let selectorArr: string[] = [];
         for (let index = 0; index < 32; index++) {
             selectorArr.push("0x" + hexStr.substring(index * 2, index * 2 + 2));
         }
@@ -21,7 +21,7 @@ export class KeySelector {
 
     setShortHex(shortHex: string): boolean {
         if (shortHex && shortHex.length == 10) {
-            let selectorArr = [];
+            let selectorArr: string[] = [];
             for (let index = 0; index < 4; index++) {
                 selectorArr.push("0x" + shortHex.substring(index * 2 + 2, index * 2 + 4));
             }
