@@ -8,7 +8,6 @@ class Incrementer {
     private stored: Stored;
 
     constructor() {
-        chain.sayHello();
         this.stored = new Stored();
     }
 
@@ -30,5 +29,6 @@ class Incrementer {
 
     apply(receiver: u64, firstReceiver: u64, action: u64): void {
         chain.sayHello();
+        chain.printString("goodbye, world!");
     }
 }

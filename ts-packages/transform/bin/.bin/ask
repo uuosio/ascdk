@@ -23,7 +23,7 @@ const ARGS = [
     "1",
     // "--maximumMemory",
     // "16",
-    // "--noExportMemory",
+    "--noExportMemory",
     "--runtime",
     "stub",
     "--use",

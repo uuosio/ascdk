@@ -25,10 +25,12 @@
     "test": "asp --verbose",
     "test:ci": "asp 2> /dev/null"
   },
+  "dependencies": {
+    "@assemblyscript/loader": "^0.19.22",
+    "as-bignum": "^0.2.18"
+  },
   "devDependencies": {
-    "@as-pect/cli": "^6.2.0",
-    "assemblyscript": "^0.19.4",
-    "typescript": "^4.3.4"
+    "assemblyscript": "^0.19.22"
   },
   "files": [
     "assembly/",
