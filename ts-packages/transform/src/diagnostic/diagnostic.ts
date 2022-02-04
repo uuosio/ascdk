@@ -39,7 +39,7 @@ export class ProgramDiagnostic {
     private checkDuplicateMesssage(): void {
         let messageMap: Map<string, FunctionDef> = new Map();
         let finalMsgFunc: FunctionDef[] = [];
-        this.contract.contract.msgFuncDefs.forEach(item => {
+        this.contract.contract.actionFuncDefs.forEach(item => {
             if (messageMap.has(item.methodName)) {
                 let currentSignature = `name:${item.methodName}signature:${item.declaration.signature.range.toString()}`.replaceAll(" ", "");
                 let existFun = messageMap.get(item.methodName)!;
@@ -53,7 +53,7 @@ export class ProgramDiagnostic {
                 messageMap.set(item.methodName, item);
                 finalMsgFunc.push(item);
             }
-            this.contract.contract.msgFuncDefs = finalMsgFunc;
+            this.contract.contract.actionFuncDefs = finalMsgFunc;
         });
     }
 

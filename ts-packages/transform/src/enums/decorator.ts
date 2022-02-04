@@ -4,7 +4,7 @@ export enum ContractDecoratorKind {
     CONTRACT,
     STORAGE,
     CONSTRUCTOR,
-    MESSAGE,
+    ACTION,
     DEPLOYER,
     EVENT,
     TOPIC,

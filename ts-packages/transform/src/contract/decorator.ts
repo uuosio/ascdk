@@ -7,6 +7,10 @@ function fromNode(nameNode: Expression): ContractDecoratorKind {
         let nameStr = (<IdentifierExpression>nameNode).text;
         // console.log("+++++++nameStr:", nameStr);
         switch (nameStr.charCodeAt(0)) {
+            case CharCode.a: {
+                if (nameStr == "action") return ContractDecoratorKind.ACTION;
+                break;
+            }
             case CharCode.c: {
                 if (nameStr == "contract") return ContractDecoratorKind.CONTRACT;
                 if (nameStr == "constructor") return ContractDecoratorKind.CONSTRUCTOR;
@@ -23,10 +27,6 @@ function fromNode(nameNode: Expression): ContractDecoratorKind {
             }
             case CharCode.i: {
                 if (nameStr == "ignore") return ContractDecoratorKind.IGNORE;
-                break;
-            }
-            case CharCode.m: {
-                if (nameStr == "message") return ContractDecoratorKind.MESSAGE;
                 break;
             }
             case CharCode.p: {

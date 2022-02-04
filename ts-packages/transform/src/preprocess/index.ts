@@ -1,7 +1,7 @@
 import Handlebars from "./handlebars";
 import { Range } from "assemblyscript";
 import { ContractProgram} from "../contract/contract";
-import { MessageFunctionDef } from "../contract/elementdef";
+import { ActionFunctionDef } from "../contract/elementdef";
 
 import { mainTpl, storeTpl, eventTpl, dynamicTpl, codecTpl, actionTpl, tableTpl} from "../tpl";
 import { CONFIG } from "../config/compile";
@@ -58,8 +58,8 @@ export function getExtCodeInfo(contractInfo: ContractProgram): SourceModifier {
     const render = Handlebars.compile(mainTpl);
     const exportMain = render(contractInfo);
 
-    contractInfo.contract.msgFuncDefs.forEach(item => {
-        let msgFun = <MessageFunctionDef>item;
+    contractInfo.contract.actionFuncDefs.forEach(item => {
+        let msgFun = <ActionFunctionDef>item;
         if (msgFun.messageDecorator.mutates == "false") {
             let body = msgFun.bodyRange.toString();
             body = body.replace(/{/i, `{\n  ${CONFIG.scope}Storage.mode = ${CONFIG.scope}StoreMode.R;`);
@@ -86,13 +86,13 @@ export function getExtCodeInfo(contractInfo: ContractProgram): SourceModifier {
         sourceModifier.addModifyPoint(new ModifyPoint(dynamic.range, ModifyType.REPLACE, code));
     });
 
-    contractInfo.contract.msgFuncDefs.forEach(message => {
+    contractInfo.contract.actionFuncDefs.forEach(message => {
         let code = Handlebars.compile(actionTpl)(message);
         sourceModifier.addModifyPoint(new ModifyPoint(contractInfo.contract.range, ModifyType.APPEND, code));
     });
 
-    contractInfo.contract.msgFuncDefs.forEach(message => {
-        let _message = <MessageFunctionDef>message;
+    contractInfo.contract.actionFuncDefs.forEach(message => {
+        let _message = <ActionFunctionDef>message;
         let actionName = _message.messageDecorator.actionName;
         if (!EosioUtils.isValidName(actionName)) {
             throw new Error(`Invalid action name: ${actionName}. Trace: ${RangeUtil.location(message.declaration.range)}`);
@@ -108,7 +108,7 @@ export function getExtCodeInfo(contractInfo: ContractProgram): SourceModifier {
     });
 
 //    MessageDecoratorNodeDef
-//    MessageFunctionDef
+//    ActionFunctionDef
     sourceModifier.addModifyPoint(new ModifyPoint(contractInfo.contract.range, ModifyType.APPEND, exportMain));
     sourceModifier.toModifyFileMap();
     return sourceModifier;

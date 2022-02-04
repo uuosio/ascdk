@@ -1,7 +1,7 @@
 import Handlebars from "handlebars";
 import { CONFIG } from "../config/compile";
 import { ClassInterpreter, EventInterpreter } from "../contract/classdef";
-import { FieldDef, FunctionDef, ParameterNodeDef, MessageFunctionDef, DBIndexFunctionDef } from "../contract/elementdef";
+import { FieldDef, FunctionDef, ParameterNodeDef, ActionFunctionDef, DBIndexFunctionDef } from "../contract/elementdef";
 import { NamedTypeNodeDef } from "../contract/typedef";
 import { TypeKindEnum } from "../enums/customtype";
 import { TypeHelper } from "../utils/typeutil";
@@ -216,7 +216,7 @@ Handlebars.registerHelper("actionParameterDeserialize", function (field: Paramet
     return code.join(EOL);
 });
 
-function handleAction(action: MessageFunctionDef): string {
+function handleAction(action: ActionFunctionDef): string {
     let code: string[] = [];
 
     let parameters: string[] = [];
@@ -233,14 +233,14 @@ function handleAction(action: MessageFunctionDef): string {
     return code.join(EOL);    
 }
 
-Handlebars.registerHelper("handleAction", function (action: MessageFunctionDef) {
+Handlebars.registerHelper("handleAction", function (action: ActionFunctionDef) {
     if (action.messageDecorator.notify) {
         return;
     }
     return handleAction(action);
 });
 
-Handlebars.registerHelper("handleNotifyAction", function (action: MessageFunctionDef) {
+Handlebars.registerHelper("handleNotifyAction", function (action: ActionFunctionDef) {
     if (!action.messageDecorator.notify) {
         return;
     }

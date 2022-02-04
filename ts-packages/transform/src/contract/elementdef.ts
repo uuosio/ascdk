@@ -266,7 +266,7 @@ export class ConstructorDef extends FunctionDef {
     }
 }
 
-export class MessageFunctionDef extends FunctionDef {
+export class ActionFunctionDef extends FunctionDef {
     messageDecorator: MessageDecoratorNodeDef;
     bodyRange: Range;
     mutatable = true;
@@ -276,7 +276,7 @@ export class MessageFunctionDef extends FunctionDef {
     constructor(funcPrototype: FunctionPrototype) {
         super(funcPrototype);
         AstUtil.checkPublic(this.declaration);
-        let msgDecorator = AstUtil.getSpecifyDecorator(funcPrototype.declaration, ContractDecoratorKind.MESSAGE);
+        let msgDecorator = AstUtil.getSpecifyDecorator(funcPrototype.declaration, ContractDecoratorKind.ACTION);
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.messageDecorator = new MessageDecoratorNodeDef(msgDecorator!);
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

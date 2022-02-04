@@ -61,25 +61,25 @@ class MyContract {
         this.mytable = new MyTable();
     }
 
-    @message("inccc", notify=true)
+    @action("inccc", notify=true)
     inc(n: u32, m: u32): void {
         // let v = this.stored.value;
         // this.stored.value = ++v;
     }
 
-    @message("dec")
+    @action("dec")
     dec(n: u32, m: u32): u32 {
         return 0;
     }
 
-    @message("dec2")
+    @action("dec2")
     dec2(n: u32, m: u32): void {
         chain.printui(n);
         chain.printString(" ");
         chain.printui(m);
     }
 
-    @message("zzzzzzzzzzzz")
+    @action("zzzzzzzzzzzz")
     fullname(n: u32, m: u32): void {
         chain.printString("fullname test:");
         chain.printui(n);

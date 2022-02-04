@@ -12,13 +12,13 @@ export function apply(receiver: u64, firstReceiver: u64, action: u64): void {
   let actionData = _chain.readActionData();
 
   if (receiver == firstReceiver) {
-      {{#each contract.msgFuncDefs}}
+      {{#each contract.actionFuncDefs}}
       {{{handleAction .}}}
       {{/each}}
   }
   
   if (receiver != firstReceiver) {
-      {{#each contract.msgFuncDefs}}
+      {{#each contract.actionFuncDefs}}
       {{{handleNotifyAction .}}}
       {{/each}}
   }
@@ -26,8 +26,8 @@ export function apply(receiver: u64, firstReceiver: u64, action: u64): void {
 }
 `;
 
-// contractInfo.contract.msgFuncDefs.forEach(message => {
-//   let _message = <MessageFunctionDef>message;
+// contractInfo.contract.actionFuncDefs.forEach(message => {
+//   let _message = <ActionFunctionDef>message;
 //   let actionName = _message.messageDecorator.actionName;
 //   if (!EosioUtils.isValidName(actionName)) {
 //       throw new Error(`Invalid action name: ${actionName}. Trace: ${RangeUtil.location(message.declaration.range)}`);

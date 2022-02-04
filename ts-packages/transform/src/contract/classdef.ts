@@ -20,7 +20,7 @@ import {
 import { ElementUtil, DecoratorUtil } from "../utils/utils";
 
 import { Strings } from "../utils/primitiveutil";
-import { ConstructorDef, FieldDef, FunctionDef, MessageFunctionDef, DBIndexFunctionDef} from "./elementdef";
+import { ConstructorDef, FieldDef, FunctionDef, ActionFunctionDef, DBIndexFunctionDef} from "./elementdef";
 import { ArrayLayout, CellLayout, CryptoHasher, FieldLayout, HashingStrategy, HashLayout, StructLayout } from "contract-metadata/src/layouts";
 import { NamedTypeNodeDef } from "./typedef";
 import { TypeHelper } from "../utils/typeutil";
@@ -104,7 +104,7 @@ export class ContractInterpreter extends ClassInterpreter {
     // The first case is lower.
     version: string;
     cntrFuncDefs: FunctionDef[] = [];
-    msgFuncDefs: FunctionDef[] = [];
+    actionFuncDefs: FunctionDef[] = [];
 
     constructor(clzPrototype: ClassPrototype) {
         super(clzPrototype);
@@ -119,9 +119,9 @@ export class ContractInterpreter extends ClassInterpreter {
                 if (ElementUtil.isCntrFuncPrototype(instance)) {
                     this.cntrFuncDefs.push(new ConstructorDef(<FunctionPrototype>instance));
                 }
-                if (ElementUtil.isMessageFuncPrototype(instance)) {
-                    let msgFunc = new MessageFunctionDef(<FunctionPrototype>instance);
-                    this.msgFuncDefs.push(msgFunc);
+                if (ElementUtil.isActionFuncPrototype(instance)) {
+                    let actionFunc = new ActionFunctionDef(<FunctionPrototype>instance);
+                    this.actionFuncDefs.push(actionFunc);
                 }
             });
         this.resolveBaseClass(this.classPrototype);
@@ -132,9 +132,9 @@ export class ContractInterpreter extends ClassInterpreter {
             let basePrototype = sonClassPrototype.basePrototype;
             basePrototype.instanceMembers &&
                 basePrototype.instanceMembers.forEach((instance, _) => {
-                    if (ElementUtil.isMessageFuncPrototype(instance)) {
-                        let msgFunc = new MessageFunctionDef(<FunctionPrototype>instance);
-                        this.msgFuncDefs.push(msgFunc);
+                    if (ElementUtil.isActionFuncPrototype(instance)) {
+                        let actionFunc = new ActionFunctionDef(<FunctionPrototype>instance);
+                        this.actionFuncDefs.push(actionFunc);
                     }
                 });
             this.resolveBaseClass(basePrototype);
@@ -145,7 +145,7 @@ export class ContractInterpreter extends ClassInterpreter {
         this.cntrFuncDefs.forEach(funcDef => {
             funcDef.genTypeSequence(typeNodeMap);
         });
-        this.msgFuncDefs.forEach(funcDef => {
+        this.actionFuncDefs.forEach(funcDef => {
             funcDef.genTypeSequence(typeNodeMap);
         });
     }
@@ -177,8 +177,8 @@ export class TableInterpreter extends ClassInterpreter {
                 }
                 if (ElementUtil.isSecondaryFuncPrototype(instance)) {
                     console.log("+++++++secondary function:", instance.name);
-                    let msgFunc = new DBIndexFunctionDef(<PropertyPrototype>instance, 1);
-                    this.secondaryFuncDefs.push(msgFunc);
+                    let actionFunc = new DBIndexFunctionDef(<PropertyPrototype>instance, 1);
+                    this.secondaryFuncDefs.push(actionFunc);
                 }
             });
         }
