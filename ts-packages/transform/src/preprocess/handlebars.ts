@@ -259,14 +259,19 @@ Handlebars.registerHelper("getSecondaryValue", function (fn: DBIndexFunctionDef)
     let plainType = fn.getterPrototype!.returnType.plainType;
     console.log("+++++++++getSecondaryValue:", fn._index);
     code.push(`if (i==${fn._index}) {`);
-    code.push(`            return newSecondaryValue_${plainType}<${plainType}>(this.fn.setterPrototype.declaration.name.text);`);
+    code.push(`            return _chain.newSecondaryValue_${plainType}(fn.setterPrototype.declaration.name.text);`);
     code.push(`        }`);
     return code.join(EOL);
 });
 
 Handlebars.registerHelper("setSecondaryValue", function (fn: DBIndexFunctionDef) {
     let code: string[] = [];
-    return code.join('');
+    let plainType = fn.getterPrototype!.returnType.plainType;
+    code.push(`if (i==${fn._index}) {`);
+    code.push(`            let _value = _chain.getSecondaryValue_${plainType}(value);`);
+    code.push(`            this.${fn.getterPrototype!.declaration.name.text} = _value;`);
+    code.push(`        }`);
+    return code.join(EOL);
 });
 
 /**
