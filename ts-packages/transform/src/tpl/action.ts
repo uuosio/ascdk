@@ -4,7 +4,7 @@ const scope = CONFIG.scope;
 // parameters: ParameterNodeDef[] = [];
 // methodName: string;
 
-export const actionTpl = `class {{methodName}}Action extends _chain.Serializer {
+export const actionTpl = `class {{methodName}}Action implements _chain.Serializer {
     {{#each parameters}}
     {{#generateActionMember .}}{{/generateActionMember}}
     {{/each}}

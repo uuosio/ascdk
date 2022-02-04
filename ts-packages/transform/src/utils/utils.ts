@@ -6,6 +6,7 @@ import {
     Element,
     ElementKind,
     FunctionPrototype,
+    PropertyPrototype,
     Expression,
     IdentifierExpression,
     NodeKind,
@@ -129,16 +130,16 @@ export class ElementUtil {
     }
 
     static isPrimaryFuncPrototype(element: Element): boolean {
-        if (element.kind == ElementKind.FUNCTION_PROTOTYPE) {
-            let funcType = <FunctionPrototype>element;
+        if (element.kind == ElementKind.PROPERTY_PROTOTYPE) {
+            let funcType = <PropertyPrototype>element;
             return AstUtil.hasSpecifyDecorator(funcType.declaration, ContractDecoratorKind.PRIMARY);
         }
         return false;
     }
 
     static isSecondaryFuncPrototype(element: Element): boolean {
-        if (element.kind == ElementKind.FUNCTION_PROTOTYPE) {
-            let funcType = <FunctionPrototype>element;
+        if (element.kind == ElementKind.PROPERTY_PROTOTYPE) {
+            let funcType = <PropertyPrototype>element;
             return AstUtil.hasSpecifyDecorator(funcType.declaration, ContractDecoratorKind.SECONDARY);
         }
         return false;

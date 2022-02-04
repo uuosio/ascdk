@@ -7,6 +7,7 @@ import {
     Element,
     FieldPrototype,
     FunctionPrototype,
+    PropertyPrototype,
     Range,
     DecoratorNode,
     FunctionDeclaration
@@ -221,6 +222,10 @@ export class FunctionDef {
             return ;
         }
         let returnType = this.funcProto.functionTypeNode.returnType;
+        if (returnType.range.toString() == '') {
+            this.returnType = null;
+            return;
+        }
         let returnTypeDesc = new NamedTypeNodeDef(this.funcProto, <NamedTypeNode>returnType);
         if (returnTypeDesc.typeKind != TypeKindEnum.VOID) {
             returnTypeDesc.codecType = TypeHelper.getCodecType(returnTypeDesc.plainType);
@@ -301,42 +306,36 @@ export class MessageFunctionDef extends FunctionDef {
     }
 }
 
-export class DBIndexFunctionDef extends FunctionDef {
+export class DBIndexFunctionDef {
     messageDecorator: DecoratorNodeDef;
     bodyRange: Range;
-    mutatable = true;
-    selector: KeySelector;
-    metadata: MessageSpec;
+    getterPrototype: FunctionDef | null;
+    setterPrototype: FunctionDef | null;
 
-    constructor(funcPrototype: FunctionPrototype, indexType: i32) {
-        super(funcPrototype);
-        AstUtil.checkPublic(this.declaration);
+    constructor(propertyPrototype: PropertyPrototype, indexType: i32) {
+        if (propertyPrototype.getterPrototype) {
+            this.getterPrototype = new FunctionDef(propertyPrototype.getterPrototype!);
+            console.log("++++getterPrototype.rangeString:", this.getterPrototype.rangeString);
+        } else {
+            this.getterPrototype = null;
+        }
+
+        if (propertyPrototype.setterPrototype) {
+            this.setterPrototype = new FunctionDef(propertyPrototype.setterPrototype);
+            console.log("++++setterPrototype.rangeString:", this.setterPrototype.rangeString);
+        } else {
+            this.setterPrototype = null;
+        }
+
+        AstUtil.checkPublic(propertyPrototype.getterPrototype!.declaration);
         let decoratorKind: ContractDecoratorKind
         if (indexType == 0) {
             decoratorKind = ContractDecoratorKind.PRIMARY;
         } else {
             decoratorKind = ContractDecoratorKind.SECONDARY;
         }
-        let msgDecorator = AstUtil.getSpecifyDecorator(funcPrototype.declaration, decoratorKind);
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        let msgDecorator = AstUtil.getSpecifyDecorator(propertyPrototype.getterPrototype!.declaration, decoratorKind);
         this.messageDecorator = new DecoratorNodeDef(msgDecorator!);
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.selector = new KeySelector(this.methodName);
-        this.bodyRange = this.funcProto.bodyNode!.range;
-        this.metadata = this.createMetadata();
-    }
-
-    public createMetadata(): MessageSpec {
-        let args: ArgumentSpec[] = this.parameters.map(item => {
-            let type = MetadataUtil.createTypeSpec(item.type);
-            return new ArgumentSpec(type!, item.name);
-        });
-        let msgSpec = new MessageSpec([this.methodName],
-            this.selector.short,
-            args,
-            MetadataUtil.createTypeSpec(this.returnType), this.doc);
-        msgSpec.setMutates(this.mutatable);
-        msgSpec.setPayable(this.messageDecorator.payable);
-        return msgSpec;
+        this.bodyRange = propertyPrototype.getterPrototype!.declaration.range;
     }
 }

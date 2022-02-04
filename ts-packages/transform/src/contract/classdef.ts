@@ -2,10 +2,12 @@ import {
     ElementKind,
     ClassPrototype,
     FunctionPrototype,
+    PropertyPrototype,
     FieldPrototype,
     Range,
     CommonFlags,
-    ClassDeclaration
+    ClassDeclaration,
+    OperatorKind
 } from "assemblyscript";
 
 import {
@@ -153,8 +155,8 @@ export class TableInterpreter extends ClassInterpreter {
     // The first case is lower.
     version: string;
     cntrFuncDefs: FunctionDef[] = [];
-    primaryFuncDef: FunctionDef | null = null;
-    secondaryFuncDefs: FunctionDef[] = [];
+    primaryFuncDef: DBIndexFunctionDef | null = null;
+    secondaryFuncDefs: DBIndexFunctionDef[] = [];
 
     constructor(clzPrototype: ClassPrototype) {
         super(clzPrototype);
@@ -164,21 +166,22 @@ export class TableInterpreter extends ClassInterpreter {
     }
 
     private resolveContractClass(): void {
-        this.classPrototype.instanceMembers &&
+        if (this.classPrototype.instanceMembers) {
             this.classPrototype.instanceMembers.forEach((instance, _) => {
                 if (ElementUtil.isPrimaryFuncPrototype(instance)) {
                     if (this.primaryFuncDef) {
                         throw Error(`More than one primary function defined! Trace: ${RangeUtil.location(instance.declaration.range)}`);
                     }
                     console.log("+++++++primary function:", instance.name);
-                    this.primaryFuncDef = new DBIndexFunctionDef(<FunctionPrototype>instance, 0);
+                    this.primaryFuncDef = new DBIndexFunctionDef(<PropertyPrototype>instance, 0);
                 }
                 if (ElementUtil.isSecondaryFuncPrototype(instance)) {
                     console.log("+++++++secondary function:", instance.name);
-                    let msgFunc = new DBIndexFunctionDef(<FunctionPrototype>instance, 1);
+                    let msgFunc = new DBIndexFunctionDef(<PropertyPrototype>instance, 1);
                     this.secondaryFuncDefs.push(msgFunc);
                 }
             });
+        }
     }
 
     public genTypeSequence(typeNodeMap: Map<string, NamedTypeNodeDef>): void {

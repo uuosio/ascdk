@@ -194,6 +194,11 @@ export class NamedTypeNodeDef extends BaseNamedTypeDef {
         // console.log(`buildinElement: ${buildinElement.name}`);
         // console.log(`Element ${ElementKind[buildinElement.kind]}, ${buildinElement.name}, ${this.plainType}`);
         let element = this.current;
+        if (!element) {
+            this.isCodec = false;
+            return TypeKindEnum.VOID;
+        }
+
         if (element.kind == ElementKind.FUNCTION_PROTOTYPE) {
             this.isCodec = false;
             return TypeKindEnum.NUMBER;

@@ -1,7 +1,7 @@
 import Handlebars from "handlebars";
 import { CONFIG } from "../config/compile";
 import { ClassInterpreter, EventInterpreter } from "../contract/classdef";
-import { FieldDef, FunctionDef, ParameterNodeDef, MessageFunctionDef } from "../contract/elementdef";
+import { FieldDef, FunctionDef, ParameterNodeDef, MessageFunctionDef, DBIndexFunctionDef } from "../contract/elementdef";
 import { NamedTypeNodeDef } from "../contract/typedef";
 import { TypeKindEnum } from "../enums/customtype";
 import { TypeHelper } from "../utils/typeutil";
@@ -245,6 +245,28 @@ Handlebars.registerHelper("handleNotifyAction", function (action: MessageFunctio
         return;
     }
     return handleAction(action);
+});
+
+Handlebars.registerHelper("getPrimaryValue", function (fn: DBIndexFunctionDef) {
+    let code: string[] = [];
+//    code.push(`return this.${fn.getterPrototype?.declaration.name.text}`)
+    code.push(`${fn.getterPrototype?.rangeString}`)
+    return code.join('');
+});
+
+Handlebars.registerHelper("getSecondaryValue", function (fn: DBIndexFunctionDef) {
+    let code: string[] = [];
+    let plainType = fn.getterPrototype!.returnType.plainType;
+    console.log("+++++++++getSecondaryValue:", fn._index);
+    code.push(`if (i==${fn._index}) {`);
+    code.push(`            return newSecondaryValue_${plainType}<${plainType}>(this.fn.setterPrototype.declaration.name.text);`);
+    code.push(`        }`);
+    return code.join(EOL);
+});
+
+Handlebars.registerHelper("setSecondaryValue", function (fn: DBIndexFunctionDef) {
+    let code: string[] = [];
+    return code.join('');
 });
 
 /**

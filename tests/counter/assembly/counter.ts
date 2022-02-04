@@ -1,18 +1,49 @@
 import * as chain from "as-chain"
+import { UInt64 } from "as-scale-codec";
+import { MyTable } from "./utils"
 
 @table("mydata")
 class MyData {
     primary: u64;
     count: u64;
-    
+
+    constructor(primary: u64, cout: u64) {
+        this.primary = primary;
+        this.count = count;
+    }
+
+    sayHello(): void {
+
+    }
+
     @primary
-    getPrimary(): u64 {
+    get getPrimary(): u64 {
 
     }
 
     @secondary
     getByCount(): u64 {
 
+    }
+
+    @secondary
+    get bar(): u64 {
+        return this._bar;
+    }
+
+    @secondary
+    set bar(value: u64) {
+        this._bar = value;
+    }
+
+    @secondary
+    get foo(): u64 {
+        return this._bar;
+    }
+
+    @secondary
+    set foo(value: u64) {
+        this._bar = value;
     }
 }
 
@@ -21,11 +52,13 @@ class MyContract {
     receiver: chain.Name;
     firstReceiver: chain.Name;
     action: chain.Name
+    mytable: MyTable
 
     constructor(receiver: chain.Name, firstReceiver: chain.Name, action: chain.Name) {
         this.receiver = receiver;
         this.firstReceiver = firstReceiver;
         this.action = action;
+        this.mytable = new MyTable();
     }
 
     @message("inccc", notify=true)
@@ -52,5 +85,9 @@ class MyContract {
         chain.printui(n);
         chain.printString(":");
         chain.printui(m);
+
+        let name = chain.Name.fromString("zzzzzzzzzzzzj");
+        chain.printString(" ");
+        chain.printString(name.toString());
     }
 }

@@ -3,7 +3,7 @@ import { Range } from "assemblyscript";
 import { ContractProgram} from "../contract/contract";
 import { MessageFunctionDef } from "../contract/elementdef";
 
-import { mainTpl, storeTpl, eventTpl, dynamicTpl, codecTpl, actionTpl} from "../tpl";
+import { mainTpl, storeTpl, eventTpl, dynamicTpl, codecTpl, actionTpl, tableTpl} from "../tpl";
 import { CONFIG } from "../config/compile";
 import { EosioUtils, RangeUtil } from "../utils/utils"
 
@@ -99,6 +99,12 @@ export function getExtCodeInfo(contractInfo: ContractProgram): SourceModifier {
         }
         console.log("++++++_message.messageDecorator.actionName:", _message.messageDecorator.actionName);
         console.log("++++++_message.messageDecorator.notify:", _message.messageDecorator.notify);
+    });
+
+    contractInfo.tables.forEach(table => {
+        let code = Handlebars.compile(tableTpl)(table);
+        sourceModifier.addModifyPoint(new ModifyPoint(table.range, ModifyType.REPLACE, code));
+
     });
 
 //    MessageDecoratorNodeDef

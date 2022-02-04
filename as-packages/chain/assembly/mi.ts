@@ -17,9 +17,9 @@ export class PrimaryIterator {
     }
 }
 
-export abstract class MultiIndexValue extends PrimaryValue {
-    abstract getSecondaryValue(index: usize): SecondaryValue;
-    abstract setSecondaryValue(index: usize, value: SecondaryValue): void;
+export interface MultiIndexValue extends PrimaryValue {
+    getSecondaryValue(index: usize): SecondaryValue;
+    setSecondaryValue(index: usize, value: SecondaryValue): void;
 }
 
 export class MultiIndex<T extends MultiIndexValue> {

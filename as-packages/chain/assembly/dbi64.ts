@@ -1,15 +1,14 @@
 import * as env from "./env"
 import {printString} from "./debug"
+import {Serializer} from "./serializer"
 
 export function say_hello(): void {
     printString("hello,world from dbi64")
 //    env.db_remove_i64(-1 as i32);
 }
 
-export abstract class PrimaryValue {
-    abstract getPrimaryValue(): u64;
-    abstract pack(): u8[];
-    abstract unpack(data: u8[]): void;
+export interface PrimaryValue extends Serializer {
+    getPrimaryValue(): u64;
 }
 
 export class Iterator {

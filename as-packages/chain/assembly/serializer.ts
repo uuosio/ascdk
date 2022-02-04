@@ -1,8 +1,8 @@
 import { Name } from "./name"
 
-export abstract class Serializer {
-    abstract serialize(): u8[];
-    abstract deserialize(data: u8[]): void;
+export interface Serializer {
+    serialize(): u8[];
+    deserialize(data: u8[]): void;
 }
   
 export class Encoder {
