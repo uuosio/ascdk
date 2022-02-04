@@ -23,5 +23,13 @@ export const actionTpl = `class {{methodName}}Action implements _chain.Serialize
         {{{actionParameterDeserialize .}}}
         {{/each}}
     }
+
+    getSize(): usize {
+        let size: usize = 0;
+        {{#each parameters}}
+        {{{actionParameterGetSize .}}}
+        {{/each}}
+        return size;
+    }
 }
 `;

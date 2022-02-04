@@ -42,3 +42,9 @@ def test_ts():
     greeting = b'alice'
     args = int.to_bytes(len(greeting), 1, 'little') + greeting
     r = chain.push_action('hello', 'sayhello', args, {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])
+    chain.produce_block()
+
+    r = chain.push_action('hello', 'sayhello', args, {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])
+

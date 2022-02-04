@@ -38,6 +38,10 @@ export class PermissionLevel implements Serializer {
         this.actor = dec.unpackName();
         this.permission = dec.unpackName();
     }
+
+    getSize(): usize {
+        return 8*2;
+    }
 }
 
 export class Action implements Serializer{
@@ -73,5 +77,9 @@ export class Action implements Serializer{
 
     deserialize(data: u8[]): void {
 
+    }
+
+    getSize(): usize {
+        
     }
 }

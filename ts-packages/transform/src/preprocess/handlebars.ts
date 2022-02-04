@@ -225,6 +225,22 @@ Handlebars.registerHelper("actionParameterDeserialize", function (field: Paramet
     return code.join(EOL);
 });
 
+Handlebars.registerHelper("actionParameterGetSize", function (field: ParameterNodeDef) {
+    let code: string[] = [];
+    if (field.type.typeKind == TypeKindEnum.ARRAY) {
+    } else if (field.type.typeKind == TypeKindEnum.MAP) {
+    } else {
+        if (field.type.plainType == 'u32') {
+            code.push(`size += 4;`)
+        } else if (field.type.plainType == 'u64') {
+            code.push(`size += 8;`)
+        } else if (field.type.plainType == 'string') {
+            code.push(`size += _chain.Utils.calcPackedStringLength(this.${field.name});`)
+        }
+    }
+    return code.join(EOL);
+});
+
 function handleAction(action: ActionFunctionDef): string {
     let code: string[] = [];
 

@@ -16,4 +16,22 @@ export namespace Utils {
         let ab = String.UTF8.encode(s);
         return toU8Array(ab);
     }
+
+    export function calcPackedVarUint32Length(val: u32): usize {
+        let n: usize = 0;
+        for (;;) {
+            val >>= 7;
+            n += 1;
+            if (val <= 0) {
+                break;
+            }
+        }
+        return n;
+    }
+
+    export function calcPackedStringLength(val: string): usize {
+        let utf8Str = String.UTF8.encode(val);
+        return calcPackedVarUint32Size(<u32>utf8Str.byteLength) + utf8Str.byteLength;
+    }
+
 }

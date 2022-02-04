@@ -4,8 +4,9 @@ import { memcpy } from "./env"
 export interface Serializer {
     serialize(): u8[];
     deserialize(data: u8[]): void;
+    getSize(): usize;
 }
-  
+
 export class Encoder {
     buf: Array<u8>;
     pos: usize;
