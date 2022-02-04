@@ -33,10 +33,11 @@ export class PermissionLevel implements Serializer {
         return enc.getBytes();
     }
 
-    deserialize(data: u8[]): void {
+    deserialize(data: u8[]): usize {
         let dec = new Decoder(data);
         this.actor = dec.unpackName();
         this.permission = dec.unpackName();
+        return dec.getPos();
     }
 
     getSize(): usize {
@@ -75,11 +76,11 @@ export class Action implements Serializer{
         return enc.getBytes();
     }
 
-    deserialize(data: u8[]): void {
-
+    deserialize(data: u8[]): usize {
+        return 0;
     }
 
     getSize(): usize {
-        
+        return 0;
     }
 }

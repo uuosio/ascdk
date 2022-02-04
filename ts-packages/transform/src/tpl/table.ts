@@ -31,13 +31,14 @@ export const tableTpl = `
         return enc.getBytes();
     }
     
-    deserialize(data: u8[]): void {
+    deserialize(data: u8[]): usize {
         let dec = new _chain.Decoder(data);
         {{#each fields}}
         {{{actionParameterDeserialize .}}}
         {{/each}}
+        return dec.getPos();
     }
-    
+
     getPrimaryValue(): u64 {
         return this.{{{primaryFuncDef.getterPrototype.declaration.name.text}}}
     }

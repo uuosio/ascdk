@@ -17,11 +17,12 @@ export const actionTpl = `class {{methodName}}Action implements _chain.Serialize
         return enc.getBytes();
     }
     
-    deserialize(data: u8[]): void {
+    deserialize(data: u8[]): usize {
         let dec = new _chain.Decoder(data);
         {{#each parameters}}
         {{{actionParameterDeserialize .}}}
         {{/each}}
+        return dec.getPos();
     }
 
     getSize(): usize {

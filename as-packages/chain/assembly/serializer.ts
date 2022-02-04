@@ -3,7 +3,7 @@ import { memcpy } from "./env"
 
 export interface Serializer {
     serialize(): u8[];
-    deserialize(data: u8[]): void;
+    deserialize(data: u8[]): usize;
     getSize(): usize;
 }
 
@@ -79,7 +79,20 @@ export class Decoder {
       this.buf = buf;
       this.pos = 0;
     }
-  
+    
+    remains(): u8[] {
+        return this.buf.slice(this.pos, this.buf.length);
+    }
+
+    getPos(): u32 {
+        return this.pos;
+    }
+
+    unpack(ser: Serializer): void {
+        let size = ser.deserialize(this.remains())
+        this.pos += size;
+    }
+
     unpackNumber<T>(): T {
       let value = load<T>(this.buf.dataStart + this.pos)
       this.pos += sizeof<T>();
