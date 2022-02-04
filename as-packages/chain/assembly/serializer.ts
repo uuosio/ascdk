@@ -1,4 +1,5 @@
 import { Name } from "./name"
+import { memcpy } from "./env"
 
 export interface Serializer {
     serialize(): u8[];
@@ -7,26 +8,68 @@ export interface Serializer {
   
 export class Encoder {
     buf: Array<u8>;
-    pos: u32;
+    pos: usize;
   
     constructor(bufferSize: u32) {
         this.buf = new Array(bufferSize);
     }
   
-    packNumber<T>(n: T): void {
-        store<u32>(changetype<ArrayBufferView>(this.buf).dataStart + this.pos, n);
-        this.pos += 4;
+    pack(ser: Serializer): usize {
+        let raw = ser.serialize();
+        return this.packBytes(raw);
     }
 
-    packName(n: Name): void {
-        this.pack<u64>(n.N);
+    packBytes(arr: u8[]): usize {
+        let dataSize = arr.length;
+        let src = arr.dataStart;
+        let dest = this.buf.dataStart + this.pos;
+        memcpy(dest, src, dataSize);
+        this.pos += dataSize;
+        return dataSize;
     }
-  
+
+    packArray<T>(arr: T[]): usize {
+        let lengthBytes = this.packLength(arr.length);
+        let dataSize = sizeof<T>()*arr.length;
+        let src = arr.dataStart;
+        let dest = this.buf.dataStart + this.pos;
+        memcpy(dest, src, dataSize);
+        this.pos += dataSize;
+        return lengthBytes + dataSize;
+    }
+
+    packNumber<T>(n: T): usize {
+        store<T>(this.buf.dataStart + this.pos, n);
+        let size = sizeof<T>();
+        this.pos += size;
+        return size;
+    }
+
+    packName(n: Name): usize {
+        this.packNumber<u64>(n.N);
+        return 8;
+    }
+    
+    packLength(n: u32): usize {
+        return this.packNumber<u8>(<u8>n);
+    }
+
+    packString(s: string): usize {
+        let utf8Str = String.UTF8.encode(s);
+        let packedLength = this.packLength(utf8Str.byteLength);
+//        let view = new DataView(utf8Str);
+        let src = changetype<usize>(utf8Str);
+        let dest = this.buf.dataStart + this.pos;
+        memcpy(dest, src, utf8Str.byteLength);
+        this.pos += utf8Str.byteLength
+        return packedLength + utf8Str.byteLength;
+    }
+
     getBytes(): u8[] {
-        return this.buf.slice(0, this.pos);
+        return this.buf.slice(0, <i32>this.pos);
     }
 }
-  
+
 export class Decoder {
     buf: u8[];
     pos: u32;
@@ -37,7 +80,7 @@ export class Decoder {
     }
   
     unpackNumber<T>(): T {
-      let value = load<T>(changetype<ArrayBufferView>(this.buf).dataStart + this.pos)
+      let value = load<T>(this.buf.dataStart + this.pos)
       this.pos += sizeof<T>();
       return value;
     }
@@ -46,6 +89,23 @@ export class Decoder {
         let n = this.unpack<u64>()
         return new Name(n);
     }
-}
 
-  
+    unpackLength(): u32 {
+        return this.unpackNumber<u8>();
+    }
+
+    unpackBytes(size: usize): u8 {
+        let arr = new Array<u8>(size);
+        let dest = arr.dataStart;
+        let src = this.buf.dataStart + this.pos;
+        memcpy(dest, src, size);
+        return arr;
+    }
+
+    unpackString(): string {
+        let length = this.unpackLength();
+        let rawStr = this.buf.slice(this.pos, this.pos + length);
+        this.pos += length;
+        return String.UTF8.decode(rawStr.buffer);
+    }
+}

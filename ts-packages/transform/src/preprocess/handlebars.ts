@@ -188,7 +188,12 @@ Handlebars.registerHelper("deserialize", function (field: FieldDef) {
 
 Handlebars.registerHelper("generateActionMember", function (fn: ParameterNodeDef) {
     let code: string[] = [];
-    code.push(` ${fn.name}: ${fn.type.plainType};`);
+    let plainType = fn.type.plainType;
+    if (plainType == 'string') {
+        code.push(` ${fn.name}: string = "";`);
+    } else {
+        code.push(` ${fn.name}: ${plainType};`);
+    }
     return code.join(EOL);
 });
 
@@ -199,6 +204,8 @@ Handlebars.registerHelper("actionParameterSerialize", function (field: Parameter
     } else {
         if (field.type.plainType == 'u32') {
             code.push(`enc.packNumber<u32>(this.${field.name})`)
+        } else if (field.type.plainType == 'string') {
+            code.push(`enc.packString(this.${field.name})`)
         }
     }
     return code.join(EOL);
@@ -211,6 +218,8 @@ Handlebars.registerHelper("actionParameterDeserialize", function (field: Paramet
     } else {
         if (field.type.plainType == 'u32') {
             code.push(`this.${field.name} = dec.unpackNumber<u32>()`)
+        } else if (field.type.plainType == 'string') {
+            code.push(`this.${field.name} = dec.unpackString()`)
         }
     }
     return code.join(EOL);

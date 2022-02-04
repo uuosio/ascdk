@@ -23,5 +23,7 @@ export {MultiIndex, MultiIndexValue} from "./mi"
 export { readActionData, actionDataSize } from "./action"
 
 export { Name } from "./name"
+export { Action, PermissionLevel } from "./action"
 
 export * from "./serializer"
+export { Utils } from "./utils"

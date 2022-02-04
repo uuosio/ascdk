@@ -1,4 +1,5 @@
 import * as chain from "as-chain"
+import { UInt64 } from "as-scale-codec";
 import { MyTable } from "./utils"
 
 @table("mydata")
@@ -82,7 +83,7 @@ class MyContract {
     fullname(n: u32, m: u32): void {
         chain.printString("fullname test:");
         chain.printui(n);
-        chain.printString("--------");
+        chain.printString(":");
         chain.printui(m);
 
         let name = chain.Name.fromString("zzzzzzzzzzzzj");

@@ -74,7 +74,7 @@ export class Name {
         this.N = n;
     }
 
-    static fromString(s: string): Name {
+    @inline static fromString(s: string): Name {
         return new Name(S2N(s));
     }
 
