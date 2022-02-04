@@ -45,14 +45,22 @@ export const tableTpl = `
     // primaryFuncDef: DBIndexFunctionDef | null = null;
     // secondaryFuncDefs: DBIndexFunctionDef[] = [];
     getSecondaryValue(i: i32): _chain.SecondaryValue {
-        {{#each secondaryFuncDefs}}
-        {{{getSecondaryValue .}}}
-        {{/each}}
+        switch (i) {
+            {{#each secondaryFuncDefs}}
+            {{{getSecondaryValue .}}}
+            {{/each}}
+            default:
+                _chain.assert(false, "bad db index!");
+        }
     }
 
     setSecondaryValue(i: i32, secondaryValue: _chain.SecondaryValue): _chain.SecondaryValue {
-        {{#each secondaryFuncDefs}}
-        {{{setSecondaryValue .}}}
-        {{/each}}
+        switch (i) {
+            {{#each secondaryFuncDefs}}
+            {{{setSecondaryValue .}}}
+            {{/each}}    
+            default:
+                _chain.assert(false, "bad db index!");
+        }
     }
 }`;
