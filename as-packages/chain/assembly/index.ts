@@ -24,6 +24,7 @@ export { readActionData, actionDataSize } from "./action"
 
 export { Name } from "./name"
 export { Action, PermissionLevel } from "./action"
+export { Asset, Symbol } from "./asset"
 
 export * from "./serializer"
 export { Utils } from "./utils"

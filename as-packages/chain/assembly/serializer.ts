@@ -1,5 +1,6 @@
 import { Name } from "./name"
 import { memcpy } from "./env"
+import { check } from "./system"
 
 export interface Serializer {
     serialize(): u8[];
@@ -14,7 +15,16 @@ export class Encoder {
     constructor(bufferSize: u32) {
         this.buf = new Array(bufferSize);
     }
-  
+
+    checkPos(n: usize): void {
+        check(this.pos + n <= <u32>this.buf.length, "incPos: buffer overflow");
+    }
+    
+    incPos(n: usize): void {
+        this.pos += n;
+        check(this.pos <= <u32>this.buf.length, "incPos: buffer overflow");
+    }
+
     pack(ser: Serializer): usize {
         let raw = ser.serialize();
         return this.packBytes(raw);
@@ -22,10 +32,12 @@ export class Encoder {
 
     packBytes(arr: u8[]): usize {
         let dataSize = arr.length;
+        this.checkPos(dataSize);
         let src = arr.dataStart;
-        let dest = this.buf.dataStart + this.pos;
+        let pos = this.pos;
+        this.incPos(dataSize);
+        let dest = this.buf.dataStart + pos;
         memcpy(dest, src, dataSize);
-        this.pos += dataSize;
         return dataSize;
     }
 
@@ -33,16 +45,18 @@ export class Encoder {
         let lengthBytes = this.packLength(arr.length);
         let dataSize = sizeof<T>()*arr.length;
         let src = arr.dataStart;
-        let dest = this.buf.dataStart + this.pos;
+        let pos = this.pos;
+        this.incPos(dataSize);
+        let dest = this.buf.dataStart + pos;
         memcpy(dest, src, dataSize);
-        this.pos += dataSize;
         return lengthBytes + dataSize;
     }
 
     packNumber<T>(n: T): usize {
-        store<T>(this.buf.dataStart + this.pos, n);
+        let pos = this.pos;
         let size = sizeof<T>();
-        this.pos += size;
+        this.incPos(size);
+        store<T>(this.buf.dataStart + pos, n);
         return size;
     }
 
@@ -61,8 +75,8 @@ export class Encoder {
 //        let view = new DataView(utf8Str);
         let src = changetype<usize>(utf8Str);
         let dest = this.buf.dataStart + this.pos;
+        this.incPos(utf8Str.byteLength);
         memcpy(dest, src, utf8Str.byteLength);
-        this.pos += utf8Str.byteLength
         return packedLength + utf8Str.byteLength;
     }
 
@@ -84,18 +98,24 @@ export class Decoder {
         return this.buf.slice(this.pos, this.buf.length);
     }
 
+    incPos(n: u32): void {
+        this.pos += n
+        check(this.pos <= <u32>this.buf.length, "incPos: buffer overflow")
+    }
+
     getPos(): u32 {
         return this.pos;
     }
 
-    unpack(ser: Serializer): void {
+    unpack(ser: Serializer): usize {
         let size = ser.deserialize(this.remains())
-        this.pos += size;
+        this.incPos(size);
+        return size;
     }
 
     unpackNumber<T>(): T {
       let value = load<T>(this.buf.dataStart + this.pos)
-      this.pos += sizeof<T>();
+      this.incPos(sizeof<T>());
       return value;
     }
 
@@ -119,7 +139,7 @@ export class Decoder {
     unpackString(): string {
         let length = this.unpackLength();
         let rawStr = this.buf.slice(this.pos, this.pos + length);
-        this.pos += length;
+        this.incPos(length);
         return String.UTF8.decode(rawStr.buffer);
     }
 }
