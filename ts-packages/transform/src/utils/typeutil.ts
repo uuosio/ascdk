@@ -46,21 +46,43 @@ export class TypeHelper {
     }
 
     static primitiveToAbiMap: Map<string, string> = new Map([
-        ["i8", "i8"],
-        ["i16", "i16"],
-        ["i32", "i32"],
-        ["i64", "i64"],
-        ["u8", "u8"],
-        ["u16", "u16"],
-        ["u32", "u32"],
-        ["u64", "u64"],
-        ["u128", "u128"],
-        ["i128", "i128"],
-        ["bool", "bool"],
         ["boolean", "bool"],
-        ["string", "str"], 
-        ["Array", "arr"],
-        ["Map", "map"]
+        ["i8", "int8"],
+        ["u8", "uint8"],
+        ["i16", "int16"],
+        ["u16", "uint16"],
+        ["i32", "int32"],
+        ["u32", "uint32"],
+        ["i64", "int64"],
+        ["u64", "uint64"],
+        ["i128", "int128"],
+        ["u128", "uint128"],
+        ["VarInt32", "varint32"],
+        ["VarUint32", "varuint32"],
+        
+        ["f32", "float32"],
+        ["f64", "float64"],
+        ["f128", "float128"],
+        
+        ["TimePoint", "time_point"],
+        
+        ["TimePointSec", "time_point_sec"],
+        ["BlockTimestampType", "block_timestamp_type"],
+        
+        ["Name", "name"],
+        
+        ["u8[]", "bytes"],
+        ["string", "string"],
+        
+        ["Checksum160", "checksum160"],
+        ["Checksum256", "checksum256"],
+        ["Checksum512", "checksum512"],
+        ["PublicKey", "public_key"],
+        ["Signature", "signature"],
+        ["Symbol", "symbol"],
+        ["SymbolCode", "symbol_code"],
+        ["Asset", "asset"],
+        ["ExtendedAsset", "extended_asset"],
     ]);
 
 

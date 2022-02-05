@@ -16,6 +16,7 @@ import { MetadataGenerator } from "../metadata/generator";
 import { ProgramDiagnostic } from "../diagnostic/diagnostic";
 import { TypeKindEnum } from "../enums/customtype";
 import { RangeUtil } from "../utils/utils";
+import { ABI } from "../abi/abi";
 
 export class ContractProgram {
     program: Program;

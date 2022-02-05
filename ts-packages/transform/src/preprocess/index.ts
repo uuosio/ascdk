@@ -6,6 +6,8 @@ import { ActionFunctionDef } from "../contract/elementdef";
 import { mainTpl, storeTpl, eventTpl, dynamicTpl, codecTpl, actionTpl, tableTpl} from "../tpl";
 import { CONFIG } from "../config/compile";
 import { EosioUtils, RangeUtil } from "../utils/utils"
+import { ABI, ABIAction, ABIStruct, ABIStructField, ABITable } from "../abi/abi"
+import { TypeHelper } from "../utils/typeutil"
 
 export class ModifyPoint {
     range: Range;
@@ -114,7 +116,25 @@ export function getExtCodeInfo(contractInfo: ContractProgram): SourceModifier {
     return sourceModifier;
 }
 
-export function getAbiInfo(abiInfo: ContractProgram): string {
-    let metadata = JSON.stringify(abiInfo.metatdata.toMetadata(), null, 2);
-    return metadata;
+export function getAbiInfo(programInfo: ContractProgram): string {
+    let abi = new ABI();
+    programInfo.contract.actionFuncDefs.forEach(func => {
+        let actionName = func.methodName;
+        let action = new ABIAction(actionName, actionName);
+        abi.actions.push(action);
+
+        let abiStruct = new ABIStruct();
+        abiStruct.name = actionName;
+        abiStruct.base = "";
+        func.parameters.forEach(parameter => {
+            let field = new ABIStructField();
+            field.name = parameter.name;
+            let plainType = parameter.type.plainType;
+            console.log("++++parameter.type.plainType:", plainType, TypeHelper.primitiveToAbiMap[plainType]);
+            field.type = TypeHelper.primitiveToAbiMap.get(plainType)!;
+            abiStruct.fields.push(field);
+        });
+        abi.structs.push(abiStruct);
+    });
+    return JSON.stringify(abi, null, 2);
 }
