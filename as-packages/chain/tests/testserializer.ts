@@ -1,6 +1,17 @@
 import * as chain from "as-chain"
 import { Utils } from "as-chain/utils"
 
+class TestClass {
+    a: u64;
+    b: u64;
+    c: u64;
+    constructor(a: u64, b: u64, c: u64) {
+        this.a = a;
+        this.b = b;
+        this.c = c;
+    }
+}
+
 @contract("hello")
 class MyContract {
     receiver: chain.Name;
@@ -48,6 +59,14 @@ class MyContract {
         a30: chain.Asset,
         // a31: chain.ExtendedAsset,
     ): void {
+        chain.printString(`++++sizeof<chain.Asset>: ${sizeof<chain.Asset>()}\n`);
+        chain.printString(`++++sizeof<chain.Symbol>: ${sizeof<chain.Symbol>()}\n`);
+        chain.printString(`++++sizeof<u64>: ${sizeof<u64>()}\n`);
+        chain.printString(`++++sizeof<TestClass>: ${sizeof<TestClass>()}\n`);
+
+        let a = new TestClass(1, 2, 3);
+        chain.printString(`changetype<ArrayBufferView>(a).byteLength: ${changetype<ArrayBufferView>(a).byteLength}`);
+
         chain.printString(`
         a1 = ${a1},
         a2 = ${a2},

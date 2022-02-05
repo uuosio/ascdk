@@ -3,6 +3,8 @@ export declare function memcpy (destination: usize, source: usize, num: usize): 
 export declare function printi(n: i64): void
 export declare function printui(n: u64): void
 export declare function prints(n: usize): void
+export declare function prints_l(cstr: usize, len: usize): void
+
 export declare function printhex(ptr: usize, len: usize): void
 export declare function read_action_data(ptr: usize, len: u32): usize
 export declare function action_data_size(): u32
