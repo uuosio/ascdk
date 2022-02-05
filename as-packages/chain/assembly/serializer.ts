@@ -109,7 +109,7 @@ export class Decoder {
 
     unpack(ser: Serializer): usize {
         let size = ser.deserialize(this.remains())
-        this.incPos(size);
+        this.incPos(<u32>size);
         return size;
     }
 
@@ -120,7 +120,7 @@ export class Decoder {
     }
 
     unpackName(): Name {
-        let n = this.unpack<u64>()
+        let n = this.unpackNumber<u64>()
         return new Name(n);
     }
 

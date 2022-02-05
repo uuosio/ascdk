@@ -9,9 +9,9 @@
 import { ConstructorDef } from "../contract/elementdef";
 
 export class ABITable {
-	name: string;
-	type: string;
-	index_type: string;
+	name: string="";
+	type: string="";
+	index_type: string="";
 	key_names: string[] = [];
 	key_types: string[] = [];
 }
@@ -22,8 +22,8 @@ export class ABITable {
 // 	RicardianContract string `json:"ricardian_contract"`
 // }
 export class ABIAction {
-	name: string;
-	type: string;
+	name: string="";
+	type: string="";
 	ricardian_contract: string = "";
 
 	constructor(name: string, type: string, ricardian_contract: string = "") {
@@ -39,8 +39,8 @@ export class ABIAction {
 // }
 
 export class ABIStructField {
-	name: string;
-	type: string;
+	name: string = "";
+	type: string = "";
 }
 
 // type ABIStruct struct {
@@ -49,8 +49,8 @@ export class ABIStructField {
 // 	Fields []ABIStructField `json:"fields"`
 // }
 export class ABIStruct {
-	name: string;
-	base: string;
+	name: string="";
+	base: string="";
 	fields: ABIStructField[] = [];
 }
 

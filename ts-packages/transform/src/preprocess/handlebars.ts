@@ -188,24 +188,47 @@ Handlebars.registerHelper("deserialize", function (field: FieldDef) {
 
 Handlebars.registerHelper("generateActionMember", function (fn: ParameterNodeDef) {
     let code: string[] = [];
-    let plainType = fn.type.plainType;
+    let plainType = fn.type.plainTypeNode
     if (plainType == 'string') {
         code.push(` ${fn.name}: string = "";`);
     } else {
-        code.push(` ${fn.name}: ${plainType};`);
+        if (plainType.indexOf('chain.') == 0) {
+            code.push(` ${fn.name}!: ${plainType};`);
+        } else {
+            code.push(` ${fn.name}: ${plainType};`);
+        }
     }
     return code.join(EOL);
 });
+
+const numberTypeMap: Map<string, string> = new Map([
+    ["i8", "i8"],
+    ["u8", "u8"],
+    ["i16", "i16"],
+    ["u16", "u16"],
+    ["i32", "i32"],
+    ["u32", "u32"],
+    ["i64", "i64"],
+    ["u64", "u64"],
+    ["f32", "f32"],
+    ["f64", "f64"]
+]);
 
 Handlebars.registerHelper("actionParameterSerialize", function (field: ParameterNodeDef) {
     let code: string[] = [];
     if (field.type.typeKind == TypeKindEnum.ARRAY) {
     } else if (field.type.typeKind == TypeKindEnum.MAP) {
     } else {
-        if (field.type.plainType == 'u32') {
-            code.push(`enc.packNumber<u32>(this.${field.name})`)
-        } else if (field.type.plainType == 'string') {
+        let plainType = field.type.plainTypeNode;
+        let numType = numberTypeMap.get(plainType);
+        if (numType) {
+            code.push(`enc.packNumber<${numType}>(this.${field.name})`)
+        } else if (plainType == 'boolean') {
+            code.push(`enc.packNumber<u8>(<u8>this.${field.name})`)
+        } else if (plainType == 'string') {
             code.push(`enc.packString(this.${field.name})`)
+        } else {
+            code.push(`enc.pack(this.${field.name})`)
         }
     }
     return code.join(EOL);
@@ -216,10 +239,17 @@ Handlebars.registerHelper("actionParameterDeserialize", function (field: Paramet
     if (field.type.typeKind == TypeKindEnum.ARRAY) {
     } else if (field.type.typeKind == TypeKindEnum.MAP) {
     } else {
-        if (field.type.plainType == 'u32') {
-            code.push(`this.${field.name} = dec.unpackNumber<u32>()`)
-        } else if (field.type.plainType == 'string') {
-            code.push(`this.${field.name} = dec.unpackString()`)
+        let plainType = field.type.plainTypeNode;
+        let numType = numberTypeMap.get(plainType);
+        if (numType) {
+            code.push(`this.${field.name} = dec.unpackNumber<${numType}>()`)
+        } else if (plainType == 'boolean') {
+            code.push(`this.${field.name} = <boolean>dec.unpackNumber<u8>()`);
+        } else if (plainType == 'string') {
+            code.push(`this.${field.name} = dec.unpackString()`);
+        } else {
+            code.push(`this.${field.name} = new ${plainType}();`);
+            code.push(`        dec.unpack(this.${field.name});`);
         }
     }
     return code.join(EOL);
@@ -230,12 +260,14 @@ Handlebars.registerHelper("actionParameterGetSize", function (field: ParameterNo
     if (field.type.typeKind == TypeKindEnum.ARRAY) {
     } else if (field.type.typeKind == TypeKindEnum.MAP) {
     } else {
-        if (field.type.plainType == 'u32') {
-            code.push(`size += 4;`)
-        } else if (field.type.plainType == 'u64') {
-            code.push(`size += 8;`)
-        } else if (field.type.plainType == 'string') {
+        let plainType = field.type.plainTypeNode;
+        let numType = numberTypeMap.get(plainType);
+        if (numType) {
+            code.push(`size += sizeof<${numType}>();`)
+        } else if (plainType == 'string') {
             code.push(`size += _chain.Utils.calcPackedStringLength(this.${field.name});`)
+        } else {
+            code.push(`size += this.${field.name}.getSize();`);
         }
     }
     return code.join(EOL);

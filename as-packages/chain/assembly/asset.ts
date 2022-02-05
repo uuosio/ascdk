@@ -3,7 +3,7 @@ import { Encoder, Decoder, Serializer } from "./serializer"
 
 export class Symbol implements Serializer {
     value: u64;
-    constructor(name: string, precision: u8) {
+    constructor(name: string="", precision: u8=0) {
         check(name.length <= 7, "bad symbol name");
         this.value = 0;
         for (let i=0; i<name.length; i++) {
@@ -62,10 +62,10 @@ export class Symbol implements Serializer {
     }
 }
 
-export class Asset {
+export class Asset implements Serializer {
     amount: i64;
     symbol: Symbol;
-    constructor(amount: i64, symbol: Symbol) {
+    constructor(amount: i64=0, symbol: Symbol=new Symbol()) {
         this.amount = amount;
         this.symbol = symbol;
     }

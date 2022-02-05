@@ -70,8 +70,6 @@ export class ClassInterpreter {
         this.classPrototype.instanceMembers &&
             this.classPrototype.instanceMembers.forEach((element, _) => {
                 if (element.kind == ElementKind.FIELD_PROTOTYPE) {
-                    console.log("++++++++element.field:", element.name)
-                    console.log("++++++++element.decoratorNodes:", element.decoratorNodes)
                     this.fields.push(new FieldDef(<FieldPrototype>element));
                 }
             });

@@ -99,8 +99,6 @@ export function getExtCodeInfo(contractInfo: ContractProgram): SourceModifier {
         if (!EosioUtils.isValidName(actionName)) {
             throw new Error(`Invalid action name: ${actionName}. Trace: ${RangeUtil.location(message.declaration.range)}`);
         }
-        console.log("++++++_message.messageDecorator.actionName:", _message.messageDecorator.actionName);
-        console.log("++++++_message.messageDecorator.notify:", _message.messageDecorator.notify);
     });
 
     contractInfo.tables.forEach(table => {
@@ -119,7 +117,7 @@ export function getExtCodeInfo(contractInfo: ContractProgram): SourceModifier {
 export function getAbiInfo(programInfo: ContractProgram): string {
     let abi = new ABI();
     programInfo.contract.actionFuncDefs.forEach(func => {
-        let actionName = func.methodName;
+        let actionName = (<ActionFunctionDef>func).messageDecorator.actionName;
         let action = new ABIAction(actionName, actionName);
         abi.actions.push(action);
 
@@ -129,8 +127,10 @@ export function getAbiInfo(programInfo: ContractProgram): string {
         func.parameters.forEach(parameter => {
             let field = new ABIStructField();
             field.name = parameter.name;
-            let plainType = parameter.type.plainType;
-            console.log("++++parameter.type.plainType:", plainType, TypeHelper.primitiveToAbiMap[plainType]);
+            let plainType = parameter.type.plainTypeNode;
+            if (plainType.indexOf('chain.') == 0) {
+                plainType = plainType.replace('chain.', '');
+            }
             field.type = TypeHelper.primitiveToAbiMap.get(plainType)!;
             abiStruct.fields.push(field);
         });

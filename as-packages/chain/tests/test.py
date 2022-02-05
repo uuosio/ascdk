@@ -37,14 +37,43 @@ def test_ts():
     # logger.info(info)
     with open('./target/target.wasm', 'rb') as f:
         code = f.read()
-    chain.deploy_contract('hello', code, b'', 0)
-    args = struct.pack('II', 11, 22)
-    greeting = b'alice'
-    args = int.to_bytes(len(greeting), 1, 'little') + greeting
-    r = chain.push_action('hello', 'sayhello', args, {'hello': 'active'})
-    logger.info('++++++elapsed: %s', r['elapsed'])
-    chain.produce_block()
+    with open('~lib/rt/target/metadata.json', 'rb') as f:
+        abi = f.read()
+    chain.deploy_contract('hello', code, abi, 0)
 
-    r = chain.push_action('hello', 'sayhello', args, {'hello': 'active'})
+    args = dict(
+        a1 = True,
+        a2 = 2,
+        a3 = 3,
+        a4 = 0xff01,
+        a5 = 0xff02,
+        a6 = 0xffffff00,
+        a7 = 0xffffff01,
+        a8 = 0xffffffff00000001, #i64
+        a9 = 0xffffffff00000002,
+        # a10: i128,
+        # a11: u128,
+        # a12: VarInt32,
+        # a13: VarUint32,
+        a14 = 0xffffff01,
+        a15 = 0xfffffffffffffff0,
+        # a16: f128,
+        # a17: TimePoint,
+        # a18: TimePointSec,
+        # a19: BlockTimestampType,
+        a20 = 'alice',
+        # a21: u8[],
+        a22 = 'hello,world',
+        # a23: Checksum160,
+        # a24: Checksum256,
+        # a25: Checksum512,
+        # a26: PublicKey,
+        # a27: chain.Signature,
+        # a28: chain.Symbol,
+        # a29: chain.SymbolCode,
+        a30 = '0.1000 EOS',
+        # a31: chain.ExtendedAsset,
+    )
+    r = chain.push_action('hello', 'test1', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
 
