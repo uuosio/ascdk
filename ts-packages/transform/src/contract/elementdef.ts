@@ -14,8 +14,6 @@ import {
 } from "assemblyscript";
 
 import { AstUtil, DecoratorUtil, ElementUtil, RangeUtil } from "../utils/utils";
-import { Strings } from "../utils/primitiveutil";
-import { KeySelector } from "../preprocess/selector";
 import { ContractDecoratorKind } from "../enums/decorator";
 import { FieldDefHelper, TypeHelper } from "../utils/typeutil";
 import { TypeKindEnum } from "../enums/customtype";
@@ -50,7 +48,6 @@ export class FieldDef {
     protected fieldPrototype: FieldPrototype;
     name: string;
     type!: NamedTypeNodeDef;
-    selector: KeySelector;
     varName: string;
     declaration: FieldDeclaration;
     decorators: DecoratorsInfo;
@@ -64,7 +61,6 @@ export class FieldDef {
         this.varName = "_" + this.name;
         this.decorators = new DecoratorsInfo(this.fieldPrototype.declaration.decorators);
         let storeKey = this.fieldPrototype.internalName + this.name;
-        this.selector = new KeySelector(storeKey);
         this.resolveField();
     }
 
@@ -217,7 +213,6 @@ export class ActionFunctionDef extends FunctionDef {
     messageDecorator: MessageDecoratorNodeDef;
     bodyRange: Range;
     mutatable = true;
-    selector: KeySelector;
 
     constructor(funcPrototype: FunctionPrototype) {
         super(funcPrototype);
@@ -226,13 +221,9 @@ export class ActionFunctionDef extends FunctionDef {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.messageDecorator = new MessageDecoratorNodeDef(msgDecorator!);
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.selector = new KeySelector(this.methodName);
         this.bodyRange = this.funcProto.bodyNode!.range;
         if (this.messageDecorator.mutates == "false") {
             this.mutatable = false;
-        } 
-        if (this.messageDecorator.selector) {
-            this.selector.setShortHex(this.messageDecorator.selector);
         }
     }
 }
