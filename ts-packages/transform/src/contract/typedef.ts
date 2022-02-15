@@ -16,14 +16,13 @@ import { Strings } from "../utils/primitiveutil";
 import { CONFIG } from "../config/compile";
 import { ElementUtil } from "../utils/utils";
 export class NodeTypeInfo {
-    constructor(public isCodec: boolean = false, public type: TypeKindEnum) {}
+    constructor(public type: TypeKindEnum) {}
 }
 
 export class BaseNamedTypeDef {
     protected parent: Element;
     protected typeNode: NamedTypeNode;
     plainTypeNode: string;
-    isCodec = true;
 
     constructor(parent: Element, typeNode: NamedTypeNode) {
         this.parent = parent;
@@ -75,7 +74,7 @@ export class NamedTypeNodeDef extends BaseNamedTypeDef {
         if (TypeHelper.isPrimitiveType(this.typeKind)) {
             return this.codecType;
         } else if (this.typeKind == TypeKindEnum.ARRAY) {
-            return this.isCodec + this.definedCodeType + this.capacity;
+            return this.definedCodeType;
         }
         return this.definedCodeType + this.capacity;
     }
@@ -165,7 +164,6 @@ export class NamedTypeNodeDef extends BaseNamedTypeDef {
             }
             let classTypeKind = TypeHelper.getTypeKindByName(buildinElement.name);
             if (classTypeKind == TypeKindEnum.USER_CLASS) {
-                this.isCodec = ElementUtil.isExtendCodec(buildinElement);
                 return new NodeTypeInfo(true, classTypeKind);
 
             }
@@ -195,19 +193,15 @@ export class NamedTypeNodeDef extends BaseNamedTypeDef {
         // console.log(`Element ${ElementKind[buildinElement.kind]}, ${buildinElement.name}, ${this.plainType}`);
         let element = this.current;
         if (!element) {
-            this.isCodec = false;
             return TypeKindEnum.VOID;
         }
 
         if (element.kind == ElementKind.FUNCTION_PROTOTYPE) {
-            this.isCodec = false;
             return TypeKindEnum.NUMBER;
         } else if (element.kind == ElementKind.TYPEDEFINITION) {
             if (element.name == Strings.VOID) {
-                this.isCodec = false;
                 return TypeKindEnum.VOID;
             } else if (TypeHelper.nativeType.includes(element.name)) {
-                this.isCodec = false;
                 return TypeKindEnum.NUMBER;
             }
             // TODO
@@ -219,16 +213,13 @@ export class NamedTypeNodeDef extends BaseNamedTypeDef {
         } else if (element.kind == ElementKind.CLASS_PROTOTYPE) {
             let type = TypeHelper.getTypeKindFromUnCodec(element.name);
             if (type) {
-                this.isCodec = false;
                 return type;
             }
             let classTypeKind = TypeHelper.getTypeKindByName(element.name);
             if (classTypeKind == TypeKindEnum.USER_CLASS) {
-                this.isCodec = ElementUtil.isExtendCodec(element);
             }
             return classTypeKind;
         }
-        this.isCodec = true;
         return TypeKindEnum.USER_CLASS;
     }
 
