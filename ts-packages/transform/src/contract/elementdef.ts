@@ -15,7 +15,6 @@ import {
 
 import { AstUtil, DecoratorUtil, ElementUtil, RangeUtil } from "../utils/utils";
 import { Strings } from "../utils/primitiveutil";
-import { ArgumentSpec, ConstructorSpec, MessageSpec, TypeSpec } from "contract-metadata/src";
 import { KeySelector } from "../preprocess/selector";
 import { MetadataUtil } from "../utils/metadatautil";
 import { ContractDecoratorKind } from "../enums/decorator";
@@ -254,16 +253,6 @@ export class ConstructorDef extends FunctionDef {
             throw new Error(`The method that marked by @constructor should return void type. Please check ${RangeUtil.location(this.declaration.range)}`);
         }
     }
-
-    public createMetadata(): ConstructorSpec {
-        let args: ArgumentSpec[] = this.parameters.map(item => {
-            let type = new TypeSpec(item.type.index, item.type.plainType);
-            return new ArgumentSpec(type, item.name);
-        });
-        return new ConstructorSpec([this.methodName],
-            new KeySelector(this.methodName).short,
-            args, this.doc);
-    }
 }
 
 export class ActionFunctionDef extends FunctionDef {
@@ -271,7 +260,6 @@ export class ActionFunctionDef extends FunctionDef {
     bodyRange: Range;
     mutatable = true;
     selector: KeySelector;
-    metadata: MessageSpec;
 
     constructor(funcPrototype: FunctionPrototype) {
         super(funcPrototype);
@@ -288,21 +276,6 @@ export class ActionFunctionDef extends FunctionDef {
         if (this.messageDecorator.selector) {
             this.selector.setShortHex(this.messageDecorator.selector);
         }
-        this.metadata = this.createMetadata();
-    }
-
-    public createMetadata(): MessageSpec {
-        let args: ArgumentSpec[] = this.parameters.map(item => {
-            let type = MetadataUtil.createTypeSpec(item.type);
-            return new ArgumentSpec(type!, item.name);
-        });
-        let msgSpec = new MessageSpec([this.methodName],
-            this.selector.short,
-            args,
-            MetadataUtil.createTypeSpec(this.returnType), this.doc);
-        msgSpec.setMutates(this.mutatable);
-        msgSpec.setPayable(this.messageDecorator.payable);
-        return msgSpec;
     }
 }
 

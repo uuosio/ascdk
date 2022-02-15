@@ -3,16 +3,11 @@ import {
     Program,
 } from "assemblyscript";
 
-import {
-    ContractMetadata,
-} from "contract-metadata/src/index";
-
 import { ElementUtil } from "../utils/utils";
 
 import { ProgramAnalyzar } from "./analyzer";
 import { ClassInterpreter, ContractInterpreter, DynamicIntercepter, EventInterpreter, SerializerInterpreter, StorageInterpreter, TableInterpreter } from "./classdef";
 import { NamedTypeNodeDef } from "./typedef";
-import { MetadataGenerator } from "../metadata/generator";
 import { ProgramDiagnostic } from "../diagnostic/diagnostic";
 import { TypeKindEnum } from "../enums/customtype";
 import { RangeUtil } from "../utils/utils";
@@ -21,7 +16,6 @@ import { ABI } from "../abi/abi";
 export class ContractProgram {
     program: Program;
     contract!: ContractInterpreter;
-    metatdata: ContractMetadata;
     events: EventInterpreter[] = [];
     storages: StorageInterpreter[] = [];
     dynamics: DynamicIntercepter[] = [];
@@ -36,7 +30,6 @@ export class ContractProgram {
         this.program = program;
         this.resolveContract();
         this.getToGenCodecClass();
-        this.metatdata = this.createMetadata();
     }
 
     private getToGenCodecClass(): void {
@@ -47,10 +40,6 @@ export class ContractProgram {
                 this.codecs.push(classInterpreter);
             }
         });
-    }
-
-    private createMetadata(): ContractMetadata {
-        return new MetadataGenerator(this).createMetadata();
     }
     
     private resolveContract(): void {

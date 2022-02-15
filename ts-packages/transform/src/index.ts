@@ -26,7 +26,7 @@ export class AskTransform extends Transform {
         const baseDir = path.dirname(source.normalizedPath);
         out.entryDir = baseDir;
         process.sourceModifier = out;
-        const abiPath = path.join("target", "metadata.json");
+        const abiPath = path.join("target", "generated.abi");
         console.log("++++++writeFile:", abiPath)
         this.writeFile(abiPath, abi, baseDir);
     }
