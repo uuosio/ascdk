@@ -2,12 +2,23 @@ import * as chain from "as-chain"
 import { UInt64 } from "as-scale-codec";
 import { MyTable } from "./utils"
 
+
+@serializer
+class MyStruct {
+    a1: u64;
+    a2: u64;
+    constructor(a1: u64=0, a2: u64=0) {
+        this.a1 = a1;
+        this.a2 = a2;
+    }
+}
+
 @table("mydata")
 class MyData {
     primary: u64;
     count: u64;
 
-    constructor(primary: u64, cout: u64) {
+    constructor(primary: u64, count: u64) {
         this.primary = primary;
         this.count = count;
     }
@@ -59,6 +70,14 @@ class MyContract {
         this.firstReceiver = firstReceiver;
         this.action = action;
         this.mytable = new MyTable();
+    }
+
+    @action("count")
+    count(n: u64, m: u64): void {
+        let mystruct = new MyStruct();
+        let data = chain.readActionData();
+        mystruct.deserialize(data);
+        chain.printString(`++++++${mystruct.a1}, ${mystruct.a2}`);
     }
 
     @action("inccc", notify=true)

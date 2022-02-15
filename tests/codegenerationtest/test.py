@@ -19,7 +19,5 @@ def test_ts():
     with open('./assembly/target/target.wasm', 'rb') as f:
         code = f.read()
     chain.deploy_contract('hello', code, b'', 0)
-    args = struct.pack('II', 11, 22)
-    r = chain.push_action('hello', 'dec2', args, {'hello': 'active'})
-
-    r = chain.push_action('hello', 'zzzzzzzzzzzz', args, {'hello': 'active'})
+    args = struct.pack('QQ', 11, 22)
+    r = chain.push_action('hello', 'count', args, {'hello': 'active'})

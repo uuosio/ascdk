@@ -39,6 +39,14 @@ export const tableTpl = `
         return dec.getPos();
     }
 
+    getSize(): usize {
+        let size: usize = 0;
+        {{#each fields}}
+        {{{actionParameterGetSize .}}}
+        {{/each}}
+        return size;
+    }
+
     getPrimaryValue(): u64 {
         return this.{{{primaryFuncDef.getterPrototype.declaration.name.text}}}
     }

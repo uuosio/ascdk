@@ -5,7 +5,6 @@ import { RangeUtil } from "../utils/utils";
 function fromNode(nameNode: Expression): ContractDecoratorKind {
     if (nameNode.kind == NodeKind.IDENTIFIER) {
         let nameStr = (<IdentifierExpression>nameNode).text;
-        // console.log("+++++++nameStr:", nameStr);
         switch (nameStr.charCodeAt(0)) {
             case CharCode.a: {
                 if (nameStr == "action") return ContractDecoratorKind.ACTION;
@@ -38,6 +37,7 @@ function fromNode(nameNode: Expression): ContractDecoratorKind {
                 if (nameStr == "storage") return ContractDecoratorKind.STORAGE;
                 if (nameStr == "spread") return ContractDecoratorKind.SPREAD;
                 if (nameStr == "secondary") return ContractDecoratorKind.SECONDARY;
+                if (nameStr == "serializer") return ContractDecoratorKind.SERIALIZER;
                 break;
             }
             case CharCode.t: {

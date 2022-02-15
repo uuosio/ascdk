@@ -124,44 +124,6 @@ Handlebars.registerHelper("toCodec", function (field: FieldDef) {
     return convertToCodec(field.type, `this.${field.name}`);
 });
 
-Handlebars.registerHelper("storeGetter", function (field: FieldDef) {
-    let code: string[] = [];
-    if (field.type.typeKind == TypeKindEnum.ARRAY) {
-        code.push(`get ${field.name}(): ${field.type.plainTypeNode} {`);
-        code.push(`     if (this.${field.varName} === null) {`);
-        code.push(`       this.${field.varName} = new ${field.type.instanceType}("${field.selector.key}", ${field.decorators.capacity});`);
-    } else if (field.type.typeKind == TypeKindEnum.MAP) {
-        code.push(`get ${field.name}(): ${field.type.plainTypeNode} {`);
-        code.push(`     if (this.${field.varName} === null) {`);
-        code.push(`       this.${field.varName} = new ${field.type.instanceType}("${field.selector.key}");`);
-    } else {
-        console.log("+++++++field.type.plainType:", field.type.plainType);
-        code.push(`get ${field.name}(): ${field.type.plainType} {`);
-        code.push(`    if (this.${field.varName} === null) {`);
-        if (field.decorators.isIgnore) {
-            code.push(`    this.${field.varName} = new ${field.type.getNameSpace()}${field.type.codecType}(); `);
-        } else {
-            code.push(`         const st = new ${scope}Storage(new ${scope}Hash(${field.selector.hexArr}));`);
-            code.push(`         let val = st.load<${field.type.getNameSpace()}${field.type.codecType}>();`);
-            code.push(`         if (!val) this.${field.varName} = new ${field.type.getNameSpace()}${field.type.codecType}(); `);
-            code.push(`         else this.${field.varName} = val;`);
-        }  
-    }
-    code.push(`     }`);
-    // return part
-    if (field.type.typeKind == TypeKindEnum.STRING) {
-        code.push(`     return this.${field.varName}!.toString();`);
-    } else if (field.type.typeKind == TypeKindEnum.ARRAY || field.type.typeKind == TypeKindEnum.MAP) {
-        code.push(`     return this.${field.varName}!;`);
-    } else if (TypeHelper.isPrimitiveType(field.type.typeKind)) {
-        code.push(`     return this.${field.varName}!.unwrap();`);
-    } else {
-        code.push(`     return this.${field.varName}!;`);
-    }
-    code.push("  }");
-    return code.join(EOL);
-});
-
 Handlebars.registerHelper("serialize", function (field: FieldDef) {
     let code: string[] = [];
     if (field.type.typeKind == TypeKindEnum.ARRAY) {
@@ -282,7 +244,7 @@ function handleAction(action: ActionFunctionDef): string {
     })
     let actionName = action.messageDecorator.actionName;
     let actionNameHex = EosioUtils.nameToHexString(actionName);
-    code.push(`if (action == ${actionNameHex}) {`)
+    code.push(`if (action == ${actionNameHex}) {//${actionName}`)
     code.push(`        let args = new ${action.methodName}Action();`)
     code.push(`        args.deserialize(actionData);`)
     code.push(`        mycontract.${action.methodName}(${parameters.join(',')})`)

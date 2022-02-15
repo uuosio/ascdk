@@ -81,11 +81,11 @@ export class ContractProgram {
                 let intercepter = new TableInterpreter(<ClassPrototype>element);
                 this.tables.push(intercepter);
             }
-            
+
             if (ElementUtil.isSerializerClassPrototype(element)) {
                 let intercepter = new SerializerInterpreter(<ClassPrototype>element);
                 this.serializers.push(intercepter);
-            }            
+            }
         });
         if (countContract != 1) {
             throw new Error(`The entry file should contain only one '@contract', in fact it has ${countContract}`);

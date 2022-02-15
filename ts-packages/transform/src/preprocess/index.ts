@@ -3,7 +3,7 @@ import { Range } from "assemblyscript";
 import { ContractProgram} from "../contract/contract";
 import { ActionFunctionDef } from "../contract/elementdef";
 
-import { mainTpl, storeTpl, eventTpl, dynamicTpl, codecTpl, actionTpl, tableTpl} from "../tpl";
+import { mainTpl, storeTpl, eventTpl, dynamicTpl, codecTpl, actionTpl, tableTpl, serializerTpl} from "../tpl";
 import { CONFIG } from "../config/compile";
 import { EosioUtils, RangeUtil } from "../utils/utils"
 import { ABI, ABIAction, ABIStruct, ABIStructField, ABITable } from "../abi/abi"
@@ -104,7 +104,11 @@ export function getExtCodeInfo(contractInfo: ContractProgram): SourceModifier {
     contractInfo.tables.forEach(table => {
         let code = Handlebars.compile(tableTpl)(table);
         sourceModifier.addModifyPoint(new ModifyPoint(table.range, ModifyType.REPLACE, code));
+    });
 
+    contractInfo.serializers.forEach(s => {
+        let code = Handlebars.compile(serializerTpl)(s);
+        sourceModifier.addModifyPoint(new ModifyPoint(s.range, ModifyType.REPLACE, code));
     });
 
 //    MessageDecoratorNodeDef
