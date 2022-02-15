@@ -12,10 +12,6 @@ class TestClass {
     }
 }
 
-class MyData implements chain.MultiIndexValue {
-
-}
-
 @contract("hello")
 class MyContract {
     receiver: chain.Name;
@@ -29,10 +25,6 @@ class MyContract {
     }
 
     @action("test1")
-    testSerializer(a1: boolean): void {
-
-        for (let i=0; i<10; i++) {
-            chain.printString(`${i}: hello,world\n`);
-        }
+    testSerializer(): void {
     }
 }

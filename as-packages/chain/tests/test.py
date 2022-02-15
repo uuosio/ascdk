@@ -77,3 +77,18 @@ def test_ts():
     r = chain.push_action('hello', 'test1', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
 
+def test_db():
+    # info = chain.get_account('helloworld11')
+    # logger.info(info)
+    with open('./target/target.wasm', 'rb') as f:
+        code = f.read()
+    with open('~lib/rt/target/metadata.json', 'rb') as f:
+        abi = f.read()
+    chain.deploy_contract('hello', code, abi, 0)
+
+    args = dict(
+        a1 = True,
+    )
+    r = chain.push_action('hello', 'test1', args, {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])
+

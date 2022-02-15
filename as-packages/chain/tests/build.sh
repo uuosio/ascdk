@@ -1,1 +1,1 @@
-../../../ts-packages/transform/bin/.bin/ask testserializer.ts --baseDir=. --use abort= --runtime stub --target release
+../../../ts-packages/transform/bin/.bin/ask $1 --baseDir=. --use abort= --runtime stub --target release
