@@ -7,7 +7,6 @@
     "ask",
     "wasm",
     "smart-contract",
-    "contract-metadata",
     "substrate"
   ],
   "workspaces": [

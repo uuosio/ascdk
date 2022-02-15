@@ -16,7 +16,6 @@ import {
 import { AstUtil, DecoratorUtil, ElementUtil, RangeUtil } from "../utils/utils";
 import { Strings } from "../utils/primitiveutil";
 import { KeySelector } from "../preprocess/selector";
-import { MetadataUtil } from "../utils/metadatautil";
 import { ContractDecoratorKind } from "../enums/decorator";
 import { FieldDefHelper, TypeHelper } from "../utils/typeutil";
 import { TypeKindEnum } from "../enums/customtype";
