@@ -86,7 +86,6 @@ export class ClassInterpreter {
 export class ContractInterpreter extends ClassInterpreter {
     // The first case is lower.
     version: string;
-    cntrFuncDefs: FunctionDef[] = [];
     actionFuncDefs: FunctionDef[] = [];
 
     constructor(clzPrototype: ClassPrototype) {
@@ -99,9 +98,6 @@ export class ContractInterpreter extends ClassInterpreter {
     private resolveContractClass(): void {
         this.classPrototype.instanceMembers &&
             this.classPrototype.instanceMembers.forEach((instance, _) => {
-                if (ElementUtil.isCntrFuncPrototype(instance)) {
-                    this.cntrFuncDefs.push(new ConstructorDef(<FunctionPrototype>instance));
-                }
                 if (ElementUtil.isActionFuncPrototype(instance)) {
                     let actionFunc = new ActionFunctionDef(<FunctionPrototype>instance);
                     this.actionFuncDefs.push(actionFunc);
@@ -125,9 +121,6 @@ export class ContractInterpreter extends ClassInterpreter {
     }
 
     public genTypeSequence(typeNodeMap: Map<string, NamedTypeNodeDef>): void {
-        this.cntrFuncDefs.forEach(funcDef => {
-            funcDef.genTypeSequence(typeNodeMap);
-        });
         this.actionFuncDefs.forEach(funcDef => {
             funcDef.genTypeSequence(typeNodeMap);
         });
@@ -137,7 +130,6 @@ export class ContractInterpreter extends ClassInterpreter {
 export class TableInterpreter extends ClassInterpreter {
     // The first case is lower.
     version: string;
-    cntrFuncDefs: FunctionDef[] = [];
     primaryFuncDef: DBIndexFunctionDef | null = null;
     secondaryFuncDefs: DBIndexFunctionDef[] = [];
 
@@ -168,9 +160,6 @@ export class TableInterpreter extends ClassInterpreter {
     }
 
     public genTypeSequence(typeNodeMap: Map<string, NamedTypeNodeDef>): void {
-        this.cntrFuncDefs.forEach(funcDef => {
-            funcDef.genTypeSequence(typeNodeMap);
-        });
         this.secondaryFuncDefs.forEach(funcDef => {
             funcDef.genTypeSequence(typeNodeMap);
         });

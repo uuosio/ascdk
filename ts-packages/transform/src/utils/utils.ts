@@ -59,27 +59,10 @@ export class ElementUtil {
         return false;
     }
 
-    static isStoreClassPrototype(element: Element): boolean {
-        return (element.kind == ElementKind.CLASS_PROTOTYPE)
-            ? AstUtil.hasSpecifyDecorator((<ClassPrototype>element).declaration, ContractDecoratorKind.STORAGE)
-            : false;
-    }
-
     static isDynamicClassPrototype(element: Element): boolean {
         return (element.kind == ElementKind.CLASS_PROTOTYPE)
             ? AstUtil.hasSpecifyDecorator((<ClassPrototype>element).declaration, ContractDecoratorKind.DYNAMIC)
             : false;
-    }
-
-    /**
-     * Check the element whether is action function prototype.
-     * @param element 
-     */
-    static isCntrFuncPrototype(element: Element): boolean {
-        if (element.kind == ElementKind.FUNCTION_PROTOTYPE) {
-            return AstUtil.hasSpecifyDecorator((<FunctionPrototype>element).declaration, ContractDecoratorKind.CONSTRUCTOR);
-        }
-        return false;
     }
 
     static isTopicField(element: Element): boolean {

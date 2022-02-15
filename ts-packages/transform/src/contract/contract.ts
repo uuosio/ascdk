@@ -53,9 +53,6 @@ export class ContractProgram {
                     throw Error(`Only one Contract class allowed! Trace ${RangeUtil.location(this.contract.declaration.range)}`);
                 }
             }
-            if (ElementUtil.isStoreClassPrototype(element)) {
-                this.storages.push(new StorageInterpreter(<ClassPrototype>element));
-            }
             if (ElementUtil.isEventClassPrototype(element)) {
                 let eventInterpreter = new EventInterpreter(<ClassPrototype>element);
                 eventInterpreter.index = this.events.length;

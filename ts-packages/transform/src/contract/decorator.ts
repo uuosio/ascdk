@@ -12,7 +12,6 @@ function fromNode(nameNode: Expression): ContractDecoratorKind {
             }
             case CharCode.c: {
                 if (nameStr == "contract") return ContractDecoratorKind.CONTRACT;
-                if (nameStr == "constructor") return ContractDecoratorKind.CONSTRUCTOR;
                 break;
             }
             case CharCode.d: {
@@ -34,8 +33,6 @@ function fromNode(nameNode: Expression): ContractDecoratorKind {
                 break;
             }
             case CharCode.s: {
-                if (nameStr == "storage") return ContractDecoratorKind.STORAGE;
-                if (nameStr == "spread") return ContractDecoratorKind.SPREAD;
                 if (nameStr == "secondary") return ContractDecoratorKind.SECONDARY;
                 if (nameStr == "serializer") return ContractDecoratorKind.SERIALIZER;
                 break;
