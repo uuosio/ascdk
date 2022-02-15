@@ -1,5 +1,4 @@
 import * as chain from "as-chain"
-import { UInt64 } from "as-scale-codec";
 import { MyTable } from "./utils"
 
 
