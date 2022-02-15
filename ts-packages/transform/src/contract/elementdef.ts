@@ -24,7 +24,6 @@ import { NamedTypeNodeDef } from "./typedef";
 export class DecoratorsInfo {
     decorators: DecoratorNode[] | null;
     isIgnore = false;
-    isTopic = false;
     isPacked = false;
     capacity = 0;
 
@@ -35,9 +34,6 @@ export class DecoratorsInfo {
             for (let decorator of this.decorators) {
                 if (DecoratorUtil.isDecoratorKind(decorator, ContractDecoratorKind.IGNORE)) {
                     this.isIgnore = true;
-                }
-                if (DecoratorUtil.isDecoratorKind(decorator, ContractDecoratorKind.TOPIC)) {
-                    this.isTopic = true;
                 }
                 if (DecoratorUtil.isDecoratorKind(decorator, ContractDecoratorKind.PACKED)) {
                     this.isPacked = true;
@@ -56,7 +52,6 @@ export class FieldDef {
     type!: NamedTypeNodeDef;
     selector: KeySelector;
     varName: string;
-    doc: string[];
     declaration: FieldDeclaration;
     decorators: DecoratorsInfo;
     rangeString = "";
@@ -66,7 +61,6 @@ export class FieldDef {
         this.name = field.name;
         this.declaration = <FieldDeclaration>field.declaration;
         this.rangeString = this.declaration.range.toString();
-        this.doc = DecoratorUtil.getDoc(field.declaration);
         this.varName = "_" + this.name;
         this.decorators = new DecoratorsInfo(this.fieldPrototype.declaration.decorators);
         let storeKey = this.fieldPrototype.internalName + this.name;
@@ -99,15 +93,7 @@ export class FieldDef {
         }
     }
 }
-export class TopicFieldDef extends FieldDef {
 
-    isTopic = false;
-    constructor(field: FieldPrototype) {
-        super(field);
-        this.isTopic = ElementUtil.isTopicField(field);
-    }
-
-}
 export class ParameterNodeDef {
     private parameterNode: ParameterNode;
     name: string;
@@ -138,21 +124,6 @@ export class DecoratorNodeDef {
                     this.pairs.set(identifier, val);
                 }
             });
-        }
-    }
-}
-
-/**
- * Doc decorator info
- */
-export class DocDecoratorNodeDef extends DecoratorNodeDef {
-    doc = "";
-    constructor(decorator: DecoratorNode) {
-        super(decorator);
-        if (this.pairs.has("desc")) {
-            this.doc = Strings.removeQuotation(this.pairs.get("desc") || "");
-        } else {
-            DecoratorUtil.throwNoArguException(decorator, "desc");
         }
     }
 }
@@ -193,13 +164,11 @@ export class FunctionDef {
     isReturnable = false;
     isConstructor = false;
     returnType: NamedTypeNodeDef | null = null;
-    doc: string[];
     rangeString = "";
     defaultVals: string[] = [];
 
     constructor(funcPrototype: FunctionPrototype) {
         this.declaration = <FunctionDeclaration>funcPrototype.declaration;
-        this.doc = DecoratorUtil.getDoc(funcPrototype.declaration);
         this.funcProto = funcPrototype;
         this.methodName = this.funcProto.name;
         this.rangeString = this.declaration.range.toString();
@@ -240,16 +209,6 @@ export class FunctionDef {
         });
         if (this.isReturnable) {
             this.returnType!.genTypeSequence(typeNodeMap);
-        }
-    }
-}
-export class ConstructorDef extends FunctionDef {
-    
-    constructor(funcPrototype: FunctionPrototype) {
-        super(funcPrototype);
-        AstUtil.checkPublic(this.declaration);
-        if (this.isReturnable) {
-            throw new Error(`The method that marked by @constructor should return void type. Please check ${RangeUtil.location(this.declaration.range)}`);
         }
     }
 }

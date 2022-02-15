@@ -21,19 +21,9 @@ import {
     StringLiteralExpression
 } from "assemblyscript";
 import { getCustomDecoratorKind } from "../contract/decorator";
-import { DocDecoratorNodeDef } from "../contract/elementdef";
 import { ContractDecoratorKind } from "../enums/decorator";
 import { Strings } from "./primitiveutil";
 export class ElementUtil {
-
-    static isEventClassPrototype(element: Element): boolean {
-        if (element.kind == ElementKind.CLASS_PROTOTYPE) {
-            let clzPrototype = <ClassPrototype>element;
-            return AstUtil.hasSpecifyDecorator(clzPrototype.declaration, ContractDecoratorKind.EVENT);
-        }
-        return false;
-    }
-
     static isTopContractClass(element: Element): boolean {
         if (element.kind == ElementKind.CLASS_PROTOTYPE) {
             let clzPrototype = <ClassPrototype>element;
@@ -55,19 +45,6 @@ export class ElementUtil {
         if (element.kind == ElementKind.CLASS_PROTOTYPE) {
             let clzPrototype = <ClassPrototype>element;
             return AstUtil.hasSpecifyDecorator(clzPrototype.declaration, ContractDecoratorKind.SERIALIZER);
-        }
-        return false;
-    }
-
-    static isDynamicClassPrototype(element: Element): boolean {
-        return (element.kind == ElementKind.CLASS_PROTOTYPE)
-            ? AstUtil.hasSpecifyDecorator((<ClassPrototype>element).declaration, ContractDecoratorKind.DYNAMIC)
-            : false;
-    }
-
-    static isTopicField(element: Element): boolean {
-        if (element.kind == ElementKind.FIELD_PROTOTYPE) {
-            return AstUtil.hasSpecifyDecorator((<FieldPrototype>element).declaration, ContractDecoratorKind.TOPIC);
         }
         return false;
     }
@@ -154,11 +131,6 @@ export class AstUtil {
         }
         return Strings.EMPTY;
     }
-
-    public static getDocDecorator(statement: DeclarationStatement): DecoratorNode | null {
-        return AstUtil.getSpecifyDecorator(statement, ContractDecoratorKind.DOC);
-    }
-
     /**
       * Check the statment weather have the specify the decorator
       * @param statement Ast declaration statement
@@ -249,11 +221,6 @@ export class DecoratorUtil {
             }
         }
         return false;
-    }
-
-    public static getDoc(statement: DeclarationStatement): string[] {
-        let decortor = AstUtil.getDocDecorator(statement);
-        return decortor == null ? [Strings.EMPTY] : [new DocDecoratorNodeDef(decortor).doc];
     }
 
     public static checkSelecrot(decorator: DecoratorNode, selector: string): void {

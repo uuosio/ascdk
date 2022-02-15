@@ -14,15 +14,6 @@ function fromNode(nameNode: Expression): ContractDecoratorKind {
                 if (nameStr == "contract") return ContractDecoratorKind.CONTRACT;
                 break;
             }
-            case CharCode.d: {
-                if (nameStr == 'doc') return ContractDecoratorKind.DOC;
-                if (nameStr == "dynamic") return ContractDecoratorKind.DYNAMIC;
-                break;
-            }
-            case CharCode.e: {
-                if (nameStr == "event") return ContractDecoratorKind.EVENT;
-                break;
-            }
             case CharCode.i: {
                 if (nameStr == "ignore") return ContractDecoratorKind.IGNORE;
                 break;
@@ -38,7 +29,6 @@ function fromNode(nameNode: Expression): ContractDecoratorKind {
                 break;
             }
             case CharCode.t: {
-                if (nameStr == "topic") return ContractDecoratorKind.TOPIC;
                 if (nameStr == "table") return ContractDecoratorKind.TABLE;
                 break;
             }

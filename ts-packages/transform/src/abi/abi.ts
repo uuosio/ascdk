@@ -6,8 +6,6 @@
 // 	KeyTypes  []string `json:"key_types"`
 // }
 
-import { ConstructorDef } from "../contract/elementdef";
-
 export class ABITable {
 	name: string="";
 	type: string="";

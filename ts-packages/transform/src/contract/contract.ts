@@ -5,22 +5,13 @@ import {
 
 import { ElementUtil } from "../utils/utils";
 
-import { ProgramAnalyzar } from "./analyzer";
-import { ClassInterpreter, ContractInterpreter, DynamicIntercepter, EventInterpreter, SerializerInterpreter, StorageInterpreter, TableInterpreter } from "./classdef";
+import { ContractInterpreter, SerializerInterpreter, TableInterpreter } from "./classdef";
 import { NamedTypeNodeDef } from "./typedef";
-import { ProgramDiagnostic } from "../diagnostic/diagnostic";
-import { TypeKindEnum } from "../enums/customtype";
 import { RangeUtil } from "../utils/utils";
-import { ABI } from "../abi/abi";
 
 export class ContractProgram {
     program: Program;
     contract!: ContractInterpreter;
-    events: EventInterpreter[] = [];
-    storages: StorageInterpreter[] = [];
-    dynamics: DynamicIntercepter[] = [];
-    codecs: ClassInterpreter[]  = [];
-
     tables: TableInterpreter[] = [];
     serializers: SerializerInterpreter[] = [];
     
@@ -29,17 +20,6 @@ export class ContractProgram {
     constructor(program: Program) {
         this.program = program;
         this.resolveContract();
-        this.getToGenCodecClass();
-    }
-
-    private getToGenCodecClass(): void {
-        this.definedTypeMap.forEach((item, key) => {
-            if (item.typeKind == TypeKindEnum.USER_CLASS && !item.isCodec) {
-                let classInterpreter = new ClassInterpreter(<ClassPrototype>item.current);
-                classInterpreter.resolveFieldMembers();
-                this.codecs.push(classInterpreter);
-            }
-        });
     }
     
     private resolveContract(): void {
@@ -52,15 +32,6 @@ export class ContractProgram {
                 if (countContract > 1) {
                     throw Error(`Only one Contract class allowed! Trace ${RangeUtil.location(this.contract.declaration.range)}`);
                 }
-            }
-            if (ElementUtil.isEventClassPrototype(element)) {
-                let eventInterpreter = new EventInterpreter(<ClassPrototype>element);
-                eventInterpreter.index = this.events.length;
-                this.events.push(eventInterpreter);
-            }
-            if (ElementUtil.isDynamicClassPrototype(element)) {
-                let dynamicInterpreter = new DynamicIntercepter(<ClassPrototype>element);
-                this.dynamics.push(dynamicInterpreter);
             }
 
             if (ElementUtil.isTableClassPrototype(element)) {
@@ -83,18 +54,10 @@ export class ContractProgram {
         if (this.contract) {
             this.contract.genTypeSequence(this.definedTypeMap);
         }
-        this.storages.forEach(storage => {
-            storage.genTypeSequence(this.definedTypeMap);
-        });
-        this.events.forEach(event => {
-            event.genTypeSequence(this.definedTypeMap);
-        });
     }
 }
 
 export function getContractInfo(program: Program): ContractProgram {
-    new ProgramAnalyzar(program);
     let contract = new ContractProgram(program);
-    new ProgramDiagnostic(contract);
     return contract;
 }

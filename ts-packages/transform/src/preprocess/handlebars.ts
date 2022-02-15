@@ -1,6 +1,6 @@
 import Handlebars from "handlebars";
 import { CONFIG } from "../config/compile";
-import { ClassInterpreter, EventInterpreter } from "../contract/classdef";
+import { ClassInterpreter } from "../contract/classdef";
 import { FieldDef, FunctionDef, ParameterNodeDef, ActionFunctionDef, DBIndexFunctionDef } from "../contract/elementdef";
 import { NamedTypeNodeDef } from "../contract/typedef";
 import { TypeKindEnum } from "../enums/customtype";
@@ -328,26 +328,6 @@ Handlebars.registerHelper("storeSetter", function (field: FieldDef) {
     }
 
     return code.join("\n");
-});
-
-/**
- * Event constructor
- *
- */
-Handlebars.registerHelper("constructor", function(event: EventInterpreter) {
-    if (event.constructorFun) {
-        let body = event.constructorFun.declaration.range.toString();
-        body = body.replace(/{/i, `{${EOL}        super();`);
-        body = body.replace(/(.*)}/, `        this.emit();${EOL}  }`);
-        return body;
-    } else {
-        let code: string[] =[];
-        code.push(` constructor() {`);
-        code.push(`     super();`);
-        code.push(`     this.emit();`);
-        code.push(`}`);
-        return code.join(EOL);
-    }
 });
 
 /**

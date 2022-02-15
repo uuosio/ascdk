@@ -13,11 +13,8 @@ import {
 import { ElementUtil, DecoratorUtil } from "../utils/utils";
 
 import { Strings } from "../utils/primitiveutil";
-import { ConstructorDef, FieldDef, FunctionDef, ActionFunctionDef, DBIndexFunctionDef} from "./elementdef";
+import { FieldDef, FunctionDef, ActionFunctionDef, DBIndexFunctionDef} from "./elementdef";
 import { NamedTypeNodeDef } from "./typedef";
-import { TypeHelper } from "../utils/typeutil";
-import { TypeKindEnum } from "../enums/customtype";
-import { KeySelector } from "../preprocess/selector";
 import { RangeUtil } from "../utils/utils";
 
 export class ClassInterpreter {
@@ -27,7 +24,6 @@ export class ClassInterpreter {
     className: string;
     instanceName: string;
     range: Range;
-    doc: string[];
     fields: FieldDef[] = [];
     functions: FunctionDef[] = [];
     variousPrefix = "_";
@@ -41,7 +37,6 @@ export class ClassInterpreter {
         if (this.declaration.isAny(CommonFlags.EXPORT)) {
             this.export = "export ";
         }
-        this.doc = DecoratorUtil.getDoc(this.declaration);
         this.className = clzPrototype.name;
         this.camelName = Strings.lowerFirstCase(this.className);
         this.instanceName = this.variousPrefix + this.className.toLowerCase();
@@ -166,32 +161,8 @@ export class TableInterpreter extends ClassInterpreter {
     }
 }
 
-export class SerializerInterpreter extends ClassInterpreter implements Matadata {
+export class SerializerInterpreter extends ClassInterpreter {
     index = 0;
-    constructor(clzPrototype: ClassPrototype) {
-        super(clzPrototype);
-        this.resolveFieldMembers();
-        this.resolveFunctionMembers();
-    }
-}
-
-export class EventInterpreter extends ClassInterpreter implements Matadata {
-    index = 0;
-    constructor(clzPrototype: ClassPrototype) {
-        super(clzPrototype);
-        this.resolveFieldMembers();
-        this.resolveFunctionMembers();
-    }
-}
-
-export class StorageInterpreter extends ClassInterpreter  {
-    constructor(clzPrototype: ClassPrototype) {
-        super(clzPrototype);
-        this.resolveFieldMembers();
-    }
-}
-
-export class DynamicIntercepter extends ClassInterpreter {
     constructor(clzPrototype: ClassPrototype) {
         super(clzPrototype);
         this.resolveFieldMembers();

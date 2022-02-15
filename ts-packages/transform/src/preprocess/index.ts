@@ -3,7 +3,7 @@ import { Range } from "assemblyscript";
 import { ContractProgram} from "../contract/contract";
 import { ActionFunctionDef } from "../contract/elementdef";
 
-import { mainTpl, storeTpl, eventTpl, dynamicTpl, codecTpl, actionTpl, tableTpl, serializerTpl} from "../tpl";
+import { mainTpl, actionTpl, tableTpl, serializerTpl} from "../tpl";
 import { CONFIG } from "../config/compile";
 import { EosioUtils, RangeUtil } from "../utils/utils"
 import { ABI, ABIAction, ABIStruct, ABIStructField, ABITable } from "../abi/abi"
@@ -67,25 +67,6 @@ export function getExtCodeInfo(contractInfo: ContractProgram): SourceModifier {
             body = body.replace(/{/i, `{\n  ${CONFIG.scope}Storage.mode = ${CONFIG.scope}StoreMode.R;`);
             sourceModifier.addModifyPoint(new ModifyPoint(msgFun.bodyRange, ModifyType.REPLACE, body));
         }
-    });
-    sourceModifier.addModifyPoint(new ModifyPoint(contractInfo.contract.range.source.range, ModifyType.DELETE, 'export'));
-    for (let index = 0; index < contractInfo.storages.length; index++) {
-        let store = Handlebars.compile(storeTpl)(contractInfo.storages[index]);
-        sourceModifier.addModifyPoint(new ModifyPoint(contractInfo.storages[index].range, ModifyType.REPLACE, store));
-    }
-    contractInfo.events.forEach(event => {
-        let code = Handlebars.compile(eventTpl)(event);
-        sourceModifier.addModifyPoint(new ModifyPoint(event.range, ModifyType.REPLACE, code));
-    });
-    
-    contractInfo.codecs.forEach(codec => {
-        let code = Handlebars.compile(codecTpl)(codec);
-        sourceModifier.addModifyPoint(new ModifyPoint(codec.range, ModifyType.REPLACE, code));
-    });
-
-    contractInfo.dynamics.forEach(dynamic => {
-        let code = Handlebars.compile(dynamicTpl)(dynamic);
-        sourceModifier.addModifyPoint(new ModifyPoint(dynamic.range, ModifyType.REPLACE, code));
     });
 
     contractInfo.contract.actionFuncDefs.forEach(message => {
