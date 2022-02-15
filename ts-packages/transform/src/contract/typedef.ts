@@ -139,12 +139,12 @@ export class NamedTypeNodeDef extends BaseNamedTypeDef {
 
     private getNodeTypeInfo(buildinElement: Element): NodeTypeInfo {
         if (buildinElement.kind == ElementKind.FUNCTION_PROTOTYPE) {
-            return new NodeTypeInfo(false, TypeKindEnum.NUMBER);
+            return new NodeTypeInfo(TypeKindEnum.NUMBER);
         } else if (buildinElement.kind == ElementKind.TYPEDEFINITION) {
             if (buildinElement.name == Strings.VOID) {
-                return new NodeTypeInfo(false, TypeKindEnum.VOID);
+                return new NodeTypeInfo(TypeKindEnum.VOID);
             } else if (TypeHelper.nativeType.includes(buildinElement.name)) {
-                return new NodeTypeInfo(false, TypeKindEnum.NUMBER);
+                return new NodeTypeInfo(TypeKindEnum.NUMBER);
             }
             // TODO 
             console.log(`type info: ${buildinElement.name}`);
@@ -154,22 +154,22 @@ export class NamedTypeNodeDef extends BaseNamedTypeDef {
             let name = definitionNode.name.range.toString();
             let type = TypeHelper.getTypeKindByName(name);
 
-            return new NodeTypeInfo(false, type);
+            return new NodeTypeInfo(type);
 
         } else if (buildinElement.kind == ElementKind.CLASS_PROTOTYPE) {
             let type = TypeHelper.getTypeKindFromUnCodec(buildinElement.name);
             if (type) {
-                return new NodeTypeInfo(false, type);
+                return new NodeTypeInfo(type);
 
             }
             let classTypeKind = TypeHelper.getTypeKindByName(buildinElement.name);
             if (classTypeKind == TypeKindEnum.USER_CLASS) {
-                return new NodeTypeInfo(true, classTypeKind);
+                return new NodeTypeInfo(classTypeKind);
 
             }
-            return new NodeTypeInfo(false, classTypeKind);
+            return new NodeTypeInfo(classTypeKind);
         }
-        return new NodeTypeInfo(false, TypeKindEnum.USER_CLASS);
+        return new NodeTypeInfo(TypeKindEnum.USER_CLASS);
     }
 
 
