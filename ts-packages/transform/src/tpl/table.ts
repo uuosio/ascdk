@@ -24,7 +24,7 @@ export const tableTpl = `
     {{/each}}
 
     serialize(): u8[] {
-        let enc = new _chain.Encoder(10);
+        let enc = new _chain.Encoder(this.getSize());
         {{#each fields}}
         {{{actionParameterSerialize .}}}
         {{/each}}
@@ -60,6 +60,7 @@ export const tableTpl = `
             {{/each}}
             default:
                 _chain.assert(false, "bad db index!");
+                return new _chain.SecondaryValue(_chain.SecondaryType.U64, new Array<u64>(0));
         }
     }
 

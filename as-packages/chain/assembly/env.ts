@@ -26,8 +26,8 @@ export declare function db_upperbound_i64(code: u64, scope: u64, table: u64, id:
 export declare function db_end_i64(code: u64, scope: u64, table: u64): i32
 
 
-export declare function db_idx64_store(scope: u64, table: u64, payer: u64, id: u64, secondary: u64): i32;
-export declare function db_idx64_update(iterator: i32, payer: u64, secondary: u64): void;
+export declare function db_idx64_store(scope: u64, table: u64, payer: u64, id: u64, secondary_ptr: usize): i32;
+export declare function db_idx64_update(iterator: i32, payer: u64, secondary_ptr: usize): void;
 export declare function db_idx64_remove(iterator: i32): void;
 export declare function db_idx64_next(iterator: i32, primary_ptr: usize): i32;
 export declare function db_idx64_previous(iterator: i32, primary_ptr: usize): i32;

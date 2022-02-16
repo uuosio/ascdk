@@ -163,7 +163,7 @@ Handlebars.registerHelper("getSecondaryValue", function (fn: DBIndexFunctionDef)
     let plainType = fn.getterPrototype!.returnType!.plainType;
     console.log("+++++++++getSecondaryValue:", fn._index);
     code.push(`case ${fn._index}: {`);
-    code.push(`                return _chain.newSecondaryValue_${plainType}(fn.setterPrototype.declaration.name.text);`);
+    code.push(`                return _chain.newSecondaryValue_${plainType}(this.${fn.setterPrototype!.declaration.name.text});`);
     code.push(`                break;`);
     code.push(`            }`);
     return code.join(EOL);

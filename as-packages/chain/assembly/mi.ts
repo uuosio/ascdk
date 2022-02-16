@@ -26,9 +26,11 @@ export interface MultiIndexValue extends PrimaryValue {
 export class MultiIndex<T extends MultiIndexValue> {
     db: DBI64;
     idxdbs: Array<IDXDB>;
-    constructor(code: Name, scope: Name, table: Name, indexes: Array<SecondaryType>) {
+    newObj: () => T;
+    constructor(code: Name, scope: Name, table: Name, indexes: Array<SecondaryType>, newObj: () => T) {
         this.db = new DBI64(code.N, scope.N, table.N);
         this.idxdbs = new Array<IDXDB>(indexes.length);
+        this.newObj = newObj;
         if (indexes) {
             for (let i=0; i<indexes.length; i++) {
                 let idxTable = (code.N&0xfffffffffffffff0) + i;
@@ -38,19 +40,23 @@ export class MultiIndex<T extends MultiIndexValue> {
     }
 
     store(value: T, payer: Name): PrimaryIterator {
-        let it = this.db.store(value.getPrimaryValue(), value.pack(), payer.N);
+        let it = this.db.store(value.getPrimaryValue(), value.serialize(), payer.N);
         for (let i=0; i<this.idxdbs.length; i++) {
-            this.idxdbs[i].store(value.getPrimaryValue(), value.getSecondaryValue(i), payer);
+            this.idxdbs[i].store(value.getPrimaryValue(), value.getSecondaryValue(i), payer.N);
         }
         return new PrimaryIterator(it);
     }
 
-    update(it: PrimaryIterator, v: T, payer: Name): void {
-        let value = new T();
-        let data = this.db.get(it.i);
-        value.unpack(data);
+    update(it: PrimaryIterator, value: T, payer: Name): void {
+        this.db.update(it.i, payer.N, value.serialize());
+        let primary = value.getPrimaryValue()
         for (let i=0; i<this.idxdbs.length; i++) {
-            this.idxdbs[i].update(it, value.getPrimaryValue(), value.getSecondaryValue(i), payer.N);
+            let ret = this.idxdbs[i].find_primary(primary);
+            let newValue = value.getSecondaryValue(i);
+            if (ret.value.type == newValue.type && ret.value.value == newValue.value) {
+                continue;
+            }
+            this.idxdbs[i].update(ret.i, value.getSecondaryValue(i), payer.N);
         }
     }
 
@@ -60,7 +66,7 @@ export class MultiIndex<T extends MultiIndexValue> {
 
     get(iterator: PrimaryIterator): T {
         let data = this.db.get(iterator.i);
-        let ret = new T();
+        let ret = this.newObj();
         ret.deserialize(data);
         return ret;
     }
@@ -75,24 +81,22 @@ export class MultiIndex<T extends MultiIndexValue> {
         return new PrimaryIterator(i);
     }
 
-    // export declare function db_find_i64(code: u64, scope: u64, table: u64, id: u64): i32
     find(id: u64): PrimaryIterator {
         let i = this.db.find(id);
         return new PrimaryIterator(i);
     }
 
-    // export declare function db_lowerbound_i64(code: u64, scope: u64, table: u64, id: u64): i32
     lowerBound(id: u64): PrimaryIterator {
         let i = this.db.lowerBound(id);
         return new PrimaryIterator(i);
     }
 
-    upperBound(id: u64): i32 {
+    upperBound(id: u64): PrimaryIterator {
         let i = this.db.upperBound(id);
         return new PrimaryIterator(i);
     }
 
-    end(): i32 {
+    end(): PrimaryIterator {
         let i = this.db.end();
         return new PrimaryIterator(i);
     }

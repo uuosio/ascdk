@@ -34,7 +34,7 @@ export class DBI64 {
     // export declare function db_update_i64(iterator: i32, payer: u64, data: usize, len: usize): void
     update(iterator: i32, payer: u64, data: u8[]): void {
         let data_ptr = changetype<ArrayBufferView>(data).dataStart;
-        return env.db_update_i64(iterator, payer, data_ptr, data.length);
+        env.db_update_i64(iterator, payer, data_ptr, data.length);
     }
 
     // export declare function db_remove_i64(iterator: i32): void

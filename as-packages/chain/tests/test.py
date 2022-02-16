@@ -92,3 +92,18 @@ def test_db():
     r = chain.push_action('hello', 'test1', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
 
+
+def test_mi():
+    # info = chain.get_account('helloworld11')
+    # logger.info(info)
+    with open('./target/target.wasm', 'rb') as f:
+        code = f.read()
+    with open('~lib/rt/target/generated.abi', 'rb') as f:
+        abi = f.read()
+    chain.deploy_contract('hello', code, abi, 0)
+
+    args = dict(
+    )
+    r = chain.push_action('hello', 'testmi', args, {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])
+

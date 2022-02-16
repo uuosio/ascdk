@@ -12,8 +12,8 @@ export class Encoder {
     buf: Array<u8>;
     pos: usize;
   
-    constructor(bufferSize: u32) {
-        this.buf = new Array(bufferSize);
+    constructor(bufferSize: usize) {
+        this.buf = new Array<u8>(<i32>bufferSize);
     }
 
     checkPos(n: usize): void {

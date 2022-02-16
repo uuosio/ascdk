@@ -17,7 +17,7 @@ export const serializerTpl = `
     {{/each}}
 
     serialize(): u8[] {
-        let enc = new _chain.Encoder(10);
+        let enc = new _chain.Encoder(this.getSize());
         {{#each fields}}
         {{{actionParameterSerialize .}}}
         {{/each}}
