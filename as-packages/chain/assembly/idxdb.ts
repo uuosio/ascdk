@@ -93,11 +93,11 @@ export abstract class IDXDB {
     }
 
     abstract store(id: u64, secondary: SecondaryValue, payer: u64): SecondaryIterator;
-    abstract update(iterator: i32, secondary: SecondaryValue, payer: u64): void;
-    abstract remove(iterator: i32): void;
+    abstract update(iterator: SecondaryIterator, secondary: SecondaryValue, payer: u64): void;
+    abstract remove(iterator: SecondaryIterator): void;
 
-    abstract next(iterator: i32): SecondaryIterator;
-    abstract previous(iterator: i32): SecondaryIterator;
+    abstract next(iterator: SecondaryIterator): SecondaryIterator;
+    abstract previous(iterator: SecondaryIterator): SecondaryIterator;
     abstract find_primary(primary: u64): SecondaryReturnValue;
     abstract find(secondary: SecondaryValue): SecondaryIterator;
     abstract lowerbound(secondary: SecondaryValue): SecondaryReturnValue;

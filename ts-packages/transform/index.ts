@@ -1,3 +1,3 @@
-import { AskTransform } from "./src/index";
+import { ContractTransform } from "./src/index";
 
-module.exports = AskTransform;
+module.exports = ContractTransform;

@@ -11,13 +11,6 @@ export interface PrimaryValue extends Serializer {
     getPrimaryValue(): u64;
 }
 
-export class Iterator {
-    i: usize;
-    constructor(i: usize) {
-        this.i = i;
-    }
-}
-
 export class DBI64 {
     code: u64;
     scope: u64;

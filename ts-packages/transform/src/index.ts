@@ -5,7 +5,7 @@ import { Program } from "assemblyscript";
 import * as path from "path";
 
 // TODO: refactor to ts code
-export class AskTransform extends Transform {
+export class ContractTransform extends Transform {
     afterInitialize(program: Program): void {
         // TODO: support cli args, see https://github.com/AssemblyScript/assemblyscript/issues/1691
         // TODO: add a config file
