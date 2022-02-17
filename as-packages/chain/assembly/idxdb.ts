@@ -92,15 +92,8 @@ export abstract class IDXDB {
         this.dbIndex = dbIndex;
     }
 
-    abstract store(id: u64, secondary: SecondaryValue, payer: u64): SecondaryIterator;
-    abstract update(iterator: SecondaryIterator, secondary: SecondaryValue, payer: u64): void;
+    abstract storeEx(id: u64, secondary: SecondaryValue, payer: u64): SecondaryIterator;
+    abstract updateEx(iterator: SecondaryIterator, secondary: SecondaryValue, payer: u64): void;
     abstract remove(iterator: SecondaryIterator): void;
-
-    abstract next(iterator: SecondaryIterator): SecondaryIterator;
-    abstract previous(iterator: SecondaryIterator): SecondaryIterator;
     abstract find_primary(primary: u64): SecondaryReturnValue;
-    abstract find(secondary: SecondaryValue): SecondaryIterator;
-    abstract lowerbound(secondary: SecondaryValue): SecondaryReturnValue;
-    abstract upperbound(secondary: SecondaryValue): SecondaryReturnValue;
-    abstract end(): SecondaryIterator;
 }

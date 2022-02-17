@@ -43,7 +43,7 @@ export class MultiIndex<T extends MultiIndexValue> {
     store(value: T, payer: Name): PrimaryIterator {
         let it = this.db.store(value.getPrimaryValue(), value.serialize(), payer.N);
         for (let i=0; i<this.idxdbs.length; i++) {
-            this.idxdbs[i].store(value.getPrimaryValue(), value.getSecondaryValue(i), payer.N);
+            this.idxdbs[i].storeEx(value.getPrimaryValue(), value.getSecondaryValue(i), payer.N);
         }
         return new PrimaryIterator(it);
     }
@@ -57,7 +57,7 @@ export class MultiIndex<T extends MultiIndexValue> {
             if (ret.value.type == newValue.type && ret.value.value == newValue.value) {
                 continue;
             }
-            this.idxdbs[i].update(ret.i, value.getSecondaryValue(i), payer.N);
+            this.idxdbs[i].updateEx(ret.i, value.getSecondaryValue(i), payer.N);
         }
     }
 

@@ -94,23 +94,20 @@ class MyContract {
         it = mi.find(7);
         chain.assert(!it.isOk(), "bad value");
 
-        let idx = mi.get_idx_db(0);
+        let idx = <chain.IDX64>mi.get_idx_db(0);
         let idxIt = idx.find_primary(7);
         chain.printString(`++++++++${idxIt.i.i}, ${idxIt.value.value[0]}\n`)
         {//1, 2, 3
             let data = new Array<u64>(1);
-            data[0] = 2;
-            let value = new chain.SecondaryValue(chain.SecondaryType.U64, data)
-            let idxIt = idx.find(value);
+            let idxIt = idx.find(2);
             chain.printString(`+++++++++idx.find: ${idxIt.i}, ${idxIt.primary}\n`)
             chain.assert(idxIt.primary == 1, "bad value");
         }
 
         {//4, 5, 6
-            let data = new Array<u64>(1);
-            data[0] = 5;
-            let value = new chain.SecondaryValue(chain.SecondaryType.U64, data)
-            let idxIt = idx.find(value);
+            // let idx64 = <chain.IDX64>idx;
+            let idx64 = changetype<chain.IDX64>(idx);
+            let idxIt = idx64.find(5);
             chain.printString(`+++++++++idx.find: ${idxIt.i}, ${idxIt.primary}\n`)
             chain.assert(idxIt.primary == 4, "bad value");
         }
