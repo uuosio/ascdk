@@ -2,6 +2,7 @@ import { IDXDB, SecondaryType, SecondaryValue, SecondaryIterator } from "./idxdb
 import { DBI64, PrimaryValue } from "./dbi64"
 import { IDX64 } from "./idx64"
 import { Name } from "./name"
+import { printString } from "./debug"
 
 export class PrimaryIterator {
     i: i32;
@@ -33,7 +34,7 @@ export class MultiIndex<T extends MultiIndexValue> {
         this.newObj = newObj;
         if (indexes) {
             for (let i=0; i<indexes.length; i++) {
-                let idxTable = (code.N&0xfffffffffffffff0) + i;
+                let idxTable = (table.N&0xfffffffffffffff0) + i;
                 this.idxdbs[i] = new IDX64(code.N, scope.N, idxTable, i);
             }
         }
@@ -101,7 +102,7 @@ export class MultiIndex<T extends MultiIndexValue> {
         return new PrimaryIterator(i);
     }
 
-    get_idx_db(i: usize): IDXDB {
+    get_idx_db(i: i32): IDXDB {
         return this.idxdbs[i];
     }
 

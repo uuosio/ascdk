@@ -58,31 +58,31 @@ class MyContract {
 
         let it = mi.find(4);
         chain.assert(it.isOk(), "value not found!")
-        chain.printString(`+++++++++++it.i:${it.i}`)
+        chain.printString(`+++++++++++it.i:${it.i}\n`)
         value = mi.get(it);
-        chain.printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}`)
+        chain.printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}\n`)
         chain.assert(value.a == 4 && value.b == 5 && value.c == 6, "bad value");
 
         it = mi.previous(it);
         chain.assert(it.isOk(), "previous");
         value = mi.get(it);
-        chain.printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}`)
+        chain.printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}\n`)
         chain.assert(value.a == 1 && value.b == 2 && value.c == 3, "bad value");
 
         it = mi.lowerBound(1);
         value = mi.get(it);
-        chain.printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}`)
+        chain.printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}\n`)
         chain.assert(value.a == 1 && value.b == 2 && value.c == 3, "bad value");
 
         it = mi.upperBound(1);
         value = mi.get(it);
-        chain.printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}`)
+        chain.printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}\n`)
         chain.assert(value.a == 4 && value.b == 5 && value.c == 6, "bad value");
 
         it = mi.end();
         it = mi.previous(it);
         value = mi.get(it);
-        chain.printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}`)
+        chain.printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}\n`)
         chain.assert(value.a == 7 && value.b == 8 && value.c == 9, "bad value");
 
         value.c = 10;
@@ -94,5 +94,25 @@ class MyContract {
         it = mi.find(7);
         chain.assert(!it.isOk(), "bad value");
 
+        let idx = mi.get_idx_db(0);
+        let idxIt = idx.find_primary(7);
+        chain.printString(`++++++++${idxIt.i.i}, ${idxIt.value.value[0]}\n`)
+        {//1, 2, 3
+            let data = new Array<u64>(1);
+            data[0] = 2;
+            let value = new chain.SecondaryValue(chain.SecondaryType.U64, data)
+            let idxIt = idx.find(value);
+            chain.printString(`+++++++++idx.find: ${idxIt.i}, ${idxIt.primary}\n`)
+            chain.assert(idxIt.primary == 1, "bad value");
+        }
+
+        {//4, 5, 6
+            let data = new Array<u64>(1);
+            data[0] = 5;
+            let value = new chain.SecondaryValue(chain.SecondaryType.U64, data)
+            let idxIt = idx.find(value);
+            chain.printString(`+++++++++idx.find: ${idxIt.i}, ${idxIt.primary}\n`)
+            chain.assert(idxIt.primary == 4, "bad value");
+        }
     }
 }

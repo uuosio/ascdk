@@ -1,6 +1,7 @@
 import {IDXDB, SecondaryValue, SecondaryType, SecondaryIterator, SecondaryReturnValue} from "./idxdb"
 import * as env from "./env"
 import {assert} from "./system"
+import { printString } from "./debug"
 
 export class IDX64 extends IDXDB {
     store(id: u64, value: SecondaryValue, payer: u64): SecondaryIterator {
@@ -50,7 +51,7 @@ export class IDX64 extends IDXDB {
     find(secondary: SecondaryValue): SecondaryIterator {
         assert(secondary.type == SecondaryType.U64, "idx64: bad secondary type");
         let primary_ptr = __alloc(sizeof<u64>());
-        let secondary_ptr = changetype<ArrayBufferView>(secondary.value).dataStart;
+        let secondary_ptr = secondary.value.dataStart;
         let it = env.db_idx64_find_secondary(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
         return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
     }
