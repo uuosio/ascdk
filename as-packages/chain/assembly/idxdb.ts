@@ -1,4 +1,4 @@
-import { u128, u256 } from "as-bignum"
+import { U128, U256 } from "./bignum"
 
 export class SecondaryIterator {
     i: i32;
@@ -48,12 +48,11 @@ export function newSecondaryValue_u64(value: u64): SecondaryValue {
     return new SecondaryValue(SecondaryType.U64, arr);
 }
 
-export function newSecondaryValue_u128(value: u128): SecondaryValue {
+export function newSecondaryValue_U128(value: U128): SecondaryValue {
     let arr = new Array<u64>(2);
-    arr[0] = value;
     let buffer = changetype<ArrayBufferView>(arr).dataStart;
-    store<u64>(buffer, value.lo, 0 * sizeof<u64>());
-    store<u64>(buffer, value.hi, 1 * sizeof<u64>());
+    store<u64>(buffer, value.lo);
+    store<u64>(buffer + 8, value.hi);
     return new SecondaryValue(SecondaryType.U128, arr);
 }
 
@@ -69,8 +68,8 @@ export function getSecondaryValue_u64(value: SecondaryValue): u64 {
     return value.value[0];
 }
 
-export function getSecondaryValue_u128(value: SecondaryValue): u128 {
-    return new u128(value.value[0], value.value[1]);
+export function getSecondaryValue_U128(value: SecondaryValue): U128 {
+    return new U128(value.value[0], value.value[1]);
 }
 
 export function getSecondaryValue_f64(value: SecondaryValue): f64 {

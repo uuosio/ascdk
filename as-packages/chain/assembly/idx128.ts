@@ -1,42 +1,86 @@
 import {IDXDB, SecondaryValue, SecondaryType, SecondaryIterator, SecondaryReturnValue} from "./idxdb"
 import * as env from "./env"
 import {assert} from "./system"
+import { U128 } from "./bignum"
+import { printString } from "./debug"
+
+class IDX128ReturnValue {
+    i: SecondaryIterator;
+    value: U128; //secondary value
+    constructor(i: SecondaryIterator, value: U128) {
+        this.i = i;
+        this.value = value;
+    }
+}
 
 export class IDX128 extends IDXDB {
-    store(id: u64, value: SecondaryValue, payer: u64): SecondaryIterator {
-        assert(value.type == SecondaryType.U128, "idx128: bad type")
-        assert(value.value.length == 2, "idx128: bad value");
-        let secondary_ptr = changetype<ArrayBufferView>(value).dataStart;
+
+    store(id: u64, value: U128, payer: u64): SecondaryIterator {
+        let arr = new Array<u64>(2);
+        store<u64>(arr.dataStart, value.lo);
+        store<u64>(arr.dataStart+8, value.hi);
+
+        let secondary_ptr = arr.dataStart;
         let it = env.db_idx128_store(this.scope, this.table, payer, id, secondary_ptr);
         return new SecondaryIterator(it, id, this.dbIndex);
     }
-    
-    update(iterator: i32, secondary: SecondaryValue, payer: u64): void {
+
+    storeEx(id: u64, value: SecondaryValue, payer: u64): SecondaryIterator {
+        assert(value.type == SecondaryType.U128, "idx128: bad type")
+        assert(value.value.length == 2, "idx128: bad value");
+        let secondary_ptr = value.value.dataStart;
+        printString(`+++++++++lo, hi: ${value.value[0]}, ${value.value[1]}\n`);
+        let it = env.db_idx128_store(this.scope, this.table, payer, id, secondary_ptr);
+        env.db_idx128_find_primary(this.code, this.scope, this.table, secondary_ptr, id);
+        let lo = load<u64>(secondary_ptr);
+        let hi = load<u64>(secondary_ptr + 8);
+        printString(`+++++++++lo, hi: ${lo}, ${hi}\n`);
+
+        return new SecondaryIterator(it, id, this.dbIndex);
+    }
+
+    update(iterator: SecondaryIterator, secondary: U128, payer: u64): void {
+        let arr = new Array<u64>(2);
+        store<u64>(arr.dataStart, value.lo);
+        store<u64>(arr.dataStart + 8, value.hi);
+        env.db_idx128_update(iterator.i, payer, arr.dataStart);
+    }
+
+    updateEx(iterator: SecondaryIterator, secondary: SecondaryValue, payer: u64): void {
         assert(secondary.type == SecondaryType.U128, "idx128: bad value");
         assert(secondary.value.length == 2, "idx128: bad value");
-        let secondary_ptr = changetype<ArrayBufferView>(secondary).dataStart;
-        env.db_idx128_update(iterator, payer, secondary_ptr);
+        let secondary_ptr = secondary.value.dataStart;
+        env.db_idx128_update(iterator.i, payer, secondary_ptr);
     }
 
-    remove(iterator: i32): void {
-        env.db_idx128_remove(iterator);
+    remove(iterator: SecondaryIterator): void {
+        env.db_idx128_remove(iterator.i);
     }
 
-    next(iterator: i32): SecondaryIterator {
+    next(iterator: SecondaryIterator): SecondaryIterator {
         let primary_ptr = __alloc(sizeof<u64>());
-        let it = env.db_idx128_next(iterator, primary_ptr);
+        let it = env.db_idx128_next(iterator.i, primary_ptr);
         let primary = load<u64>(primary_ptr);
         return new SecondaryIterator(it, primary, this.dbIndex);
     }
 
-    previous(iterator: i32): SecondaryIterator {
+    previous(iterator: SecondaryIterator): SecondaryIterator {
         let primary_ptr = __alloc(sizeof<u64>());
-        let it = env.db_idx128_previous(iterator, primary_ptr);
+        let it = env.db_idx128_previous(iterator.i, primary_ptr);
         let primary = load<u64>(primary_ptr);
         return new SecondaryIterator(it, primary, this.dbIndex);
     }
 
-    findPrimary(primary: u64): SecondaryReturnValue {
+    findPrimary(primary: u64): IDX128ReturnValue {
+        let secondary_ptr = __alloc(sizeof<u64>()*2);
+        let it = env.db_idx128_find_primary(this.code, this.scope, this.table, secondary_ptr, primary);
+        let i = new SecondaryIterator(it, primary, this.dbIndex);
+        let lo = load<u64>(secondary_ptr);
+        let hi = load<u64>(secondary_ptr+8);
+        return new IDX128ReturnValue(i, new U128(lo, hi));
+    }
+
+    findPrimaryEx(primary: u64): SecondaryReturnValue {
         let secondary_ptr = __alloc(sizeof<u64>()*2);
         let it = env.db_idx128_find_primary(this.code, this.scope, this.table, secondary_ptr, primary);
         let i = new SecondaryIterator(it, primary, this.dbIndex);
@@ -47,16 +91,26 @@ export class IDX128 extends IDXDB {
         return new SecondaryReturnValue(i, secondary);
     }
 
-    find(secondary: SecondaryValue): SecondaryIterator {
-        assert(secondary.type == SecondaryType.U128, "idx128: bad secondary type");
-        assert(secondary.value.length == 2, "idx128: bad value");
+    find(secondary: U128): SecondaryIterator {
         let primary_ptr = __alloc(sizeof<u64>());
-        let secondary_ptr = changetype<ArrayBufferView>(secondary.value).dataStart;
+        let secondary_ptr = __alloc(sizeof<u64>()*2);
+        store<u64>(secondary_ptr, secondary.lo);
+        store<u64>(secondary_ptr, secondary.hi);
         let it = env.db_idx128_find_secondary(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
         return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
     }
 
-    lowerbound(secondary: SecondaryValue): SecondaryReturnValue {
+    lowerBound(secondary: U128): SecondaryIterator {
+        let primary_ptr = __alloc(sizeof<u64>());
+        let secondaryCopy = new Array<u64>(2);
+        secondaryCopy[0] = secondary.lo;
+        secondaryCopy[1] = secondary.hi;
+        let secondary_ptr = secondaryCopy.dataStart;
+        let it = env.db_idx128_lowerbound(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
+        return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
+    }
+
+    lowerBoundEx(secondary: SecondaryValue): SecondaryReturnValue {
         assert(secondary.type == SecondaryType.U128, "idx128: bad secondary type");
         assert(secondary.value.length == 2, "idx128: bad value");
         let primary_ptr = __alloc(sizeof<u64>());
@@ -64,7 +118,7 @@ export class IDX128 extends IDXDB {
         let secondaryCopy = new Array<u64>(2);
         secondaryCopy[0] = secondary.value[0];
         secondaryCopy[1] = secondary.value[1];
-        let secondary_ptr = changetype<ArrayBufferView>(secondaryCopy).dataStart;
+        let secondary_ptr = secondaryCopy.dataStart;
 
         let it = env.db_idx128_lowerbound(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
 
@@ -74,7 +128,17 @@ export class IDX128 extends IDXDB {
         return new SecondaryReturnValue(iterator, value);
     }
 
-    upperbound(secondary: SecondaryValue): SecondaryReturnValue {
+    upperBound(secondary: U128): SecondaryIterator {
+        let primary_ptr = __alloc(sizeof<u64>());
+        let secondaryCopy = new Array<u64>(2);
+        secondaryCopy[0] = secondary.lo;
+        secondaryCopy[1] = secondary.hi;
+        let secondary_ptr = secondaryCopy.dataStart;
+        let it = env.db_idx128_upperbound(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
+        return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
+    }
+
+    upperBoundEx(secondary: SecondaryValue): SecondaryReturnValue {
         assert(secondary.type == SecondaryType.U128, "idx128: bad secondary type");
         assert(secondary.value.length == 2, "idx128: bad value");
         let primary_ptr = __alloc(sizeof<u64>());
@@ -82,7 +146,7 @@ export class IDX128 extends IDXDB {
         let secondaryCopy = new Array<u64>(2);
         secondaryCopy[0] = secondary.value[0];
         secondaryCopy[1] = secondary.value[1];
-        let secondary_ptr = changetype<ArrayBufferView>(secondaryCopy).dataStart;
+        let secondary_ptr = secondaryCopy.dataStart;
         let it = env.db_idx128_upperbound(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
 
         let iterator = new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);

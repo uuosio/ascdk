@@ -160,7 +160,12 @@ Handlebars.registerHelper("getPrimaryValue", function (fn: DBIndexFunctionDef) {
 
 Handlebars.registerHelper("getSecondaryValue", function (fn: DBIndexFunctionDef) {
     let code: string[] = [];
-    let plainType = fn.getterPrototype!.returnType!.plainType;
+    let plainType = fn.getterPrototype!.returnType!.plainTypeNode;
+    if (plainType == 'chain.U128') {
+        plainType = 'U128';
+    } else if (plainType == 'chain.U128') {
+        plainType = 'U256';
+    }
     console.log("+++++++++getSecondaryValue:", fn._index);
     code.push(`case ${fn._index}: {`);
     code.push(`                return _chain.newSecondaryValue_${plainType}(this.${fn.setterPrototype!.declaration.name.text});`);
@@ -171,7 +176,13 @@ Handlebars.registerHelper("getSecondaryValue", function (fn: DBIndexFunctionDef)
 
 Handlebars.registerHelper("setSecondaryValue", function (fn: DBIndexFunctionDef) {
     let code: string[] = [];
-    let plainType = fn.getterPrototype!.returnType!.plainType;
+    let plainType = fn.getterPrototype!.returnType!.plainTypeNode;
+    if (plainType == 'chain.U128') {
+        plainType = 'U128';
+    } else if (plainType == 'chain.U128') {
+        plainType = 'U256';
+    }
+
     code.push(`case ${fn._index}: {`);
     code.push(`                let _value = _chain.getSecondaryValue_${plainType}(value);`);
     code.push(`                this.${fn.getterPrototype!.declaration.name.text} = _value;`);

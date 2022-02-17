@@ -1,8 +1,10 @@
 import { IDXDB, SecondaryType, SecondaryValue, SecondaryIterator } from "./idxdb"
 import { DBI64, PrimaryValue } from "./dbi64"
 import { IDX64 } from "./idx64"
+import { IDX128 } from "./idx128"
 import { Name } from "./name"
 import { printString } from "./debug"
+import { assert } from "./system"
 
 export class PrimaryIterator {
     i: i32;
@@ -35,7 +37,17 @@ export class MultiIndex<T extends MultiIndexValue> {
         if (indexes) {
             for (let i=0; i<indexes.length; i++) {
                 let idxTable = (table.N & 0xfffffffffffffff0) + i;
-                this.idxdbs[i] = new IDX64(code.N, scope.N, idxTable, i);
+                if (indexes[i] == SecondaryType.U64) {
+                    this.idxdbs[i] = new IDX64(code.N, scope.N, idxTable, i);
+                } else if (indexes[i] == SecondaryType.U128) {
+                    this.idxdbs[i] = new IDX128(code.N, scope.N, idxTable, i);
+                } else if (indexes[i] == SecondaryType.U256) {
+
+                } else if (indexes[i] == SecondaryType.F64) {
+
+                } else if (indexes[i] == SecondaryType.F128) {
+
+                }
             }
         }
     }
@@ -62,7 +74,20 @@ export class MultiIndex<T extends MultiIndexValue> {
     }
 
     remove(iterator: PrimaryIterator): void {
-        this.db.remove(iterator.i);
+        let value = this.get(iterator);
+        let primary = value.getPrimaryValue();
+        this.removeEx(primary);
+    }
+
+    removeEx(primary: u64): void {
+        let it = this.find(primary);
+        assert(it.isOk(), "primary value not found!");
+        this.db.remove(it.i);
+        for (let i=0; i<this.idxdbs.length; i++) {
+            let ret = this.idxdbs[i].findPrimaryEx(primary);
+            assert(ret.i.isOk(), "secondary value not found!");
+            this.idxdbs[i].remove(ret.i);
+        }
     }
 
     get(iterator: PrimaryIterator): T {
@@ -102,7 +127,10 @@ export class MultiIndex<T extends MultiIndexValue> {
         return new PrimaryIterator(i);
     }
 
-    get_idx_db(i: i32): IDXDB {
+    getIdxDB(i: i32): IDXDB {
+        if (i >= this.idxdbs.length) {
+            assert(false, "getIdxDB: bad db index");
+        }
         return this.idxdbs[i];
     }
 

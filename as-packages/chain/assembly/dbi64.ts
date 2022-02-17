@@ -21,19 +21,14 @@ export class DBI64 {
         this.table = table;
     }
 
-    store2(payer: u64, id: u64, data: PrimaryValue): i32 {
-        let data_ptr = changetype<ArrayBufferView>(data).dataStart;
-        return env.db_store_i64(this.scope, this.table, payer, id, data_ptr, data.length );
-    }
-
     store(id: u64, data: u8[], payer: u64): i32 {
-        let data_ptr = changetype<ArrayBufferView>(data).dataStart;
+        let data_ptr = data.dataStart;
         return env.db_store_i64(this.scope, this.table, payer, id, data_ptr, data.length );
     }
 
     // export declare function db_update_i64(iterator: i32, payer: u64, data: usize, len: usize): void
     update(iterator: i32, payer: u64, data: u8[]): void {
-        let data_ptr = changetype<ArrayBufferView>(data).dataStart;
+        let data_ptr = data.dataStart;
         env.db_update_i64(iterator, payer, data_ptr, data.length);
     }
 
@@ -49,7 +44,7 @@ export class DBI64 {
             return [];
         }
         let arr = new Array<u8>(size);
-        let ptr = changetype<ArrayBufferView>(arr).dataStart;
+        let ptr = arr.dataStart;
         env.db_get_i64(iterator, ptr, size);
         return arr
     }

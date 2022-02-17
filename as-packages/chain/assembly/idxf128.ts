@@ -6,7 +6,7 @@ export class IDXF128 extends IDXDB {
     store(id: u64, value: SecondaryValue, payer: u64): SecondaryIterator {
         assert(value.type == SecondaryType.U128, "idx_long_double: bad type")
         assert(value.value.length == 2, "idx_long_double: bad value");
-        let secondary_ptr = changetype<ArrayBufferView>(value).dataStart;
+        let secondary_ptr = value.value.dataStart;
         let it = env.db_idx_long_double_store(this.scope, this.table, payer, id, secondary_ptr);
         return new SecondaryIterator(it, id, this.dbIndex);
     }
@@ -14,7 +14,7 @@ export class IDXF128 extends IDXDB {
     update(iterator: i32, secondary: SecondaryValue, payer: u64): void {
         assert(secondary.type == SecondaryType.U128, "idx_long_double: bad value");
         assert(secondary.value.length == 2, "idx_long_double: bad value");
-        let secondary_ptr = changetype<ArrayBufferView>(secondary).dataStart;
+        let secondary_ptr = secondary.value.dataStart;
         env.db_idx_long_double_update(iterator, payer, secondary_ptr);
     }
 
@@ -51,7 +51,7 @@ export class IDXF128 extends IDXDB {
         assert(secondary.type == SecondaryType.U128, "idx_long_double: bad secondary type");
         assert(secondary.value.length == 2, "idx_long_double: bad value");
         let primary_ptr = __alloc(sizeof<u64>());
-        let secondary_ptr = changetype<ArrayBufferView>(secondary.value).dataStart;
+        let secondary_ptr = secondary.value.dataStart;
         let it = env.db_idx_long_double_find_secondary(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
         return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
     }
@@ -64,7 +64,7 @@ export class IDXF128 extends IDXDB {
         let secondaryCopy = new Array<u64>(2);
         secondaryCopy[0] = secondary.value[0];
         secondaryCopy[1] = secondary.value[1];
-        let secondary_ptr = changetype<ArrayBufferView>(secondaryCopy).dataStart;
+        let secondary_ptr = secondaryCopy.dataStart;
 
         let it = env.db_idx_long_double_lowerbound(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
 
@@ -82,7 +82,7 @@ export class IDXF128 extends IDXDB {
         let secondaryCopy = new Array<u64>(2);
         secondaryCopy[0] = secondary.value[0];
         secondaryCopy[1] = secondary.value[1];
-        let secondary_ptr = changetype<ArrayBufferView>(secondaryCopy).dataStart;
+        let secondary_ptr = secondaryCopy.dataStart;
         let it = env.db_idx_long_double_upperbound(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
 
         let iterator = new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);

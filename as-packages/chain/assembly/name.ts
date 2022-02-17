@@ -84,7 +84,7 @@ export class Name implements Serializer {
     }
 
     serialize(): u8[] {
-        let ret = Array<u8>(8);
+        let ret = new Array<u8>(8);
         store<u64>(ret.dataStart, this.N);
         return ret;
     }

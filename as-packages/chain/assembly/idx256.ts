@@ -6,7 +6,7 @@ export class IDX256 extends IDXDB {
     store(id: u64, value: SecondaryValue, payer: u64): SecondaryIterator {
         assert(value.type == SecondaryType.U256, "idx256: bad type")
         assert(value.value.length == 4, "idx256: bad value");
-        let secondary_ptr = changetype<ArrayBufferView>(value).dataStart;
+        let secondary_ptr = value.value.dataStart;
         let it = env.db_idx256_store(this.scope, this.table, payer, id, secondary_ptr, 2);
         return new SecondaryIterator(it, id, this.dbIndex);
     }
@@ -14,22 +14,22 @@ export class IDX256 extends IDXDB {
     update(iterator: i32, secondary: SecondaryValue, payer: u64): void {
         assert(secondary.type == SecondaryType.U256, "idx256: bad value");
         assert(secondary.value.length == 4, "idx256: bad value");
-        let secondary_ptr = changetype<ArrayBufferView>(secondary).dataStart;
+        let secondary_ptr = secondary.value.dataStart;
         env.db_idx256_update(iterator, payer, secondary_ptr, 2);
     }
 
-    remove(iterator: i32): void {
+    remove(iterator: SecondaryIterator): void {
         env.db_idx256_remove(iterator);
     }
 
-    next(iterator: i32): SecondaryIterator {
+    next(iterator: SecondaryIterator): SecondaryIterator {
         let primary_ptr = __alloc(sizeof<u64>());
         let it = env.db_idx256_next(iterator, primary_ptr);
         let primary = load<u64>(primary_ptr);
         return new SecondaryIterator(it, primary, this.dbIndex);
     }
 
-    previous(iterator: i32): SecondaryIterator {
+    previous(iterator: SecondaryIterator): SecondaryIterator {
         let primary_ptr = __alloc(sizeof<u64>());
         let it = env.db_idx256_previous(iterator, primary_ptr);
         let primary = load<u64>(primary_ptr);
@@ -53,7 +53,7 @@ export class IDX256 extends IDXDB {
         assert(secondary.type == SecondaryType.U256, "idx256: bad secondary type");
         assert(secondary.value.length == 4, "idx256: bad value");
         let primary_ptr = __alloc(sizeof<u64>());
-        let secondary_ptr = changetype<ArrayBufferView>(secondary.value).dataStart;
+        let secondary_ptr = secondary.value.dataStart;
         let it = env.db_idx256_find_secondary(this.code, this.scope, this.table, secondary_ptr, 2, primary_ptr);
         return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
     }
@@ -66,7 +66,7 @@ export class IDX256 extends IDXDB {
         let secondaryCopy = new Array<u64>(2);
         secondaryCopy[0] = secondary.value[0];
         secondaryCopy[1] = secondary.value[1];
-        let secondary_ptr = changetype<ArrayBufferView>(secondaryCopy).dataStart;
+        let secondary_ptr = secondaryCopy.dataStart;
 
         let it = env.db_idx256_lowerbound(this.code, this.scope, this.table, secondary_ptr, 2, primary_ptr);
 
@@ -87,7 +87,7 @@ export class IDX256 extends IDXDB {
         secondaryCopy[2] = secondary.value[2];
         secondaryCopy[3] = secondary.value[3];
 
-        let secondary_ptr = changetype<ArrayBufferView>(secondaryCopy).dataStart;
+        let secondary_ptr = secondaryCopy.dataStart;
         let it = env.db_idx256_upperbound(this.code, this.scope, this.table, secondary_ptr, 2, primary_ptr);
 
         let iterator = new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
