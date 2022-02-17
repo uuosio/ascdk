@@ -3,6 +3,7 @@ export { U128, U256 } from "./bignum"
 
 export { DBI64 } from "./dbi64"
 export { IDX64 } from "./idx64"
+export { IDXF64 } from "./idxf64"
 export { IDX128 } from "./idx128"
 export { assert } from "./system"
 export { printString, printArray, printHex, printi } from "./debug"

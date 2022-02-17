@@ -39,7 +39,7 @@ export class SecondaryValue {
 export function newSecondaryValue_double(value: T): SecondaryValue {
     let arr = new Array<u64>(sizeof<T>()/8);
     arr[0] = value;
-    return new SecondaryValue(SecondaryType.U64, arr);
+    return new SecondaryValue(SecondaryType.F64, arr);
 }
 
 export function newSecondaryValue_u64(value: u64): SecondaryValue {
@@ -58,10 +58,8 @@ export function newSecondaryValue_U128(value: U128): SecondaryValue {
 
 export function newSecondaryValue_f64(value: f64): SecondaryValue {
     let arr = new Array<u64>(1);
-    arr[0] = value;
-    let dataStart = changetype<ArrayBufferView>(arr).dataStart;
-    store<f64>(dataStart, value);
-    return new SecondaryValue(SecondaryType.U64, arr);
+    store<f64>(arr.dataStart, value);
+    return new SecondaryValue(SecondaryType.F64, arr);
 }
 
 export function getSecondaryValue_u64(value: SecondaryValue): u64 {
@@ -73,8 +71,7 @@ export function getSecondaryValue_U128(value: SecondaryValue): U128 {
 }
 
 export function getSecondaryValue_f64(value: SecondaryValue): f64 {
-    let dataStart = changetype<ArrayBufferView>(value.value);
-    return load<f64>(dataSart);
+    return load<f64>(value.value.dataStart);
 }
 
 export class SecondaryReturnValue {

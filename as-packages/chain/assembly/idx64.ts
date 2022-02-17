@@ -88,10 +88,10 @@ export class IDX64 extends IDXDB {
         return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
     }
 
-    lowerBoundEx(secondary: u64): IDX64ReturnValue {
+    lowerBoundEx(secondary: SecondaryValue): IDX64ReturnValue {
         let primary_ptr = __alloc(sizeof<u64>());
         let secondary_ptr = __alloc(sizeof<u64>());
-        store<u64>(secondary_ptr, secondary);
+        store<u64>(secondary_ptr, secondary.value[0]);
         let it = env.db_idx64_lowerbound(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
 
         let iterator = new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);

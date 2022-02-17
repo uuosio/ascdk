@@ -1,40 +1,68 @@
 import {IDXDB, SecondaryValue, SecondaryType, SecondaryIterator, SecondaryReturnValue} from "./idxdb"
 import * as env from "./env"
-import {assert} from "./system"
+import { assert } from "./system"
+import { printString } from "./debug"
+
+class IDXF64ReturnValue {
+    i: SecondaryIterator;
+    value: f64; //secondary value
+    constructor(i: SecondaryIterator, value: f64) {
+        this.i = i;
+        this.value = value;
+    }
+}
 
 export class IDXF64 extends IDXDB {
-    store(id: u64, value: SecondaryValue, payer: u64): SecondaryIterator {
-        assert(value.type == SecondaryType.F64, "idx_double: bad type")
-        let it = env.db_idx_double_store(this.scope, this.table, payer, id, value.value[0])
+    store(id: u64, value: f64, payer: u64): SecondaryIterator {
+        let secondary_ptr = __alloc(sizeof<f64>());
+        store<f64>(secondary_ptr, value);
+        let it = env.db_idx_double_store(this.scope, this.table, payer, id, secondary_ptr);
         return new SecondaryIterator(it, id, this.dbIndex);
     }
     
-    update(iterator: i32, secondary: SecondaryValue, payer: u64): void {
-        assert(secondary.type == SecondaryType.F64, "idx_double: bad value");
-        assert(secondary.value.length == 1, "idx_double: bad value");
-        env.db_idx_double_update(iterator, payer, secondary.value[0]);
+    storeEx(id: u64, value: SecondaryValue, payer: u64): SecondaryIterator {
+        assert(value.type == SecondaryType.F64, "idxf64: bad type");
+        return this.store(id, load<f64>(value.value.dataStart), payer);
     }
 
-    remove(iterator: i32): void {
-        env.db_idx_double_remove(iterator);
+    update(iterator: SecondaryIterator, value: f64, payer: u64): void {
+        let value_ptr = __alloc(sizeof<f64>());
+        store<f64>(value_ptr, value);
+        env.db_idx_double_update(iterator.i, payer, value_ptr);
     }
 
-    next(iterator: i32): SecondaryIterator {
+    updateEx(iterator: SecondaryIterator, secondary: SecondaryValue, payer: u64): void {
+        assert(secondary.type == SecondaryType.F64, "idxf64: bad value");
+        this.update(iterator, load<f64>(secondary.value.dataStart), payer);
+    }
+
+    remove(iterator: SecondaryIterator): void {
+        env.db_idx_double_remove(iterator.i);
+    }
+
+    next(iterator: SecondaryIterator): SecondaryIterator {
         let primary_ptr = __alloc(sizeof<u64>());
-        let it = env.db_idx_double_next(iterator, primary_ptr);
+        let it = env.db_idx_double_next(iterator.i, primary_ptr);
         let primary = load<u64>(primary_ptr);
         return new SecondaryIterator(it, primary, this.dbIndex);
     }
 
-    previous(iterator: i32): SecondaryIterator {
+    previous(iterator: SecondaryIterator): SecondaryIterator {
         let primary_ptr = __alloc(sizeof<u64>());
-        let it = env.db_idx_double_previous(iterator, primary_ptr);
+        let it = env.db_idx_double_previous(iterator.i, primary_ptr);
         let primary = load<u64>(primary_ptr);
         return new SecondaryIterator(it, primary, this.dbIndex);
     }
 
-    findPrimary(primary: u64): SecondaryReturnValue {
-        let secondary_ptr = __alloc(sizeof<u64>());
+    findPrimary(primary: u64): IDXF64ReturnValue {
+        let secondary_ptr = __alloc(sizeof<f64>());
+        let it = env.db_idx_double_find_primary(this.code, this.scope, this.table, secondary_ptr, primary);
+        let i = new SecondaryIterator(it, primary, this.dbIndex)
+        return new IDXF64ReturnValue(i, load<f64>(secondary_ptr));
+    }
+
+    findPrimaryEx(primary: u64): SecondaryReturnValue {
+        let secondary_ptr = __alloc(sizeof<f64>());
         let it = env.db_idx_double_find_primary(this.code, this.scope, this.table, secondary_ptr, primary);
         let i = new SecondaryIterator(it, primary, this.dbIndex)
         let value = new Array<u64>(1);
@@ -43,38 +71,49 @@ export class IDXF64 extends IDXDB {
         return new SecondaryReturnValue(i, secondary);
     }
 
-    find(secondary: SecondaryValue): SecondaryIterator {
-        assert(secondary.type == SecondaryType.F64, "idx_double: bad secondary type");
+    find(secondary: f64): SecondaryIterator {
         let primary_ptr = __alloc(sizeof<u64>());
-        let secondary_ptr = secondary.value.dataStart;
+        let secondary_ptr = __alloc(sizeof<f64>());
+        store<f64>(secondary_ptr, secondary);
         let it = env.db_idx_double_find_secondary(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
         return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
     }
 
-    lowerbound(secondary: SecondaryValue): SecondaryReturnValue {
-        assert(secondary.type == SecondaryType.F64, "idx_double: bad secondary type");
+    lowerBound(secondary: f64): SecondaryIterator {
         let primary_ptr = __alloc(sizeof<u64>());
-        let secondaryCopy = new Array<u64>(1);
-        secondaryCopy[0] = secondary.value[0];
-        let secondary_ptr = secondaryCopy.dataStart;
+        let secondary_ptr = __alloc(sizeof<f64>());
+        store<f64>(secondary_ptr, secondary);
         let it = env.db_idx_double_lowerbound(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
-
-        let iterator = new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
-        let value = new SecondaryValue(SecondaryType.F64, secondaryCopy)
-        return new SecondaryReturnValue(iterator, value);
+        return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
     }
 
-    upperbound(secondary: SecondaryValue): SecondaryReturnValue {
-        assert(secondary.type == SecondaryType.F64, "idx_double: bad secondary type");
+    lowerBoundEx(secondary: SecondaryValue): IDXF64ReturnValue {
+        assert(secondary.type == SecondaryType.F64, "lowerBoundEx:bad secondary value");
         let primary_ptr = __alloc(sizeof<u64>());
-        let secondaryCopy = new Array<u64>(1);
-        secondaryCopy[0] = secondary.value[0];
-        let secondary_ptr = secondaryCopy.dataStart;
+        let secondary_ptr = __alloc(sizeof<f64>());
+        store<u64>(secondary_ptr, secondary.value[0]);
+        let it = env.db_idx_double_lowerbound(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
+        let iterator = new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
+        return new IDXF64ReturnValue(iterator, load<f64>(secondary_ptr));
+    }
+
+    upperBound(secondary: f64): SecondaryIterator {
+        let primary_ptr = __alloc(sizeof<u64>());
+        let secondary_ptr = __alloc(sizeof<f64>());
+        store<f64>(secondary_ptr, secondary);
+        let it = env.db_idx_double_upperbound(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
+        return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
+    }
+
+    upperBoundEx(secondary: SecondaryValue): IDXF64ReturnValue {
+        assert(secondary.type == SecondaryType.F64, "upperBoundEx:bad secondary value");
+        let primary_ptr = __alloc(sizeof<u64>());
+        let secondary_ptr = __alloc(sizeof<f64>());
+        store<u64>(secondary_ptr, secondary.value[0]);
         let it = env.db_idx_double_upperbound(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
 
         let iterator = new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
-        let value = new SecondaryValue(SecondaryType.F64, secondaryCopy)
-        return new SecondaryReturnValue(iterator, value);
+        return new IDXF64ReturnValue(iterator, load<f64>(secondary_ptr));
     }
 
     end(): SecondaryIterator {
