@@ -64,7 +64,7 @@ export const tableTpl = `
         }
     }
 
-    setSecondaryValue(i: i32, secondaryValue: _chain.SecondaryValue): void {
+    setSecondaryValue(i: i32, value: _chain.SecondaryValue): void {
         switch (i) {
             {{#each secondaryFuncDefs}}
             {{{setSecondaryValue .}}}

@@ -34,7 +34,7 @@ export class MultiIndex<T extends MultiIndexValue> {
         this.newObj = newObj;
         if (indexes) {
             for (let i=0; i<indexes.length; i++) {
-                let idxTable = (table.N&0xfffffffffffffff0) + i;
+                let idxTable = (table.N & 0xfffffffffffffff0) + i;
                 this.idxdbs[i] = new IDX64(code.N, scope.N, idxTable, i);
             }
         }
@@ -52,7 +52,7 @@ export class MultiIndex<T extends MultiIndexValue> {
         this.db.update(it.i, payer.N, value.serialize());
         let primary = value.getPrimaryValue()
         for (let i=0; i<this.idxdbs.length; i++) {
-            let ret = this.idxdbs[i].find_primary(primary);
+            let ret = this.idxdbs[i].findPrimaryEx(primary);
             let newValue = value.getSecondaryValue(i);
             if (ret.value.type == newValue.type && ret.value.value == newValue.value) {
                 continue;
@@ -106,11 +106,11 @@ export class MultiIndex<T extends MultiIndexValue> {
         return this.idxdbs[i];
     }
 
-    idx_update(it: SecondaryIterator, idxValue: SecondaryValue, payer: Name): void {
+    idxUpdate(it: SecondaryIterator, idxValue: SecondaryValue, payer: Name): void {
         let primaryIt = this.find(it.primary);
         let value = this.get(primaryIt);
         value.setSecondaryValue(it.dbIndex, idxValue);
         this.update(primaryIt, value, payer);
-        this.idxdbs[it.dbIndex].update(it, idxValue, payer);
+        this.idxdbs[it.dbIndex].updateEx(it, idxValue, payer.N);
     }
 }

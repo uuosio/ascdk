@@ -55,7 +55,14 @@ export class IDX64 extends IDXDB {
         return new SecondaryIterator(it, primary, this.dbIndex);
     }
 
-    find_primary(primary: u64): SecondaryReturnValue {
+    findPrimary(primary: u64): IDX64ReturnValue {
+        let secondary_ptr = __alloc(sizeof<u64>());
+        let it = env.db_idx64_find_primary(this.code, this.scope, this.table, secondary_ptr, primary);
+        let i = new SecondaryIterator(it, primary, this.dbIndex)
+        return new IDX64ReturnValue(i, load<u64>(secondary_ptr));
+    }
+
+    findPrimaryEx(primary: u64): SecondaryReturnValue {
         let secondary_ptr = __alloc(sizeof<u64>());
         let it = env.db_idx64_find_primary(this.code, this.scope, this.table, secondary_ptr, primary);
         let i = new SecondaryIterator(it, primary, this.dbIndex)
@@ -73,7 +80,15 @@ export class IDX64 extends IDXDB {
         return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
     }
 
-    lowerbound(secondary: u64): IDX64ReturnValue {
+    lowerBound(secondary: u64): SecondaryIterator {
+        let primary_ptr = __alloc(sizeof<u64>());
+        let secondary_ptr = __alloc(sizeof<u64>());
+        store<u64>(secondary_ptr, secondary);
+        let it = env.db_idx64_lowerbound(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
+        return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
+    }
+
+    lowerBoundEx(secondary: u64): IDX64ReturnValue {
         let primary_ptr = __alloc(sizeof<u64>());
         let secondary_ptr = __alloc(sizeof<u64>());
         store<u64>(secondary_ptr, secondary);
@@ -83,7 +98,15 @@ export class IDX64 extends IDXDB {
         return new IDX64ReturnValue(iterator, load<u64>(secondary_ptr));
     }
 
-    upperbound(secondary: u64): IDX64ReturnValue {
+    upperBound(secondary: u64): SecondaryIterator {
+        let primary_ptr = __alloc(sizeof<u64>());
+        let secondary_ptr = __alloc(sizeof<u64>());
+        store<u64>(secondary_ptr, secondary);
+        let it = env.db_idx64_upperbound(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
+        return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
+    }
+
+    upperBoundEx(secondary: u64): IDX64ReturnValue {
         let primary_ptr = __alloc(sizeof<u64>());
         let secondary_ptr = __alloc(sizeof<u64>());
         store<u64>(secondary_ptr, secondary);

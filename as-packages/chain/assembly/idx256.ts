@@ -36,7 +36,7 @@ export class IDX256 extends IDXDB {
         return new SecondaryIterator(it, primary, this.dbIndex);
     }
 
-    find_primary(primary: u64): SecondaryReturnValue {
+    findPrimary(primary: u64): SecondaryReturnValue {
         let secondary_ptr = __alloc(sizeof<u64>()*2);
         let it = env.db_idx256_find_primary(this.code, this.scope, this.table, secondary_ptr, 2, primary);
         let i = new SecondaryIterator(it, primary, this.dbIndex);

@@ -9,6 +9,14 @@ export class SecondaryIterator {
         this.primary = primary;
         this.dbIndex = dbIndex;
     }
+
+    isOk(): bool {
+        return this.i >= 0;
+    }
+
+    isEnd(): bool {
+        return this.i == -2;
+    }
 }
 
 export enum SecondaryType {
@@ -95,5 +103,5 @@ export abstract class IDXDB {
     abstract storeEx(id: u64, secondary: SecondaryValue, payer: u64): SecondaryIterator;
     abstract updateEx(iterator: SecondaryIterator, secondary: SecondaryValue, payer: u64): void;
     abstract remove(iterator: SecondaryIterator): void;
-    abstract find_primary(primary: u64): SecondaryReturnValue;
+    abstract findPrimaryEx(primary: u64): SecondaryReturnValue;
 }

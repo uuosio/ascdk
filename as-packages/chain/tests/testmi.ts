@@ -95,14 +95,8 @@ class MyContract {
         chain.assert(!it.isOk(), "bad value");
 
         let idx = <chain.IDX64>mi.get_idx_db(0);
-        let idxIt = idx.find_primary(7);
-        chain.printString(`++++++++${idxIt.i.i}, ${idxIt.value.value[0]}\n`)
-        {//1, 2, 3
-            let data = new Array<u64>(1);
-            let idxIt = idx.find(2);
-            chain.printString(`+++++++++idx.find: ${idxIt.i}, ${idxIt.primary}\n`)
-            chain.assert(idxIt.primary == 1, "bad value");
-        }
+        let idxIt = idx.findPrimary(7);
+        chain.printString(`++++++++${idxIt.i.i}, ${idxIt.value}\n`)
 
         {//4, 5, 6
             // let idx64 = <chain.IDX64>idx;
@@ -110,6 +104,36 @@ class MyContract {
             let idxIt = idx64.find(5);
             chain.printString(`+++++++++idx.find: ${idxIt.i}, ${idxIt.primary}\n`)
             chain.assert(idxIt.primary == 4, "bad value");
+        }
+
+        //1 2 3
+        //4 5 6
+        //7 8 9
+        {
+            let ret = idx.lowerBoundEx(2)
+            chain.assert(ret.value == 2, "bad value");
+            ret = idx.upperBoundEx(2);
+            chain.assert(ret.value == 5, "bad value");
+
+            let it = idx.previous(ret.i);
+            chain.assert(it.primary == 1, "bad primary value");
+
+            it = idx.next(it);
+            chain.assert(it.primary == 4, "bad primary value");
+
+            it = idx.end();
+            it = idx.previous(it);
+            chain.assert(it.primary == 7, "bad primary value");
+        }
+
+        {//1, 2, 3
+            let idxIt = idx.find(2);
+            chain.printString(`+++++++++idx.find: ${idxIt.i}, ${idxIt.primary}\n`);
+            chain.assert(idxIt.primary == 1, "bad value");
+            let secValue = chain.newSecondaryValue_u64(22);
+            mi.idxUpdate(idxIt, secValue, this.receiver);
+            let ret = idx.find(22);
+            chain.assert(ret.isOk(), "bad scondary value");
         }
     }
 }
