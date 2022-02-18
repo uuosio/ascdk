@@ -1,15 +1,15 @@
-import { check, requireAuth, Name, Asset } from 'as-chain'
+import * as chain from 'as-chain';
 import { AccountTable, StatTable } from './tables';
 
 @contract("token")
 class MyContract {
-    receiver: Name;
-    firstReceiver: Name;
-    action: Name
+    receiver: chain.Name;
+    firstReceiver: chain.Name;
+    action: chain.Name
     accountTable: AccountTable;
     statTable: StatTable;
 
-    constructor(receiver: Name, firstReceiver: Name, action: Name) {
+    constructor(receiver: chain.Name, firstReceiver: chain.Name, action: chain.Name) {
         this.receiver = receiver;
         this.firstReceiver = firstReceiver;
         this.action = action;
@@ -18,13 +18,13 @@ class MyContract {
     }
 
     @action("create")
-    create(issuer: Name, maximumSupply: Asset): void {
-        requireAuth(this.receiver);
+    create(issuer: chain.Name, maximum_supply: chain.Asset): void {
+        chain.requireAuth(this.receiver);
 
-        const sym = maximumSupply.symbol;
+        const sym = maximum_supply.symbol;
         // check(sym.isValid(), "invalid symbol name");
         // check(maximumSupply.isValid(), "invalid supply");
-        check(maximumSupply.amount > 0, "max-supply must be positive");
+        chain.check(maximum_supply.amount > 0, "max-supply must be positive");
 
 
     }

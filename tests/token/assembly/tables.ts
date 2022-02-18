@@ -2,6 +2,7 @@ import { Asset, Name } from "as-chain";
 
 @table("accounts")
 class _AccountTable {
+    a: u64;
     balance: Asset;
 
     constructor () {
