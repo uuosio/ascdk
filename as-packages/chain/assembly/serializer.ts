@@ -8,6 +8,57 @@ export interface Serializer {
     getSize(): usize;
 }
 
+export function packVarUint32(val: u32): u8[] {
+	let result = new Array<u8>();
+	while (true) {
+		let b = <u8>(val & 0x7f);
+		val >>= 7;
+		if (val > 0) {
+			b |= <u8>(1 << 7);
+		}
+        result.push(b);
+		if (val <= 0) {
+			break;
+		}
+	}
+	return result;
+}
+
+export class VarUint32 {
+    constructor(
+        public value: u32 = 0,
+        public length: u32 = 0
+    ){}
+}
+
+export function unpackVarUint32(val: u8[]): VarUint32 {
+	let by: u32 = 0;
+    let value: u32 = 0;
+    let length: u32 = 0;
+    for (let i=0; i<val.length; i++) {
+        let b = val[i];
+		value |= <u32>(b & 0x7f) << by;
+        by += 7;
+        length += 1;
+        if ((b & 0x80) == 0) {
+            break;
+        }
+    }
+    return new VarUint32(value, length);
+}
+
+export function calcPackedVarUint32Length(val: u32): usize {
+	let n: u32 = 0;
+    while (true) {
+		val >>= 7;
+		n += 1;
+		if (val <= 0) {
+			break;
+		}
+    }
+	return n;
+}
+
 export class Encoder {
     buf: Array<u8>;
     pos: usize;
@@ -65,8 +116,21 @@ export class Encoder {
         return 8;
     }
     
-    packLength(n: u32): usize {
-        return this.packNumber<u8>(<u8>n);
+    packLength(val: u32): usize {
+        let length: u32 = 0;
+        while (true) {
+            let b = <u8>(val & 0x7f);
+            val >>= 7;
+            if (val > 0) {
+                b |= <u8>(1 << 7);
+            }
+            this.packNumber<u8>(b);
+            length += 1;
+            if (val <= 0) {
+                break;
+            }
+        }
+        return length;
     }
 
     packString(s: string): usize {
@@ -125,7 +189,19 @@ export class Decoder {
     }
 
     unpackLength(): u32 {
-        return this.unpackNumber<u8>();
+        let by: u32 = 0;
+        let value: u32 = 0;
+        let length: u32 = 0;
+        while (true) {
+            let b = this.unpackNumber<u8>();
+            value |= <u32>(b & 0x7f) << by;
+            by += 7;
+            length += 1;
+            if ((b & 0x80) == 0) {
+                break;
+            }
+        }
+        return value;
     }
 
     unpackBytes(size: usize): u8 {

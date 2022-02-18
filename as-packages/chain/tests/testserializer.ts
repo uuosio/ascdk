@@ -23,9 +23,18 @@ class MyContract {
         this.firstReceiver = firstReceiver;
         this.action = action;
     }
-    
 
     @action("test1")
+    testEncodeDecode(): void {
+        let enc = new chain.Encoder(10);
+        enc.packLength(0xfffff);
+
+        let dec = new chain.Decoder(enc.getBytes());
+        let length = dec.unpackLength();
+        chain.assert(length == 0xfffff, "bad value");
+    }
+
+    @action("test2")
     testSerializer(
         a1: boolean,
         a2: i8,
