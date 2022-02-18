@@ -35,7 +35,7 @@ export function isAccount(name: Name): bool {
     return env.is_account(name.N);
 }
 
-export function publiCationTime(): u64 {
+export function publicationTime(): u64 {
     return env.publication_time();
 }
 
