@@ -69,4 +69,8 @@ export class VarUint32 implements Packer {
         return calcPackedVarUint32Length(this.n);
     }
 
+    @inline @operator('==')
+    static eq(a: VarUint32, b: VarUint32): bool {
+      return a.n == b.n;
+    }
 }

@@ -98,4 +98,9 @@ export class Name implements Packer {
     getSize(): usize {
         return 8;
     }
+
+    @inline @operator('==')
+    static eq(a: Name, b: Name): bool {
+      return a.N == b.N;
+    }
 }
