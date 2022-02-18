@@ -44,7 +44,7 @@ def test_1serialize():
     r = chain.push_action('hello', 'test1', b'', {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
 
-def test_ts():
+def test_2serialize():
     # info = chain.get_account('helloworld11')
     # logger.info(info)
     with open('./target/target.wasm', 'rb') as f:

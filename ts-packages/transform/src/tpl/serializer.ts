@@ -4,7 +4,7 @@ let scope = CONFIG.scope;
 
 export const serializerTpl = `
 
-{{export}}class {{className}} implements _chain.Serializer {
+{{export}}class {{className}} implements _chain.Packer {
 
     {{#each fields}}
     {{rangeString}}
@@ -16,7 +16,7 @@ export const serializerTpl = `
     {{rangeString}}
     {{/each}}
 
-    serialize(): u8[] {
+    pack(): u8[] {
         let enc = new _chain.Encoder(this.getSize());
         {{#each fields}}
         {{{actionParameterSerialize .}}}
@@ -24,7 +24,7 @@ export const serializerTpl = `
         return enc.getBytes();
     }
     
-    deserialize(data: u8[]): usize {
+    unpack(data: u8[]): usize {
         let dec = new _chain.Decoder(data);
         {{#each fields}}
         {{{actionParameterDeserialize .}}}

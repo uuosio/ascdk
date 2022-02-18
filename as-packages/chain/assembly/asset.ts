@@ -1,7 +1,7 @@
 import { check } from "./system"
-import { Encoder, Decoder, Serializer } from "./serializer"
+import { Encoder, Decoder, Packer } from "./serializer"
 
-export class Symbol implements Serializer {
+export class Symbol implements Packer {
     value: u64;
     constructor(name: string="", precision: u8=0) {
         check(name.length <= 7, "bad symbol name");
@@ -45,13 +45,13 @@ export class Symbol implements Serializer {
         return (this.value & 0xff).toString(10) + "," + this.getSymbolString();
     }
 
-    serialize(): u8[] {
+    pack(): u8[] {
         let enc = new Encoder(8);
         enc.packNumber<u64>(this.value);
         return enc.getBytes();
     }
 
-    deserialize(data: u8[]): usize {
+    unpack(data: u8[]): usize {
         let dec = new Decoder(data);
         this.value = dec.unpackNumber<u64>();
         return dec.getPos();
@@ -62,7 +62,7 @@ export class Symbol implements Serializer {
     }
 }
 
-export class Asset implements Serializer {
+export class Asset implements Packer {
     amount: i64;
     symbol: Symbol;
     constructor(amount: i64=0, symbol: Symbol=new Symbol()) {
@@ -91,14 +91,14 @@ export class Asset implements Serializer {
         return (this.amount/div).toString() + '.' + (this.amount%div).toString().padStart(precision, '0') + " " + this.symbol.getSymbolString();
     }
 
-    serialize(): u8[] {
+    pack(): u8[] {
         let enc = new Encoder(8*2);
         enc.packNumber<i64>(this.amount);
         enc.pack(this.symbol);
         return enc.getBytes();
     }
 
-    deserialize(data: u8[]): usize {
+    unpack(data: u8[]): usize {
         let dec = new Decoder(data);
         this.amount = dec.unpackNumber<i64>();
         dec.unpack(this.symbol);

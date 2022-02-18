@@ -54,7 +54,7 @@ export class MultiIndex<T extends MultiIndexValue> {
     }
 
     store(value: T, payer: Name): PrimaryIterator {
-        let it = this.db.store(value.getPrimaryValue(), value.serialize(), payer.N);
+        let it = this.db.store(value.getPrimaryValue(), value.pack(), payer.N);
         for (let i=0; i<this.idxdbs.length; i++) {
             this.idxdbs[i].storeEx(value.getPrimaryValue(), value.getSecondaryValue(i), payer.N);
         }
@@ -62,7 +62,7 @@ export class MultiIndex<T extends MultiIndexValue> {
     }
 
     update(it: PrimaryIterator, value: T, payer: Name): void {
-        this.db.update(it.i, payer.N, value.serialize());
+        this.db.update(it.i, payer.N, value.pack());
         let primary = value.getPrimaryValue()
         for (let i=0; i<this.idxdbs.length; i++) {
             let ret = this.idxdbs[i].findPrimaryEx(primary);
@@ -94,7 +94,7 @@ export class MultiIndex<T extends MultiIndexValue> {
     get(iterator: PrimaryIterator): T {
         let data = this.db.get(iterator.i);
         let ret = this.newObj();
-        ret.deserialize(data);
+        ret.unpack(data);
         return ret;
     }
 

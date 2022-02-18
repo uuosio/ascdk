@@ -1,5 +1,5 @@
 import { u128Safe } from "as-bignum";
-import { Decoder, Serializer } from "./serializer"
+import { Decoder, Packer } from "./serializer"
 
 const charToSymbol = (c: u16): u16 => {
     if (c >= 97 && c <= 122) {//c >= 'a' && c <= 'z'
@@ -68,7 +68,7 @@ export function N2S(value: u64): string {
     return String.UTF8.decode(str.slice(0, i+1).buffer);
 }
 
-export class Name implements Serializer {
+export class Name implements Packer {
     N: u64;
 
     @inline constructor(n: u64=0) {
@@ -83,13 +83,13 @@ export class Name implements Serializer {
         return N2S(this.N)
     }
 
-    serialize(): u8[] {
+    pack(): u8[] {
         let ret = new Array<u8>(8);
         store<u64>(ret.dataStart, this.N);
         return ret;
     }
 
-    deserialize(data: u8[]): usize {
+    unpack(data: u8[]): usize {
         let dec = new Decoder(data);
         this.N = dec.unpackNumber<u64>();
         return 8;

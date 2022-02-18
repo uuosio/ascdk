@@ -75,7 +75,7 @@ class MyContract {
     count(n: u64, m: u64): void {
         let mystruct = new MyStruct();
         let data = chain.readActionData();
-        mystruct.deserialize(data);
+        mystruct.unpack(data);
         chain.printString(`++++++${mystruct.a1}, ${mystruct.a2}`);
     }
 

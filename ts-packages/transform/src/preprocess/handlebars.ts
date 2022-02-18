@@ -131,7 +131,7 @@ function handleAction(action: ActionFunctionDef): string {
     let actionNameHex = EosioUtils.nameToHexString(actionName);
     code.push(`if (action == ${actionNameHex}) {//${actionName}`)
     code.push(`        let args = new ${action.methodName}Action();`)
-    code.push(`        args.deserialize(actionData);`)
+    code.push(`        args.unpack(actionData);`)
     code.push(`        mycontract.${action.methodName}(${parameters.join(',')})`)
     code.push(`      }`)
     return code.join(EOL);    

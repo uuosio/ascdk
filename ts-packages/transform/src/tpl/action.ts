@@ -4,12 +4,12 @@ const scope = CONFIG.scope;
 // parameters: ParameterNodeDef[] = [];
 // methodName: string;
 
-export const actionTpl = `class {{methodName}}Action implements _chain.Serializer {
+export const actionTpl = `class {{methodName}}Action implements _chain.Packer {
     {{#each parameters}}
     {{#generateActionMember .}}{{/generateActionMember}}
     {{/each}}
 
-    serialize(): u8[] {
+    pack(): u8[] {
         let enc = new _chain.Encoder(this.getSize());
         {{#each parameters}}
         {{{actionParameterSerialize .}}}
@@ -17,7 +17,7 @@ export const actionTpl = `class {{methodName}}Action implements _chain.Serialize
         return enc.getBytes();
     }
     
-    deserialize(data: u8[]): usize {
+    unpack(data: u8[]): usize {
         let dec = new _chain.Decoder(data);
         {{#each parameters}}
         {{{actionParameterDeserialize .}}}

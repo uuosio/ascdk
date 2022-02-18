@@ -23,7 +23,7 @@ export const tableTpl = `
     {{{setterPrototype.rangeString}}}
     {{/each}}
 
-    serialize(): u8[] {
+    pack(): u8[] {
         let enc = new _chain.Encoder(this.getSize());
         {{#each fields}}
         {{{actionParameterSerialize .}}}
@@ -31,7 +31,7 @@ export const tableTpl = `
         return enc.getBytes();
     }
     
-    deserialize(data: u8[]): usize {
+    unpack(data: u8[]): usize {
         let dec = new _chain.Decoder(data);
         {{#each fields}}
         {{{actionParameterDeserialize .}}}

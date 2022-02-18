@@ -164,9 +164,9 @@ export function sayHello(): void {
   printString("hello,world");
 }
 
-export abstract class Serializer {
-  abstract serialize(): u8[];
-  abstract deserialize(data: u8[]): void;
+export abstract class Packer {
+  abstract pack(): u8[];
+  abstract unpack(data: u8[]): void;
 }
 
 export class Encoder {

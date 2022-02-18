@@ -1,13 +1,13 @@
 import * as env from "./env"
 import {printString} from "./debug"
-import {Serializer} from "./serializer"
+import {Packer} from "./serializer"
 
 export function say_hello(): void {
     printString("hello,world from dbi64")
 //    env.db_remove_i64(-1 as i32);
 }
 
-export interface PrimaryValue extends Serializer {
+export interface PrimaryValue extends Packer {
     getPrimaryValue(): u64;
 }
 

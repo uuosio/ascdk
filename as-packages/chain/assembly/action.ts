@@ -1,5 +1,5 @@
 import * as env from "./env"
-import { Encoder, Decoder, Serializer } from "./serializer"
+import { Encoder, Decoder, Packer } from "./serializer"
 import { Name } from "./name"
 import { Utils } from "./utils"
 import { printHex, printString } from "./debug"
@@ -17,7 +17,7 @@ export function readActionData(): u8[] {
     return arr;
 }
 
-export class PermissionLevel implements Serializer {
+export class PermissionLevel implements Packer {
     actor: Name;
     permission: Name;
 
@@ -26,14 +26,14 @@ export class PermissionLevel implements Serializer {
         this.permission = permission;
     }
 
-    serialize(): u8[] {
+    pack(): u8[] {
         let enc = new Encoder(8*2);
         enc.packName(this.actor);
         enc.packName(this.permission);
         return enc.getBytes();
     }
 
-    deserialize(data: u8[]): usize {
+    unpack(data: u8[]): usize {
         let dec = new Decoder(data);
         this.actor = dec.unpackName();
         this.permission = dec.unpackName();
@@ -45,7 +45,7 @@ export class PermissionLevel implements Serializer {
     }
 }
 
-export class Action implements Serializer{
+export class Action implements Packer{
     account: Name
     name: Name
     authorization: PermissionLevel[]
@@ -59,12 +59,11 @@ export class Action implements Serializer{
     }
 
     send(): void {
-        let serializedAction = this.serialize();
-        let ptr = Utils.getDataStart(serializedAction);
-        env.send_inline(ptr, serializedAction.length)
+        let data = this.pack();
+        env.send_inline(data.dataStart, data.length);
     }
 
-    serialize(): u8[] {
+    pack(): u8[] {
         let enc = new Encoder(8*2 + 1 + 1 + this.authorization.length * 16 + this.data.length);
         enc.packName(this.account);
         enc.packName(this.name);
@@ -76,7 +75,11 @@ export class Action implements Serializer{
         return enc.getBytes();
     }
 
-    deserialize(data: u8[]): usize {
+    unpack(data: u8[]): usize {
+        let dec = new Decoder(data);
+        this.account = dec.unpackName();
+        this.name = dec.unpackName();
+        let length = dec.unpackLength();
         return 0;
     }
 

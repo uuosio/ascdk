@@ -1,7 +1,7 @@
 import { check } from "./system"
-import { Decoder, Encoder, Serializer } from "./serializer"
+import { Decoder, Encoder, Packer } from "./serializer"
 
-export class PublicKey implements Serializer {
+export class PublicKey implements Packer {
     keyType: u8;
     data: Array<u8> | null;
 
@@ -13,14 +13,14 @@ export class PublicKey implements Serializer {
         this.data = data;
     }
 
-    serialize(): u8[] {
+    pack(): u8[] {
         let enc = new Encoder(34);
         enc.packNumber<u8>(this.keyType);
         enc.packBytes(this.data!);
         return enc.getBytes();
     }
 
-    deserialize(data: u8[]): usize {
+    unpack(data: u8[]): usize {
         let dec = new Decoder(data);
         this.keyType = dec.unpackNumber<u8>();
         this.data = dec.unpackBytes(33);

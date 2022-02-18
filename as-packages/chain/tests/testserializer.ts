@@ -26,6 +26,13 @@ class MyContract {
 
     @action("test1")
     testEncodeDecode(): void {
+        let n = new chain.VarUint32(0xfff);
+        let packed = n.pack();
+
+        let m = new chain.VarUint32(0);
+        m.unpack(packed);
+        chain.assert(n.n == m.n, "bad value.");
+
         let enc = new chain.Encoder(10);
         enc.packLength(0xfffff);
 

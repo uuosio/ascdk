@@ -2,61 +2,10 @@ import { Name } from "./name"
 import { memcpy } from "./env"
 import { check } from "./system"
 
-export interface Serializer {
-    serialize(): u8[];
-    deserialize(data: u8[]): usize;
+export interface Packer {
+    pack(): u8[];
+    unpack(data: u8[]): usize;
     getSize(): usize;
-}
-
-export function packVarUint32(val: u32): u8[] {
-	let result = new Array<u8>();
-	while (true) {
-		let b = <u8>(val & 0x7f);
-		val >>= 7;
-		if (val > 0) {
-			b |= <u8>(1 << 7);
-		}
-        result.push(b);
-		if (val <= 0) {
-			break;
-		}
-	}
-	return result;
-}
-
-export class VarUint32 {
-    constructor(
-        public value: u32 = 0,
-        public length: u32 = 0
-    ){}
-}
-
-export function unpackVarUint32(val: u8[]): VarUint32 {
-	let by: u32 = 0;
-    let value: u32 = 0;
-    let length: u32 = 0;
-    for (let i=0; i<val.length; i++) {
-        let b = val[i];
-		value |= <u32>(b & 0x7f) << by;
-        by += 7;
-        length += 1;
-        if ((b & 0x80) == 0) {
-            break;
-        }
-    }
-    return new VarUint32(value, length);
-}
-
-export function calcPackedVarUint32Length(val: u32): usize {
-	let n: u32 = 0;
-    while (true) {
-		val >>= 7;
-		n += 1;
-		if (val <= 0) {
-			break;
-		}
-    }
-	return n;
 }
 
 export class Encoder {
@@ -76,8 +25,8 @@ export class Encoder {
         check(this.pos <= <u32>this.buf.length, "incPos: buffer overflow");
     }
 
-    pack(ser: Serializer): usize {
-        let raw = ser.serialize();
+    pack(ser: Packer): usize {
+        let raw = ser.pack();
         return this.packBytes(raw);
     }
 
@@ -171,8 +120,8 @@ export class Decoder {
         return this.pos;
     }
 
-    unpack(ser: Serializer): usize {
-        let size = ser.deserialize(this.remains())
+    unpack(ser: Packer): usize {
+        let size = ser.unpack(this.remains())
         this.incPos(<u32>size);
         return size;
     }
