@@ -1,7 +1,8 @@
 import { check, requireAuth, Name, Asset } from 'as-chain'
 import { AccountTable, StatTable } from './tables';
 
-class BaseContract {
+@contract("token")
+class MyContract {
     receiver: Name;
     firstReceiver: Name;
     action: Name
@@ -15,10 +16,7 @@ class BaseContract {
         this.accountTable = new AccountTable()
         this.statTable = new StatTable()
     }
-}
 
-@contract("token")
-class MyContract extends BaseContract {
     @action("create")
     create(issuer: Name, maximumSupply: Asset): void {
         requireAuth(this.receiver);
