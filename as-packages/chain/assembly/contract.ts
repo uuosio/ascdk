@@ -2,7 +2,7 @@ import * as env from "./env"
 import { Encoder, Decoder, Packer } from "./serializer"
 import { Name } from "./name"
 
-export function readActionData(): u8[] {
+export function get_self((): u8[] {
     let size = env.action_data_size();
     var arr = new Array<u8>(size);
     
