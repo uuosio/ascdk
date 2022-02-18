@@ -49,7 +49,7 @@ def test_2serialize():
     # logger.info(info)
     with open('./target/target.wasm', 'rb') as f:
         code = f.read()
-    with open('~lib/rt/target/metadata.json', 'rb') as f:
+    with open('~lib/rt/target/generated.abi', 'rb') as f:
         abi = f.read()
     chain.deploy_contract('hello', code, abi, 0)
 
@@ -66,7 +66,7 @@ def test_2serialize():
         # a10: i128,
         # a11: u128,
         # a12: VarInt32,
-        # a13: VarUint32,
+        a13 = 0xfff, #VarUint32,
         a14 = 0xffffff01,
         a15 = 0xfffffffffffffff0,
         # a16: f128,
@@ -86,7 +86,7 @@ def test_2serialize():
         a30 = '0.1000 EOS',
         # a31: chain.ExtendedAsset,
     )
-    r = chain.push_action('hello', 'test1', args, {'hello': 'active'})
+    r = chain.push_action('hello', 'test2', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
 
 def test_db():

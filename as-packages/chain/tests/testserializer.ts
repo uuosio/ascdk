@@ -55,7 +55,7 @@ class MyContract {
         // a10: i128,
         // a11: u128,
         // a12: VarInt32,
-        // a13: VarUint32,
+        a13: chain.VarUint32,
         a14: f32,
         a15: f64,
         //a16: f128,
@@ -82,7 +82,7 @@ class MyContract {
 
         let a = new TestClass(1, 2, 3);
         chain.printString(`changetype<ArrayBufferView>(a).byteLength: ${changetype<ArrayBufferView>(a).byteLength}`);
-
+        chain.assert(a13.n == 0xfff, "bad a13 value.");
         chain.printString(`
         a1 = ${a1},
         a2 = ${a2},
