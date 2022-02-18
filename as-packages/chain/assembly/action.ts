@@ -16,11 +16,11 @@ export function actionDataSize(): u32 {
 }
 
 export function requireRecipient(name: Name): void {
-    return env.require_recipient(name.N);
+    env.require_recipient(name.N);
 }
 
 export function requireAuth(name: Name): void {
-    return env.require_auth(name.N);
+    env.require_auth(name.N);
 }
 
 export function hasAuth(name: Name): bool {
@@ -28,7 +28,7 @@ export function hasAuth(name: Name): bool {
 }
 
 export function requireAuth2(permissionLevel: PermissionLevel): void {
-    return env.require_auth2(permissionLevel.actor.N, permissionLevel.permission);
+    env.require_auth2(permissionLevel.actor.N, permissionLevel.permission);
 }
 
 export function isAccount(name: Name): bool {
