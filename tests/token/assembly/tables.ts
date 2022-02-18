@@ -2,7 +2,11 @@ import { Asset, Name } from "as-chain";
 
 @table("accounts")
 class _AccountTable {
-    balance: Asset = new Asset();
+    balance: Asset;
+
+    constructor () {
+        this.balance = new Asset();
+    }
 
     @primary
     get primary(): u64 {
@@ -12,9 +16,15 @@ class _AccountTable {
 
 @table("stat")
 class _StatTable {
-    supply: Asset = new Asset();
-    max_supply: Asset = new Asset();
-    issuer: Name = new Name();
+    supply: Asset;
+    max_supply: Asset;
+    issuer: Name;
+
+    constructor () {
+        this.supply = new Asset();
+        this.max_supply = new Asset();
+        this.issuer = new Name();
+    }
 
     @primary
     get primary(): u64 {
