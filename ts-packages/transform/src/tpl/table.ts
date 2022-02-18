@@ -6,9 +6,9 @@ export const tableTpl = `
 
 {{export}}class {{className}} implements _chain.MultiIndexValue {
 
-    // {{#each fields}}
-    // {{rangeString}}
-    // {{/each}}
+    {{#each fields}}
+    {{rangeString}}
+    {{/each}}
 
     {{{constructorFun.rangeString}}}
 
