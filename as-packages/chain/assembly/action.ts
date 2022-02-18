@@ -1,12 +1,6 @@
 import * as env from "./env"
 import { Encoder, Decoder, Packer } from "./serializer"
 import { Name } from "./name"
-import { Utils } from "./utils"
-import { printHex, printString } from "./debug"
-
-export function actionDataSize(): u32 {
-    return env.action_data_size();
-}
 
 export function readActionData(): u8[] {
     let size = env.action_data_size();
@@ -17,6 +11,37 @@ export function readActionData(): u8[] {
     return arr;
 }
 
+export function actionDataSize(): u32 {
+    return env.action_data_size();
+}
+
+export function requireRecipient(name: Name) {
+    return env.require_recipient(name.N);
+}
+
+export function requireAuth(name: Name) {
+    return env.require_auth(name.N);
+}
+
+export function hasAuth(name: Name): bool {
+    return env.has_auth(name.N);
+}
+
+export function requireAuth2(permissionLevel: PermissionLevel) {
+    return env.require_auth2(permissionLevel.actor.N, permissionLevel.permission);
+}
+
+export function isAccount(name: Name): bool {
+    return env.is_account(name.N);
+}
+
+export function publiCationTime(): u64 {
+    return env.publication_time();
+}
+
+export function currentReceiver(): u64 {
+    return env.current_receiver();
+}
 export class PermissionLevel implements Packer {
     actor: Name;
     permission: Name;

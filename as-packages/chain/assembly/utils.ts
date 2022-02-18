@@ -31,7 +31,7 @@ export namespace Utils {
 
     export function calcPackedStringLength(val: string): usize {
         let utf8Str = String.UTF8.encode(val);
-        return calcPackedVarUint32Size(<u32>utf8Str.byteLength) + utf8Str.byteLength;
+        return calcPackedVarUint32Length(<u32>utf8Str.byteLength) + utf8Str.byteLength;
     }
 
 }

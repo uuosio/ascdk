@@ -4,12 +4,19 @@ export declare function printi(n: i64): void
 export declare function printui(n: u64): void
 export declare function prints(n: usize): void
 export declare function prints_l(cstr: usize, len: usize): void
-
 export declare function printhex(ptr: usize, len: usize): void
+
 export declare function read_action_data(ptr: usize, len: u32): usize
 export declare function action_data_size(): u32
-
+export declare function require_recipient(name: u64): void
+export declare function require_auth(name: u64): void
+export declare function has_auth(name: u64): bool
+export declare function require_auth2(name: u64, permission: u64): void
+export declare function is_account(name: u64): bool
 export declare function send_inline(serialized_action: usize, size: u32): void;
+export declare function send_context_free_inline(serialized_action: usize, size: u32): void;
+export declare function publication_time(): u64
+export declare function current_receiver(): u64
 
 // void  eosio_assert_message( uint32_t test, const char* msg, uint32_t msg_len );
 export declare function eosio_assert_message(test: u32, msg_ptr: usize, msg_len: usize): void;
