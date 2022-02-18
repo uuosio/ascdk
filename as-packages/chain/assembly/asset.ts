@@ -1,8 +1,15 @@
 import { check } from "./system"
 import { Encoder, Decoder, Packer } from "./serializer"
+import { U128, I128 } from "./bignum";
+
+const MAX_AMOUNT: i64 = (1 << 62) - 1;
+
+// type SymbolCode struct {
+// 	Value uint64
+// }
 
 export class Symbol implements Packer {
-    value: u64;
+    public value: u64;
     constructor(name: string="", precision: u8=0) {
         check(name.length <= 7, "bad symbol name");
         this.value = 0;
@@ -13,6 +20,12 @@ export class Symbol implements Packer {
             this.value <<= 8;
         }
         this.value |= precision;
+    }
+
+    static fromU64(value: u64): Symbol {
+        let a = new Symbol();
+        a.value = value;
+        return a;
     }
 
     getSymbolString(): string {
@@ -60,6 +73,11 @@ export class Symbol implements Packer {
     getSize(): usize {
         return 8;
     }
+
+    @inline @operator('==')
+    static eq(a: Symbol, b: Symbol): bool {
+      return a.value == b.value;
+    }
 }
 
 export class Asset implements Packer {
@@ -68,18 +86,6 @@ export class Asset implements Packer {
     constructor(amount: i64=0, symbol: Symbol=new Symbol()) {
         this.amount = amount;
         this.symbol = symbol;
-    }
-
-    Add(b: Asset): Asset {
-        check(this.symbol.value == b.symbol.value, "symbol not the same");
-        this.amount += b.amount;
-        return this;
-    }
-
-    Sub(b: Asset): Asset {
-        check(this.symbol.value == b.symbol.value, "symbol not the same");
-        this.amount -= b.amount;
-        return this;
     }
 
     toString(): string {
@@ -108,5 +114,82 @@ export class Asset implements Packer {
     getSize(): usize {
         return 8;
     }
-    
+
+    @inline @operator('+')
+    static add(a: Asset, b: Asset): Asset {
+        check(a.symbol.value == b.symbol.value, "symbol not the same");
+        let amount: i64 = a.amount + b.amount;
+        check(-MAX_AMOUNT <= amount, "addition underflow");
+        check(amount <= MAX_AMOUNT, "addition overflow");
+        return new Asset(amount, Symbol.fromU64(a.symbol.value));
+    }
+
+    @inline @operator('-')
+    static sub(a: Asset, b: Asset): Asset {
+        check(a.symbol.value == b.symbol.value, "symbol not the same");
+        let amount = a.amount - b.amount;
+        check(amount >= -MAX_AMOUNT, "subtraction underflow")
+        check(amount <= MAX_AMOUNT, "subtraction overflow")
+        return new Asset(amount, Symbol.fromU64(a.symbol.value));
+    }
+  
+    @inline @operator('*')
+    static mul(a: Asset, b: Asset): Asset {
+        check(a.symbol.value == b.symbol.value, "symbol not the same");
+        check(a.amount >= 0, "bad amount");
+        check(b.amount >= 0, "bad amount");
+        let _a = new U128(<u64>a.amount);
+        let _b = new U128(<u64>b.amount);
+        let _c = _a * _b;
+
+        let max_amount = new U128(MAX_AMOUNT);
+        // let min_amount = new I128(-MAX_AMOUNT);
+        check(max_amount > _c, "multiplication overflow");
+        // check(_c > min_amount, "multiplication underflow");
+        return new Asset(_c.lo, Symbol.fromU64(a.symbol.value));
+    }
+  
+    @inline @operator('/')
+    static div(a: Asset, b: Asset): Asset {
+        check(a.symbol.value == b.symbol.value, "symbol not the same");
+        check(a.amount >= 0, "bad amount");
+        check(b.amount >= 0, "bad amount");
+        return new Asset(a.amount / b.amount, Symbol.fromU64(a.symbol.value));
+    }
+
+    @inline @operator('==')
+    static eq(a: Asset, b: Asset): bool {
+        check(a.symbol.value == b.symbol.value, "symbol not the same");
+        return a.amount == b.amount;
+    }
+
+    @inline @operator('!=')
+    static ne(a: Asset, b: Asset): bool {
+        check(a.symbol.value == b.symbol.value, "symbol not the same");
+        return a.amount != b.amount;
+    }
+  
+    @inline @operator('<')
+    static lt(a: Asset, b: Asset): bool {
+        check(a.symbol.value == b.symbol.value, "symbol not the same");
+        return a.amount < b.amount;
+    }
+  
+    @inline @operator('>')
+    static gt(a: Asset, b: Asset): bool {
+        check(a.symbol.value == b.symbol.value, "symbol not the same");
+        return a.amount > b.amount;
+    }
+  
+    @inline @operator('<=')
+    static le(a: Asset, b: Asset): bool {
+        check(a.symbol.value == b.symbol.value, "symbol not the same");
+        return a.amount <= b.amount;
+    }
+  
+    @inline @operator('>=')
+    static ge(a: Asset, b: Asset): bool {
+        check(a.symbol.value == b.symbol.value, "symbol not the same");
+        return a.amount >= b.amount;
+    }
 }
