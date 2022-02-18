@@ -12,13 +12,10 @@ export interface PrimaryValue extends Packer {
 }
 
 export class DBI64 {
-    code: u64;
-    scope: u64;
-    table: u64;
-    constructor(code: i64, scope: i64, table: u64) {
-        this.code = code;
-        this.scope = scope;
-        this.table = table;
+    constructor(
+        public code: u64,
+        public scope: u64,
+        public table: u64) {
     }
 
     store(id: u64, data: u8[], payer: u64): i32 {

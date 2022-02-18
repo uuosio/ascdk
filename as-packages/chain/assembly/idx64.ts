@@ -5,11 +5,10 @@ import { printString } from "./debug"
 import { PrimaryIterator } from "./mi"
 
 class IDX64ReturnValue {
-    i: SecondaryIterator;
-    value: u64; //secondary value
-    constructor(i: SecondaryIterator, value: u64) {
-        this.i = i;
-        this.value = value;
+    constructor(
+        public i: SecondaryIterator,
+        public value: u64,////secondary value
+    ) {
     }
 }
 

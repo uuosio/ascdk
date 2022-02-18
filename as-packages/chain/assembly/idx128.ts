@@ -5,11 +5,9 @@ import { U128 } from "./bignum"
 import { printString } from "./debug"
 
 class IDX128ReturnValue {
-    i: SecondaryIterator;
-    value: U128; //secondary value
-    constructor(i: SecondaryIterator, value: U128) {
-        this.i = i;
-        this.value = value;
+    constructor(
+        public i: SecondaryIterator,
+        public value: U128) {
     }
 }
 

@@ -1,4 +1,5 @@
 import { memcpy } from "./env"
+import { calcPackedVarUint32Length } from "./varint"
 
 export namespace Utils {
     export function getDataStart<T>(arr: Array<T>): usize {
@@ -15,18 +16,6 @@ export namespace Utils {
     export function stringToU8Array(s: string): Array<u8> {
         let ab = String.UTF8.encode(s);
         return toU8Array(ab);
-    }
-
-    export function calcPackedVarUint32Length(val: u32): usize {
-        let n: usize = 0;
-        for (;;) {
-            val >>= 7;
-            n += 1;
-            if (val <= 0) {
-                break;
-            }
-        }
-        return n;
     }
 
     export function calcPackedStringLength(val: string): usize {

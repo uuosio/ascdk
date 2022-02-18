@@ -4,11 +4,9 @@ import { assert } from "./system"
 import { printString } from "./debug"
 
 class IDXF64ReturnValue {
-    i: SecondaryIterator;
-    value: f64; //secondary value
-    constructor(i: SecondaryIterator, value: f64) {
-        this.i = i;
-        this.value = value;
+    constructor(
+        public i: SecondaryIterator,
+        public value: f64) {
     }
 }
 

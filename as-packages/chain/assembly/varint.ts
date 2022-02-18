@@ -1,6 +1,6 @@
 import { Packer } from "./serializer"
 
-function calcPackedVarUint32Length(val: u32): usize {
+export function calcPackedVarUint32Length(val: u32): usize {
 	let n: u32 = 0;
     while (true) {
 		val >>= 7;

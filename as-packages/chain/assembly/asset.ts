@@ -81,11 +81,9 @@ export class Symbol implements Packer {
 }
 
 export class Asset implements Packer {
-    amount: i64;
-    symbol: Symbol;
-    constructor(amount: i64=0, symbol: Symbol=new Symbol()) {
-        this.amount = amount;
-        this.symbol = symbol;
+    constructor(
+        public amount: i64=0,
+        public symbol: Symbol=new Symbol()) {
     }
 
     toString(): string {

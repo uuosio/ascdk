@@ -6,9 +6,9 @@ export const serializerTpl = `
 
 {{export}}class {{className}} implements _chain.Packer {
 
-    {{#each fields}}
-    {{rangeString}}
-    {{/each}}
+    // {{#each fields}}
+    // {{rangeString}}
+    // {{/each}}
 
     {{{constructorFun.rangeString}}}
 
