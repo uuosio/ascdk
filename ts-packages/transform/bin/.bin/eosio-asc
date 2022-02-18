@@ -33,7 +33,7 @@ const ARGS = [
     "eosio-transform/index.ts"
 ]
 
-if (/\beosio$/.test(process.argv[1])) {
+if (true) {
     console.log("Build Starting ······")
     asc.ready.then(() => {
         let args = process.argv.slice(2).concat(ARGS);

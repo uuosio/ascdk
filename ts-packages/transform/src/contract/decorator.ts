@@ -19,7 +19,7 @@ function fromNode(nameNode: Expression): ContractDecoratorKind {
                 break;
             }
             case CharCode.p: {
-                if (nameStr == "packed") return ContractDecoratorKind.PACKED;
+                if (nameStr == "packer") return ContractDecoratorKind.SERIALIZER;
                 if (nameStr == "primary") return ContractDecoratorKind.PRIMARY;
                 break;
             }
