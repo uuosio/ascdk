@@ -1,5 +1,5 @@
 {
-  "name": "@patract/eosio-asc",
+  "name": "eosio-asc",
   "version": "0.1.0",
   "description": "compile assemblyscript to substrate wasm contract",
   "keywords": [
