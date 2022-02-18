@@ -154,11 +154,11 @@ export class TableInterpreter extends ClassInterpreter {
         }
     }
 
-    public genTypeSequence(typeNodeMap: Map<string, NamedTypeNodeDef>): void {
-        this.secondaryFuncDefs.forEach(funcDef => {
-            funcDef.genTypeSequence(typeNodeMap);
-        });
-    }
+    // public genTypeSequence(typeNodeMap: Map<string, NamedTypeNodeDef>): void {
+    //     this.secondaryFuncDefs.forEach(funcDef => {
+    //         funcDef.genTypeSequence(typeNodeMap);
+    //     });
+    // }
 }
 
 export class SerializerInterpreter extends ClassInterpreter {

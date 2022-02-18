@@ -229,12 +229,13 @@ export class ActionFunctionDef extends FunctionDef {
 }
 
 export class DBIndexFunctionDef {
+    _index: number = 0;
     messageDecorator: DecoratorNodeDef;
     bodyRange: Range;
     getterPrototype: FunctionDef | null;
     setterPrototype: FunctionDef | null;
 
-    constructor(propertyPrototype: PropertyPrototype, indexType: i32) {
+    constructor(propertyPrototype: PropertyPrototype, indexType: number) {
         if (propertyPrototype.getterPrototype) {
             this.getterPrototype = new FunctionDef(propertyPrototype.getterPrototype!);
             console.log("++++getterPrototype.rangeString:", this.getterPrototype.rangeString);

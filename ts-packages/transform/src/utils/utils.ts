@@ -252,7 +252,8 @@ export class DecoratorUtil {
 export class EosioUtils {
     public static arrayToHex = (data: Uint8Array): string => {
         let result = '';
-        for (const x of data) {
+        for (let i=0; i<data.length; i++) {
+            let x = data[i];
             result += ('00' + x.toString(16)).slice(-2);
         }
         return result.toUpperCase();
