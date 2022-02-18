@@ -9,10 +9,7 @@ import { printString } from "./debug"
 import { assert } from "./system"
 
 export class PrimaryIterator {
-    i: i32;
-    constructor(iterator: i32) {
-        this.i = iterator;
-    }
+    constructor(public i: i32) {}
 
     isOk(): bool {
         return this.i >= 0;

@@ -18,12 +18,9 @@ export function readActionData(): u8[] {
 }
 
 export class PermissionLevel implements Packer {
-    actor: Name;
-    permission: Name;
-
-    constructor(actor: Name, permission: Name) {
-        this.actor = actor;
-        this.permission = permission;
+    constructor(
+        public actor: Name,
+        public permission: Name) {
     }
 
     pack(): u8[] {
@@ -46,16 +43,11 @@ export class PermissionLevel implements Packer {
 }
 
 export class Action implements Packer{
-    account: Name
-    name: Name
-    authorization: PermissionLevel[]
-    data: u8[]
-
-    constructor(authorization: PermissionLevel[], account: Name, name: Name, data: u8[]) {
-        this.account = account;
-        this.name = name;
-        this.authorization = authorization;
-        this.data = data;
+    constructor(
+        public authorization: PermissionLevel[],
+        public account: Name,
+        public name: Name,
+        public data: u8[]) {
     }
 
     send(): void {

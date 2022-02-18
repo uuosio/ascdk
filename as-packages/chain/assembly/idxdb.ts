@@ -1,13 +1,10 @@
 import { U128, U256 } from "./bignum"
 
 export class SecondaryIterator {
-    i: i32;
-    primary: u64;
-    dbIndex: u32;
-    constructor(i: i32, primary: u64, dbIndex: u32) {
-        this.i = i;
-        this.primary = primary;
-        this.dbIndex = dbIndex;
+    constructor(
+        public i: i32,
+        public primary: u64,
+        public dbIndex: u32) {
     }
 
     isOk(): bool {
@@ -28,11 +25,9 @@ export enum SecondaryType {
 }
 
 export class SecondaryValue {
-    type: SecondaryType;
-    value: Array<u64>;
-    constructor(type: SecondaryType, value: Array<u64>) {
-        this.type = type;
-        this.value = value;
+    constructor(
+        public type: SecondaryType,
+        public value: Array<u64>) {
     }
 }
 
@@ -89,25 +84,18 @@ export function getSecondaryValue_f64(value: SecondaryValue): f64 {
 }
 
 export class SecondaryReturnValue {
-    i: SecondaryIterator;
-    value: SecondaryValue;
-    constructor(i: SecondaryIterator, value: SecondaryValue) {
-        this.i = i;
-        this.value = value;
+    constructor(
+        public i: SecondaryIterator,
+        public value: SecondaryValue) {
     }
 }
 
 export abstract class IDXDB {
-    code: u64;
-    scope: u64;
-    table: u64;
-    dbIndex: u32
-
-    constructor(code: u64, scope: u64, table: u64, dbIndex: u32=0) {
-        this.code = code;
-        this.scope = scope;
-        this.table = table;
-        this.dbIndex = dbIndex;
+    constructor(
+        public code: u64,
+        public scope: u64,
+        public table: u64,
+        public dbIndex: u32) {
     }
 
     abstract storeEx(id: u64, secondary: SecondaryValue, payer: u64): SecondaryIterator;

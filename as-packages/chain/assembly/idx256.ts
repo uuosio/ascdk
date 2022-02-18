@@ -4,11 +4,9 @@ import {assert} from "./system"
 import { U256 } from "./bignum"
 
 class IDX256ReturnValue {
-    i: SecondaryIterator;
-    value: U256; //secondary value
-    constructor(i: SecondaryIterator, value: U256) {
-        this.i = i;
-        this.value = value;
+    constructor(
+        public i: SecondaryIterator,
+        public value: U256) {
     }
 }
 
