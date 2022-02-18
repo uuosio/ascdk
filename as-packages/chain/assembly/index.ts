@@ -27,7 +27,17 @@ export {
 
 export {MultiIndex, MultiIndexValue} from "./mi"
 
-export { readActionData, actionDataSize } from "./action"
+export {
+    readActionData,
+    actionDataSize,
+    requireRecipient,
+    requireAuth,
+    hasAuth,
+    requireAuth2,
+    isAccount,
+    publicationTime,
+    currentReceiver
+} from "./action"
 
 export { Name } from "./name"
 export { Action, PermissionLevel } from "./action"
