@@ -56,6 +56,16 @@ export function newSecondaryValue_U128(value: U128): SecondaryValue {
     return new SecondaryValue(SecondaryType.U128, arr);
 }
 
+export function newSecondaryValue_U256(value: U256): SecondaryValue {
+    let arr = new Array<u64>(4);
+    let dataStart = arr.dataStart;
+    store<u64>(dataStart, value.lo1);
+    store<u64>(dataStart + 8, value.lo2);
+    store<u64>(dataStart + 16, value.hi1);
+    store<u64>(dataStart + 24, value.hi2);
+    return new SecondaryValue(SecondaryType.U256, arr);
+}
+
 export function newSecondaryValue_f64(value: f64): SecondaryValue {
     let arr = new Array<u64>(1);
     store<f64>(arr.dataStart, value);
@@ -68,6 +78,10 @@ export function getSecondaryValue_u64(value: SecondaryValue): u64 {
 
 export function getSecondaryValue_U128(value: SecondaryValue): U128 {
     return new U128(value.value[0], value.value[1]);
+}
+
+export function getSecondaryValue_U256(value: SecondaryValue): U256 {
+    return new U256(value.value[0], value.value[1], value.value[2], value.value[3]);
 }
 
 export function getSecondaryValue_f64(value: SecondaryValue): f64 {

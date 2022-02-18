@@ -163,7 +163,7 @@ Handlebars.registerHelper("getSecondaryValue", function (fn: DBIndexFunctionDef)
     let plainType = fn.getterPrototype!.returnType!.plainTypeNode;
     if (plainType == 'chain.U128') {
         plainType = 'U128';
-    } else if (plainType == 'chain.U128') {
+    } else if (plainType == 'chain.U256') {
         plainType = 'U256';
     }
     console.log("+++++++++getSecondaryValue:", fn._index);
@@ -179,7 +179,7 @@ Handlebars.registerHelper("setSecondaryValue", function (fn: DBIndexFunctionDef)
     let plainType = fn.getterPrototype!.returnType!.plainTypeNode;
     if (plainType == 'chain.U128') {
         plainType = 'U128';
-    } else if (plainType == 'chain.U128') {
+    } else if (plainType == 'chain.U256') {
         plainType = 'U256';
     }
 

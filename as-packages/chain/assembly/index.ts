@@ -5,6 +5,8 @@ export { DBI64 } from "./dbi64"
 export { IDX64 } from "./idx64"
 export { IDXF64 } from "./idxf64"
 export { IDX128 } from "./idx128"
+export { IDX256 } from "./idx256"
+
 export { assert } from "./system"
 export { printString, printArray, printHex, printi } from "./debug"
 
@@ -14,9 +16,11 @@ export {
     SecondaryValue,
     newSecondaryValue_u64,
     newSecondaryValue_U128,
+    newSecondaryValue_U256,
     newSecondaryValue_f64,
     getSecondaryValue_u64,
     getSecondaryValue_U128,
+    getSecondaryValue_U256,
     getSecondaryValue_f64
 } from "./idxdb"
 

@@ -3,6 +3,7 @@ import { DBI64, PrimaryValue } from "./dbi64"
 import { IDX64 } from "./idx64"
 import { IDXF64 } from "./idxf64"
 import { IDX128 } from "./idx128"
+import { IDX256 } from "./idx256"
 import { Name } from "./name"
 import { printString } from "./debug"
 import { assert } from "./system"
@@ -43,6 +44,7 @@ export class MultiIndex<T extends MultiIndexValue> {
                 } else if (indexes[i] == SecondaryType.U128) {
                     this.idxdbs[i] = new IDX128(code.N, scope.N, idxTable, i);
                 } else if (indexes[i] == SecondaryType.U256) {
+                    this.idxdbs[i] = new IDX256(code.N, scope.N, idxTable, i);
                 } else if (indexes[i] == SecondaryType.F64) {
                     this.idxdbs[i] = new IDXF64(code.N, scope.N, idxTable, i);
                 } else if (indexes[i] == SecondaryType.F128) {

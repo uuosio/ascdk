@@ -6,7 +6,9 @@ class MyData {
         public a: u64=0,
         public b: u64=0,
         public c: chain.U128=new chain.U128(),
-        public d: f64=0.0) {
+        public d: f64=0.0,
+        public e: chain.U256=new chain.U256(),
+        ) {
     }
 
     @primary
@@ -43,6 +45,16 @@ class MyData {
     set dvalue(value: f64) {
         this.d = value;
     }
+
+    @secondary
+    get evalue(): chain.U256 {
+        return this.e;
+    }
+
+    @secondary
+    set evalue(value: chain.U256) {
+        this.e = value;
+    }
 }
 
 @contract("hello")
@@ -63,15 +75,15 @@ class MyContract {
             return new MyData();
         }
 
-        let indexes = [chain.SecondaryType.U64, chain.SecondaryType.U128, chain.SecondaryType.F64];
+        let indexes = [chain.SecondaryType.U64, chain.SecondaryType.U128, chain.SecondaryType.F64, chain.SecondaryType.U256];
         let mi = new chain.MultiIndex<MyData>(this.receiver, this.firstReceiver, this.action, indexes, newObj);
-        let value = new MyData(1, 2, new chain.U128(3), 3.3);
+        let value = new MyData(1, 2, new chain.U128(3), 3.3, new chain.U256(11));
         mi.store(value, this.receiver);
 
-        value = new MyData(4, 5, new chain.U128(6), 6.6);
+        value = new MyData(4, 5, new chain.U128(6), 6.6, new chain.U256(44));
         mi.store(value, this.receiver);
 
-        value = new MyData(7, 8, new chain.U128(9), 9.9);
+        value = new MyData(7, 8, new chain.U128(9), 9.9, new chain.U256(77));
         mi.store(value, this.receiver);
 
         let it = mi.find(4);
@@ -103,11 +115,6 @@ class MyContract {
         chain.printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}\n`)
         chain.assert(value.a == 7 && value.b == 8 && value.c == new chain.U128(9) && value.d == 9.9, "bad value");
 
-        value.c = new chain.U128(10);
-        mi.update(it, value, this.receiver);
-        value = mi.get(it);
-        chain.assert(value.a == 7 && value.b == 8 && value.c == new chain.U128(10) && value.d == 9.9, "bad value");
-
         let idx = <chain.IDX64>mi.getIdxDB(0);
         let idxIt = idx.findPrimary(7);
         chain.printString(`++++++++${idxIt.i.i}, ${idxIt.value}\n`)
@@ -122,7 +129,7 @@ class MyContract {
 
         //1 2 3
         //4 5 6
-        //7 8 10
+        //7 8 9
         {
             let secondary = chain.newSecondaryValue_u64(2);
             let ret = idx.lowerBoundEx(secondary);
@@ -153,7 +160,7 @@ class MyContract {
 
         //1 22 3 3.3
         //4 5 6 6.6
-        //7 8 10 9.9
+        //7 8 9 9.9
         {
             let idx128 = <chain.IDX128>mi.getIdxDB(1);
             let idxRet = idx128.findPrimary(1);
@@ -172,15 +179,15 @@ class MyContract {
 
             let secondary = chain.newSecondaryValue_U128(new chain.U128(6));
             let ret = idx128.lowerBoundEx(secondary);
-            chain.assert(ret.value.value[0] == 6, "idx128.lowerBound: bad secondary value!");
+            chain.assert(ret.value.value[0] == 6, "idx128.lowerBound 1: bad secondary value!");
 
             ret = idx128.upperBoundEx(secondary);
-            chain.assert(ret.value.value[0] == 10, "idx128.lowerBound: bad secondary value!");
+            chain.assert(ret.value.value[0] == 9, "idx128.lowerBound 2: bad secondary value!");
         }
 
-        //1 22 3 3.3
-        //4 5 6 6.6
-        //7 8 10 9.9
+        //1 22 3 3.3 11
+        //4 5 6 6.6 
+        //7 8 9 9.9
         {
             let idxf64 = <chain.IDXF64>mi.getIdxDB(2);
             let idxRet = idxf64.findPrimary(1);
@@ -197,14 +204,46 @@ class MyContract {
             let secondary = chain.newSecondaryValue_f64(6.6);
             let ret = idxf64.lowerBoundEx(secondary);
             chain.assert(ret.i.isOk(), "bad iterator");
-            chain.assert(ret.value == 6.6, "idx128.lowerBound: bad secondary value!");
+            chain.assert(ret.value == 6.6, "idx128.lowerBound 3: bad secondary value!");
 
             it = idxf64.upperBound(6.6);
             chain.assert(it.primary == 7, "idx128.lowerBound: bad primary value!");
 
             ret = idxf64.upperBoundEx(secondary);
-            chain.assert(ret.value == 9.9, "idx128.lowerBound: bad secondary value!");
+            chain.assert(ret.value == 9.9, "idx128.lowerBound 4: bad secondary value!");
         }
+
+        //1 22 3 3.3 11
+        //4 5 6 6.6 44
+        //7 8 9 9.9 77
+        {
+            let idx256 = <chain.IDX256>mi.getIdxDB(3);
+            let idxRet = idx256.findPrimary(1);
+            chain.assert(idxRet.value == new chain.U256(11), "bad idx128 value");
+            let it = idx256.previous(idxRet.i);
+            chain.assert(it.i == -1, 'bad iterator');
+
+            it = idx256.next(idxRet.i);
+            chain.assert(it.primary == 4, "bad primary value!");
+
+            it = idx256.lowerBound(new chain.U256(44));
+            chain.assert(it.primary == 4, "idx256.lowerBound: bad primary value!");
+
+            it = idx256.upperBound(new chain.U256(44));
+            chain.assert(it.primary == 7, "idx256.lowerBound: bad primary value!");
+
+            let secondary = chain.newSecondaryValue_U256(new chain.U256(44));
+            let ret = idx256.lowerBoundEx(secondary);
+            chain.assert(ret.value.value[0] == 44, "idx256.lowerBound 1: bad secondary value!");
+
+            ret = idx256.upperBoundEx(secondary);
+            chain.assert(ret.value.value[0] == 77, "idx256.lowerBound 2: bad secondary value!");
+        }
+
+        value = new MyData(7, 88, new chain.U128(99), 9.99);
+        mi.update(it, value, this.receiver);
+        value = mi.get(it);
+        chain.assert(value.a == 7 && value.b == 88 && value.c == new chain.U128(99) && value.d == 9.99, "bad value");
 
         // 1 22 3
         // 4 5 6
