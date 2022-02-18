@@ -1,6 +1,6 @@
 # Transform
 
-Compiling the `ask`-lang smart contract code to generate as normal `as` code that can be directly compiled into wasm.
+Compiling the `eosio-asc` smart contract code to generate as normal `as` code that can be directly compiled into wasm.
 
 ## Build
 

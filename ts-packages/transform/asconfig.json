@@ -13,7 +13,7 @@
         }
     },
     "options": {
-        "transform": ["ask-transform"],
+        "transform": ["eosio-transform"],
         "importMemory": true,
         "initialMemory": 2,
         "maximumMemory": 16,
