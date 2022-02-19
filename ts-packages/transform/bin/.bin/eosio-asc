@@ -50,7 +50,7 @@ if (true) {
                 args.push("-t", wastPath)
                 const ascOption = require("eosio-transform/src/ascoption.js");
                 let apiOption = new ascOption.APIOptionImpl();
-                asc.main(args, apiOption);
+                process.exitCode = asc.main(args, apiOption);
                 apiOption.writeExtensionFile();
                 console.log(`Build Done. Targets generated. Target directory: ${path.join(dirname, "target")}.`);
             }

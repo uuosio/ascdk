@@ -1,6 +1,7 @@
 import * as env from "./env"
 import { Encoder, Decoder, Packer } from "./serializer"
 import { Name } from "./name"
+import { calcPackedVarUint32Length } from "./varint"
 
 export function readActionData(): u8[] {
     let size = env.action_data_size();
@@ -81,14 +82,14 @@ export class Action implements Packer{
     }
 
     pack(): u8[] {
-        let enc = new Encoder(8*2 + 1 + 1 + this.authorization.length * 16 + this.data.length);
+        let enc = new Encoder(this.getSize());
         enc.packName(this.account);
         enc.packName(this.name);
         enc.packLength(this.authorization.length);
         for (let i = 0; i<this.authorization.length; i++) {
             enc.pack(this.authorization[i]);
         }
-        enc.packArray<u8>(this.data);
+        enc.packNumberArray<u8>(this.data);
         return enc.getBytes();
     }
 
@@ -96,11 +97,25 @@ export class Action implements Packer{
         let dec = new Decoder(data);
         this.account = dec.unpackName();
         this.name = dec.unpackName();
-        let length = dec.unpackLength();
-        return 0;
+        let length = <i32>dec.unpackLength();
+        this.authorization = new Array<PermissionLevel>(length);
+        for (let i=0; i<length; i++) {
+            let actor = dec.unpackName();
+            let permission = dec.unpackName();
+            let obj = new PermissionLevel(actor, permission);
+            this.authorization[i] = obj;
+        }
+        this.data = dec.unpackNumberArray<u8>();
+        return dec.getPos();
     }
 
     getSize(): usize {
-        return 0;
+        let size: usize = 0;
+        size += calcPackedVarUint32Length(this.authorization.length);
+        size += this.authorization.length * 16;
+        size += 16;
+        size += calcPackedVarUint32Length(this.data.length);
+        size += this.data.length;        
+        return size;
     }
 }

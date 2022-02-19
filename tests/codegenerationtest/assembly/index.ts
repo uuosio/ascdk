@@ -4,12 +4,11 @@ import { MyTable } from "./utils"
 
 @serializer
 class MyStruct {
-    a1: u64;
-    a2: u64;
-    constructor(a1: u64=0, a2: u64=0) {
-        this.a1 = a1;
-        this.a2 = a2;
-    }
+    constructor(
+        public a1: u64=0,
+        public a2: u64=0,
+        public a3: u8[]=[],
+    ) {}
 }
 
 @table("mydata")

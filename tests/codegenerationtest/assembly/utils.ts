@@ -1,11 +1,6 @@
 @table("mytable")
 class _MyTable {
-    a: u64;
-
-    constructor() {
-        this.a = 0;
-    }
-
+    constructor(public a: u64 = 0) {}
     @primary
     get primary(): u64 {
         return this.a

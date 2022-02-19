@@ -6,22 +6,7 @@ export const tableTpl = `
 
 {{export}}class {{className}} implements _chain.MultiIndexValue {
 
-    {{#each fields}}
-    {{rangeString}}
-    {{/each}}
-
-    {{{constructorFun.rangeString}}}
-
-    {{#each functions}}
-    {{rangeString}}
-    {{/each}}
-
-    {{{primaryFuncDef.getterPrototype.rangeString}}}
-
-    {{#each secondaryFuncDefs}}
-    {{{getterPrototype.rangeString}}}
-    {{{setterPrototype.rangeString}}}
-    {{/each}}
+    {{{ExtractClassBody range}}}
 
     pack(): u8[] {
         let enc = new _chain.Encoder(this.getSize());
@@ -51,8 +36,6 @@ export const tableTpl = `
         return this.{{{primaryFuncDef.getterPrototype.declaration.name.text}}}
     }
 
-    // primaryFuncDef: DBIndexFunctionDef | null = null;
-    // secondaryFuncDefs: DBIndexFunctionDef[] = [];
     getSecondaryValue(i: i32): _chain.SecondaryValue {
         switch (i) {
             {{#each secondaryFuncDefs}}

@@ -4,9 +4,29 @@ import { U128, I128 } from "./bignum";
 
 const MAX_AMOUNT: i64 = (1 << 62) - 1;
 
-// type SymbolCode struct {
-// 	Value uint64
-// }
+export function isValid(sym: u64): bool {
+    let i = 0;
+    for (; i<7; i++) {
+        let c = <u8>(sym & 0xff)
+        if (c >= <u8>65 && c <= <u8>90) { //('A' <= c && c <= 'Z')
+        } else {
+            return false;
+        }
+        sym >>= 8
+        if ((sym & 0xFF) == 0) {
+            break;
+        }
+    }
+
+    i += 1;
+    for (; i<7; i++) {
+        sym >>= 8;
+        if ((sym & 0xFF) != 0) {
+            return false
+        }
+    }
+    return true
+}
 
 export class Symbol implements Packer {
     public value: u64;
@@ -20,6 +40,22 @@ export class Symbol implements Packer {
             this.value <<= 8;
         }
         this.value |= precision;
+    }
+
+    fromU64(value: u64): Symbol {
+        let ret = new Symbol();
+        ret.value = value;
+        check(ret.isValid(), "invalid symbol");
+        return ret;
+    }
+
+    code(): u64 {
+        return this.value >> 8
+    }
+
+    isValid(): bool {
+        let sym = this.code()
+        return isValid(sym);
     }
 
     static fromU64(value: u64): Symbol {
@@ -67,6 +103,7 @@ export class Symbol implements Packer {
     unpack(data: u8[]): usize {
         let dec = new Decoder(data);
         this.value = dec.unpackNumber<u64>();
+        check(this.isValid(), "invalid symbol");
         return dec.getPos();
     }
 
@@ -110,7 +147,7 @@ export class Asset implements Packer {
     }
 
     getSize(): usize {
-        return 8;
+        return 16;
     }
 
     @inline @operator('+')

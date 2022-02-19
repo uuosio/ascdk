@@ -1,6 +1,6 @@
 export { prints, printui, action_data_size, read_action_data, db_end_i64 } from "./env"
 export { U128, U256 } from "./bignum"
-export { VarInt32, VarUint32 } from "./varint"
+export { VarInt32, VarUint32, calcPackedVarUint32Length } from "./varint"
 
 export { DBI64 } from "./dbi64"
 export { IDX64 } from "./idx64"
@@ -41,7 +41,7 @@ export {
 
 export { Name } from "./name"
 export { Action, PermissionLevel } from "./action"
-export { Asset, Symbol } from "./asset"
+export { Asset, Symbol, isValid } from "./asset"
 export { PublicKey } from "./crypto"
 
 export * from "./serializer"

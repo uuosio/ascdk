@@ -8,6 +8,7 @@ import { CONFIG } from "../config/compile";
 import { EosioUtils, RangeUtil } from "../utils/utils"
 import { ABI, ABIAction, ABIStruct, ABIStructField, ABITable } from "../abi/abi"
 import { TypeHelper } from "../utils/typeutil"
+import { TypeKindEnum } from "../enums/customtype";
 
 export class ModifyPoint {
     range: Range;
@@ -113,10 +114,18 @@ export function getAbiInfo(programInfo: ContractProgram): string {
             let field = new ABIStructField();
             field.name = parameter.name;
             let plainType = parameter.type.plainTypeNode;
+            if (parameter.type.typeKind == TypeKindEnum.ARRAY) {
+                plainType = plainType.replace('[]', '');
+            }
             if (plainType.indexOf('chain.') == 0) {
                 plainType = plainType.replace('chain.', '');
             }
+
             field.type = TypeHelper.primitiveToAbiMap.get(plainType)!;
+
+            if (parameter.type.typeKind == TypeKindEnum.ARRAY) {
+                field.type += '[]';
+            }
             abiStruct.fields.push(field);
         });
         abi.structs.push(abiStruct);

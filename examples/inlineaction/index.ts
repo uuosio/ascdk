@@ -30,13 +30,6 @@ class MyContract {
             chain.Name.fromString("saygoodbye"),
             hello.pack(),
         );
-        let raw1 = a.pack();
-        a.unpack(raw1);
-        let raw2 = a.pack();
-        chain.assert(raw1.length == raw2.length, "bad value");
-        for (let i=0; i<raw1.length; i++) {
-            chain.assert(raw1[i] == raw2[i], "bad value");
-        }
         a.send();
         chain.printString(`hello, ${name}\n`)
     }

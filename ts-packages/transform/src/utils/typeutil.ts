@@ -46,6 +46,7 @@ export class TypeHelper {
     }
 
     static primitiveToAbiMap: Map<string, string> = new Map([
+        ["bool", "bool"],
         ["boolean", "bool"],
         ["i8", "int8"],
         ["u8", "uint8"],

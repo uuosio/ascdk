@@ -1,14 +1,12 @@
 import * as chain from "as-chain"
-import { Utils } from "as-chain/utils"
 
-class TestClass {
-    a: u64;
-    b: u64;
-    c: u64;
-    constructor(a: u64, b: u64, c: u64) {
-        this.a = a;
-        this.b = b;
-        this.c = c;
+@packer
+class MyData {
+    constructor(public a: u64 = 0,
+        public b: u64 = 0,
+        public c: u64 = 0,
+        public d: chain.Asset[] = [],
+        ) {
     }
 }
 
@@ -26,6 +24,49 @@ class MyContract {
 
     @action("test1")
     testEncodeDecode(): void {
+        {
+            let arr = new Array<MyData>();
+
+            let obj1 = new MyData();
+            arr.push(obj1);
+
+            let obj2 = new MyData(1, 2, 3, 
+                [new chain.Asset(10, new chain.Symbol("EOS", 4))]
+            );
+            arr.push(obj2);
+
+            let enc = new chain.Encoder(8*3+1 + 8*3+1+16 + 1);
+            enc.packObjectArray(arr);
+            
+            let data = enc.getBytes();
+
+            arr = new Array<MyData>();
+            let dec = new chain.Decoder(data);
+            let length = dec.unpackLength();
+            for (let i=<u32>0; i<length; i++) {
+                let obj = new MyData();
+                dec.unpack(obj);
+                arr.push(obj);
+            }
+            chain.assert(arr[1].a == 1 && arr[1].b == 2 && arr[1].c == 3 && arr[1].d[0].amount == 10, "bad value");
+        }
+
+        {
+            let arr = new Array<MyData>();
+
+            let obj1 = new MyData();
+            arr.push(obj1);
+
+            let obj2 = new MyData(1, 2, 3);
+            arr.push(obj2);
+
+            let data = obj2.pack();
+
+            let dec = new chain.Decoder(data);
+            dec.unpack(arr[0]);
+            chain.assert(obj1.a == 1 && obj1.b == 2 && obj1.c == 3, "bad value");
+        }
+
         let n = new chain.VarUint32(0xfff);
         let packed = n.pack();
 
@@ -39,24 +80,11 @@ class MyContract {
         let dec = new chain.Decoder(enc.getBytes());
         let length = dec.unpackLength();
         chain.assert(length == 0xfffff, "bad value");
-
-
-        {
-            let a = new chain.Asset(10, new chain.Symbol("EOS", 4));
-            let b = new chain.Asset(5, new chain.Symbol("EOS", 4));
-            chain.assert( a > b, "a > b");
-            chain.assert( b < a, "b > a");
-            chain.assert( a != b, "a != b");
-            chain.assert( a - b == new chain.Asset(5, new chain.Symbol("EOS", 4)), "bad value");
-            chain.assert( a + b == new chain.Asset(15, new chain.Symbol("EOS", 4)), "bad value");
-            chain.assert( a / b == new chain.Asset(2, new chain.Symbol("EOS", 4)), "bad value");
-            chain.assert( a * b == new chain.Asset(50, new chain.Symbol("EOS", 4)), "bad value");
-        }
     }
 
     @action("test2")
     testSerializer(
-        a1: boolean,
+        a1: bool,
         a2: i8,
         a3: u8,
         a4: i16,
@@ -87,14 +115,8 @@ class MyContract {
         // a29: chain.SymbolCode,
         a30: chain.Asset,
         // a31: chain.ExtendedAsset,
+        a32: string[],
     ): void {
-        chain.printString(`++++sizeof<chain.Asset>: ${sizeof<chain.Asset>()}\n`);
-        chain.printString(`++++sizeof<chain.Symbol>: ${sizeof<chain.Symbol>()}\n`);
-        chain.printString(`++++sizeof<u64>: ${sizeof<u64>()}\n`);
-        chain.printString(`++++sizeof<TestClass>: ${sizeof<TestClass>()}\n`);
-
-        let a = new TestClass(1, 2, 3);
-        chain.printString(`changetype<ArrayBufferView>(a).byteLength: ${changetype<ArrayBufferView>(a).byteLength}`);
         chain.assert(a13 == new chain.VarUint32(0xfff), "bad a13 value.");
         chain.assert(a20 == chain.Name.fromString("alice"), "bad a20 value");
         chain.printString(`
@@ -112,6 +134,7 @@ class MyContract {
         a20 = ${a20},
         a22 = ${a22},
         a30 = ${a30},
+        a32 = ${a32},
         `)
     }
 }
