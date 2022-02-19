@@ -20,6 +20,7 @@
     ],
     "scripts": {
       "test-hello": "npx eosio-asc ./hello/hello.ts --use abort= --runtime stub --target release;run-ipyeos -m pytest -s -x test.py -k test_hello",
+      "test-inlineaction": "npx eosio-asc ./inlineaction/index.ts --use abort= --runtime stub --target release;run-ipyeos -m pytest -s -x test.py -k test_action"
     },
     "dependencies": {
       "@assemblyscript/loader": "^0.19.22",
