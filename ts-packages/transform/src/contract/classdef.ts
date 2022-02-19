@@ -10,12 +10,15 @@ import {
     OperatorKind
 } from "assemblyscript";
 
-import { ElementUtil, DecoratorUtil } from "../utils/utils";
+import { AstUtil, ElementUtil, DecoratorUtil } from "../utils/utils";
 
 import { Strings } from "../utils/primitiveutil";
 import { FieldDef, FunctionDef, ActionFunctionDef, DBIndexFunctionDef} from "./elementdef";
 import { NamedTypeNodeDef } from "./typedef";
 import { RangeUtil } from "../utils/utils";
+
+import { ContractDecoratorKind } from "../enums/decorator";
+
 
 export class ClassInterpreter {
     classPrototype: ClassPrototype;
@@ -124,6 +127,7 @@ export class ContractInterpreter extends ClassInterpreter {
 
 export class TableInterpreter extends ClassInterpreter {
     // The first case is lower.
+    tableName: string;
     version: string;
     primaryFuncDef: DBIndexFunctionDef | null = null;
     secondaryFuncDefs: DBIndexFunctionDef[] = [];
@@ -133,6 +137,8 @@ export class TableInterpreter extends ClassInterpreter {
         this.version = "1.0";
         this.resolveFieldMembers();
         this.resolveContractClass();
+        let decorator = AstUtil.getSpecifyDecorator(clzPrototype.declaration, ContractDecoratorKind.TABLE)!;
+        this.tableName = AstUtil.getIdentifier(decorator.args![0]);
     }
 
     private resolveContractClass(): void {
