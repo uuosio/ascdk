@@ -6,7 +6,8 @@ import { MyTable } from "./utils"
 class MyStruct {
     constructor(
         public a1: u64=0,
-        public a2: u64=0
+        public a2: u64=0,
+        public a3: u8[]=[],
     ) {}
 }
 

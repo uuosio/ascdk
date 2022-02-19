@@ -41,7 +41,7 @@ export class Encoder {
         return dataSize;
     }
 
-    packArray<T>(arr: T[]): usize {
+    packNumberArray<T>(arr: T[]): usize {
         let lengthBytes = this.packLength(arr.length);
         let dataSize = sizeof<T>()*arr.length;
         let src = arr.dataStart;
@@ -158,6 +158,18 @@ export class Decoder {
         let dest = arr.dataStart;
         let src = this.buf.dataStart + this.pos;
         memcpy(dest, src, size);
+        return arr;
+    }
+
+    unpackNumberArray<T>(): T[] {
+        let oldPos = this.pos;
+        let length = this.unpackLength();
+        let arr = new Array<T>(length);
+
+        let copySize = length * sizeof<T>();
+        let src = this.buf.dataStart + this.pos;
+        memcpy(arr.dataStart, src, copySize);
+        this.incPos(copySize);
         return arr;
     }
 

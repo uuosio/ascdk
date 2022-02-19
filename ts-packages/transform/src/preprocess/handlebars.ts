@@ -64,18 +64,24 @@ const numberTypeMap: Map<string, string> = new Map([
 Handlebars.registerHelper("actionParameterSerialize", function (field: ParameterNodeDef) {
     let code: string[] = [];
     if (field.type.typeKind == TypeKindEnum.ARRAY) {
+        let plainType = field.type.plainTypeNode;
+        console.log(`++++++++plainType:${plainType}, ${field.name}`)
+        let numType = numberTypeMap.get(plainType.replace('[]', ''));
+        if (numType) {
+            code.push(`enc.packNumberArray<${numType}>(this.${field.name})`)
+        }
     } else if (field.type.typeKind == TypeKindEnum.MAP) {
     } else {
         let plainType = field.type.plainTypeNode;
         let numType = numberTypeMap.get(plainType);
         if (numType) {
-            code.push(`enc.packNumber<${numType}>(this.${field.name})`)
+            code.push(`enc.packNumber<${numType}>(this.${field.name});`)
         } else if (plainType == 'boolean') {
-            code.push(`enc.packNumber<u8>(<u8>this.${field.name})`)
+            code.push(`enc.packNumber<u8>(<u8>this.${field.name});`)
         } else if (plainType == 'string') {
-            code.push(`enc.packString(this.${field.name})`)
+            code.push(`enc.packString(this.${field.name});`)
         } else {
-            code.push(`enc.pack(this.${field.name})`)
+            code.push(`enc.pack(this.${field.name});`)
         }
     }
     return code.join(EOL);
@@ -84,16 +90,22 @@ Handlebars.registerHelper("actionParameterSerialize", function (field: Parameter
 Handlebars.registerHelper("actionParameterDeserialize", function (field: ParameterNodeDef) {
     let code: string[] = [];
     if (field.type.typeKind == TypeKindEnum.ARRAY) {
+        let plainType = field.type.plainTypeNode;
+        console.log(`++++++++plainType:${plainType}, ${field.name}`)
+        let numType = numberTypeMap.get(plainType.replace('[]', ''));
+        if (numType) {
+            code.push(`this.${field.name} = dec.unpackNumberArray<${numType}>();`)
+        }
     } else if (field.type.typeKind == TypeKindEnum.MAP) {
     } else {
         let plainType = field.type.plainTypeNode;
         let numType = numberTypeMap.get(plainType);
         if (numType) {
-            code.push(`this.${field.name} = dec.unpackNumber<${numType}>()`)
+            code.push(`this.${field.name} = dec.unpackNumber<${numType}>();`)
         } else if (plainType == 'boolean') {
-            code.push(`this.${field.name} = <boolean>dec.unpackNumber<u8>()`);
+            code.push(`this.${field.name} = <boolean>dec.unpackNumber<u8>();`);
         } else if (plainType == 'string') {
-            code.push(`this.${field.name} = dec.unpackString()`);
+            code.push(`this.${field.name} = dec.unpackString();`);
         } else {
             code.push(`this.${field.name} = new ${plainType}();`);
             code.push(`        dec.unpack(this.${field.name});`);
