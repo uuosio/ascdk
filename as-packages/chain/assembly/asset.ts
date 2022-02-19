@@ -123,6 +123,14 @@ export class Asset implements Packer {
         public symbol: Symbol=new Symbol()) {
     }
 
+    isAmountWithinRange(): bool {
+        return -MAX_AMOUNT <= this.amount && this.amount <= MAX_AMOUNT;
+    }
+
+    isValid (): bool {
+        return this.isAmountWithinRange() && this.symbol.isValid();
+    }
+
     toString(): string {
         let precision = <i32>(this.symbol.value & 0xff);
         let div = 10;
@@ -143,6 +151,7 @@ export class Asset implements Packer {
         let dec = new Decoder(data);
         this.amount = dec.unpackNumber<i64>();
         dec.unpack(this.symbol);
+        check(this.isValid(), "invalid asset");
         return dec.getPos();
     }
 
