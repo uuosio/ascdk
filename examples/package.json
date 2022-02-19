@@ -1,0 +1,41 @@
+{
+    "name": "examples",
+    "version": "0.0.1",
+    "description": "chain module for assemblyscript",
+    "main": "js/index.js",
+    "types": "assembly/index.ts",
+    "author": "learnforpractice <learnforpractice@gmail.com>",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/uuosio/as-chain.git"
+    },
+    "bugs": {
+      "url": "https://github.com/uuosio/as-chain/issues"
+    },
+    "keywords": [
+      "wasm",
+      "webassembly",
+      "assemblyscript"
+    ],
+    "scripts": {
+      "test-hello": "npx eosio-asc ./hello/hello.ts --use abort= --runtime stub --target release;run-ipyeos -m pytest -s -x test.py -k test_hello",
+    },
+    "dependencies": {
+      "@assemblyscript/loader": "^0.19.22",
+      "as-bignum": "^0.2.18",
+      "as-chain": "0.0.1"
+    },
+    "devDependencies": {
+      "assemblyscript": "^0.19.22"
+    },
+    "files": [
+      "assembly/",
+      "build/",
+      "README.md",
+      "LICENSE",
+      "package.json",
+      "yarn.lock"
+    ]
+  }
+  
