@@ -7,7 +7,7 @@ const MAX_AMOUNT: i64 = (1 << 62) - 1;
 export function isValid(sym: u64): bool {
     let i = 0;
     for (; i<7; i++) {
-        let c = <u8>(sym & 0xff)
+        let c = <u8>(sym & 0xFF)
         if (c >= <u8>65 && c <= <u8>90) { //('A' <= c && c <= 'Z')
         } else {
             return false;
@@ -30,16 +30,23 @@ export function isValid(sym: u64): bool {
 
 export class Symbol implements Packer {
     public value: u64;
+
     constructor(name: string="", precision: u8=0) {
         check(name.length <= 7, "bad symbol name");
         this.value = 0;
         for (let i=0; i<name.length; i++) {
             let v: u64 = <u64>name.charCodeAt(name.length-1-i);
             check(v >= 65 && v <= 90, "Invalid character")
-            this.value |= v;
             this.value <<= 8;
+            this.value |= v;
         }
         this.value |= precision;
+    }
+
+    static fromU64(value: u64): Symbol {
+        let a = new Symbol();
+        a.value = value;
+        return a;
     }
 
     fromU64(value: u64): Symbol {
@@ -49,8 +56,8 @@ export class Symbol implements Packer {
         return ret;
     }
 
-    code(): u64 {
-        return this.value >> 8
+    precision(): u8 {
+        return <u8>(this.value & 0xFF);
     }
 
     isValid(): bool {
@@ -58,10 +65,12 @@ export class Symbol implements Packer {
         return isValid(sym);
     }
 
-    static fromU64(value: u64): Symbol {
-        let a = new Symbol();
-        a.value = value;
-        return a;
+    code(): u64 {
+        return this.value >> 8;
+    }
+
+    raw(): u64 {
+        return this.value;
     }
 
     getSymbolString(): string {
@@ -73,7 +82,7 @@ export class Symbol implements Packer {
             if (value == 0) {
                 break;
             }
-            buf[n] = <u8>(value & 0xff);
+            buf[n] = <u8>(value & 0xFF);
             n += 1;
         }
         return String.UTF8.decode(buf.slice(0, n).buffer)
@@ -88,10 +97,10 @@ export class Symbol implements Packer {
             if (value == 0) {
                 break;
             }
-            buf[n] = <u8>(value & 0xff);
+            buf[n] = <u8>(value & 0xFF);
             n += 1;
         }
-        return (this.value & 0xff).toString(10) + "," + this.getSymbolString();
+        return (this.value & 0xFF).toString(10) + "," + this.getSymbolString();
     }
 
     pack(): u8[] {
@@ -115,6 +124,16 @@ export class Symbol implements Packer {
     static eq(a: Symbol, b: Symbol): bool {
       return a.value == b.value;
     }
+
+    @inline @operator('!=')
+    static neq(a: Symbol, b: Symbol): bool {
+      return a.value != b.value;
+    }
+
+    @inline @operator('<')
+    static lt(a: Symbol, b: Symbol): bool {
+      return a.value < b.value;
+    }
 }
 
 export class Asset implements Packer {
@@ -132,7 +151,7 @@ export class Asset implements Packer {
     }
 
     toString(): string {
-        let precision = <i32>(this.symbol.value & 0xff);
+        let precision = <i32>(this.symbol.value & 0xFF);
         let div = 10;
         for (let i=0; i<precision; i++) {
             div *= 10;
