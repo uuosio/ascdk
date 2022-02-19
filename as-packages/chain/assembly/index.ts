@@ -41,7 +41,7 @@ export {
 
 export { Name } from "./name"
 export { Action, PermissionLevel } from "./action"
-export { Asset, Symbol } from "./asset"
+export { Asset, Symbol, isValid } from "./asset"
 export { PublicKey } from "./crypto"
 
 export * from "./serializer"

@@ -80,17 +80,6 @@ class MyContract {
         let dec = new chain.Decoder(enc.getBytes());
         let length = dec.unpackLength();
         chain.assert(length == 0xfffff, "bad value");
-        {
-            let a = new chain.Asset(10, new chain.Symbol("EOS", 4));
-            let b = new chain.Asset(5, new chain.Symbol("EOS", 4));
-            chain.assert( a > b, "a > b");
-            chain.assert( b < a, "b > a");
-            chain.assert( a != b, "a != b");
-            chain.assert( a - b == new chain.Asset(5, new chain.Symbol("EOS", 4)), "bad value");
-            chain.assert( a + b == new chain.Asset(15, new chain.Symbol("EOS", 4)), "bad value");
-            chain.assert( a / b == new chain.Asset(2, new chain.Symbol("EOS", 4)), "bad value");
-            chain.assert( a * b == new chain.Asset(50, new chain.Symbol("EOS", 4)), "bad value");
-        }
     }
 
     @action("test2")

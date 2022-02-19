@@ -135,3 +135,14 @@ def test_action():
     )
     r = chain.push_action('hello', 'sayhello', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
+
+def test_asset():
+    with open('./target/target.wasm', 'rb') as f:
+        code = f.read()
+    with open('~lib/rt/target/generated.abi', 'rb') as f:
+        abi = f.read()
+    chain.deploy_contract('hello', code, abi, 0)
+
+    r = chain.push_action('hello', 'test1', b'', {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])
+    logger.info('test_asset done!')
