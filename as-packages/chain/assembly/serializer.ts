@@ -93,6 +93,15 @@ export class Encoder {
         return packedLength + utf8Str.byteLength;
     }
 
+    packStringArray(arr: string[]): usize {
+        let oldPos = this.pos;
+        this.packLength(arr.length);
+        for (let i=0; i<arr.length; i++) {
+            this.packString(arr[i]);
+        }
+        return this.pos - oldPos;
+    }
+
     getBytes(): u8[] {
         return this.buf.slice(0, <i32>this.pos);
     }
@@ -178,5 +187,14 @@ export class Decoder {
         let rawStr = this.buf.slice(this.pos, this.pos + length);
         this.incPos(length);
         return String.UTF8.decode(rawStr.buffer);
+    }
+
+    unpackStringArray(): string[] {
+        let length = this.unpackLength();
+        let arr = new Array<string>(length);
+        for (let i=0; i< <i32>length; i++) {
+            arr[i] = this.unpackString();
+        }
+        return arr;
     }
 }

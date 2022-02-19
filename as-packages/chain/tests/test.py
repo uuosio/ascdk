@@ -85,6 +85,7 @@ def test_2serialize():
         # a29: chain.SymbolCode,
         a30 = '0.1000 EOS',
         # a31: chain.ExtendedAsset,
+        a32 = ['helloo', 'worldd'],
     )
     r = chain.push_action('hello', 'test2', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
@@ -112,6 +113,8 @@ def test_mi():
     with open('~lib/rt/target/generated.abi', 'rb') as f:
         abi = f.read()
     chain.deploy_contract('hello', code, abi, 0)
+
+    r = chain.push_action('hello', 'noop', b'', {'hello': 'active'})
 
     args = dict(
     )

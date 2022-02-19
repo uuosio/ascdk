@@ -9,35 +9,13 @@ const EOL = WIN ? "\r\n" : "\n";
 
 let scope = CONFIG.scope;
 
-Handlebars.registerHelper("serialize", function (field: FieldDef) {
-    let code: string[] = [];
-    if (field.type.typeKind == TypeKindEnum.ARRAY) {
-    } else if (field.type.typeKind == TypeKindEnum.MAP) {
-    } else {
-        if (field.type.plainType == 'u32') {
-            code.push(`enc.packNumber<u32>(this.${field.name})`)
-        }
-    }
-    return code.join(EOL);
-});
-
-Handlebars.registerHelper("deserialize", function (field: FieldDef) {
-    let code: string[] = [];
-    if (field.type.typeKind == TypeKindEnum.ARRAY) {
-    } else if (field.type.typeKind == TypeKindEnum.MAP) {
-    } else {
-        if (field.type.plainType == 'u32') {
-            code.push(`this.${field.name} = dec.unpackNumber<u32>()`)
-        }
-    }
-    return code.join(EOL);
-});
-
 Handlebars.registerHelper("generateActionMember", function (fn: ParameterNodeDef) {
     let code: string[] = [];
     let plainType = fn.type.plainTypeNode
     if (plainType == 'string') {
         code.push(` ${fn.name}: string = "";`);
+    } else if (plainType == 'string[]') {
+        code.push(` ${fn.name}: string[] = [];`);
     } else {
         if (plainType.indexOf('chain.') == 0) {
             code.push(` ${fn.name}!: ${plainType};`);
@@ -95,6 +73,8 @@ Handlebars.registerHelper("actionParameterDeserialize", function (field: Paramet
         let numType = numberTypeMap.get(plainType.replace('[]', ''));
         if (numType) {
             code.push(`this.${field.name} = dec.unpackNumberArray<${numType}>();`)
+        } else if (plainType == 'string[]' ) {
+            code.push(`this.${field.name} = dec.unpackStringArray();`);
         }
     } else if (field.type.typeKind == TypeKindEnum.MAP) {
     } else {

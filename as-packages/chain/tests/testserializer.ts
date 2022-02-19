@@ -87,6 +87,7 @@ class MyContract {
         // a29: chain.SymbolCode,
         a30: chain.Asset,
         // a31: chain.ExtendedAsset,
+        a32: string[],
     ): void {
         chain.printString(`++++sizeof<chain.Asset>: ${sizeof<chain.Asset>()}\n`);
         chain.printString(`++++sizeof<chain.Symbol>: ${sizeof<chain.Symbol>()}\n`);
@@ -112,6 +113,7 @@ class MyContract {
         a20 = ${a20},
         a22 = ${a22},
         a30 = ${a30},
+        a32 = ${a32},
         `)
     }
 }
