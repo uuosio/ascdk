@@ -42,8 +42,8 @@ class TokenContract {
         chain.requireAuth(this.receiver);
 
         const sym = maximum_supply.symbol;
-        // check(sym.isValid(), "invalid symbol name");
-        // check(maximumSupply.isValid(), "invalid supply");
+        chain.check(sym.isValid(), "invalid symbol name");
+        chain.check(maximum_supply.isValid(), "invalid supply");
         chain.check(maximum_supply.amount > 0, "max-supply must be positive");
 
         const statstable = this.getStatTable(sym);
@@ -61,7 +61,7 @@ class TokenContract {
     @action("issue")
     issue(to: chain.Name, quantity: chain.Asset, memo: string): void {
         const sym = quantity.symbol;
-        // check(sym.isValid(), "invalid symbol name");
+        chain.check(sym.isValid(), "invalid symbol name");
         chain.check(memo.length <= 256, "memo has more than 256 bytes");
 
         const statstable = this.getStatTable(sym);
@@ -71,7 +71,7 @@ class TokenContract {
         chain.check(to == st.issuer,  "tokens can only be issued to issuer account");
 
         chain.requireAuth(st.issuer);
-        // check(quantity.isValid(), "invalid quantity");
+        chain.check(quantity.isValid(), "invalid quantity");
         chain.check(quantity.amount > 0, "must issue positive quantity");
 
         chain.check( quantity.symbol == st.supply.symbol, "symbol precision mismatch" );
@@ -86,7 +86,7 @@ class TokenContract {
     @action("retire")
     retire(quantity: chain.Asset, memo: string): void {
         const sym = quantity.symbol;
-        // check(sym.isValid(), "invalid symbol name");
+        chain.check(sym.isValid(), "invalid symbol name");
         chain.check(memo.length <= 256, "memo has more than 256 bytes");
 
         const statstable = this.getStatTable(sym);
@@ -95,7 +95,7 @@ class TokenContract {
         const st = statstable.get(existing);
 
         chain.requireAuth(st.issuer);
-        // check(quantity.isValid(), "invalid quantity");
+        chain.check(quantity.isValid(), "invalid quantity");
         chain.check(quantity.amount > 0, "must retire positive quantity");
 
         chain.check( quantity.symbol == st.supply.symbol, "symbol precision mismatch" );
@@ -120,7 +120,7 @@ class TokenContract {
         chain.requireRecipient(from);
         chain.requireRecipient(to);
 
-        // check(quantity.isValid(), "invalid quantity");
+        chain.check(quantity.isValid(), "invalid quantity");
         chain.check(quantity.amount > 0, "must transfer positive quantity");
         chain.check(quantity.symbol == st.supply.symbol, "symbol precision mismatch");
         chain.check(memo.length <= 256, "memo has more than 256 bytes");
