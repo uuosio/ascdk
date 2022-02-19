@@ -53,3 +53,10 @@ def test_action():
     )
     r = chain.push_action('hello', 'sayhello', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
+
+def test_token():
+    with open('./eosio.token/target/target.wasm', 'rb') as f:
+        code = f.read()
+    with open('~lib/rt/target/generated.abi', 'rb') as f:
+        abi = f.read()
+    chain.deploy_contract('token', code, abi, 0)
