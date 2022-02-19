@@ -27,6 +27,8 @@ Handlebars.registerHelper("generateActionMember", function (fn: ParameterNodeDef
 });
 
 const numberTypeMap: Map<string, string> = new Map([
+    ["bool", "bool"],
+    ["boolean", "boolean"],
     ["i8", "i8"],
     ["u8", "u8"],
     ["i16", "i16"],
@@ -47,6 +49,10 @@ Handlebars.registerHelper("actionParameterSerialize", function (field: Parameter
         let numType = numberTypeMap.get(plainType.replace('[]', ''));
         if (numType) {
             code.push(`enc.packNumberArray<${numType}>(this.${field.name})`)
+        } else if (plainType == 'string[]') {
+            code.push(`enc.packStringArray(this.${field.name})`)
+        } else {
+            code.push(`enc.packObjectArray(this.${field.name});`);
         }
     } else if (field.type.typeKind == TypeKindEnum.MAP) {
     } else {
@@ -70,11 +76,22 @@ Handlebars.registerHelper("actionParameterDeserialize", function (field: Paramet
     if (field.type.typeKind == TypeKindEnum.ARRAY) {
         let plainType = field.type.plainTypeNode;
         console.log(`++++++++plainType:${plainType}, ${field.name}`)
-        let numType = numberTypeMap.get(plainType.replace('[]', ''));
+        plainType = plainType.replace('[]', '')
+        let numType = numberTypeMap.get(plainType);
         if (numType) {
             code.push(`this.${field.name} = dec.unpackNumberArray<${numType}>();`)
-        } else if (plainType == 'string[]' ) {
+        } else if (plainType == 'string' ) {
             code.push(`this.${field.name} = dec.unpackStringArray();`);
+        } else {
+            code.push(`{
+                let length = <i32>dec.unpackLength();
+                this.${field.name} = new Array<${plainType}>(length)
+                for (let i=0; i<length; i++) {
+                    let obj = new ${plainType}();
+                    this.${field.name}[i] = obj;
+                    dec.unpack(obj);
+                }
+            }`);
         }
     } else if (field.type.typeKind == TypeKindEnum.MAP) {
     } else {
@@ -97,6 +114,26 @@ Handlebars.registerHelper("actionParameterDeserialize", function (field: Paramet
 Handlebars.registerHelper("actionParameterGetSize", function (field: ParameterNodeDef) {
     let code: string[] = [];
     if (field.type.typeKind == TypeKindEnum.ARRAY) {
+        code.push(`size += _chain.calcPackedVarUint32Length(this.${field.name}.length);`);
+
+        let plainType = field.type.plainTypeNode;
+        plainType = plainType.replace('[]', '');
+        let numType = numberTypeMap.get(plainType);
+        if (numType) {
+            code.push(` size += sizeof<${plainType}>()*this.${field.name}.length);`)
+        } else if (plainType == 'string') {
+            code.push(`
+            for (let i=0; i<this.${field.name}.length; i++) {
+                size += _chain.Utils.calcPackedStringLength(this.${field.name}[i]);
+            }
+            `)
+        } else {
+            code.push(`
+            for (let i=0; i<this.${field.name}.length; i++) {
+                size += this.${field.name}[i].getSize();
+            }
+            `)
+        }
     } else if (field.type.typeKind == TypeKindEnum.MAP) {
     } else {
         let plainType = field.type.plainTypeNode;

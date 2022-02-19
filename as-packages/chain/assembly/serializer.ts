@@ -17,12 +17,12 @@ export class Encoder {
     }
 
     checkPos(n: usize): void {
-        check(this.pos + n <= <u32>this.buf.length, "incPos: buffer overflow");
+        check(this.pos + n <= <u32>this.buf.length, `checkPos: buffer overflow`);
     }
     
     incPos(n: usize): void {
         this.pos += n;
-        check(this.pos <= <u32>this.buf.length, "incPos: buffer overflow");
+        check(this.pos <= <u32>this.buf.length, `incPos: buffer overflow`);
     }
 
     pack(ser: Packer): usize {
@@ -102,6 +102,15 @@ export class Encoder {
         return this.pos - oldPos;
     }
 
+    packObjectArray<T>(arr: T[]): usize {
+        let oldPos = this.pos;
+        this.packLength(arr.length);
+        for (let i=0; i<arr.length; i++) {
+            this.pack(arr[i]);
+        }
+        return this.pos - oldPos;
+    }    
+
     getBytes(): u8[] {
         return this.buf.slice(0, <i32>this.pos);
     }
@@ -122,7 +131,7 @@ export class Decoder {
 
     incPos(n: u32): void {
         this.pos += n
-        check(this.pos <= <u32>this.buf.length, "incPos: buffer overflow")
+        check(this.pos <= <u32>this.buf.length, "Decoder.incPos: buffer overflow")
     }
 
     getPos(): u32 {
