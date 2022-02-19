@@ -1,11 +1,11 @@
-import { Asset, Name } from "as-chain";
+import * as chain from "as-chain";
 
 @table("accounts")
-class _AccountTable {
-    balance: Asset;
+class _AccountsTable {
+    balance: chain.Asset;
 
-    constructor () {
-        this.balance = new Asset();
+    constructor (balance: chain.Asset = new chain.Asset()) {
+        this.balance = balance;
     }
 
     @primary
@@ -16,14 +16,18 @@ class _AccountTable {
 
 @table("stat")
 class _StatTable {
-    supply: Asset;
-    max_supply: Asset;
-    issuer: Name;
+    supply: chain.Asset;
+    max_supply: chain.Asset;
+    issuer: chain.Name;
 
-    constructor () {
-        this.supply = new Asset();
-        this.max_supply = new Asset();
-        this.issuer = new Name();
+    constructor (
+       supply: chain.Asset = new chain.Asset(),
+       max_supply: chain.Asset =  new chain.Asset(),
+       issuer: chain.Name = new chain.Name(),
+    ) {
+        this.supply = supply;
+        this.max_supply = max_supply;
+        this.issuer = issuer;
     }
 
     @primary
@@ -32,5 +36,5 @@ class _StatTable {
     }
 }
 
-export class AccountTable extends _AccountTable {}
+export class AccountsTable extends _AccountsTable {}
 export class StatTable extends _StatTable {}
