@@ -49,7 +49,6 @@ class MyContract {
                 arr.push(obj);
             }
             chain.assert(arr[1].a == 1 && arr[1].b == 2 && arr[1].c == 3 && arr[1].d[0].amount == 10, "bad value");
-            return;
         }
 
         {
