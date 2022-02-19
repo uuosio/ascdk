@@ -6,15 +6,7 @@ export const serializerTpl = `
 
 {{export}}class {{className}} implements _chain.Packer {
 
-    // {{#each fields}}
-    // {{rangeString}}
-    // {{/each}}
-
-    {{{constructorFun.rangeString}}}
-
-    {{#each functions}}
-    {{rangeString}}
-    {{/each}}
+    {{{ExtractClassBody range}}}
 
     pack(): u8[] {
         let enc = new _chain.Encoder(this.getSize());

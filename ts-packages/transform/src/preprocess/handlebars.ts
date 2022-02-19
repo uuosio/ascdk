@@ -4,6 +4,10 @@ import { FieldDef, ParameterNodeDef, ActionFunctionDef, DBIndexFunctionDef } fro
 import { TypeKindEnum } from "../enums/customtype";
 import { EosioUtils } from "../utils/utils";
 
+import {
+    Range,
+} from "assemblyscript";
+
 const WIN = process.platform === "win32";
 const EOL = WIN ? "\r\n" : "\n";
 
@@ -185,6 +189,13 @@ Handlebars.registerHelper("getPrimaryValue", function (fn: DBIndexFunctionDef) {
 //    code.push(`return this.${fn.getterPrototype?.declaration.name.text}`)
     code.push(`${fn.getterPrototype?.rangeString}`)
     return code.join('');
+});
+
+Handlebars.registerHelper("ExtractClassBody", function (range: Range) {
+    let src = range.toString();
+    let start = src.indexOf('{');
+    let end = src.lastIndexOf('}')
+    return src.substring(start+1, end-1);
 });
 
 Handlebars.registerHelper("getSecondaryValue", function (fn: DBIndexFunctionDef) {
