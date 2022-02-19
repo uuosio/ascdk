@@ -74,8 +74,8 @@ class TokenContract {
         chain.check(quantity.isValid(), "invalid quantity");
         chain.check(quantity.amount > 0, "must issue positive quantity");
 
-        chain.check( quantity.symbol == st.supply.symbol, "symbol precision mismatch" );
-        chain.check( quantity.amount <= st.max_supply.amount - st.supply.amount, "quantity exceeds available supply");
+        chain.check(quantity.symbol == st.supply.symbol, "symbol precision mismatch" );
+        chain.check(quantity.amount <= st.max_supply.amount - st.supply.amount, "quantity exceeds available supply");
 
         st.supply = st.supply + quantity;
         statstable.update(existing, st, new chain.Name(0));
@@ -189,3 +189,4 @@ class TokenContract {
         acnts.remove(it);
     }
 }
+
