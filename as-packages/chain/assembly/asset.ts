@@ -110,7 +110,7 @@ export class Asset implements Packer {
     }
 
     getSize(): usize {
-        return 8;
+        return 16;
     }
 
     @inline @operator('+')
