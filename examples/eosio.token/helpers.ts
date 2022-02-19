@@ -1,14 +1,9 @@
 import * as chain from 'as-chain';
-import { AccountsTable, StatTable } from './tables';
+import { createTokenContract } from './eosio.token';
 
 export function getSupply(tokenContractAccount: chain.Name, sym: chain.Symbol): chain.Asset {
-    const statstable = new chain.MultiIndex<StatTable>(
-        tokenContractAccount,
-        new chain.Name(sym.code()),
-        chain.Name.fromString("stat"),
-        [],
-        () => new StatTable()
-    );;
+    const contract = createTokenContract(tokenContractAccount);
+    const statstable = contract.getStatTable(sym);
 
     const existing = statstable.find(sym.code());
     chain.check(existing.isOk(), "token with symbol does not exist");
@@ -18,13 +13,8 @@ export function getSupply(tokenContractAccount: chain.Name, sym: chain.Symbol): 
 }
 
 export function getBalance(tokenContractAccount: chain.Name, owner: chain.Name, sym: chain.Symbol): chain.Asset {
-    const acnts = new chain.MultiIndex<AccountsTable>(
-        tokenContractAccount,
-        owner,
-        chain.Name.fromString("accounts"),
-        [],
-        () => new AccountsTable()
-    );
+    const contract = createTokenContract(tokenContractAccount);
+    const acnts = contract.getAccountsTable(owner);
 
     const existing = acnts.find(sym.code());
     chain.check(existing.isOk(), "no balance object found");

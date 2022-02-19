@@ -190,3 +190,6 @@ class TokenContract {
     }
 }
 
+export function createTokenContract (contractAccount: chain.Name): TokenContract {
+    return new TokenContract(contractAccount, new chain.Name(0), new chain.Name(0));
+}
