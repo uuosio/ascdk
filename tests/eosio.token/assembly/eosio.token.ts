@@ -48,7 +48,7 @@ class TokenContract {
 
         const statstable = this.getStatTable(sym);
         const existing = statstable.find(sym.value);
-        chain.check(existing.isEnd(), "token with symbol already exists");
+        chain.check(!existing.isOk(), "token with symbol already exists");
 
         const value = new StatTable(
             new chain.Asset(<i64>0, maximum_supply.symbol),
@@ -147,7 +147,7 @@ class TokenContract {
     addBalance(owner: chain.Name, value: chain.Asset, ramPayer: chain.Name): void {
         const toAcnts = this.getAccountsTable(owner, value.symbol);
         const to = toAcnts.find(value.symbol.value);
-        if (to.isEnd()) {
+        if (!to.isOk()) {
             const account = new AccountsTable(value);
             toAcnts.store(account, ramPayer);
         } else {
@@ -171,7 +171,7 @@ class TokenContract {
 
         const acnts = this.getAccountsTable(owner, symbol);
         const it = acnts.find(symbol.value);
-        if (it.isEnd()) {
+        if (!it.isOk()) {
             const account = new AccountsTable(new chain.Asset(<i64>0, symbol));
             acnts.store(account, ram_payer);
         }
