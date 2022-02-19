@@ -34,8 +34,9 @@ export class MultiIndex<T extends MultiIndexValue> {
         this.idxdbs = new Array<IDXDB>(indexes.length);
         this.newObj = newObj;
         if (indexes) {
+            let idxTableBase: u64 = (table.N & 0xfffffffffffffff0);
             for (let i=0; i<indexes.length; i++) {
-                let idxTable = (table.N & 0xfffffffffffffff0) + i;
+                let idxTable = idxTableBase + i;
                 if (indexes[i] == SecondaryType.U64) {
                     this.idxdbs[i] = new IDX64(code.N, scope.N, idxTable, i);
                 } else if (indexes[i] == SecondaryType.U128) {
