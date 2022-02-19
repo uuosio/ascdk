@@ -1,7 +1,7 @@
 import * as chain from "as-chain";
 
 @table("accounts")
-class _AccountsTable {
+class account {
     balance: chain.Asset;
 
     constructor (balance: chain.Asset = new chain.Asset()) {
@@ -10,12 +10,12 @@ class _AccountsTable {
 
     @primary
     get primary(): u64 {
-        return this.balance.symbol.value;
+        return this.balance.symbol.code();
     }
 }
 
 @table("stat")
-class _StatTable {
+class currency_stats {
     supply: chain.Asset;
     max_supply: chain.Asset;
     issuer: chain.Name;
@@ -32,9 +32,9 @@ class _StatTable {
 
     @primary
     get primary(): u64 {
-        return this.supply.symbol.value;
+        return this.supply.symbol.code();
     }
 }
 
-export class AccountsTable extends _AccountsTable {}
-export class StatTable extends _StatTable {}
+export class AccountsTable extends account {}
+export class StatTable extends currency_stats {}
