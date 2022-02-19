@@ -102,6 +102,36 @@ export function getExtCodeInfo(contractInfo: ContractProgram): SourceModifier {
 
 export function getAbiInfo(programInfo: ContractProgram): string {
     let abi = new ABI();
+    programInfo.tables.forEach(table => {
+        let abiTable = new ABITable();
+        abiTable.name = table.tableName;
+        abiTable.type = table.className;
+        abiTable.index_type = 'i64';
+        abi.tables.push(abiTable);
+
+        let abiStruct = new ABIStruct();
+        abiStruct.name = table.className;
+        abiStruct.base = "";
+        table.fields.forEach(field => {
+            let abiField = new ABIStructField();
+            abiField.name = field.name;
+            let plainType = field.type.plainTypeNode;
+            if (field.type.typeKind == TypeKindEnum.ARRAY) {
+                plainType = plainType.replace('[]', '');
+            }
+            if (plainType.indexOf('chain.') == 0) {
+                plainType = plainType.replace('chain.', '');
+            }
+
+            abiField.type = TypeHelper.primitiveToAbiMap.get(plainType)!;
+
+            if (field.type.typeKind == TypeKindEnum.ARRAY) {
+                abiField.type += '[]';
+            }
+            abiStruct.fields.push(abiField);
+        });
+        abi.structs.push(abiStruct);
+    });
     programInfo.contract.actionFuncDefs.forEach(func => {
         let actionName = (<ActionFunctionDef>func).messageDecorator.actionName;
         let action = new ABIAction(actionName, actionName);
