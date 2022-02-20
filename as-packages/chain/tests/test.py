@@ -141,6 +141,7 @@ def test_action():
         a2 = '1.0000 EOS',
         a3 = 12345,
         a4 = [1, 2, 3],
+        a5 = ['1.0001 EOS', '2.0002 EOS'],
     )
     r = chain.push_action('hello', 'testgencode', args, {'hello': 'active'})
 
