@@ -192,6 +192,7 @@ export class Decoder {
         let dest = arr.dataStart;
         let src = this.buf.dataStart + this.pos;
         memcpy(dest, src, size);
+        this.incPos(<u32>size);
         return arr;
     }
 
