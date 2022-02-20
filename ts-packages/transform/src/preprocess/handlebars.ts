@@ -81,8 +81,12 @@ Handlebars.registerHelper("actionParameterDeserialize", function (field: Paramet
     let code: string[] = [];
     if (field.type.typeKind == TypeKindEnum.ARRAY) {
         let plainType = field.type.plainTypeNode;
-        console.log(`++++++++plainType:${plainType}, ${field.name}`)
-        plainType = plainType.replace('[]', '')
+        console.log(`++++++++plainType:${plainType}, ${field.name}`);
+        if (plainType.indexOf('Array<') >= 0) {
+            plainType = plainType.replace('Array<', '').replace('>', '');
+        } else {
+            plainType = plainType.replace('[]', '');
+        }
         let numType = numberTypeMap.get(plainType);
         if (numType) {
             code.push(`this.${field.name} = dec.unpackNumberArray<${numType}>();`)
