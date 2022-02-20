@@ -3,7 +3,7 @@ import {u128} from "as-bignum"
 
 import {say_hello, DBI64} from "./dbi64"
 import {IDX64} from "./idx64"
-import {assert} from "./system"
+import {check} from "./system"
 
 import {printString, printArray, printHex, printi} from "./debug"
 
@@ -152,7 +152,7 @@ export function apply(receiver: u64, firstReceiver: u64, action: u64): void {
   }
 
   let idx = new IDX64(receiver, 1, 2);
-  assert(false, "hello,world");
+  check(false, "hello,world");
 
   let indexes = new Array<SecondaryType>();
   let mi = new MultiIndex<MyData>(receiver, 1, 2, indexes);

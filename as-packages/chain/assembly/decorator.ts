@@ -1,0 +1,11 @@
+export function internal(_: string): any {}
+export function other(_: string): any {}
+export function contract(_: string): any {}
+export function action(_: string): any {}
+export function ignore(_: string): any {}
+export function packed(_: string): any {}
+export function table(_: string): any {}
+export function serializer(_: string): any {}
+export const primary: any = undefined;
+export const secondary: any = undefined;
+export const packer: any = undefined;

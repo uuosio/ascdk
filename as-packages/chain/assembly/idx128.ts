@@ -1,6 +1,6 @@
-import {IDXDB, SecondaryValue, SecondaryType, SecondaryIterator, SecondaryReturnValue} from "./idxdb"
+import { IDXDB, SecondaryValue, SecondaryType, SecondaryIterator, SecondaryReturnValue } from "./idxdb"
 import * as env from "./env"
-import {assert} from "./system"
+import { check } from "./system"
 import { U128 } from "./bignum"
 import { printString } from "./debug"
 
@@ -24,8 +24,8 @@ export class IDX128 extends IDXDB {
     }
 
     storeEx(id: u64, value: SecondaryValue, payer: u64): SecondaryIterator {
-        assert(value.type == SecondaryType.U128, "idx128: bad type")
-        assert(value.value.length == 2, "idx128: bad value");
+        check(value.type == SecondaryType.U128, "idx128: bad type")
+        check(value.value.length == 2, "idx128: bad value");
         let secondary_ptr = value.value.dataStart;
         printString(`+++++++++lo, hi: ${value.value[0]}, ${value.value[1]}\n`);
         let it = env.db_idx128_store(this.scope, this.table, payer, id, secondary_ptr);
@@ -45,8 +45,8 @@ export class IDX128 extends IDXDB {
     }
 
     updateEx(iterator: SecondaryIterator, secondary: SecondaryValue, payer: u64): void {
-        assert(secondary.type == SecondaryType.U128, "idx128: bad value");
-        assert(secondary.value.length == 2, "idx128: bad value");
+        check(secondary.type == SecondaryType.U128, "idx128: bad value");
+        check(secondary.value.length == 2, "idx128: bad value");
         let secondary_ptr = secondary.value.dataStart;
         env.db_idx128_update(iterator.i, payer, secondary_ptr);
     }
@@ -109,8 +109,8 @@ export class IDX128 extends IDXDB {
     }
 
     lowerBoundEx(secondary: SecondaryValue): SecondaryReturnValue {
-        assert(secondary.type == SecondaryType.U128, "idx128: bad secondary type");
-        assert(secondary.value.length == 2, "idx128: bad value");
+        check(secondary.type == SecondaryType.U128, "idx128: bad secondary type");
+        check(secondary.value.length == 2, "idx128: bad value");
         let primary_ptr = __alloc(sizeof<u64>());
 
         let secondaryCopy = new Array<u64>(2);
@@ -137,8 +137,8 @@ export class IDX128 extends IDXDB {
     }
 
     upperBoundEx(secondary: SecondaryValue): SecondaryReturnValue {
-        assert(secondary.type == SecondaryType.U128, "idx128: bad secondary type");
-        assert(secondary.value.length == 2, "idx128: bad value");
+        check(secondary.type == SecondaryType.U128, "idx128: bad secondary type");
+        check(secondary.value.length == 2, "idx128: bad value");
         let primary_ptr = __alloc(sizeof<u64>());
 
         let secondaryCopy = new Array<u64>(2);

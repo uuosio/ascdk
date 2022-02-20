@@ -46,3 +46,4 @@ export { PublicKey } from "./crypto"
 
 export * from "./serializer"
 export { Utils } from "./utils"
+export * from "./decorator"

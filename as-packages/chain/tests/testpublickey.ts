@@ -1,4 +1,4 @@
-import * as chain from "as-chain"
+import { Name, PublicKey, packer, action, contract, printString, printHex, check } from "as-chain"
 
 @packer
 class MyData {
@@ -10,9 +10,9 @@ class MyData {
 @contract("hello")
 class MyContract {
     constructor(
-        public receiver: chain.Name,
-        public firstReceiver: chain.Name,
-        public action: chain.Name) {
+        public receiver: Name,
+        public firstReceiver: Name,
+        public action: Name) {
     }
     
     hexToBytes(hex: string): u8[] {
@@ -23,7 +23,7 @@ class MyContract {
         return bytes;
     }
 
-    bytesEqual(a: u8[], b:u8[]): bool {
+    bytesEqual(a: u8[], b: u8[]): bool {
         if (a.length != b.length) {
             return false;
         }
@@ -37,53 +37,53 @@ class MyContract {
 
     @action("testpub")
     testPublicKey(
-        k1: chain.PublicKey,
-        r1: chain.PublicKey,
-        webAuthN: chain.PublicKey
+        k1: PublicKey,
+        r1: PublicKey,
+        webAuthN: PublicKey
     ): void {
         let rawK1 = this.hexToBytes('00000080ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
         let rawR1 = this.hexToBytes('0102b323ea27d191143eb9ad27c96db15d8b129d3096a0cb17ae11ae26abce803340');
         let rawWebauthn = this.hexToBytes('020378b76107e4503328bdd109934d63abc4457c7c8a0f59126d288fa51189752e0301096c6f63616c686f7374');
-        let _k1 = new chain.PublicKey();
-        let _r1 = new chain.PublicKey();
-        let _webAuthN = new chain.PublicKey();
-        chain.printString("\n");
-        chain.printHex(rawR1);
+        let _k1 = new PublicKey();
+        let _r1 = new PublicKey();
+        let _webAuthN = new PublicKey();
+        printString("\n");
+        printHex(rawR1);
         //
         _k1.unpack(rawK1);
         _r1.unpack(rawR1);
         _webAuthN.unpack(rawWebauthn);
-        chain.assert(k1 == _k1, "bad k1 key");
-        chain.assert(r1 == _r1, "bad r1 key");
-        chain.assert(webAuthN == _webAuthN, "bad webauthn key");
+        check(k1 == _k1, "bad k1 key");
+        check(r1 == _r1, "bad r1 key");
+        check(webAuthN == _webAuthN, "bad webauthn key");
 
-        chain.assert(!(k1 != _k1), "bad k1 key");
-        chain.assert(!(r1 != _r1), "bad r1 key");
-        chain.assert(!(webAuthN != _webAuthN), "bad webauthn key");
+        check(!(k1 != _k1), "bad k1 key");
+        check(!(r1 != _r1), "bad r1 key");
+        check(!(webAuthN != _webAuthN), "bad webauthn key");
 
-        chain.assert(this.bytesEqual(k1.pack(), _k1.pack()), "bad k1 key");
-        chain.assert(this.bytesEqual(r1.pack(), _r1.pack()), "bad k1 key");
-        chain.assert(this.bytesEqual(webAuthN.pack(), _webAuthN.pack()), "bad k1 key");
+        check(this.bytesEqual(k1.pack(), _k1.pack()), "bad k1 key");
+        check(this.bytesEqual(r1.pack(), _r1.pack()), "bad k1 key");
+        check(this.bytesEqual(webAuthN.pack(), _webAuthN.pack()), "bad k1 key");
 
-        chain.assert(k1 < r1, "bad value 1");
-        chain.assert(k1 < webAuthN, "bad value 2");
-        chain.assert(webAuthN > k1, "bad value 3");
-        chain.assert(r1 > k1, "bad value 4");
+        check(k1 < r1, "bad value 1");
+        check(k1 < webAuthN, "bad value 2");
+        check(webAuthN > k1, "bad value 3");
+        check(r1 > k1, "bad value 4");
 
         k1.k1!.data![0] = 1;
         _k1.k1!.data![0] = 2;
-        chain.assert(k1 < _k1, "bad value 5");
+        check(k1 < _k1, "bad value 5");
 
         k1.k1!.data![0] = 2;
         _k1.k1!.data![0] = 1;
-        chain.assert(k1 > _k1, "bad value 6");
+        check(k1 > _k1, "bad value 6");
 
         r1.r1!.data![0] = 1;
         _r1.r1!.data![0] = 2;
-        chain.assert(r1 < _r1, "bad value 7");
+        check(r1 < _r1, "bad value 7");
 
         r1.r1!.data![0] = 2;
         _r1.r1!.data![0] = 1;
-        chain.assert(r1 > _r1, "bad value 8");
+        check(r1 > _r1, "bad value 8");
     }
 }

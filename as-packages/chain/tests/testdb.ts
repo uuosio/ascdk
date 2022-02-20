@@ -1,5 +1,4 @@
-import * as chain from "as-chain"
-import { Utils } from "as-chain/utils"
+import { Name, MultiIndexValue, printString, action, contract } from "as-chain"
 
 class TestClass {
     a: u64;
@@ -12,17 +11,17 @@ class TestClass {
     }
 }
 
-class MyData implements chain.MultiIndexValue {
+class MyData implements MultiIndexValue {
 
 }
 
 @contract("hello")
 class MyContract {
-    receiver: chain.Name;
-    firstReceiver: chain.Name;
-    action: chain.Name
+    receiver: Name;
+    firstReceiver: Name;
+    action: Name
 
-    constructor(receiver: chain.Name, firstReceiver: chain.Name, action: chain.Name) {
+    constructor(receiver: Name, firstReceiver: Name, action: Name) {
         this.receiver = receiver;
         this.firstReceiver = firstReceiver;
         this.action = action;
@@ -32,7 +31,7 @@ class MyContract {
     testSerializer(a1: boolean): void {
 
         for (let i=0; i<10; i++) {
-            chain.printString(`${i}: hello,world\n`);
+            printString(`${i}: hello,world\n`);
         }
     }
 }
