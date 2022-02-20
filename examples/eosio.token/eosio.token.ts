@@ -1,15 +1,15 @@
-import * as chain from 'as-chain';
+import { Name, Asset, Symbol, check, requireAuth, MultiIndex, hasAuth, isAccount, requireRecipient } from 'as-chain'
 import { AccountsTable, StatTable } from './tables';
 
 @contract("eosio.token")
 class TokenContract {
-    receiver: chain.Name;
-    firstReceiver: chain.Name;
-    action: chain.Name
+    receiver: Name;
+    firstReceiver: Name;
+    action: Name
     accountTable: AccountsTable;
     statTable: StatTable;
 
-    constructor(receiver: chain.Name, firstReceiver: chain.Name, action: chain.Name) {
+    constructor(receiver: Name, firstReceiver: Name, action: Name) {
         this.receiver = receiver;
         this.firstReceiver = firstReceiver;
         this.action = action;
@@ -17,41 +17,41 @@ class TokenContract {
         this.statTable = new StatTable()
     }
 
-    getStatTable(sym: chain.Symbol): chain.MultiIndex<StatTable> {
-        return new chain.MultiIndex<StatTable>(
+    getStatTable(sym: Symbol): MultiIndex<StatTable> {
+        return new MultiIndex<StatTable>(
             this.receiver,
-            new chain.Name(sym.code()),
-            chain.Name.fromString("stat"),
+            new Name(sym.code()),
+            Name.fromString("stat"),
             [],
             () => new StatTable()
         );
     }
 
-    getAccountsTable(account: chain.Name): chain.MultiIndex<AccountsTable> {
-        return new chain.MultiIndex<AccountsTable>(
+    getAccountsTable(account: Name): MultiIndex<AccountsTable> {
+        return new MultiIndex<AccountsTable>(
             this.receiver,
             account,
-            chain.Name.fromString("accounts"),
+            Name.fromString("accounts"),
             [],
             () => new AccountsTable()
         );
     }
 
     @action("create")
-    create(issuer: chain.Name, maximum_supply: chain.Asset): void {
-        chain.requireAuth(this.receiver);
+    create(issuer: Name, maximum_supply: Asset): void {
+        requireAuth(this.receiver);
 
         const sym = maximum_supply.symbol;
-        chain.check(sym.isValid(), "invalid symbol name");
-        chain.check(maximum_supply.isValid(), "invalid supply");
-        chain.check(maximum_supply.amount > 0, "max-supply must be positive");
+        check(sym.isValid(), "invalid symbol name");
+        check(maximum_supply.isValid(), "invalid supply");
+        check(maximum_supply.amount > 0, "max-supply must be positive");
 
         const statstable = this.getStatTable(sym);
         const existing = statstable.find(sym.code());
-        chain.check(!existing.isOk(), "token with symbol already exists");
+        check(!existing.isOk(), "token with symbol already exists");
 
         const value = new StatTable(
-            new chain.Asset(<i64>0, maximum_supply.symbol),
+            new Asset(<i64>0, maximum_supply.symbol),
             maximum_supply,
             issuer
         );
@@ -59,92 +59,92 @@ class TokenContract {
     }
 
     @action("issue")
-    issue(to: chain.Name, quantity: chain.Asset, memo: string): void {
+    issue(to: Name, quantity: Asset, memo: string): void {
         const sym = quantity.symbol;
-        chain.check(sym.isValid(), "invalid symbol name");
-        chain.check(memo.length <= 256, "memo has more than 256 bytes");
+        check(sym.isValid(), "invalid symbol name");
+        check(memo.length <= 256, "memo has more than 256 bytes");
 
         const statstable = this.getStatTable(sym);
         const existing = statstable.find(sym.code());
-        chain.check(existing.isOk(), "token with symbol does not exist, create token before issue");
+        check(existing.isOk(), "token with symbol does not exist, create token before issue");
         const st = statstable.get(existing);
-        chain.check(to == st.issuer,  "tokens can only be issued to issuer account");
+        check(to == st.issuer,  "tokens can only be issued to issuer account");
 
-        chain.requireAuth(st.issuer);
-        chain.check(quantity.isValid(), "invalid quantity");
-        chain.check(quantity.amount > 0, "must issue positive quantity");
+        requireAuth(st.issuer);
+        check(quantity.isValid(), "invalid quantity");
+        check(quantity.amount > 0, "must issue positive quantity");
 
-        chain.check(quantity.symbol == st.supply.symbol, "symbol precision mismatch" );
-        chain.check(quantity.amount <= st.max_supply.amount - st.supply.amount, "quantity exceeds available supply");
+        check(quantity.symbol == st.supply.symbol, "symbol precision mismatch" );
+        check(quantity.amount <= st.max_supply.amount - st.supply.amount, "quantity exceeds available supply");
 
         st.supply = st.supply + quantity;
-        statstable.update(existing, st, new chain.Name(0));
+        statstable.update(existing, st, new Name(0));
 
         this.addBalance( st.issuer, quantity, st.issuer );
     }
 
     @action("retire")
-    retire(quantity: chain.Asset, memo: string): void {
+    retire(quantity: Asset, memo: string): void {
         const sym = quantity.symbol;
-        chain.check(sym.isValid(), "invalid symbol name");
-        chain.check(memo.length <= 256, "memo has more than 256 bytes");
+        check(sym.isValid(), "invalid symbol name");
+        check(memo.length <= 256, "memo has more than 256 bytes");
 
         const statstable = this.getStatTable(sym);
         const existing = statstable.find(sym.code());
-        chain.check(existing.isOk(), "token with symbol does not exist");
+        check(existing.isOk(), "token with symbol does not exist");
         const st = statstable.get(existing);
 
-        chain.requireAuth(st.issuer);
-        chain.check(quantity.isValid(), "invalid quantity");
-        chain.check(quantity.amount > 0, "must retire positive quantity");
+        requireAuth(st.issuer);
+        check(quantity.isValid(), "invalid quantity");
+        check(quantity.amount > 0, "must retire positive quantity");
 
-        chain.check( quantity.symbol == st.supply.symbol, "symbol precision mismatch" );
+        check( quantity.symbol == st.supply.symbol, "symbol precision mismatch" );
 
         st.supply = st.supply - quantity;
-        statstable.update(existing, st, new chain.Name(0));
+        statstable.update(existing, st, new Name(0));
 
         this.subBalance(st.issuer, quantity);
     }
 
     @action("transfer")
-    transfer(from: chain.Name, to: chain.Name, quantity: chain.Asset, memo: string): void {
-        chain.check(from != to, "cannot transfer to self");
-        chain.requireAuth(from);
-        chain.check(chain.isAccount(to), "to account does not exist");
+    transfer(from: Name, to: Name, quantity: Asset, memo: string): void {
+        check(from != to, "cannot transfer to self");
+        requireAuth(from);
+        check(isAccount(to), "to account does not exist");
         const sym = quantity.symbol;
         const statstable = this.getStatTable(sym);
         const existing = statstable.find(sym.code());
-        chain.check(existing.isOk(), "token with symbol does not exist");
+        check(existing.isOk(), "token with symbol does not exist");
         const st = statstable.get(existing);
 
-        chain.requireRecipient(from);
-        chain.requireRecipient(to);
+        requireRecipient(from);
+        requireRecipient(to);
 
-        chain.check(quantity.isValid(), "invalid quantity");
-        chain.check(quantity.amount > 0, "must transfer positive quantity");
-        chain.check(quantity.symbol == st.supply.symbol, "symbol precision mismatch");
-        chain.check(memo.length <= 256, "memo has more than 256 bytes");
+        check(quantity.isValid(), "invalid quantity");
+        check(quantity.amount > 0, "must transfer positive quantity");
+        check(quantity.symbol == st.supply.symbol, "symbol precision mismatch");
+        check(memo.length <= 256, "memo has more than 256 bytes");
 
-        const payer = chain.hasAuth(to) ? to : from;
+        const payer = hasAuth(to) ? to : from;
 
         this.subBalance(from, quantity);
         this.addBalance(to, quantity, payer);
     }
 
-    subBalance(owner: chain.Name, value: chain.Asset): void {
+    subBalance(owner: Name, value: Asset): void {
         const fromAcnts = this.getAccountsTable(owner);
 
         const from = fromAcnts.find(value.symbol.code());
-        chain.check(from.isOk(), "no balance object found");
+        check(from.isOk(), "no balance object found");
 
         const account = fromAcnts.get(from);
-        chain.check(account.balance.amount >= value.amount, "overdrawn balance");
+        check(account.balance.amount >= value.amount, "overdrawn balance");
 
         account.balance = account.balance - value;
         fromAcnts.update(from, account, owner);
     }
 
-    addBalance(owner: chain.Name, value: chain.Asset, ramPayer: chain.Name): void {
+    addBalance(owner: Name, value: Asset, ramPayer: Name): void {
         const toAcnts = this.getAccountsTable(owner);
         const to = toAcnts.find(value.symbol.code());
         if (!to.isOk()) {
@@ -158,38 +158,38 @@ class TokenContract {
     }
 
     @action("open")
-    open(owner: chain.Name, symbol: chain.Symbol, ram_payer: chain.Name): void {
-        chain.requireAuth(ram_payer);
+    open(owner: Name, symbol: Symbol, ram_payer: Name): void {
+        requireAuth(ram_payer);
 
-        chain.check(chain.isAccount(owner), "owner account does not exist");
+        check(isAccount(owner), "owner account does not exist");
 
         const statstable = this.getStatTable(symbol);
         const existing = statstable.find(symbol.code());
-        chain.check(existing.isOk(), "symbol does not exist");
+        check(existing.isOk(), "symbol does not exist");
         const st = statstable.get(existing);
-        chain.check(st.supply.symbol == symbol, "symbol precision mismatch");
+        check(st.supply.symbol == symbol, "symbol precision mismatch");
 
         const acnts = this.getAccountsTable(owner);
         const it = acnts.find(symbol.code());
         if (!it.isOk()) {
-            const account = new AccountsTable(new chain.Asset(<i64>0, symbol));
+            const account = new AccountsTable(new Asset(<i64>0, symbol));
             acnts.store(account, ram_payer);
         }
     }
 
     @action("close")
-    close(owner: chain.Name, symbol: chain.Symbol): void {
-        chain.requireAuth(owner);
+    close(owner: Name, symbol: Symbol): void {
+        requireAuth(owner);
         const acnts = this.getAccountsTable(owner);
         const it = acnts.find(symbol.code());
-        chain.check(it.isOk(), "Balance row already deleted or never existed. Action won't have any effect.");
+        check(it.isOk(), "Balance row already deleted or never existed. Action won't have any effect.");
 
         const account = acnts.get(it);
-        chain.check(account.balance.amount == 0, "Cannot close because the balance is not zero.");
+        check(account.balance.amount == 0, "Cannot close because the balance is not zero.");
         acnts.remove(it);
     }
 }
 
-export function createTokenContract (contractAccount: chain.Name): TokenContract {
-    return new TokenContract(contractAccount, new chain.Name(0), new chain.Name(0));
+export function createTokenContract (contractAccount: Name): TokenContract {
+    return new TokenContract(contractAccount, new Name(0), new Name(0));
 }

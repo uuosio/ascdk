@@ -1,10 +1,10 @@
-import * as chain from "as-chain";
+import { Asset, Name } from "as-chain";
 
 @table("accounts")
 class account {
-    balance: chain.Asset;
+    balance: Asset;
 
-    constructor (balance: chain.Asset = new chain.Asset()) {
+    constructor (balance: Asset = new Asset()) {
         this.balance = balance;
     }
 
@@ -16,14 +16,14 @@ class account {
 
 @table("stat")
 class currency_stats {
-    supply: chain.Asset;
-    max_supply: chain.Asset;
-    issuer: chain.Name;
+    supply: Asset;
+    max_supply: Asset;
+    issuer: Name;
 
     constructor (
-       supply: chain.Asset = new chain.Asset(),
-       max_supply: chain.Asset =  new chain.Asset(),
-       issuer: chain.Name = new chain.Name(),
+       supply: Asset = new Asset(),
+       max_supply: Asset =  new Asset(),
+       issuer: Name = new Name(),
     ) {
         this.supply = supply;
         this.max_supply = max_supply;
