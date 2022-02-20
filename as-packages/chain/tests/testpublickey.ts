@@ -23,6 +23,18 @@ class MyContract {
         return bytes;
     }
 
+    bytesEqual(a: u8[], b:u8[]): bool {
+        if (a.length != b.length) {
+            return false;
+        }
+        for (let i=0; i<a.length; i++) {
+            if (a[i] != b[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     @action("testpub")
     testPublicKey(
         k1: chain.PublicKey,
@@ -48,5 +60,9 @@ class MyContract {
         chain.assert(!(k1 != _k1), "bad k1 key");
         chain.assert(!(r1 != _r1), "bad r1 key");
         chain.assert(!(webAuthN != _webAuthN), "bad webauthn key");
+
+        chain.assert(this.bytesEqual(k1.pack(), _k1.pack()), "bad k1 key");
+        chain.assert(this.bytesEqual(r1.pack(), _r1.pack()), "bad k1 key");
+        chain.assert(this.bytesEqual(webAuthN.pack(), _webAuthN.pack()), "bad k1 key");
     }
 }
