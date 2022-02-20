@@ -1,4 +1,4 @@
-import { Name, Asset, Symbol, check, requireAuth, MultiIndex, hasAuth, isAccount, requireRecipient } from 'as-chain'
+import { Name, Asset, Symbol, check, requireAuth, MultiIndex, hasAuth, isAccount, requireRecipient, contract, action, SAME_PAYER } from 'as-chain'
 import { AccountsTable, StatTable } from './tables';
 
 @contract("eosio.token")
@@ -76,7 +76,7 @@ class TokenContract {
         check(quantity.amount <= st.max_supply.amount - st.supply.amount, "quantity exceeds available supply");
 
         st.supply = st.supply + quantity;
-        statstable.update(existing, st, new Name(0));
+        statstable.update(existing, st, SAME_PAYER);
 
         this.addBalance( st.issuer, quantity, st.issuer );
     }
@@ -99,7 +99,7 @@ class TokenContract {
         check( quantity.symbol == st.supply.symbol, "symbol precision mismatch" );
 
         st.supply = st.supply - quantity;
-        statstable.update(existing, st, new Name(0));
+        statstable.update(existing, st, SAME_PAYER);
 
         this.subBalance(st.issuer, quantity);
     }

@@ -1,4 +1,4 @@
-import { Asset, Name } from "as-chain";
+import { Asset, Name, table, primary } from "as-chain";
 
 @table("accounts")
 class account {

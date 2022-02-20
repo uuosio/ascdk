@@ -25,7 +25,7 @@ export {
     getSecondaryValue_f64
 } from "./idxdb"
 
-export {MultiIndex, MultiIndexValue} from "./mi"
+export {MultiIndex, MultiIndexValue, SAME_PAYER} from "./mi"
 
 export {
     readActionData,

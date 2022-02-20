@@ -3,6 +3,8 @@ import { DBI64, PrimaryValue } from "./dbi64"
 import { Name } from "./name"
 import { assert } from "./system"
 
+export const SAME_PAYER = new Name();
+
 export class PrimaryIterator {
     constructor(public i: i32) {}
 
