@@ -32,18 +32,22 @@ export class ECCPublicKey implements Packer {
 
     @inline @operator('==')
     static eq(a: ECCPublicKey, b: ECCPublicKey): bool {
-        check (a.data != null && b.data != null, "bad ecc public key");
-        for (let i=0; i<a.data!.length; i++) {
-            if (a.data![i] != b.data![i]) {
-                return false;
-            }
-        }
-        return true;
+        return Utils.bytesCmp(a.data!, b.data!) == 0;
     }
 
     @inline @operator('!=')
     static neq(a: ECCPublicKey, b: ECCPublicKey): bool {
-      return !(a == b);
+        return Utils.bytesCmp(a.data!, b.data!) != 0;
+    }
+
+    @inline @operator('>')
+    static gt(a: ECCPublicKey, b: ECCPublicKey): bool {
+        return Utils.bytesCmp(a.data!, b.data!) > 0;
+    }
+
+    @inline @operator('<')
+    static lt(a: ECCPublicKey, b: ECCPublicKey): bool {
+        return Utils.bytesCmp(a.data!, b.data!) < 0;
     }
 }
 
@@ -97,6 +101,20 @@ export class WebAuthNPublicKey implements Packer {
     @inline @operator('!=')
     static neq(a: WebAuthNPublicKey, b: WebAuthNPublicKey): bool {
       return !(a == b);
+    }
+
+    @inline @operator('>')
+    static gt(a: WebAuthNPublicKey, b: WebAuthNPublicKey): bool {
+        let rawA = a.pack();
+        let rawB = b.pack();
+        return Utils.bytesCmp(rawA, rawB) > 0;
+    }
+
+    @inline @operator('<')
+    static lt(a: WebAuthNPublicKey, b: WebAuthNPublicKey): bool {
+        let rawA = a.pack();
+        let rawB = b.pack();
+        return Utils.bytesCmp(rawA, rawB) < 0;
     }
 }
 
@@ -168,5 +186,43 @@ export class PublicKey implements Packer {
     @inline @operator('!=')
     static neq(a: PublicKey, b: PublicKey): bool {
       return !(a == b);
+    }
+
+    @inline @operator('>')
+    static gt(a: PublicKey, b: PublicKey): bool {
+        if (a.keyType > b.keyType) {
+            return true;
+        }
+
+        if (a.keyType < b.keyType) {
+            return false;
+        }
+
+        if (a.keyType == PublicKeyType.K1) {
+            return a.k1! > b.k1!;
+        } else if (a.keyType == PublicKeyType.R1) {
+            return a.r1! > b.r1!;
+        } else {
+            return a.webAuthN! > b.webAuthN!;
+        }
+    }
+
+    @inline @operator('<')
+    static lt(a: PublicKey, b: PublicKey): bool {
+        if (a.keyType < b.keyType) {
+            return true;
+        }
+
+        if (a.keyType > b.keyType) {
+            return false;
+        }
+
+        if (a.keyType == PublicKeyType.K1) {
+            return a.k1! < b.k1!;
+        } else if (a.keyType == PublicKeyType.R1) {
+            return a.r1! < b.r1!;
+        } else {
+            return a.webAuthN! < b.webAuthN!;
+        }
     }
 }

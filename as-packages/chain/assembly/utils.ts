@@ -32,4 +32,31 @@ export namespace Utils {
         }
         return hex.join("");
     }
+
+    export function bytesCmp(a: u8[], b: u8[]): i32 {
+        let length = a.length;
+        if (length > b.length) {
+            length = b.length;
+        }
+        for (let i=0; i<length; i++) {
+            if (a[i] == b[i]) {
+                continue;
+            } else if (a[i] > b[i]) {
+                return 1
+            } else {
+                return -1;
+            }
+        }
+
+        if (a.length == b.length) {
+            return 0;
+        }
+
+        if (a.length > b.length) {
+            return 1;
+        }
+
+        return -1;
+    }
 }
+

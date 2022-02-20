@@ -64,5 +64,26 @@ class MyContract {
         chain.assert(this.bytesEqual(k1.pack(), _k1.pack()), "bad k1 key");
         chain.assert(this.bytesEqual(r1.pack(), _r1.pack()), "bad k1 key");
         chain.assert(this.bytesEqual(webAuthN.pack(), _webAuthN.pack()), "bad k1 key");
+
+        chain.assert(k1 < r1, "bad value 1");
+        chain.assert(k1 < webAuthN, "bad value 2");
+        chain.assert(webAuthN > k1, "bad value 3");
+        chain.assert(r1 > k1, "bad value 4");
+
+        k1.k1!.data![0] = 1;
+        _k1.k1!.data![0] = 2;
+        chain.assert(k1 < _k1, "bad value 5");
+
+        k1.k1!.data![0] = 2;
+        _k1.k1!.data![0] = 1;
+        chain.assert(k1 > _k1, "bad value 6");
+
+        r1.r1!.data![0] = 1;
+        _r1.r1!.data![0] = 2;
+        chain.assert(r1 < _r1, "bad value 7");
+
+        r1.r1!.data![0] = 2;
+        _r1.r1!.data![0] = 1;
+        chain.assert(r1 > _r1, "bad value 8");
     }
 }
