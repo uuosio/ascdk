@@ -125,12 +125,17 @@ Handlebars.registerHelper("actionParameterGetSize", function (field: ParameterNo
     let code: string[] = [];
     if (field.type.typeKind == TypeKindEnum.ARRAY) {
         code.push(`size += _chain.calcPackedVarUint32Length(this.${field.name}.length);`);
-
         let plainType = field.type.plainTypeNode;
-        plainType = plainType.replace('[]', '');
+
+        if (plainType.indexOf('Array<') >= 0) {
+            plainType = plainType.replace('Array<', '').replace('>', '');
+        } else {
+            plainType = plainType.replace('[]', '');
+        }
+
         let numType = numberTypeMap.get(plainType);
         if (numType) {
-            code.push(` size += sizeof<${plainType}>()*this.${field.name}.length;`)
+            code.push(`        size += sizeof<${plainType}>()*this.${field.name}.length;`)
         } else if (plainType == 'string') {
             code.push(`
             for (let i=0; i<this.${field.name}.length; i++) {
