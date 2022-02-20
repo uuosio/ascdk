@@ -1,28 +1,16 @@
 import { Name, Asset, Symbol, check, requireAuth, MultiIndex, hasAuth, isAccount, requireRecipient, contract, action, SAME_PAYER } from 'as-chain'
-import { account, currency_stats, AccountsTable, StatTable } from './tables';
+import { Account, Stat, currency_stats, account } from './tables';
 
 @contract("eosio.token")
 class TokenContract {
-    receiver: Name;
-    firstReceiver: Name;
-    action: Name
-    accountTable: AccountsTable;
-    statTable: StatTable;
-
-    constructor(receiver: Name, firstReceiver: Name, action: Name) {
-        this.receiver = receiver;
-        this.firstReceiver = firstReceiver;
-        this.action = action;
-        this.accountTable = new AccountsTable()
-        this.statTable = new StatTable()
-    }
+    constructor(public receiver: Name, public firstReceiver: Name, public action: Name) {}
 
     getStatTable(sym: Symbol): MultiIndex<currency_stats> {
-        return StatTable.new(this.receiver, new Name(sym.code()));
+        return Stat.new(this.receiver, new Name(sym.code()));
     }
 
     getAccountsTable(accountName: Name): MultiIndex<account> {
-        return AccountsTable.new(this.receiver, accountName);
+        return Account.new(this.receiver, accountName);
     }
 
     @action("create")
@@ -37,7 +25,7 @@ class TokenContract {
         statstable.requireNotFind(sym.code(), "token with symbol already exists");
 
         const zeroSupply = new Asset(<i64>0, maximum_supply.symbol);
-        const value = new StatTable(zeroSupply, maximum_supply, issuer);
+        const value = new Stat(zeroSupply, maximum_supply, issuer);
         statstable.store(value, this.receiver);
     }
 
@@ -127,7 +115,7 @@ class TokenContract {
         const toAcnts = this.getAccountsTable(owner);
         const to = toAcnts.find(value.symbol.code());
         if (!to.isOk()) {
-            const account = new AccountsTable(value);
+            const account = new Account(value);
             toAcnts.store(account, ramPayer);
         } else {
             const account = toAcnts.get(to);
@@ -150,7 +138,7 @@ class TokenContract {
         const acnts = this.getAccountsTable(owner);
         const it = acnts.find(symbol.code());
         if (!it.isOk()) {
-            const account = new AccountsTable(new Asset(<i64>0, symbol));
+            const account = new Account(new Asset(<i64>0, symbol));
             acnts.store(account, ram_payer);
         }
     }

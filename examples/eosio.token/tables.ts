@@ -36,5 +36,5 @@ export class currency_stats {
     }
 }
 
-export class AccountsTable extends account {}
-export class StatTable extends currency_stats {}
+export class Account extends account {}
+export class Stat extends currency_stats {}
