@@ -1,7 +1,7 @@
 import { Asset, Name, table, primary } from "as-chain";
 
 @table("accounts")
-class account {
+export class account {
     balance: Asset;
 
     constructor (balance: Asset = new Asset()) {
@@ -15,7 +15,7 @@ class account {
 }
 
 @table("stat")
-class currency_stats {
+export class currency_stats {
     supply: Asset;
     max_supply: Asset;
     issuer: Name;

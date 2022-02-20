@@ -1,5 +1,5 @@
 import { Name, Asset, Symbol, check, requireAuth, MultiIndex, hasAuth, isAccount, requireRecipient, contract, action, SAME_PAYER } from 'as-chain'
-import { AccountsTable, StatTable } from './tables';
+import { account, currency_stats, AccountsTable, StatTable } from './tables';
 
 @contract("eosio.token")
 class TokenContract {
@@ -17,22 +17,12 @@ class TokenContract {
         this.statTable = new StatTable()
     }
 
-    getStatTable(sym: Symbol): MultiIndex<StatTable> {
-        return new MultiIndex<StatTable>(
-            this.receiver,
-            new Name(sym.code()),
-            Name.fromString("stat"),
-            () => new StatTable()
-        );
+    getStatTable(sym: Symbol): MultiIndex<currency_stats> {
+        return StatTable.new(this.receiver, new Name(sym.code()));
     }
 
-    getAccountsTable(accountName: Name): MultiIndex<AccountsTable> {
-        return new MultiIndex<AccountsTable>(
-            this.receiver,
-            accountName,
-            Name.fromString("accounts"),
-            () => new AccountsTable()
-            );
+    getAccountsTable(accountName: Name): MultiIndex<account> {
+        return AccountsTable.new(this.receiver, accountName);
     }
 
     @action("create")
@@ -75,7 +65,7 @@ class TokenContract {
         check(quantity.symbol == st.supply.symbol, "symbol precision mismatch" );
         check(quantity.amount <= st.max_supply.amount - st.supply.amount, "quantity exceeds available supply");
 
-        st.supply = st.supply + quantity;
+        st.supply = Asset.add(st.supply, quantity);
         statstable.update(existing, st, SAME_PAYER);
 
         this.addBalance( st.issuer, quantity, st.issuer );
@@ -98,7 +88,7 @@ class TokenContract {
 
         check( quantity.symbol == st.supply.symbol, "symbol precision mismatch" );
 
-        st.supply = st.supply - quantity;
+        st.supply = Asset.sub(st.supply, quantity);
         statstable.update(existing, st, SAME_PAYER);
 
         this.subBalance(st.issuer, quantity);
@@ -138,7 +128,7 @@ class TokenContract {
         const account = fromAcnts.get(from);
         check(account.balance.amount >= value.amount, "overdrawn balance");
 
-        account.balance = account.balance - value;
+        account.balance = Asset.sub(account.balance, value);
         fromAcnts.update(from, account, owner);
     }
 
@@ -150,7 +140,7 @@ class TokenContract {
             toAcnts.store(account, ramPayer);
         } else {
             const account = toAcnts.get(to);
-            account.balance = account.balance + value;
+            account.balance = Asset.add(account.balance, value);
             toAcnts.update(to, account, ramPayer);
         }
     }

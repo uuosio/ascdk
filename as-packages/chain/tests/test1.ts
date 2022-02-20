@@ -1,16 +1,17 @@
-import {prints, printui, action_data_size, read_action_data, db_end_i64} from "./env"
+import {prints, printui, action_data_size, read_action_data, db_end_i64} from "../assembly/env"
 import {u128} from "as-bignum"
 
-import {say_hello, DBI64} from "./dbi64"
-import {IDX64} from "./idx64"
-import {check} from "./system"
+import {say_hello, DBI64} from "../assembly/dbi64"
+import {IDX64} from "../assembly/idx64"
+import {check} from "../assembly/system"
 
-import {printString, printArray, printHex, printi} from "./debug"
+import {printString, printArray, printHex, printi} from "../assembly/debug"
 
-import {IDXDB, SecondaryType, SecondaryValue} from "./idxdb"
-import {MultiIndex, MultiIndexValue} from "./mi"
+import {IDXDB, SecondaryType, SecondaryValue} from "../assembly/idxdb"
+import {MultiIndex, MultiIndexValue} from "../assembly/mi"
+import {Name} from "../assembly/Name"
 
-export {printString, printArray, printHex, printi} from "./debug"
+export {printString, printArray, printHex, printi} from "../assembly/debug"
 
 function abort(
   message: string | null,
@@ -53,7 +54,7 @@ enum Direction {
   Right,
 }
 
-class MyData extends MultiIndexValue {
+class MyData implements MultiIndexValue {
   a: u32;
   b: u32;
   getPrimaryValue(): u64 {
@@ -157,7 +158,7 @@ export function apply(receiver: u64, firstReceiver: u64, action: u64): void {
   let indexes = new Array<SecondaryType>();
   let mi = new MultiIndex<MyData>(receiver, 1, 2, indexes);
   let value = new MyData()
-  mi.store(value, receiver);
+  mi.store(value, new Name(receiver));
 }
 
 export function sayHello(): void {
