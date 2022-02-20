@@ -66,7 +66,7 @@ export const tableTpl = `
 
         let indexes: _chain.IDXDB[] = [
             {{#each secondaryFuncDefs}}
-            {{{getSecondaryType .}}}
+            {{{newSecondaryDB .}}}
             {{/each}}
         ];
         return new _chain.MultiIndex<{{className}}>(code, scope, tableName, newObj, indexes);

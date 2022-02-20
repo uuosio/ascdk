@@ -241,7 +241,7 @@ const dbTypeToDBClass: Map<string, string> = new Map([
     ['F128', 'IDXF128'],
 ]);
 
-Handlebars.registerHelper("getSecondaryType", function (fn: DBIndexFunctionDef) {
+Handlebars.registerHelper("newSecondaryDB", function (fn: DBIndexFunctionDef) {
     let code: string[] = [];
     let plainType = fn.getterPrototype!.returnType!.plainTypeNode;
     if (plainType == 'chain.U128') {
