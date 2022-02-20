@@ -30,7 +30,6 @@ class TokenContract {
         requireAuth(this.receiver);
 
         const sym = maximum_supply.symbol;
-        check(sym.isValid(), "invalid symbol name");
         check(maximum_supply.isValid(), "invalid supply");
         check(maximum_supply.amount > 0, "max-supply must be positive");
 
@@ -62,13 +61,13 @@ class TokenContract {
         check(quantity.isValid(), "invalid quantity");
         check(quantity.amount > 0, "must issue positive quantity");
 
-        check(quantity.symbol == st.supply.symbol, "symbol precision mismatch" );
+        check(quantity.symbol == st.supply.symbol, "symbol precision mismatch");
         check(quantity.amount <= st.max_supply.amount - st.supply.amount, "quantity exceeds available supply");
 
         st.supply = Asset.add(st.supply, quantity);
         statstable.update(existing, st, SAME_PAYER);
 
-        this.addBalance( st.issuer, quantity, st.issuer );
+        this.addBalance(st.issuer, quantity, st.issuer);
     }
 
     @action("retire")
@@ -86,7 +85,7 @@ class TokenContract {
         check(quantity.isValid(), "invalid quantity");
         check(quantity.amount > 0, "must retire positive quantity");
 
-        check( quantity.symbol == st.supply.symbol, "symbol precision mismatch" );
+        check(quantity.symbol == st.supply.symbol, "symbol precision mismatch");
 
         st.supply = Asset.sub(st.supply, quantity);
         statstable.update(existing, st, SAME_PAYER);
