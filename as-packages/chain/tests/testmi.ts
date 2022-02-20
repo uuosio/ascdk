@@ -1,6 +1,5 @@
 import {
     Name,
-    SecondaryType,
     U128,
     U256,
     IDX64,
@@ -11,7 +10,6 @@ import {
     newSecondaryValue_f64,
     newSecondaryValue_U128,
     newSecondaryValue_U256,
-    MultiIndex,
     table,
     contract,
     primary,
@@ -91,12 +89,7 @@ class MyContract {
 
     @action("testmi")
     testmi(): void {
-        let newObj = (): MyData => {
-            return new MyData();
-        }
-
-        let indexes = [SecondaryType.U64, SecondaryType.U128, SecondaryType.F64, SecondaryType.U256];
-        let mi = new MultiIndex<MyData>(this.receiver, this.firstReceiver, this.action, indexes, newObj);
+        let mi = MyData.new(this.receiver, this.receiver);
         let value = new MyData(1, 2, new U128(3), 3.3, new U256(11));
         mi.store(value, this.receiver);
 

@@ -51,9 +51,24 @@ export const tableTpl = `
         switch (i) {
             {{#each secondaryFuncDefs}}
             {{{setSecondaryValue .}}}
-            {{/each}}    
+            {{/each}}
             default:
                 _chain.assert(false, "bad db index!");
         }
+    }
+
+    static new(code: _chain.Name, scope: _chain.Name): _chain.MultiIndex<{{className}}> {
+        let newObj = ():{{className}} => {
+            return new {{className}}();
+        };
+        let tableName = _chain.Name.fromString("{{tableName}}");
+        let idxTableBase: u64 = (tableName.N & 0xfffffffffffffff0);
+
+        let indexes: _chain.IDXDB[] = [
+            {{#each secondaryFuncDefs}}
+            {{{newSecondaryDB .}}}
+            {{/each}}
+        ];
+        return new _chain.MultiIndex<{{className}}>(code, scope, tableName, newObj, indexes);
     }
 }`;

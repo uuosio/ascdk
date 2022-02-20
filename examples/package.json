@@ -22,9 +22,9 @@
       "build-hello": "npx eosio-asc ./hello/hello.ts",
       "build-inlineaction": "npx eosio-asc ./inlineaction/index.ts",
       "build-eosio.token": "npx eosio-asc ./eosio.token/eosio.token.ts",
-      "test-hello": "npx eosio-asc ./hello/hello.ts;run-ipyeos -m pytest -s -x test.py -k test_hello",
-      "test-inlineaction": "npx eosio-asc ./inlineaction/index.ts;run-ipyeos -m pytest -s -x test.py -k test_action",
-      "test-eosio.token": "npx eosio-asc ./eosio.token/eosio.token.ts;run-ipyeos -m pytest -s -x test.py -k test_token"
+      "test-hello": "npx eosio-asc ./hello/hello.ts && run-ipyeos -m pytest -s -x test.py -k test_hello",
+      "test-inlineaction": "npx eosio-asc ./inlineaction/index.ts && run-ipyeos -m pytest -s -x test.py -k test_action",
+      "test-eosio.token": "npx eosio-asc ./eosio.token/eosio.token.ts && run-ipyeos -m pytest -s -x test.py -k test_token"
     },
     "dependencies": {
       "@assemblyscript/loader": "^0.19.22",

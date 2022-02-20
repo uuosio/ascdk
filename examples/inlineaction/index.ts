@@ -1,5 +1,4 @@
-import * as chain from "as-chain"
-import { Utils } from "as-chain/utils"
+import { Name, Action, PermissionLevel, printString, action, contract, packer } from "as-chain"
 
 @packer
 class MyData {
@@ -11,26 +10,26 @@ class MyData {
 @contract("hello")
 class MyContract {
     constructor(
-        public receiver: chain.Name,
-        public firstReceiver: chain.Name,
-        public action: chain.Name) {
+        public receiver: Name,
+        public firstReceiver: Name,
+        public action: Name) {
     }
 
     @action("saygoodbye")
     sayGoodbye(name: string): void {
-        chain.printString(`+++goodbye, ${name}\n`)    
+        printString(`+++goodbye, ${name}\n`)    
     }
     
     @action("sayhello")
     sayHello(name: string): void {
         let hello = new MyData('alice');
-        let a = new chain.Action(
-            [new chain.PermissionLevel(this.receiver, chain.Name.fromString("active"))],
+        let a = new Action(
+            [new PermissionLevel(this.receiver, Name.fromString("active"))],
             this.receiver,
-            chain.Name.fromString("saygoodbye"),
+            Name.fromString("saygoodbye"),
             hello.pack(),
         );
         a.send();
-        chain.printString(`hello, ${name}\n`)
+        printString(`hello, ${name}\n`)
     }
 }

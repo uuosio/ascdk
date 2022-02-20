@@ -81,8 +81,12 @@ Handlebars.registerHelper("actionParameterDeserialize", function (field: Paramet
     let code: string[] = [];
     if (field.type.typeKind == TypeKindEnum.ARRAY) {
         let plainType = field.type.plainTypeNode;
-        console.log(`++++++++plainType:${plainType}, ${field.name}`)
-        plainType = plainType.replace('[]', '')
+        console.log(`++++++++plainType:${plainType}, ${field.name}`);
+        if (plainType.indexOf('Array<') >= 0) {
+            plainType = plainType.replace('Array<', '').replace('>', '');
+        } else {
+            plainType = plainType.replace('[]', '');
+        }
         let numType = numberTypeMap.get(plainType);
         if (numType) {
             code.push(`this.${field.name} = dec.unpackNumberArray<${numType}>();`)
@@ -121,12 +125,17 @@ Handlebars.registerHelper("actionParameterGetSize", function (field: ParameterNo
     let code: string[] = [];
     if (field.type.typeKind == TypeKindEnum.ARRAY) {
         code.push(`size += _chain.calcPackedVarUint32Length(this.${field.name}.length);`);
-
         let plainType = field.type.plainTypeNode;
-        plainType = plainType.replace('[]', '');
+
+        if (plainType.indexOf('Array<') >= 0) {
+            plainType = plainType.replace('Array<', '').replace('>', '');
+        } else {
+            plainType = plainType.replace('[]', '');
+        }
+
         let numType = numberTypeMap.get(plainType);
         if (numType) {
-            code.push(` size += sizeof<${plainType}>()*this.${field.name}.length;`)
+            code.push(`        size += sizeof<${plainType}>()*this.${field.name}.length;`)
         } else if (plainType == 'string') {
             code.push(`
             for (let i=0; i<this.${field.name}.length; i++) {
@@ -230,6 +239,29 @@ Handlebars.registerHelper("setSecondaryValue", function (fn: DBIndexFunctionDef)
     code.push(`                this.${fn.getterPrototype!.declaration.name.text} = _value;`);
     code.push(`                break;`);
     code.push(`            }`);
+    return code.join(EOL);
+});
+
+const dbTypeToDBClass: Map<string, string> = new Map([
+    ['U64', 'IDX64'],
+    ['U128', 'IDX128'],
+    ['U256', 'IDX256'],
+    ['F64', 'IDXF64'],
+    ['F128', 'IDXF128'],
+]);
+
+Handlebars.registerHelper("newSecondaryDB", function (fn: DBIndexFunctionDef) {
+    let code: string[] = [];
+    let plainType = fn.getterPrototype!.returnType!.plainTypeNode;
+    if (plainType == 'chain.U128') {
+        plainType = 'U128';
+    } else if (plainType == 'chain.U256') {
+        plainType = 'U256';
+    }
+
+    plainType = plainType.toUpperCase();
+    let dbClass = dbTypeToDBClass.get(plainType);
+    code.push(`new _chain.${dbClass}(code.N, scope.N, idxTableBase + ${fn._index}, ${fn._index}),`);
     return code.join(EOL);
 });
 

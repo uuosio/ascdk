@@ -21,12 +21,14 @@ class MyContract {
         a2: Asset,
         a3: u64,
         a4: u64[],
+        a5: Asset[],
     ): void {
         printString(`+++test gen code
         ${a1},
         ${a2},
         ${a3},
         ${a4},
+        ${a5},
         \n`)
     }
 
