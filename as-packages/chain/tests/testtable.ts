@@ -1,10 +1,11 @@
-import * as chain from "as-chain"
+import { Name, Asset, MultiIndex } from "as-chain"
 
 @table("mytable")
 class MyTable {
     constructor(
         public a: u64=0,
         public b: u64=0,
+        public c: Asset = new Asset()
     ) {}
 
     @primary
@@ -15,11 +16,11 @@ class MyTable {
 
 @contract("hello")
 class MyContract {
-    receiver: chain.Name;
-    firstReceiver: chain.Name;
-    action: chain.Name
+    receiver: Name;
+    firstReceiver: Name;
+    action: Name
 
-    constructor(receiver: chain.Name, firstReceiver: chain.Name, action: chain.Name) {
+    constructor(receiver: Name, firstReceiver: Name, action: Name) {
         this.receiver = receiver;
         this.firstReceiver = firstReceiver;
         this.action = action;
@@ -31,7 +32,7 @@ class MyContract {
             return new MyTable();
         }
 
-        let mi = new chain.MultiIndex<MyTable>(this.receiver, this.firstReceiver, chain.Name.fromString("mytable"), [], newObj);
+        let mi = new MultiIndex<MyTable>(this.receiver, this.firstReceiver, Name.fromString("mytable"), [], newObj);
         let value = new MyTable(1, 2);
         mi.store(value, this.receiver);
     }
