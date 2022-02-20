@@ -13,18 +13,6 @@ const EOL = WIN ? "\r\n" : "\n";
 
 let scope = CONFIG.scope;
 
-Handlebars.registerHelper("generateActionMember", function (fn: ParameterNodeDef) {
-    let code: string[] = [];
-    let plainType = fn.type.plainTypeNode
-    if (plainType == 'string') {
-        code.push(` ${fn.name}: string = "";`);
-    } else if (plainType == 'string[]') {
-        code.push(` ${fn.name}: string[] = [];`);
-    } else {
-        code.push(` ${fn.name}!: ${plainType};`);
-    }
-    return code.join(EOL);
-});
 
 const numberTypeMap: Map<string, string> = new Map([
     ["bool", "bool"],
@@ -40,6 +28,23 @@ const numberTypeMap: Map<string, string> = new Map([
     ["f32", "f32"],
     ["f64", "f64"]
 ]);
+
+Handlebars.registerHelper("generateActionMember", function (fn: ParameterNodeDef) {
+    let code: string[] = [];
+    let plainType = fn.type.plainTypeNode
+    if (plainType == 'string') {
+        code.push(` ${fn.name}: string = "";`);
+    } else if (plainType == 'string[]') {
+        code.push(` ${fn.name}: string[] = [];`);
+    } else {
+        if (numberTypeMap.get(plainType)) {
+            code.push(` ${fn.name}: ${plainType};`);
+        } else {
+            code.push(` ${fn.name}!: ${plainType};`);
+        }
+    }
+    return code.join(EOL);
+});
 
 Handlebars.registerHelper("actionParameterSerialize", function (field: ParameterNodeDef) {
     let code: string[] = [];
