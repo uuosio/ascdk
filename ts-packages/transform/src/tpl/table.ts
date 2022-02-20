@@ -57,7 +57,7 @@ export const tableTpl = `
         }
     }
 
-    static newMultiIndex(code: _chain.Name, scope: _chain.Name): _chain.MultiIndex<{{className}}> {
+    static new(code: _chain.Name, scope: _chain.Name): _chain.MultiIndex<{{className}}> {
         let newObj = ():{{className}} => {
             return new {{className}}();
         };

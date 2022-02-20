@@ -28,7 +28,7 @@ class MyContract {
 
     @action("testtable")
     testTable(): void {
-        let mi = MyTable.newMultiIndex(this.receiver, this.receiver);
+        let mi = MyTable.new(this.receiver, this.receiver);
         let value = new MyTable(1, 2);
         mi.store(value, this.receiver);
     }

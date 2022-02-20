@@ -71,7 +71,7 @@ class MyContract {
 
     @action("testmi")
     testmi(): void {
-        let mi = MyData.newMultiIndex(this.receiver, this.receiver);
+        let mi = MyData.new(this.receiver, this.receiver);
         let value = new MyData(1, 2, new chain.U128(3), 3.3, new chain.U256(11));
         mi.store(value, this.receiver);
 
