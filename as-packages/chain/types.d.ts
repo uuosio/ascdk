@@ -1,0 +1,1 @@
+declare function __alloc(size: usize, id?: u32): usize;

@@ -1,11 +1,6 @@
-import { IDXDB, SecondaryType, SecondaryValue, SecondaryIterator } from "./idxdb"
+import { IDXDB, SecondaryValue, SecondaryIterator } from "./idxdb"
 import { DBI64, PrimaryValue } from "./dbi64"
-import { IDX64 } from "./idx64"
-import { IDXF64 } from "./idxf64"
-import { IDX128 } from "./idx128"
-import { IDX256 } from "./idx256"
 import { Name } from "./name"
-import { printString } from "./debug"
 import { assert } from "./system"
 
 export class PrimaryIterator {

@@ -6,6 +6,6 @@ export function ignore(_: string): any {}
 export function packed(_: string): any {}
 export function table(_: string): any {}
 export function serializer(_: string): any {}
-export const primary: any = undefined;
-export const secondary: any = undefined;
-export const packer: any = undefined;
+export function primary(_: any, __: any): any {}
+export function secondary(_: any, __: any): any {}
+export function packer(_: any, __: any): any {}

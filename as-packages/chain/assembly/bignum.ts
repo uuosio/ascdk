@@ -41,7 +41,6 @@ export class U128 extends u128 implements Packer {
     }
 }
 
-
 export class U256 extends u256 implements Packer {
     pack(): u8[] {
         let enc = new Encoder(32);

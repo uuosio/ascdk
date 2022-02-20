@@ -10,12 +10,13 @@ import {
     newSecondaryValue_f64,
     newSecondaryValue_U128,
     newSecondaryValue_U256,
+    printString,
+    check,
     table,
     contract,
     primary,
     secondary,
-    printString,
-    check
+    action,
 } from "as-chain"
 
 @table("mydata")
