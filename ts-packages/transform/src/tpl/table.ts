@@ -69,6 +69,6 @@ export const tableTpl = `
             {{{getSecondaryType .}}}
             {{/each}}
         ];
-        return new _chain.MultiIndex<{{className}}>(code, scope, tableName, indexes, newObj);
+        return new _chain.MultiIndex<{{className}}>(code, scope, tableName, newObj, indexes);
     }
 }`;

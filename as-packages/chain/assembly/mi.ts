@@ -29,7 +29,7 @@ export class MultiIndex<T extends MultiIndexValue> {
     db: DBI64;
     idxdbs: Array<IDXDB>;
     newObj: () => T;
-    constructor(code: Name, scope: Name, table: Name, indexes: Array<IDXDB>, newObj: () => T) {
+    constructor(code: Name, scope: Name, table: Name, newObj: () => T, indexes: Array<IDXDB> = []) {
         this.db = new DBI64(code.N, scope.N, table.N);
         this.idxdbs = indexes;
         this.newObj = newObj;

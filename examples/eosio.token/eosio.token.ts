@@ -22,19 +22,17 @@ class TokenContract {
             this.receiver,
             new Name(sym.code()),
             Name.fromString("stat"),
-            [],
             () => new StatTable()
         );
     }
 
-    getAccountsTable(account: Name): MultiIndex<AccountsTable> {
+    getAccountsTable(accountName: Name): MultiIndex<AccountsTable> {
         return new MultiIndex<AccountsTable>(
             this.receiver,
-            account,
+            accountName,
             Name.fromString("accounts"),
-            [],
             () => new AccountsTable()
-        );
+            );
     }
 
     @action("create")
