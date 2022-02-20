@@ -10,6 +10,11 @@ class MyData {
     }
 }
 
+@packer
+class TestClass<T extends u32> {
+    data!: Array<u8>;
+}
+
 @contract("hello")
 class MyContract {
     receiver: chain.Name;
@@ -106,17 +111,41 @@ class MyContract {
         a20: chain.Name,
         //a21: u8[],
         a22: string,
-        //a23: Checksum160,
-        //a24: Checksum256,
-        //a25: Checksum512,
-        //a26: PublicKey,
+        a23: chain.Checksum160,
+        a24: chain.Checksum256,
+        a25: chain.Checksum512,
+        a26: chain.PublicKey,
         //a27: chain.Signature,
         //a28: chain.Symbol,
         // a29: chain.SymbolCode,
         a30: chain.Asset,
         // a31: chain.ExtendedAsset,
         a32: string[],
-    ): void {
+    ): void {     
+        {
+            let data = chain.Utils.hexToBytes('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABB')
+            let _a23 = new chain.Checksum160();
+            _a23.data = data;
+            chain.assert(a23 == _a23, "bad a23");
+            chain.assert(!(a23 != _a23), "bad a23");
+        }
+
+        {
+            let data = chain.Utils.hexToBytes('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABB')
+            let _a24 = new chain.Checksum256();
+            _a24.data = data;
+            chain.assert(a24 == _a24, "bad a24");
+            chain.assert(!(a24 != _a24), "bad a24");
+        }
+
+        {
+            let data = chain.Utils.hexToBytes('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABB')
+            let _a25 = new chain.Checksum512();
+            _a25.data = data;
+            chain.assert(a25 == _a25, "bad a25");
+            chain.assert(!(a25 != _a25), "bad a25");
+        }
+
         chain.assert(a13 == new chain.VarUint32(0xfff), "bad a13 value.");
         chain.assert(a20 == chain.Name.fromString("alice"), "bad a20 value");
         chain.printString(`
@@ -133,6 +162,8 @@ class MyContract {
         a15 = ${a15},
         a20 = ${a20},
         a22 = ${a22},
+        a24 = ${a24},
+        a26 = ${a26},
         a30 = ${a30},
         a32 = ${a32},
         `)

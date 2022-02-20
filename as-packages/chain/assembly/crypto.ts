@@ -2,6 +2,102 @@ import { check } from "./system"
 import { Decoder, Encoder, Packer } from "./serializer"
 import { Utils } from "./utils"
 
+export class Checksum160 implements Packer {
+    data!: u8[];
+
+    pack(): u8[] {
+        return this.data;
+    }
+
+    unpack(data: u8[]): usize {
+        let dec = new Decoder(data);
+        this.data = dec.unpackBytes(20);
+        return dec.getPos();
+    }
+
+    getSize(): usize {
+        return 20;
+    }
+
+    toString(): string {
+        return Utils.bytesToHex(this.data);
+    }
+
+    @inline @operator('==')
+    static eq(a: Checksum160, b: Checksum160): bool {
+        return Utils.bytesCmp(a.data, b.data) == 0;
+    }
+
+    @inline @operator('!=')
+    static neq(a: Checksum160, b: Checksum160): bool {
+        return Utils.bytesCmp(a.data, b.data) != 0;
+    }
+}
+
+export class Checksum256 implements Packer {
+    data!: u8[];
+
+    pack(): u8[] {
+        return this.data;
+    }
+
+    unpack(data: u8[]): usize {
+        let dec = new Decoder(data);
+        this.data = dec.unpackBytes(32);
+        return dec.getPos();
+    }
+
+    getSize(): usize {
+        return 32;
+    }
+
+    toString(): string {
+        return Utils.bytesToHex(this.data);
+    }
+
+    @inline @operator('==')
+    static eq(a: Checksum256, b: Checksum256): bool {
+        return Utils.bytesCmp(a.data, b.data) == 0;
+    }
+
+    @inline @operator('!=')
+    static neq(a: Checksum256, b: Checksum256): bool {
+        return Utils.bytesCmp(a.data, b.data) != 0;
+    }
+}
+
+export class Checksum512 implements Packer {
+    data!: u8[];
+
+    pack(): u8[] {
+        return this.data;
+    }
+
+    unpack(data: u8[]): usize {
+        let dec = new Decoder(data);
+        this.data = dec.unpackBytes(64);
+        return dec.getPos();
+    }
+
+    getSize(): usize {
+        return 64;
+    }
+
+    toString(): string {
+        return Utils.bytesToHex(this.data);
+    }
+
+    @inline @operator('==')
+    static eq(a: Checksum512, b: Checksum512): bool {
+        return Utils.bytesCmp(a.data, b.data) == 0;
+    }
+
+    @inline @operator('!=')
+    static neq(a: Checksum512, b: Checksum512): bool {
+        return Utils.bytesCmp(a.data, b.data) != 0;
+    }
+}
+
 export class ECCPublicKey implements Packer {
     data: Array<u8> | null;
 
@@ -129,6 +225,11 @@ export class PublicKey implements Packer {
     k1: ECCPublicKey | null;
     r1: ECCPublicKey | null;
     webAuthN: WebAuthNPublicKey | null;
+
+    toString(): string {
+        let raw = this.pack();
+        return Utils.bytesToHex(raw);
+    }
 
     pack(): u8[] {
         let enc = new Encoder(this.getSize());

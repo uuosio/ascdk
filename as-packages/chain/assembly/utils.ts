@@ -33,6 +33,14 @@ export namespace Utils {
         return hex.join("");
     }
 
+    export function hexToBytes(hex: string): u8[] {
+        let bytes = new Array<u8>();
+        for (let c = 0; c < hex.length; c += 2) {
+            bytes.push(<u8>parseInt(hex.substr(c, 2), 16));
+        }
+        return bytes;
+    }
+
     export function bytesCmp(a: u8[], b: u8[]): i32 {
         let length = a.length;
         if (length > b.length) {
