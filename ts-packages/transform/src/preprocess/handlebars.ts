@@ -51,11 +51,16 @@ Handlebars.registerHelper("actionParameterSerialize", function (field: Parameter
     let code: string[] = [];
     if (field.type.typeKind == TypeKindEnum.ARRAY) {
         let plainType = field.type.plainTypeNode;
+        if (plainType.indexOf('Array<') >= 0) {
+            plainType = plainType.replace('Array<', '').replace('>', '');
+        } else {
+            plainType = plainType.replace('[]', '');
+        }
         console.log(`++++++++plainType:${plainType}, ${field.name}`)
         let numType = numberTypeMap.get(plainType.replace('[]', ''));
         if (numType) {
             code.push(`enc.packNumberArray<${numType}>(this.${field.name})`)
-        } else if (plainType == 'string[]') {
+        } else if (plainType == 'string') {
             code.push(`enc.packStringArray(this.${field.name})`)
         } else {
             code.push(`enc.packObjectArray(this.${field.name});`);
