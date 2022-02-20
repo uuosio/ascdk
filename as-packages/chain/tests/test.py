@@ -136,6 +136,14 @@ def test_action():
     r = chain.push_action('hello', 'sayhello', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
 
+    args = dict(
+        a1 = 'hello',
+        a2 = '1.0000 EOS',
+        a3 = 12345,
+        a4 = [1, 2, 3],
+    )
+    r = chain.push_action('hello', 'testgencode', args, {'hello': 'active'})
+
 def test_asset():
     with open('./target/target.wasm', 'rb') as f:
         code = f.read()

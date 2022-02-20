@@ -1,4 +1,6 @@
 import * as chain from "as-chain"
+import { Asset } from "as-chain"
+
 import { Utils } from "as-chain/utils"
 
 @packer
@@ -14,6 +16,21 @@ class MyContract {
         public receiver: chain.Name,
         public firstReceiver: chain.Name,
         public action: chain.Name) {
+    }
+
+    @action("testgencode")
+    testGenCode(
+        a1: string,
+        a2: Asset,
+        a3: u64,
+        a4: u64[],
+    ): void {
+        chain.printString(`+++test gen code
+        ${a1},
+        ${a2},
+        ${a3},
+        ${a4},
+        \n`)
     }
 
     @action("saygoodbye")

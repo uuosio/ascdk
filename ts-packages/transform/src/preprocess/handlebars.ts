@@ -3,6 +3,7 @@ import { CONFIG } from "../config/compile";
 import { FieldDef, ParameterNodeDef, ActionFunctionDef, DBIndexFunctionDef } from "../contract/elementdef";
 import { TypeKindEnum } from "../enums/customtype";
 import { EosioUtils } from "../utils/utils";
+import { TypeHelper } from "../utils/typeutil";
 
 import {
     Range,
@@ -37,7 +38,7 @@ Handlebars.registerHelper("generateActionMember", function (fn: ParameterNodeDef
     } else if (plainType == 'string[]') {
         code.push(` ${fn.name}: string[] = [];`);
     } else {
-        if (numberTypeMap.get(plainType)) {
+        if (TypeHelper.isPrimitiveType(fn.type.typeKind)) {
             code.push(` ${fn.name}: ${plainType};`);
         } else {
             code.push(` ${fn.name}!: ${plainType};`);
@@ -125,7 +126,7 @@ Handlebars.registerHelper("actionParameterGetSize", function (field: ParameterNo
         plainType = plainType.replace('[]', '');
         let numType = numberTypeMap.get(plainType);
         if (numType) {
-            code.push(` size += sizeof<${plainType}>()*this.${field.name}.length);`)
+            code.push(` size += sizeof<${plainType}>()*this.${field.name}.length;`)
         } else if (plainType == 'string') {
             code.push(`
             for (let i=0; i<this.${field.name}.length; i++) {
