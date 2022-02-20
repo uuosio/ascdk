@@ -8,6 +8,22 @@ export interface Packer {
     getSize(): usize;
 }
 
+class Template implements Packer {
+    pack(): u8[] {
+        let enc = new Encoder(this.getSize());
+        return enc.getBytes();
+    }
+
+    unpack(data: u8[]): usize {
+        let dec = new Decoder(data);
+        return dec.getPos();
+    }
+
+    getSize(): usize {
+        return 0;
+    }
+}
+
 export class Encoder {
     buf: Array<u8>;
     pos: usize;
@@ -171,8 +187,8 @@ export class Decoder {
         return value;
     }
 
-    unpackBytes(size: usize): u8 {
-        let arr = new Array<u8>(size);
+    unpackBytes(size: usize): u8[] {
+        let arr = new Array<u8>(<i32>size);
         let dest = arr.dataStart;
         let src = this.buf.dataStart + this.pos;
         memcpy(dest, src, size);

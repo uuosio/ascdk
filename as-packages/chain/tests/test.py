@@ -159,4 +159,20 @@ def test_table():
     logger.info('test_asset done!')
     ret = chain.get_table_rows(True, 'hello', 'hello', 'mytable', '', '', 10)
     logger.info(ret)
-    assert ret['rows'][0]['a'] == 1 and ret['rows'][0]['b'] == 2, "bad row values"
+    assert ret['rows'][0]['a'] == 1 and ret['rows'][0]['b'] == 2, "bad value"
+
+def test_publickey():
+    with open('./target/target.wasm', 'rb') as f:
+        code = f.read()
+    with open('~lib/rt/target/generated.abi', 'rb') as f:
+        abi = f.read()
+    chain.deploy_contract('hello', code, abi, 0)
+    args = dict(
+        k1='PUB_K1_11DsZ6Lyr1aXpm9aBqqgV4iFJpNbSw5eE9LLTwNAxqjJgXSdB8',
+        r1='PUB_R1_6FPFZqw5ahYrR9jD96yDbbDNTdKtNqRbze6oTDLntrsANgQKZu',
+        webAuthN='PUB_WA_8PPYTWYNkRqrveNAoX7PJWDtSqDUp3c29QGBfr6MD9EaLocaPBmsk5QAHWq4vEQt2',
+    )
+    raw_args = chain.pack_args('hello', 'testpub', args)
+    logger.info(raw_args.hex())
+    r = chain.push_action('hello', 'testpub', args, {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])

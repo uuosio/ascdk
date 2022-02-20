@@ -23,4 +23,13 @@ export namespace Utils {
         return calcPackedVarUint32Length(<u32>utf8Str.byteLength) + utf8Str.byteLength;
     }
 
+    export function bytesToHex(bytes: u8[]): string {
+        let hex: string[] = [];
+        for (let i = 0; i < bytes.length; i++) {
+            let c = bytes[i];
+            hex.push((c >> 4).toString(16));
+            hex.push((c & 0xF).toString(16));
+        }
+        return hex.join("");
+    }
 }
