@@ -24,7 +24,7 @@ class TokenContract {
         const statstable = this.getStatTable(sym);
         statstable.requireNotFind(sym.code(), "token with symbol already exists");
 
-        const zeroSupply = new Asset(<i64>0, maximum_supply.symbol);
+        const zeroSupply = new Asset(0, maximum_supply.symbol);
         const value = new Stat(zeroSupply, maximum_supply, issuer);
         statstable.store(value, this.receiver);
     }
@@ -138,7 +138,7 @@ class TokenContract {
         const acnts = this.getAccountsTable(owner);
         const it = acnts.find(symbol.code());
         if (!it.isOk()) {
-            const account = new Account(new Asset(<i64>0, symbol));
+            const account = new Account(new Asset(0, symbol));
             acnts.store(account, ram_payer);
         }
     }
@@ -148,7 +148,6 @@ class TokenContract {
         requireAuth(owner);
         const acnts = this.getAccountsTable(owner);
         const it = acnts.requireFind(symbol.code(), "Balance row already deleted or never existed. Action won't have any effect.");
-
         const account = acnts.get(it);
         check(account.balance.amount == 0, "Cannot close because the balance is not zero.");
         acnts.remove(it);
