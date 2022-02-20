@@ -21,11 +21,7 @@ Handlebars.registerHelper("generateActionMember", function (fn: ParameterNodeDef
     } else if (plainType == 'string[]') {
         code.push(` ${fn.name}: string[] = [];`);
     } else {
-        if (plainType.indexOf('chain.') == 0) {
-            code.push(` ${fn.name}!: ${plainType};`);
-        } else {
-            code.push(` ${fn.name}: ${plainType};`);
-        }
+        code.push(` ${fn.name}!: ${plainType};`);
     }
     return code.join(EOL);
 });
