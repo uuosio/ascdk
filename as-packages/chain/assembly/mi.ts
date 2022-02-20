@@ -1,7 +1,7 @@
 import { IDXDB, SecondaryValue, SecondaryIterator } from "./idxdb"
 import { DBI64, PrimaryValue } from "./dbi64"
 import { Name } from "./name"
-import { assert } from "./system"
+import { assert, check } from "./system"
 
 export const SAME_PAYER = new Name();
 
@@ -90,6 +90,18 @@ export class MultiIndex<T extends MultiIndexValue> {
     find(id: u64): PrimaryIterator {
         let i = this.db.find(id);
         return new PrimaryIterator(i);
+    }
+
+    requireFind(id: u64, findError: string = `Could not find item with id ${id}`): PrimaryIterator {
+        let itr = this.find(id);
+        check(itr.isOk(), findError);
+        return itr;
+    }
+
+    requireNotFind(id: u64, notFindError: string = `Item with id ${id} exists`): PrimaryIterator {
+        let itr = this.find(id);
+        check(!itr.isOk(), notFindError);
+        return itr;
     }
 
     lowerBound(id: u64): PrimaryIterator {
