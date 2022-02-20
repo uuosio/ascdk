@@ -71,12 +71,7 @@ class MyContract {
 
     @action("testmi")
     testmi(): void {
-        let newObj = (): MyData => {
-            return new MyData();
-        }
-
-        let indexes = [chain.SecondaryType.U64, chain.SecondaryType.U128, chain.SecondaryType.F64, chain.SecondaryType.U256];
-        let mi = new chain.MultiIndex<MyData>(this.receiver, this.firstReceiver, this.action, indexes, newObj);
+        let mi = MyData.newMultiIndex(this.receiver, this.receiver);
         let value = new MyData(1, 2, new chain.U128(3), 3.3, new chain.U256(11));
         mi.store(value, this.receiver);
 

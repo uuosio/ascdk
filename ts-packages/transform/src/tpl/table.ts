@@ -51,9 +51,22 @@ export const tableTpl = `
         switch (i) {
             {{#each secondaryFuncDefs}}
             {{{setSecondaryValue .}}}
-            {{/each}}    
+            {{/each}}
             default:
                 _chain.assert(false, "bad db index!");
         }
+    }
+
+    static newMultiIndex(code: _chain.Name, scope: _chain.Name): _chain.MultiIndex<{{className}}> {
+        let newObj = ():{{className}} => {
+            return new {{className}}();
+        };
+
+        let indexes: _chain.SecondaryType[] = [
+            {{#each secondaryFuncDefs}}
+            {{{getSecondaryType .}}}
+            {{/each}}    
+        ];
+        return new _chain.MultiIndex<{{className}}>(code, scope, _chain.Name.fromString("{{tableName}}"), indexes, newObj);
     }
 }`;

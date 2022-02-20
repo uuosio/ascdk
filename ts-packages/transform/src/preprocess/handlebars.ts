@@ -233,6 +233,19 @@ Handlebars.registerHelper("setSecondaryValue", function (fn: DBIndexFunctionDef)
     return code.join(EOL);
 });
 
+Handlebars.registerHelper("getSecondaryType", function (fn: DBIndexFunctionDef) {
+    let code: string[] = [];
+    let plainType = fn.getterPrototype!.returnType!.plainTypeNode;
+    if (plainType == 'chain.U128') {
+        plainType = 'U128';
+    } else if (plainType == 'chain.U256') {
+        plainType = 'U256';
+    }
+    plainType = plainType.toUpperCase();
+    code.push(`_chain.SecondaryType.${plainType},`);
+    return code.join(EOL);
+});
+
 /**
  * Register the tag of each.
  */
