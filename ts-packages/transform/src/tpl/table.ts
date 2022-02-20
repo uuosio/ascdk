@@ -61,12 +61,14 @@ export const tableTpl = `
         let newObj = ():{{className}} => {
             return new {{className}}();
         };
+        let tableName = _chain.Name.fromString("{{tableName}}");
+        let idxTableBase: u64 = (tableName.N & 0xfffffffffffffff0);
 
-        let indexes: _chain.SecondaryType[] = [
+        let indexes: _chain.IDXDB[] = [
             {{#each secondaryFuncDefs}}
             {{{getSecondaryType .}}}
-            {{/each}}    
+            {{/each}}
         ];
-        return new _chain.MultiIndex<{{className}}>(code, scope, _chain.Name.fromString("{{tableName}}"), indexes, newObj);
+        return new _chain.MultiIndex<{{className}}>(code, scope, tableName, indexes, newObj);
     }
 }`;

@@ -233,6 +233,14 @@ Handlebars.registerHelper("setSecondaryValue", function (fn: DBIndexFunctionDef)
     return code.join(EOL);
 });
 
+const dbTypeToDBClass: Map<string, string> = new Map([
+    ['U64', 'IDX64'],
+    ['U128', 'IDX128'],
+    ['U256', 'IDX256'],
+    ['F64', 'IDXF64'],
+    ['F128', 'IDXF128'],
+]);
+
 Handlebars.registerHelper("getSecondaryType", function (fn: DBIndexFunctionDef) {
     let code: string[] = [];
     let plainType = fn.getterPrototype!.returnType!.plainTypeNode;
@@ -241,8 +249,10 @@ Handlebars.registerHelper("getSecondaryType", function (fn: DBIndexFunctionDef) 
     } else if (plainType == 'chain.U256') {
         plainType = 'U256';
     }
+
     plainType = plainType.toUpperCase();
-    code.push(`_chain.SecondaryType.${plainType},`);
+    let dbClass = dbTypeToDBClass.get(plainType);
+    code.push(`new _chain.${dbClass}(code.N, scope.N, idxTableBase + ${fn._index}, ${fn._index}),`);
     return code.join(EOL);
 });
 

@@ -29,26 +29,10 @@ export class MultiIndex<T extends MultiIndexValue> {
     db: DBI64;
     idxdbs: Array<IDXDB>;
     newObj: () => T;
-    constructor(code: Name, scope: Name, table: Name, indexes: Array<SecondaryType>, newObj: () => T) {
+    constructor(code: Name, scope: Name, table: Name, indexes: Array<IDXDB>, newObj: () => T) {
         this.db = new DBI64(code.N, scope.N, table.N);
-        this.idxdbs = new Array<IDXDB>(indexes.length);
+        this.idxdbs = indexes;
         this.newObj = newObj;
-        if (indexes) {
-            let idxTableBase: u64 = (table.N & 0xfffffffffffffff0);
-            for (let i=0; i<indexes.length; i++) {
-                let idxTable = idxTableBase + i;
-                if (indexes[i] == SecondaryType.U64) {
-                    this.idxdbs[i] = new IDX64(code.N, scope.N, idxTable, i);
-                } else if (indexes[i] == SecondaryType.U128) {
-                    this.idxdbs[i] = new IDX128(code.N, scope.N, idxTable, i);
-                } else if (indexes[i] == SecondaryType.U256) {
-                    this.idxdbs[i] = new IDX256(code.N, scope.N, idxTable, i);
-                } else if (indexes[i] == SecondaryType.F64) {
-                    this.idxdbs[i] = new IDXF64(code.N, scope.N, idxTable, i);
-                } else if (indexes[i] == SecondaryType.F128) {
-                }
-            }
-        }
     }
 
     store(value: T, payer: Name): PrimaryIterator {
