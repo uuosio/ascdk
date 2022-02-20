@@ -1,6 +1,6 @@
 import { check } from "./system"
 import { Encoder, Decoder, Packer } from "./serializer"
-import { U128, I128 } from "./bignum";
+import { U128 } from "./bignum";
 
 const MAX_AMOUNT: i64 = (1 << 62) - 1;
 

@@ -29,7 +29,7 @@ export function hasAuth(name: Name): bool {
 }
 
 export function requireAuth2(permissionLevel: PermissionLevel): void {
-    env.require_auth2(permissionLevel.actor.N, permissionLevel.permission);
+    env.require_auth2(permissionLevel.actor.N, permissionLevel.permission.N);
 }
 
 export function isAccount(name: Name): bool {

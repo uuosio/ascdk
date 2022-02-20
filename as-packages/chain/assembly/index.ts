@@ -46,3 +46,4 @@ export { PublicKey, Checksum160, Checksum256, Checksum512 } from "./crypto"
 
 export * from "./serializer"
 export { Utils } from "./utils"
+export * from "./decorator"

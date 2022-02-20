@@ -1,7 +1,4 @@
-import * as chain from "as-chain"
-import { Asset } from "as-chain"
-
-import { Utils } from "as-chain/utils"
+import { Asset, Name, contract, action, packer, printString, Action, PermissionLevel, check } from "as-chain"
 
 @packer
 class MyData {
@@ -13,9 +10,9 @@ class MyData {
 @contract("hello")
 class MyContract {
     constructor(
-        public receiver: chain.Name,
-        public firstReceiver: chain.Name,
-        public action: chain.Name) {
+        public receiver: Name,
+        public firstReceiver: Name,
+        public action: Name) {
     }
 
     @action("testgencode")
@@ -26,7 +23,7 @@ class MyContract {
         a4: u64[],
         a5: Asset[],
     ): void {
-        chain.printString(`+++test gen code
+        printString(`+++test gen code
         ${a1},
         ${a2},
         ${a3},
@@ -37,26 +34,26 @@ class MyContract {
 
     @action("saygoodbye")
     sayGoodbye(name: string): void {
-        chain.printString(`+++goodbye, ${name}\n`)    
+        printString(`+++goodbye, ${name}\n`)    
     }
     
     @action("sayhello")
     sayHello(name: string): void {
         let hello = new MyData('alice');
-        let a = new chain.Action(
-            [new chain.PermissionLevel(this.receiver, chain.Name.fromString("active"))],
+        let a = new Action(
+            [new PermissionLevel(this.receiver, Name.fromString("active"))],
             this.receiver,
-            chain.Name.fromString("saygoodbye"),
+            Name.fromString("saygoodbye"),
             hello.pack(),
         );
         let raw1 = a.pack();
         a.unpack(raw1);
         let raw2 = a.pack();
-        chain.assert(raw1.length == raw2.length, "bad value");
+        check(raw1.length == raw2.length, "bad value");
         for (let i=0; i<raw1.length; i++) {
-            chain.assert(raw1[i] == raw2[i], "bad value");
+            check(raw1[i] == raw2[i], "bad value");
         }
         a.send();
-        chain.printString(`hello, ${name}\n`)
+        printString(`hello, ${name}\n`)
     }
 }

@@ -1,7 +1,6 @@
 import {IDXDB, SecondaryValue, SecondaryType, SecondaryIterator, SecondaryReturnValue} from "./idxdb"
 import * as env from "./env"
 import { assert } from "./system"
-import { printString } from "./debug"
 
 class IDXF64ReturnValue {
     constructor(

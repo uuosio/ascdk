@@ -1,4 +1,3 @@
-import { u128Safe } from "as-bignum";
 import { Decoder, Packer } from "./serializer"
 
 const charToSymbol = (c: u16): u16 => {

@@ -9,10 +9,15 @@
     "noImplicitReturns": true,
     "baseUrl": "./",
     "paths": {},
-    "typeRoots": ["tests/types", "node_modules/@types", "node_modules"],
-    "types": ["webassembly", "node", "ava"],
+    "typeRoots": ["node_modules/assemblyscript/std"],
+    "types": ["assembly"],
+    "allowJs": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
-  }
+  },
+  "exclude": [
+    "as-pect.config.js",
+    "index.js"
+  ]
 }

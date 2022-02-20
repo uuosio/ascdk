@@ -1,12 +1,12 @@
-import * as chain from "as-chain"
+import { Name, Asset, Symbol, check, isValid, printString, contract, action } from "as-chain"
 
 @contract("hello")
 class MyContract {
-    receiver: chain.Name;
-    firstReceiver: chain.Name;
-    action: chain.Name
+    receiver: Name;
+    firstReceiver: Name;
+    action: Name
 
-    constructor(receiver: chain.Name, firstReceiver: chain.Name, action: chain.Name) {
+    constructor(receiver: Name, firstReceiver: Name, action: Name) {
         this.receiver = receiver;
         this.firstReceiver = firstReceiver;
         this.action = action;
@@ -25,35 +25,35 @@ class MyContract {
     @action("test1")
     testAsset(): void {
         {
-            let sym = new chain.Symbol("EOS", 4)
+            let sym = new Symbol("EOS", 4)
             let ret = sym.isValid();
-            chain.assert(ret, "bad symbol");
+            check(ret, "bad symbol");
             
             let value = this.stringToU64('EOS');
-            ret = chain.isValid(value);
-            chain.check(ret, "bad value");
+            ret = isValid(value);
+            check(ret, "bad value");
 
             value = this.stringToU64('EOS ');
-            chain.check(!chain.isValid(value), "bad value");
+            check(!isValid(value), "bad value");
 
             value = this.stringToU64('EOS E');
-            chain.check(!chain.isValid(value), "bad value");
+            check(!isValid(value), "bad value");
 
             value = this.stringToU64('EEEEEE ');
-            chain.check(!chain.isValid(value), "bad value");
+            check(!isValid(value), "bad value");
         }
 
         {
-            let a = new chain.Asset(10, new chain.Symbol("EOS", 4));
-            let b = new chain.Asset(5, new chain.Symbol("EOS", 4));
-            chain.assert( a > b, "a > b");
-            chain.assert( b < a, "b > a");
-            chain.assert( a != b, "a != b");
-            chain.assert( a - b == new chain.Asset(5, new chain.Symbol("EOS", 4)), "bad value");
-            chain.assert( a + b == new chain.Asset(15, new chain.Symbol("EOS", 4)), "bad value");
-            chain.assert( a / b == new chain.Asset(2, new chain.Symbol("EOS", 4)), "bad value");
-            chain.assert( a * b == new chain.Asset(50, new chain.Symbol("EOS", 4)), "bad value");
+            let a = new Asset(10, new Symbol("EOS", 4));
+            let b = new Asset(5, new Symbol("EOS", 4));
+            check( a > b, "a > b");
+            check( b < a, "b > a");
+            check( a != b, "a != b");
+            check( a - b == new Asset(5, new Symbol("EOS", 4)), "bad value");
+            check( a + b == new Asset(15, new Symbol("EOS", 4)), "bad value");
+            check( a / b == new Asset(2, new Symbol("EOS", 4)), "bad value");
+            check( a * b == new Asset(50, new Symbol("EOS", 4)), "bad value");
         }
-        chain.printString('done!\n')
+        printString('done!\n')
     }
 }

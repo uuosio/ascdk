@@ -59,4 +59,4 @@ def test_token():
         code = f.read()
     with open('~lib/rt/target/generated.abi', 'rb') as f:
         abi = f.read()
-    chain.deploy_contract('token', code, abi, 0)
+    chain.deploy_contract('hello', code, abi, 0)

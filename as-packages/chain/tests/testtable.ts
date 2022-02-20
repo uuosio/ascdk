@@ -1,4 +1,4 @@
-import { Name, Asset, MultiIndex } from "as-chain"
+import { Name, Asset, MultiIndex, primary, contract, table, action } from "as-chain"
 
 @table("mytable")
 class MyTable {
