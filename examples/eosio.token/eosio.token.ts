@@ -1,28 +1,16 @@
 import { Name, Asset, Symbol, check, requireAuth, MultiIndex, hasAuth, isAccount, requireRecipient, contract, action, SAME_PAYER } from 'as-chain'
-import { account, currency_stats, AccountsTable, StatTable } from './tables';
+import { Account, Stat, currency_stats, account } from './tables';
 
 @contract("eosio.token")
 class TokenContract {
-    receiver: Name;
-    firstReceiver: Name;
-    action: Name
-    accountTable: AccountsTable;
-    statTable: StatTable;
-
-    constructor(receiver: Name, firstReceiver: Name, action: Name) {
-        this.receiver = receiver;
-        this.firstReceiver = firstReceiver;
-        this.action = action;
-        this.accountTable = new AccountsTable()
-        this.statTable = new StatTable()
-    }
+    constructor(public receiver: Name, public firstReceiver: Name, public action: Name) {}
 
     getStatTable(sym: Symbol): MultiIndex<currency_stats> {
-        return StatTable.new(this.receiver, new Name(sym.code()));
+        return Stat.new(this.receiver, new Name(sym.code()));
     }
 
     getAccountsTable(accountName: Name): MultiIndex<account> {
-        return AccountsTable.new(this.receiver, accountName);
+        return Account.new(this.receiver, accountName);
     }
 
     @action("create")
@@ -34,14 +22,10 @@ class TokenContract {
         check(maximum_supply.amount > 0, "max-supply must be positive");
 
         const statstable = this.getStatTable(sym);
-        const existing = statstable.find(sym.code());
-        check(!existing.isOk(), "token with symbol already exists");
+        statstable.requireNotFind(sym.code(), "token with symbol already exists");
 
-        const value = new StatTable(
-            new Asset(<i64>0, maximum_supply.symbol),
-            maximum_supply,
-            issuer
-        );
+        const zeroSupply = new Asset(0, maximum_supply.symbol);
+        const value = new Stat(zeroSupply, maximum_supply, issuer);
         statstable.store(value, this.receiver);
     }
 
@@ -52,8 +36,7 @@ class TokenContract {
         check(memo.length <= 256, "memo has more than 256 bytes");
 
         const statstable = this.getStatTable(sym);
-        const existing = statstable.find(sym.code());
-        check(existing.isOk(), "token with symbol does not exist, create token before issue");
+        const existing = statstable.requireFind(sym.code(), "token with symbol does not exist, create token before issue");
         const st = statstable.get(existing);
         check(to == st.issuer,  "tokens can only be issued to issuer account");
 
@@ -77,8 +60,7 @@ class TokenContract {
         check(memo.length <= 256, "memo has more than 256 bytes");
 
         const statstable = this.getStatTable(sym);
-        const existing = statstable.find(sym.code());
-        check(existing.isOk(), "token with symbol does not exist");
+        const existing = statstable.requireFind(sym.code(), "token with symbol does not exist");
         const st = statstable.get(existing);
 
         requireAuth(st.issuer);
@@ -100,8 +82,7 @@ class TokenContract {
         check(isAccount(to), "to account does not exist");
         const sym = quantity.symbol;
         const statstable = this.getStatTable(sym);
-        const existing = statstable.find(sym.code());
-        check(existing.isOk(), "token with symbol does not exist");
+        const existing = statstable.requireFind(sym.code(), "token with symbol does not exist");
         const st = statstable.get(existing);
 
         requireRecipient(from);
@@ -121,8 +102,7 @@ class TokenContract {
     subBalance(owner: Name, value: Asset): void {
         const fromAcnts = this.getAccountsTable(owner);
 
-        const from = fromAcnts.find(value.symbol.code());
-        check(from.isOk(), "no balance object found");
+        const from = fromAcnts.requireFind(value.symbol.code(), "no balance object found");
 
         const account = fromAcnts.get(from);
         check(account.balance.amount >= value.amount, "overdrawn balance");
@@ -135,7 +115,7 @@ class TokenContract {
         const toAcnts = this.getAccountsTable(owner);
         const to = toAcnts.find(value.symbol.code());
         if (!to.isOk()) {
-            const account = new AccountsTable(value);
+            const account = new Account(value);
             toAcnts.store(account, ramPayer);
         } else {
             const account = toAcnts.get(to);
@@ -151,15 +131,14 @@ class TokenContract {
         check(isAccount(owner), "owner account does not exist");
 
         const statstable = this.getStatTable(symbol);
-        const existing = statstable.find(symbol.code());
-        check(existing.isOk(), "symbol does not exist");
+        const existing = statstable.requireFind(symbol.code(), "symbol does not exist");
         const st = statstable.get(existing);
         check(st.supply.symbol == symbol, "symbol precision mismatch");
 
         const acnts = this.getAccountsTable(owner);
         const it = acnts.find(symbol.code());
         if (!it.isOk()) {
-            const account = new AccountsTable(new Asset(<i64>0, symbol));
+            const account = new Account(new Asset(0, symbol));
             acnts.store(account, ram_payer);
         }
     }
@@ -168,9 +147,7 @@ class TokenContract {
     close(owner: Name, symbol: Symbol): void {
         requireAuth(owner);
         const acnts = this.getAccountsTable(owner);
-        const it = acnts.find(symbol.code());
-        check(it.isOk(), "Balance row already deleted or never existed. Action won't have any effect.");
-
+        const it = acnts.requireFind(symbol.code(), "Balance row already deleted or never existed. Action won't have any effect.");
         const account = acnts.get(it);
         check(account.balance.amount == 0, "Cannot close because the balance is not zero.");
         acnts.remove(it);

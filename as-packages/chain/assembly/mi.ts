@@ -1,7 +1,7 @@
 import { IDXDB, SecondaryValue, SecondaryIterator } from "./idxdb"
 import { DBI64, PrimaryValue } from "./dbi64"
 import { Name } from "./name"
-import { assert } from "./system"
+import { check } from "./system"
 
 export const SAME_PAYER = new Name();
 
@@ -61,11 +61,11 @@ export class MultiIndex<T extends MultiIndexValue> {
 
     removeEx(primary: u64): void {
         let it = this.find(primary);
-        assert(it.isOk(), "primary value not found!");
+        check(it.isOk(), "primary value not found!");
         this.db.remove(it.i);
         for (let i=0; i<this.idxdbs.length; i++) {
             let ret = this.idxdbs[i].findPrimaryEx(primary);
-            assert(ret.i.isOk(), "secondary value not found!");
+            check(ret.i.isOk(), "secondary value not found!");
             this.idxdbs[i].remove(ret.i);
         }
     }
@@ -92,6 +92,18 @@ export class MultiIndex<T extends MultiIndexValue> {
         return new PrimaryIterator(i);
     }
 
+    requireFind(id: u64, findError: string = `Could not find item with id ${id}`): PrimaryIterator {
+        let itr = this.find(id);
+        check(itr.isOk(), findError);
+        return itr;
+    }
+
+    requireNotFind(id: u64, notFindError: string = `Item with id ${id} exists`): PrimaryIterator {
+        let itr = this.find(id);
+        check(!itr.isOk(), notFindError);
+        return itr;
+    }
+
     lowerBound(id: u64): PrimaryIterator {
         let i = this.db.lowerBound(id);
         return new PrimaryIterator(i);
@@ -109,7 +121,7 @@ export class MultiIndex<T extends MultiIndexValue> {
 
     getIdxDB(i: i32): IDXDB {
         if (i >= this.idxdbs.length) {
-            assert(false, "getIdxDB: bad db index");
+            check(false, "getIdxDB: bad db index");
         }
         return this.idxdbs[i];
     }
