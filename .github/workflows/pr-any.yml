@@ -30,4 +30,4 @@ jobs:
       - name: ${{ matrix.step }}
         run: |
           yarn install --immutable | grep -v 'YN0013'
-          yarn ${{ matrix.step }}
+          PYTHON_SHARED_LIB_PATH=${{ env.pythonLocation }}/lib/libpython3.9.so yarn ${{ matrix.step }}
