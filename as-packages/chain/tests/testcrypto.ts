@@ -64,23 +64,23 @@ class MyContract {
 
         let data: u8[] = [1, 2, 3, 4, 5, 6];
         {
-            let hash = sha256(data)      
-            assertSha256(data, hash)
+            let hash = sha256(data);    
+            assertSha256(data, hash);
         }
 
         {
-            let hash = sha1(data)       
-            assertSha1(data, hash)
+            let hash = sha1(data);  
+            assertSha1(data, hash);
         }
 
         {
-            let hash = sha512(data)       
-            assertSha512(data, hash)
+            let hash = sha512(data);     
+            assertSha512(data, hash);
         }
 
         {
-            let hash = ripemd160(data)       
-            assertRipemd160(data, hash)
-        }        
+            let hash = ripemd160(data);     
+            assertRipemd160(data, hash);
+        }
     }
 }
