@@ -32,7 +32,7 @@ a = {
 }
 chain.push_action('eosio', 'updateauth', a, {test_account1:'active'})
 
-def test_1serialize():
+def test_1serializer():
     # info = chain.get_account('helloworld11')
     # logger.info(info)
     with open('./target/target.wasm', 'rb') as f:
@@ -43,15 +43,7 @@ def test_1serialize():
 
     r = chain.push_action('hello', 'test1', b'', {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
-
-def test_2serialize():
-    # info = chain.get_account('helloworld11')
-    # logger.info(info)
-    with open('./target/target.wasm', 'rb') as f:
-        code = f.read()
-    with open('~lib/rt/target/generated.abi', 'rb') as f:
-        abi = f.read()
-    chain.deploy_contract('hello', code, abi, 0)
+    chain.produce_block()
 
     args = dict(
         a1 = True,
@@ -89,6 +81,7 @@ def test_2serialize():
     )
     r = chain.push_action('hello', 'test2', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
+    chain.produce_block()
 
 def test_db():
     # info = chain.get_account('helloworld11')
