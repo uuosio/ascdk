@@ -9,7 +9,11 @@ export function printString(s: string): void {
     let dv = new DataView(s1);
     env.prints_l(dv.dataStart, dv.byteLength);
 }
-  
+
+export function print(s: string): void {
+    printString(s);
+}
+
 export function printArray(data: u8[]): void {
     let data_buf_in = changetype<ArrayBufferView>(data).dataStart;
     env.prints(data_buf_in);

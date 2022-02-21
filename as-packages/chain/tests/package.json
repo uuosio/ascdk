@@ -28,7 +28,8 @@
     "test:action": "npx eosio-asc testaction.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_action",
     "test:mi": "npx eosio-asc testmi.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_mi",
     "test:serializer": "npx eosio-asc testserializer.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_1serialize",
-    "test": "yarn test:publickey && yarn test:table && yarn test:asset && yarn test:action && yarn test:mi && yarn test:serializer"
+    "test:crypto": "npx eosio-asc testcrypto.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_crypto",
+    "test": "yarn test:publickey && yarn test:table && yarn test:asset && yarn test:action && yarn test:mi && yarn test:serializer && yarn test:crypto"
   },
   "dependencies": {
     "@assemblyscript/loader": "^0.19.22",

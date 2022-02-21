@@ -71,8 +71,8 @@ def test_1serializer():
         a23 = 'aa'*19 + 'bb', # Checksum160,
         a24 = 'aa'*31 + 'bb', #Checksum256,
         a25 = 'aa'*63 + 'bb', #: Checksum512,
-        a26= 'PUB_K1_11DsZ6Lyr1aXpm9aBqqgV4iFJpNbSw5eE9LLTwNAxqjJgXSdB8', #PublicKey,
-        # a27: chain.Signature,
+        a26 = 'PUB_K1_11DsZ6Lyr1aXpm9aBqqgV4iFJpNbSw5eE9LLTwNAxqjJgXSdB8', #PublicKey,
+        a27 = 'SIG_K1_KXdabr1z4G6e2o2xmi7jPhzxH3Lj5igjR5v3q9LY7KbLWyXBZyES748bPzfM2MhQQVsLrouJzXT9YFfw1CywzMVCcNVMGH', #chain.Signature,
         # a28: chain.Symbol,
         # a29: chain.SymbolCode,
         a30 = '0.1000 EOS',
@@ -177,4 +177,19 @@ def test_publickey():
     raw_args = chain.pack_args('hello', 'testpub', args)
     logger.info(raw_args.hex())
     r = chain.push_action('hello', 'testpub', args, {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])
+
+def test_crypto():
+    with open('./target/target.wasm', 'rb') as f:
+        code = f.read()
+    with open('~lib/rt/target/generated.abi', 'rb') as f:
+        abi = f.read()
+    chain.deploy_contract('hello', code, abi, 0)
+    args = {
+        'message': 'hello,world',
+        'digest': '77df263f49123356d28a4a8715d25bf5b980beeeb503cab46ea61ac9f3320eda',
+        'sig': 'SIG_K1_KXdabr1z4G6e2o2xmi7jPhzxH3Lj5igjR5v3q9LY7KbLWyXBZyES748bPzfM2MhQQVsLrouJzXT9YFfw1CywzMVCcNVMGH',
+        'pub': 'EOS87J9kj21dvniKhqd7A7QPXRz498ek3H3doXoQVPf4VnHHNtt1M',
+    }
+    r = chain.push_action('hello', 'test', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])

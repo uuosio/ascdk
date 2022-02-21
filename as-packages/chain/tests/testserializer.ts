@@ -14,7 +14,8 @@ import {
     Checksum256,
     Checksum512,
     Utils,
-    PublicKey
+    PublicKey,
+    Signature,
 } from "as-chain";
 
 @packer
@@ -132,7 +133,7 @@ class MyContract {
         a24: Checksum256,
         a25: Checksum512,
         a26: PublicKey,
-        // a27: Signature,
+        a27: Signature,
         // a28: Symbol,
         // a29: SymbolCode,
         a30: Asset,
@@ -143,28 +144,35 @@ class MyContract {
             let data = Utils.hexToBytes('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABB');
             let _a23 = new Checksum160();
             _a23.data = data;
-            assert(a23 == _a23, "bad a23");
-            assert(!(a23 != _a23), "bad a23");
+            check(a23 == _a23, "bad a23");
+            check(!(a23 != _a23), "bad a23");
         }
 
         {
             let data = Utils.hexToBytes('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABB');
             let _a24 = new Checksum256();
             _a24.data = data;
-            assert(a24 == _a24, "bad a24");
-            assert(!(a24 != _a24), "bad a24");
+            check(a24 == _a24, "bad a24");
+            check(!(a24 != _a24), "bad a24");
         }
 
         {
             let data = Utils.hexToBytes('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABB');
             let _a25 = new Checksum512();
-            _a25.data = data;
-            assert(a25 == _a25, "bad a25");
-            assert(!(a25 != _a25), "bad a25");
+            _a25.unpack(data);
+            check(a25 == _a25, "bad a25");
+            check(!(a25 != _a25), "bad a25");
         }
 
-        assert(a13 == new VarUint32(0xfff), "bad a13 value.");
-        assert(a20 == Name.fromString("alice"), "bad a20 value");
+        {
+            let data = Utils.hexToBytes('0020160afaf87c15d754083d5e7bfd05b98d733141c28a406037feb6e1f88cb6d52431c50443f4b4ad57ef2711e398689890bdb44d75439f6d0893843871d5c466dd34347e96');
+            let sig = new Signature();
+            sig.unpack(data);
+            check(a27 == sig, "a27 == sig");
+        }
+
+        check(a13 == new VarUint32(0xfff), "bad a13 value.");
+        check(a20 == Name.fromString("alice"), "bad a20 value");
         printString(`
         a1 = ${a1},
         a2 = ${a2},

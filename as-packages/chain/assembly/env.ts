@@ -90,3 +90,6 @@ export declare function db_idx256_lowerbound(code: u64, scope: u64, table: u64, 
 export declare function db_idx256_upperbound(code: u64, scope: u64, table: u64, data_ptr: usize, data_len: u32, primary_ptr: usize): i32
 export declare function db_idx256_end(code: u64, scope: u64, table: u64): i32
 
+
+export declare function recover_key(digest_ptr: usize, sig_ptr: usize, siglen: u32, pub_ptr: usize, publen: u32): i32
+export declare function assert_recover_key(digest_ptr: usize, sig_ptr: usize, siglen: u32, pub_ptr: usize, publen: u32): void

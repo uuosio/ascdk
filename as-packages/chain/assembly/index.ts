@@ -9,7 +9,7 @@ export { IDX128 } from "./idx128";
 export { IDX256 } from "./idx256";
 
 export { assert, check } from "./system";
-export { printString, printArray, printHex, printi } from "./debug";
+export { print, printString, printArray, printHex, printi } from "./debug";
 
 export {
     IDXDB,
@@ -42,7 +42,7 @@ export {
 export { Name } from "./name";
 export { Action, PermissionLevel } from "./action";
 export { Asset, Symbol, isValid } from "./asset";
-export { PublicKey, Checksum160, Checksum256, Checksum512 } from "./crypto";
+export { PublicKey, Signature, Checksum160, Checksum256, Checksum512, RecoverKey, AssertRecoverKey } from "./crypto";
 
 export * from "./serializer";
 export { Utils } from "./utils";

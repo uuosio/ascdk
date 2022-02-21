@@ -1,6 +1,9 @@
 import { check } from "./system";
 import { Decoder, Encoder, Packer } from "./serializer";
 import { Utils } from "./utils";
+import { print } from "./debug"
+
+import { recover_key, assert_recover_key } from "./env";
 
 export class Checksum160 implements Packer {
     data!: u8[];
@@ -226,6 +229,14 @@ export class PublicKey implements Packer {
     r1: ECCPublicKey | null;
     webAuthN: WebAuthNPublicKey | null;
 
+    constructor(keyType: PublicKeyType = PublicKeyType.K1, data: u8[] | null = null) {
+        this.keyType = keyType;
+        if (data != null) {
+            this.k1 = new ECCPublicKey();
+            this.k1!.unpack(data);
+        }
+    }
+
     toString(): string {
         let raw = this.pack();
         return Utils.bytesToHex(raw);
@@ -326,4 +337,59 @@ export class PublicKey implements Packer {
             return a.webAuthN! < b.webAuthN!;
         }
     }
+}
+
+export class Signature implements Packer {
+    data!: u8[];
+
+    pack(): u8[] {
+        return this.data;
+    }
+
+    unpack(data: u8[]): usize {
+        check(data.length >= 66, "bad signature");
+        check(data[0] == 0, "bad signature");
+        let dec = new Decoder(data);
+        this.data = dec.unpackBytes(66);
+        return dec.getPos();
+    }
+
+    getSize(): usize {
+        return 66;
+    }
+
+    toString(): string {
+        return Utils.bytesToHex(this.data);
+    }
+
+    @inline @operator('==')
+    static eq(a: Signature, b: Signature): bool {
+        print(`++++++++:${a}, ${b}`)
+        return Utils.bytesCmp(a.data, b.data) == 0;
+    }
+
+    @inline @operator('!=')
+    static neq(a: Signature, b: Signature): bool {
+        return Utils.bytesCmp(a.data, b.data) != 0;
+    }
+}
+// export function RecoverKey(digest_ptr: usize, sig_ptr: usize, siglen: u32, pub_ptr: usize, publen: u32): i32
+// export function AssertRecoverKey(digest_ptr: usize, sig_ptr: usize, siglen: u32, pub_ptr: usize, publen: u32): void
+
+export function RecoverKey(digest: Checksum256, sig: Signature): PublicKey {
+    let rawDigest = digest.pack();
+    let rawSig = sig.pack();
+    let rawPub = new Array<u8>(34);
+    let ret = recover_key(rawDigest.dataStart, rawSig.dataStart, rawSig.length, rawPub.dataStart, rawPub.length);
+    check(ret == 34, "bad recover_key return");
+    let pub = new PublicKey();
+    pub.unpack(rawPub);
+    return pub;
+}
+
+export function AssertRecoverKey(digest: Checksum256, sig: Signature, pub: PublicKey): void {
+    let rawDigest = digest.pack();
+    let rawSig = sig.pack();
+    let rawPub = pub.pack();
+    assert_recover_key(rawDigest.dataStart, rawSig.dataStart, rawSig.length, rawPub.dataStart, rawPub.length);
 }
