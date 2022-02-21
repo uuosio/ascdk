@@ -80,12 +80,12 @@ export class TimePoint implements Packer {
     }
   
     @inline @operator('<=')
-    static le(a: TimePoint, b: TimePoint): bool {
+    static lte(a: TimePoint, b: TimePoint): bool {
         return a.elapsed <= b.elapsed;
     }
   
     @inline @operator('>=')
-    static ge(a: TimePoint, b: TimePoint): bool {
+    static gte(a: TimePoint, b: TimePoint): bool {
         return a.elapsed >= b.elapsed;
     }
 }
@@ -152,12 +152,12 @@ export class TimePointSec implements Packer {
     }
   
     @inline @operator('<=')
-    static le(a: TimePointSec, b: TimePointSec): bool {
+    static lte(a: TimePointSec, b: TimePointSec): bool {
         return a.UTCSeconds <= b.UTCSeconds;
     }
   
     @inline @operator('>=')
-    static ge(a: TimePointSec, b: TimePointSec): bool {
+    static gte(a: TimePointSec, b: TimePointSec): bool {
         return a.UTCSeconds >= b.UTCSeconds;
     }
 }

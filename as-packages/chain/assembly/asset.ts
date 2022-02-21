@@ -247,13 +247,13 @@ export class Asset implements Packer {
     }
   
     @inline @operator('<=')
-    static le(a: Asset, b: Asset): bool {
+    static lte(a: Asset, b: Asset): bool {
         check(a.symbol.value == b.symbol.value, "symbol not the same");
         return a.amount <= b.amount;
     }
   
     @inline @operator('>=')
-    static ge(a: Asset, b: Asset): bool {
+    static gte(a: Asset, b: Asset): bool {
         check(a.symbol.value == b.symbol.value, "symbol not the same");
         return a.amount >= b.amount;
     }

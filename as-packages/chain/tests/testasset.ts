@@ -48,23 +48,46 @@ class MyContract {
             let b = new Asset(5, new Symbol("EOS", 4));
 
             // Operators
-            check( a > b, "a > b");
-            check( b < a, "b > a");
-            check( a != b, "a != b");
-            check( a - b == new Asset(5, new Symbol("EOS", 4)), "bad value");
             check( a + b == new Asset(15, new Symbol("EOS", 4)), "bad value");
-            check( a / b == new Asset(2, new Symbol("EOS", 4)), "bad value");
+            check( a - b == new Asset(5, new Symbol("EOS", 4)), "bad value");
             check( a * b == new Asset(50, new Symbol("EOS", 4)), "bad value");
+            check( a / b == new Asset(2, new Symbol("EOS", 4)), "bad value");
+            check( a == new Asset(10, new Symbol("EOS", 4)), "bad value");
+            check( !(a == b), "bad value");
+            check( a != b, "bad value");
+            check( !(a != new Asset(10, new Symbol("EOS", 4))), "bad value");
+            check( b < a, "b < a");
+            check( !(a < b), "b < a");
+            check( a > b, "a > b");
+            check( !(b > a), "a > b");
+            check( b <= a, "b <= a");
+            check( !(a <= b), "b <= a");
+            check( b <= new Asset(5, new Symbol("EOS", 4)), "bad value");
+            check( a >= b, "a >= b");
+            check( !(b >= a), "a >= b");
+            check( a >= new Asset(5, new Symbol("EOS", 4)), "bad value");
 
             // Direct
-            check( Asset.gt(a, b), "a > b");
-            check( Asset.lt(b, a), "b > a");
-            check( Asset.ne(a, b), "a != b");
-            check( Asset.sub(a, b) == new Asset(5, new Symbol("EOS", 4)), "bad value");
             check( Asset.add(a, b) == new Asset(15, new Symbol("EOS", 4)), "bad value");
-            check( Asset.div(a, b) == new Asset(2, new Symbol("EOS", 4)), "bad value");
+            check( Asset.sub(a, b) == new Asset(5, new Symbol("EOS", 4)), "bad value");
             check( Asset.mul(a, b) == new Asset(50, new Symbol("EOS", 4)), "bad value");
+            check( Asset.div(a, b) == new Asset(2, new Symbol("EOS", 4)), "bad value");
+            check( Asset.eq(a, new Asset(10, new Symbol("EOS", 4))), "bad value");
+            check( !Asset.eq(a, b), "bad value");
+            check( Asset.ne(a, b), "bad value");
+            check( !Asset.ne(a, new Asset(10, new Symbol("EOS", 4))), "bad value");
+            check( Asset.lt(b, a), "b < a");
+            check( !Asset.lt(a, b), "b < a");
+            check( Asset.gt(a, b), "a > b");
+            check( !Asset.gt(b, a), "a > b");
+            check( Asset.lte(b, a), "b <= a");
+            check( !Asset.lte(a, b), "b <= a");
+            check( Asset.lte(b, new Asset(5, new Symbol("EOS", 4))), "bad value");
+            check( Asset.gte(a, b), "a >= b");
+            check( !Asset.gte(b, a), "a >= b");
+            check( Asset.gte(a, new Asset(5, new Symbol("EOS", 4))), "bad value");
         }
+
         printString('done!\n');
     }
 }
