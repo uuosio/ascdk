@@ -32,13 +32,18 @@ a = {
 }
 chain.push_action('eosio', 'updateauth', a, {test_account1:'active'})
 
+def get_code_and_abi(entryName):
+    with open('./target/' + entryName + '.wasm', 'rb') as f:
+        code = f.read()
+    with open('./target/' + entryName + '.abi', 'rb') as f:
+        abi = f.read()
+    return (code, abi)
+
 def test_1serializer():
     # info = chain.get_account('helloworld11')
     # logger.info(info)
-    with open('./target/target.wasm', 'rb') as f:
-        code = f.read()
-    with open('~lib/rt/target/generated.abi', 'rb') as f:
-        abi = f.read()
+
+    (code, abi) = get_code_and_abi('testserializer')
     chain.deploy_contract('hello', code, abi, 0)
 
     r = chain.push_action('hello', 'test1', b'', {'hello': 'active'})
@@ -84,28 +89,10 @@ def test_1serializer():
     logger.info('++++++elapsed: %s', r['elapsed'])
     chain.produce_block()
 
-def test_db():
-    # info = chain.get_account('helloworld11')
-    # logger.info(info)
-    with open('./target/target.wasm', 'rb') as f:
-        code = f.read()
-    with open('~lib/rt/target/metadata.json', 'rb') as f:
-        abi = f.read()
-    chain.deploy_contract('hello', code, abi, 0)
-
-    args = dict(
-        a1 = True,
-    )
-    r = chain.push_action('hello', 'test1', args, {'hello': 'active'})
-    logger.info('++++++elapsed: %s', r['elapsed'])
-
 def test_mi():
     # info = chain.get_account('helloworld11')
     # logger.info(info)
-    with open('./target/target.wasm', 'rb') as f:
-        code = f.read()
-    with open('~lib/rt/target/generated.abi', 'rb') as f:
-        abi = f.read()
+    (code, abi) = get_code_and_abi('testmi')
     chain.deploy_contract('hello', code, abi, 0)
 
     r = chain.push_action('hello', 'noop', b'', {'hello': 'active'})
@@ -118,10 +105,7 @@ def test_mi():
 def test_action():
     # info = chain.get_account('helloworld11')
     # logger.info(info)
-    with open('./target/target.wasm', 'rb') as f:
-        code = f.read()
-    with open('~lib/rt/target/generated.abi', 'rb') as f:
-        abi = f.read()
+    (code, abi) = get_code_and_abi('testaction')
     chain.deploy_contract('hello', code, abi, 0)
 
     args = dict(
@@ -140,10 +124,7 @@ def test_action():
     r = chain.push_action('hello', 'testgencode', args, {'hello': 'active'})
 
 def test_asset():
-    with open('./target/target.wasm', 'rb') as f:
-        code = f.read()
-    with open('~lib/rt/target/generated.abi', 'rb') as f:
-        abi = f.read()
+    (code, abi) = get_code_and_abi('testasset')
     chain.deploy_contract('hello', code, abi, 0)
 
     r = chain.push_action('hello', 'test1', b'', {'hello': 'active'})
@@ -151,10 +132,7 @@ def test_asset():
     logger.info('test_asset done!')
 
 def test_table():
-    with open('./target/target.wasm', 'rb') as f:
-        code = f.read()
-    with open('~lib/rt/target/generated.abi', 'rb') as f:
-        abi = f.read()
+    (code, abi) = get_code_and_abi('testtable')
     chain.deploy_contract('hello', code, abi, 0)
 
     r = chain.push_action('hello', 'testtable', b'', {'hello': 'active'})
@@ -165,10 +143,7 @@ def test_table():
     assert ret['rows'][0]['a'] == 1 and ret['rows'][0]['b'] == 2, "bad value"
 
 def test_publickey():
-    with open('./target/target.wasm', 'rb') as f:
-        code = f.read()
-    with open('~lib/rt/target/generated.abi', 'rb') as f:
-        abi = f.read()
+    (code, abi) = get_code_and_abi('testpublickey')
     chain.deploy_contract('hello', code, abi, 0)
     args = dict(
         k1='PUB_K1_11DsZ6Lyr1aXpm9aBqqgV4iFJpNbSw5eE9LLTwNAxqjJgXSdB8',
@@ -181,10 +156,7 @@ def test_publickey():
     logger.info('++++++elapsed: %s', r['elapsed'])
 
 def test_crypto():
-    with open('./target/target.wasm', 'rb') as f:
-        code = f.read()
-    with open('~lib/rt/target/generated.abi', 'rb') as f:
-        abi = f.read()
+    (code, abi) = get_code_and_abi('testcrypto')
     chain.deploy_contract('hello', code, abi, 0)
     args = {
         'message': 'hello,world',
@@ -196,10 +168,7 @@ def test_crypto():
     logger.info('++++++elapsed: %s', r['elapsed'])
 
 def test_system():
-    with open('./target/target.wasm', 'rb') as f:
-        code = f.read()
-    with open('~lib/rt/target/generated.abi', 'rb') as f:
-        abi = f.read()
+    (code, abi) = get_code_and_abi('testsystem')
     chain.deploy_contract('hello', code, abi, 0)
 
     args = dict(
@@ -211,10 +180,7 @@ def test_system():
     chain.produce_block()
 
 def test_print():
-    with open('./target/target.wasm', 'rb') as f:
-        code = f.read()
-    with open('~lib/rt/target/generated.abi', 'rb') as f:
-        abi = f.read()
+    (code, abi) = get_code_and_abi('testprint')
     chain.deploy_contract('hello', code, abi, 0)
 
     args = dict(

@@ -32,20 +32,21 @@ a = {
 }
 chain.push_action('eosio', 'updateauth', a, {test_account1:'active'})
 
-def test_hello():
-    # info = chain.get_account('helloworld11')
-    # logger.info(info)
-    with open('./hello/target/target.wasm', 'rb') as f:
+def get_code_and_abi(entryName):
+    with open('./' + entryName + '/target/' + entryName + '.wasm', 'rb') as f:
         code = f.read()
-    chain.deploy_contract('hello', code, b'', 0)
+    with open('./' + entryName + '/target/' + entryName + '.abi', 'rb') as f:
+        abi = f.read()
+    return (code, abi)
+    
+def test_hello():
+    (code, abi) = get_code_and_abi('hello')
+    chain.deploy_contract('hello', code, abi, 0)
     r = chain.push_action('hello', 'sayhello', b'', {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
 
 def test_action():
-    with open('./inlineaction/target/target.wasm', 'rb') as f:
-        code = f.read()
-    with open('~lib/rt/target/generated.abi', 'rb') as f:
-        abi = f.read()
+    (code, abi) = get_code_and_abi('inlineaction')
     chain.deploy_contract('hello', code, abi, 0)
 
     args = dict(
@@ -54,9 +55,22 @@ def test_action():
     r = chain.push_action('hello', 'sayhello', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
 
-def test_token():
-    with open('./eosio.token/target/target.wasm', 'rb') as f:
-        code = f.read()
-    with open('~lib/rt/target/generated.abi', 'rb') as f:
-        abi = f.read()
+def test_counter():
+    (code, abi) = get_code_and_abi('counter')
     chain.deploy_contract('hello', code, abi, 0)
+
+    args = struct.pack('II', 11, 22)
+    r = chain.push_action('hello', 'dec2', args, {'hello': 'active'})
+
+    r = chain.push_action('hello', 'zzzzzzzzzzzz', args, {'hello': 'active'})
+
+def test_token():
+    (code, abi) = get_code_and_abi('eosio.token')
+    chain.deploy_contract('hello', code, abi, 0)
+
+def test_codegeneration():
+    (code, abi) = get_code_and_abi('codegeneration')
+    chain.deploy_contract('hello', code, abi, 0)
+    args = struct.pack('QQB', 11, 22, 2)
+    args += struct.pack('BB', 33, 44)
+    r = chain.push_action('hello', 'count', args, {'hello': 'active'})
