@@ -62,9 +62,10 @@ def test_1serializer():
         a14 = 0xffffff01,
         a15 = 0xfffffffffffffff0,
         # a16: f128,
-        # a17: TimePoint,
-        # a18: TimePointSec,
+        a17 = '2021-09-03T04:13:21', # chain.TimePoint,
+        a18 = '2021-09-03T04:13:21', # chain.TimePointSec,
         # a19: BlockTimestampType,
+
         a20 = 'alice',
         # a21: u8[],
         a22 = 'hello,world',
@@ -193,3 +194,18 @@ def test_crypto():
     }
     r = chain.push_action('hello', 'test', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
+
+def test_system():
+    with open('./target/target.wasm', 'rb') as f:
+        code = f.read()
+    with open('~lib/rt/target/generated.abi', 'rb') as f:
+        abi = f.read()
+    chain.deploy_contract('hello', code, abi, 0)
+
+    args = dict(
+        a1 = '2021-09-03T04:13:21', # chain.TimePoint,
+        a2 = '2021-09-03T04:13:21', # chain.TimePointSec,
+    )
+    r = chain.push_action('hello', 'test', args, {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])
+    chain.produce_block()

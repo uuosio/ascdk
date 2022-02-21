@@ -8,7 +8,16 @@ export { IDXF64 } from "./idxf64";
 export { IDX128 } from "./idx128";
 export { IDX256 } from "./idx256";
 
-export { assert, check } from "./system";
+export {
+    assert,
+    check,
+    TimePoint,
+    TimePointSec,
+    currentTimeNS,
+    currentTimeMS,
+    currentTimeSec,
+} from "./system";
+
 export { print, printString, printArray, printHex, printi } from "./debug";
 
 export {

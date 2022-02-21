@@ -16,6 +16,8 @@ import {
     Utils,
     PublicKey,
     Signature,
+    TimePoint,
+    TimePointSec,
 } from "as-chain";
 
 @packer
@@ -123,8 +125,8 @@ class MyContract {
         a14: f32,
         a15: f64,
         // a16: f128,
-        // a17: TimePoint,
-        // a18: TimePointSec,
+        a17: TimePoint,
+        a18: TimePointSec,
         // a19: BlockTimestampType,
         a20: Name,
         // a21: u8[],
@@ -170,6 +172,9 @@ class MyContract {
             sig.unpack(data);
             check(a27 == sig, "a27 == sig");
         }
+        
+        check(a17 == new TimePoint(1630642401*1000000), "bad a17");
+        check(a18 == new TimePointSec(1630642401), "bad a18");
 
         check(a13 == new VarUint32(0xfff), "bad a13 value.");
         check(a20 == Name.fromString("alice"), "bad a20 value");
