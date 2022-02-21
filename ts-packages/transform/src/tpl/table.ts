@@ -1,6 +1,6 @@
 import { CONFIG } from "../config/compile";
 
-let scope = CONFIG.scope;
+// let scope = CONFIG.scope;
 
 export const tableTpl = `
 

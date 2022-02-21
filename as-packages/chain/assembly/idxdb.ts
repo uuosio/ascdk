@@ -1,4 +1,4 @@
-import { U128, U256 } from "./bignum"
+import { U128, U256 } from "./bignum";
 
 export class SecondaryIterator {
     constructor(

@@ -6,3 +6,4 @@ examples
 
 # we ignore js lint now
 **/*.js
+**/~lib

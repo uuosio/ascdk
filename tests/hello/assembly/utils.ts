@@ -8,7 +8,7 @@ class _MyTable {
 
     @primary
     get primary(): u64 {
-        return this.a
+        return this.a;
     }
 }
 

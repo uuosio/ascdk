@@ -1,6 +1,6 @@
-import { check } from "./system"
-import { Decoder, Encoder, Packer } from "./serializer"
-import { Utils } from "./utils"
+import { check } from "./system";
+import { Decoder, Encoder, Packer } from "./serializer";
+import { Utils } from "./utils";
 
 export class Checksum160 implements Packer {
     data!: u8[];
@@ -151,7 +151,7 @@ export enum UserPresence {
     USER_PRESENCE_NONE = 0,
     USER_PRESENCE_PRESENT = 1,
     USER_PRESENCE_VERIFIED = 2,
-};
+}
 
 export class WebAuthNPublicKey implements Packer {
     public key: ECCPublicKey | null = null;
@@ -196,7 +196,7 @@ export class WebAuthNPublicKey implements Packer {
 
     @inline @operator('!=')
     static neq(a: WebAuthNPublicKey, b: WebAuthNPublicKey): bool {
-      return !(a == b);
+        return !(a == b);
     }
 
     @inline @operator('>')
@@ -238,7 +238,7 @@ export class PublicKey implements Packer {
             enc.pack(this.k1!);
         } else if (this.keyType == PublicKeyType.R1) {
             enc.pack(this.r1!);
-        } else {//WebAuthN
+        } else {// WebAuthN
             enc.pack(this.webAuthN!);
         }
         return enc.getBytes();
@@ -286,7 +286,7 @@ export class PublicKey implements Packer {
 
     @inline @operator('!=')
     static neq(a: PublicKey, b: PublicKey): bool {
-      return !(a == b);
+        return !(a == b);
     }
 
     @inline @operator('>')

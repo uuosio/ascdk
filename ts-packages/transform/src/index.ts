@@ -27,7 +27,7 @@ export class ContractTransform extends Transform {
         out.entryDir = baseDir;
         process.sourceModifier = out;
         const abiPath = path.join("target", "generated.abi");
-        console.log("++++++writeFile:", abiPath)
+        console.log("++++++writeFile:", abiPath);
         this.writeFile(abiPath, abi, baseDir);
     }
 }

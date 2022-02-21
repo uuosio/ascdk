@@ -1,4 +1,4 @@
-import * as env from "./env"
+import * as env from "./env";
 
 export declare function eosio_assert_message(test: u32, msg_ptr: usize, msg_len: usize): void;
 

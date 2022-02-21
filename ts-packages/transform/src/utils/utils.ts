@@ -12,7 +12,6 @@ import {
     NodeKind,
     BinaryExpression,
     SourceKind,
-    FieldPrototype,
     NamedTypeNode,
     Range,
     CommonFlags,
@@ -281,7 +280,7 @@ export class EosioUtils {
         if (!regex.test(s)) {
             return false;
         }
-        return true
+        return true;
     }
 
     public static nameToBytes(s: string): Uint8Array {

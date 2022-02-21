@@ -1,7 +1,7 @@
-import * as env from "./env"
-import { Encoder, Decoder, Packer } from "./serializer"
-import { Name } from "./name"
-import { calcPackedVarUint32Length } from "./varint"
+import * as env from "./env";
+import { Encoder, Decoder, Packer } from "./serializer";
+import { Name } from "./name";
+import { calcPackedVarUint32Length } from "./varint";
 
 export function readActionData(): u8[] {
     let size = env.action_data_size();

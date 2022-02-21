@@ -1,5 +1,5 @@
-import * as chain from "as-chain"
-import { MyTable } from "./utils"
+import * as chain from "as-chain";
+import { MyTable } from "./utils";
 
 
 @serializer
@@ -22,17 +22,17 @@ class MyData {
     }
 
     sayHello(): void {
-
+        //
     }
 
     @primary
     get getPrimary(): u64 {
-
+        //
     }
 
     @secondary
     getByCount(): u64 {
-
+        //
     }
 
     @secondary

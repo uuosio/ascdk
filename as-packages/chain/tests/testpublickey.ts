@@ -1,4 +1,4 @@
-import { Name, PublicKey, packer, action, contract, printString, printHex, check } from "as-chain"
+import { Name, PublicKey, packer, action, contract, printString, printHex, check } from "as-chain";
 
 @packer
 class MyData {

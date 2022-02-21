@@ -1,4 +1,4 @@
-import { Asset, Name, contract, action, packer, printString, Action, PermissionLevel, check } from "as-chain"
+import { Asset, Name, contract, action, packer, printString, Action, PermissionLevel, check } from "as-chain";
 
 @packer
 class MyData {
@@ -29,12 +29,12 @@ class MyContract {
         ${a3},
         ${a4},
         ${a5},
-        \n`)
+        \n`);
     }
 
     @action("saygoodbye")
     sayGoodbye(name: string): void {
-        printString(`+++goodbye, ${name}\n`)    
+        printString(`+++goodbye, ${name}\n`);
     }
     
     @action("sayhello")
@@ -54,6 +54,6 @@ class MyContract {
             check(raw1[i] == raw2[i], "bad value");
         }
         a.send();
-        printString(`hello, ${name}\n`)
+        printString(`hello, ${name}\n`);
     }
 }

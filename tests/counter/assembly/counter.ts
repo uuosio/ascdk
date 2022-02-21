@@ -1,5 +1,5 @@
-import * as chain from "as-chain"
-import { MyTable } from "./utils"
+import * as chain from "as-chain";
+import { MyTable } from "./utils";
 
 @table("mydata")
 class MyData {
@@ -12,17 +12,17 @@ class MyData {
     }
 
     sayHello(): void {
-
+        // 
     }
 
     @primary
     get getPrimary(): u64 {
-
+        //
     }
 
     @secondary
     getByCount(): u64 {
-
+        //
     }
 
     @secondary
@@ -50,8 +50,8 @@ class MyData {
 class MyContract {
     receiver: chain.Name;
     firstReceiver: chain.Name;
-    action: chain.Name
-    mytable: MyTable
+    action: chain.Name;
+    mytable: MyTable;
 
     constructor(receiver: chain.Name, firstReceiver: chain.Name, action: chain.Name) {
         this.receiver = receiver;

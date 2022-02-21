@@ -1,4 +1,4 @@
-import { Name, MultiIndexValue, printString, action, contract } from "as-chain"
+import { Name, MultiIndexValue, printString, action, contract } from "as-chain";
 
 class TestClass {
     a: u64;

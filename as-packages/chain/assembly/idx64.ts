@@ -1,11 +1,11 @@
-import {IDXDB, SecondaryValue, SecondaryType, SecondaryIterator, SecondaryReturnValue} from "./idxdb"
-import * as env from "./env"
-import {assert} from "./system"
+import {IDXDB, SecondaryValue, SecondaryType, SecondaryIterator, SecondaryReturnValue} from "./idxdb";
+import * as env from "./env";
+import {assert} from "./system";
 
 class IDX64ReturnValue {
     constructor(
         public i: SecondaryIterator,
-        public value: u64,////secondary value
+        public value: u64,// secondary value
     ) {
     }
 }
@@ -55,14 +55,14 @@ export class IDX64 extends IDXDB {
     findPrimary(primary: u64): IDX64ReturnValue {
         let secondary_ptr = __alloc(sizeof<u64>());
         let it = env.db_idx64_find_primary(this.code, this.scope, this.table, secondary_ptr, primary);
-        let i = new SecondaryIterator(it, primary, this.dbIndex)
+        let i = new SecondaryIterator(it, primary, this.dbIndex);
         return new IDX64ReturnValue(i, load<u64>(secondary_ptr));
     }
 
     findPrimaryEx(primary: u64): SecondaryReturnValue {
         let secondary_ptr = __alloc(sizeof<u64>());
         let it = env.db_idx64_find_primary(this.code, this.scope, this.table, secondary_ptr, primary);
-        let i = new SecondaryIterator(it, primary, this.dbIndex)
+        let i = new SecondaryIterator(it, primary, this.dbIndex);
         let value = new Array<u64>(1);
         value[0] = load<u64>(secondary_ptr);
         let secondary = new SecondaryValue(SecondaryType.U64, value);
@@ -118,12 +118,3 @@ export class IDX64 extends IDXDB {
         return new SecondaryIterator(it, 0, this.dbIndex);
     }
 }
-
-//store
-//update
-
-// func (db *IdxDB64I) Find(secondary uint64) SecondaryIterator
-// func (db *IdxDB64I) Lowerbound(secondary uint64) (SecondaryIterator, uint64)
-// func (db *IdxDB64I) Upperbound(secondary uint64) (SecondaryIterator, uint64)
-
-// func (db *IdxDB64I) FindByPrimary(primary uint64) (SecondaryIterator, uint64)

@@ -1,6 +1,6 @@
-import { Name } from "./name"
-import { memcpy } from "./env"
-import { check } from "./system"
+import { Name } from "./name";
+import { memcpy } from "./env";
+import { check } from "./system";
 
 export interface Packer {
     pack(): u8[];
@@ -101,7 +101,7 @@ export class Encoder {
     packString(s: string): usize {
         let utf8Str = String.UTF8.encode(s);
         let packedLength = this.packLength(utf8Str.byteLength);
-//        let view = new DataView(utf8Str);
+        // let view = new DataView(utf8Str);
         let src = changetype<usize>(utf8Str);
         let dest = this.buf.dataStart + this.pos;
         this.incPos(utf8Str.byteLength);
@@ -137,8 +137,8 @@ export class Decoder {
     pos: u32;
   
     constructor(buf: u8[]) {
-      this.buf = buf;
-      this.pos = 0;
+        this.buf = buf;
+        this.pos = 0;
     }
     
     remains(): u8[] {
@@ -146,8 +146,8 @@ export class Decoder {
     }
 
     incPos(n: u32): void {
-        this.pos += n
-        check(this.pos <= <u32>this.buf.length, "Decoder.incPos: buffer overflow")
+        this.pos += n;
+        check(this.pos <= <u32>this.buf.length, "Decoder.incPos: buffer overflow");
     }
 
     getPos(): u32 {
@@ -155,19 +155,19 @@ export class Decoder {
     }
 
     unpack(ser: Packer): usize {
-        let size = ser.unpack(this.remains())
+        let size = ser.unpack(this.remains());
         this.incPos(<u32>size);
         return size;
     }
 
     unpackNumber<T>(): T {
-      let value = load<T>(this.buf.dataStart + this.pos)
-      this.incPos(sizeof<T>());
-      return value;
+        let value = load<T>(this.buf.dataStart + this.pos);
+        this.incPos(sizeof<T>());
+        return value;
     }
 
     unpackName(): Name {
-        let n = this.unpackNumber<u64>()
+        let n = this.unpackNumber<u64>();
         return new Name(n);
     }
 

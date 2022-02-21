@@ -1,11 +1,11 @@
-import { Decoder, Packer } from "./serializer"
+import { Decoder, Packer } from "./serializer";
 
 const charToSymbol = (c: u16): u16 => {
-    if (c >= 97 && c <= 122) {//c >= 'a' && c <= 'z'
+    if (c >= 97 && c <= 122) {// c >= 'a' && c <= 'z'
         return (c - 97) + 6;
     }
 
-    if (c >= 49 && c <= 53) {//c >= '1' && c <= '5'
+    if (c >= 49 && c <= 53) {// c >= '1' && c <= '5'
         return (c - 49) + 1;
     }
 
@@ -31,17 +31,17 @@ export function S2N(s: string): u64 {
         } else {
             c &= 0x0f;
         }
-		value |= c;
+        value |= c;
     }
     return value;
 }
 
-//".12345abcdefghijklmnopqrstuvwxyz"
+// ".12345abcdefghijklmnopqrstuvwxyz"
 const charmap: u8[] = [0x2e,0x31,0x32,0x33,0x34,0x35,0x61,0x62,0x63,0x64,0x65,0x66,0x67,0x68,0x69,0x6a,0x6b,0x6c,0x6d,0x6e,0x6f,0x70,0x71,0x72,0x73,0x74,0x75,0x76,0x77,0x78,0x79,0x7a];
 
 export function N2S(value: u64): string {
-	// 13 dots
-	let str = new Array<u8>(13);
+    // 13 dots
+    let str = new Array<u8>(13);
     let tmp: u64 = value;
     for (let i=0; i<=12; i++) {
         let c: u8;
@@ -58,12 +58,12 @@ export function N2S(value: u64): string {
         }
     }
 
-	let i = str.length - 1
-	for (; i >= 0; i--) {
-		if (str[i] != 46) {//46 '.'
-			break;
-		}
-	}
+    let i = str.length - 1;
+    for (; i >= 0; i--) {
+        if (str[i] != 46) {// 46 '.'
+            break;
+        }
+    }
     return String.UTF8.decode(str.slice(0, i+1).buffer);
 }
 
@@ -79,7 +79,7 @@ export class Name implements Packer {
     }
 
     toString(): string {
-        return N2S(this.N)
+        return N2S(this.N);
     }
 
     pack(): u8[] {
@@ -100,6 +100,6 @@ export class Name implements Packer {
 
     @inline @operator('==')
     static eq(a: Name, b: Name): bool {
-      return a.N == b.N;
+        return a.N == b.N;
     }
 }

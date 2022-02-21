@@ -15,7 +15,7 @@ import {
     Checksum512,
     Utils,
     PublicKey
-} from "as-chain"
+} from "as-chain";
 
 @packer
 class MyData {
@@ -23,7 +23,7 @@ class MyData {
         public b: u64 = 0,
         public c: u64 = 0,
         public d: Asset[] = [],
-        ) {
+    ) {
     }
 }
 
@@ -121,26 +121,26 @@ class MyContract {
         a13: VarUint32,
         a14: f32,
         a15: f64,
-        //a16: f128,
-        //a17: TimePoint,
-        //a18: TimePointSec,
-        //a19: BlockTimestampType,
+        // a16: f128,
+        // a17: TimePoint,
+        // a18: TimePointSec,
+        // a19: BlockTimestampType,
         a20: Name,
-        //a21: u8[],
+        // a21: u8[],
         a22: string,
         a23: Checksum160,
         a24: Checksum256,
         a25: Checksum512,
         a26: PublicKey,
-        //a27: Signature,
-        //a28: Symbol,
+        // a27: Signature,
+        // a28: Symbol,
         // a29: SymbolCode,
         a30: Asset,
         // a31: ExtendedAsset,
         a32: string[],
     ): void {     
         {
-            let data = Utils.hexToBytes('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABB')
+            let data = Utils.hexToBytes('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABB');
             let _a23 = new Checksum160();
             _a23.data = data;
             assert(a23 == _a23, "bad a23");
@@ -148,7 +148,7 @@ class MyContract {
         }
 
         {
-            let data = Utils.hexToBytes('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABB')
+            let data = Utils.hexToBytes('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABB');
             let _a24 = new Checksum256();
             _a24.data = data;
             assert(a24 == _a24, "bad a24");
@@ -156,7 +156,7 @@ class MyContract {
         }
 
         {
-            let data = Utils.hexToBytes('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABB')
+            let data = Utils.hexToBytes('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABB');
             let _a25 = new Checksum512();
             _a25.data = data;
             assert(a25 == _a25, "bad a25");
@@ -183,6 +183,6 @@ class MyContract {
         a26 = ${a26},
         a30 = ${a30},
         a32 = ${a32},
-        `)
+        `);
     }
 }

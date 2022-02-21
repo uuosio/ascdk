@@ -1,7 +1,7 @@
-import {IDXDB, SecondaryValue, SecondaryType, SecondaryIterator, SecondaryReturnValue} from "./idxdb"
-import * as env from "./env"
-import {assert} from "./system"
-import { U256 } from "./bignum"
+import { IDXDB, SecondaryValue, SecondaryType, SecondaryIterator, SecondaryReturnValue } from "./idxdb";
+import * as env from "./env";
+import { assert } from "./system";
+import { U256 } from "./bignum";
 
 class IDX256ReturnValue {
     constructor(
@@ -124,7 +124,7 @@ export class IDX256 extends IDXDB {
 
         let iterator = new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
         
-        let value = new SecondaryValue(SecondaryType.U256, secondaryCopy)
+        let value = new SecondaryValue(SecondaryType.U256, secondaryCopy);
         return new SecondaryReturnValue(iterator, value);
     }
 
@@ -155,7 +155,7 @@ export class IDX256 extends IDXDB {
         let it = env.db_idx256_upperbound(this.code, this.scope, this.table, secondary_ptr, 2, primary_ptr);
 
         let iterator = new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
-        let value = new SecondaryValue(SecondaryType.U256, secondaryCopy)
+        let value = new SecondaryValue(SecondaryType.U256, secondaryCopy);
         return new SecondaryReturnValue(iterator, value);
     }
 

@@ -1,4 +1,4 @@
-import { Name, Asset, Symbol, check, isValid, printString, contract, action } from "as-chain"
+import { Name, Asset, Symbol, check, isValid, printString, contract, action } from "as-chain";
 
 @contract("hello")
 class MyContract {
@@ -25,7 +25,7 @@ class MyContract {
     @action("test1")
     testAsset(): void {
         {
-            let sym = new Symbol("EOS", 4)
+            let sym = new Symbol("EOS", 4);
             let ret = sym.isValid();
             check(ret, "bad symbol");
             
@@ -54,6 +54,6 @@ class MyContract {
             check( a / b == new Asset(2, new Symbol("EOS", 4)), "bad value");
             check( a * b == new Asset(50, new Symbol("EOS", 4)), "bad value");
         }
-        printString('done!\n')
+        printString('done!\n');
     }
 }

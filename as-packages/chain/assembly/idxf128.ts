@@ -1,10 +1,10 @@
-import {IDXDB, SecondaryValue, SecondaryType, SecondaryIterator, SecondaryReturnValue} from "./idxdb"
-import * as env from "./env"
-import { check } from "./system"
+import {IDXDB, SecondaryValue, SecondaryType, SecondaryIterator, SecondaryReturnValue} from "./idxdb";
+import * as env from "./env";
+import { check } from "./system";
 
 export class IDXF128 extends IDXDB {
     store(id: u64, value: SecondaryValue, payer: u64): SecondaryIterator {
-        check(value.type == SecondaryType.U128, "idx_long_double: bad type")
+        check(value.type == SecondaryType.U128, "idx_long_double: bad type");
         check(value.value.length == 2, "idx_long_double: bad value");
         let secondary_ptr = value.value.dataStart;
         let it = env.db_idx_long_double_store(this.scope, this.table, payer, id, secondary_ptr);
@@ -70,7 +70,7 @@ export class IDXF128 extends IDXDB {
 
         let iterator = new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
         
-        let value = new SecondaryValue(SecondaryType.U128, secondaryCopy)
+        let value = new SecondaryValue(SecondaryType.U128, secondaryCopy);
         return new SecondaryReturnValue(iterator, value);
     }
 
@@ -86,7 +86,7 @@ export class IDXF128 extends IDXDB {
         let it = env.db_idx_long_double_upperbound(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
 
         let iterator = new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
-        let value = new SecondaryValue(SecondaryType.U128, secondaryCopy)
+        let value = new SecondaryValue(SecondaryType.U128, secondaryCopy);
         return new SecondaryReturnValue(iterator, value);
     }
 

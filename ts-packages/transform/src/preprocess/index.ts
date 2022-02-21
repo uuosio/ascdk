@@ -5,9 +5,9 @@ import { ActionFunctionDef } from "../contract/elementdef";
 
 import { mainTpl, actionTpl, tableTpl, serializerTpl} from "../tpl";
 import { CONFIG } from "../config/compile";
-import { EosioUtils, RangeUtil } from "../utils/utils"
-import { ABI, ABIAction, ABIStruct, ABIStructField, ABITable } from "../abi/abi"
-import { TypeHelper } from "../utils/typeutil"
+import { EosioUtils, RangeUtil } from "../utils/utils";
+import { ABI, ABIAction, ABIStruct, ABIStructField, ABITable } from "../abi/abi";
+import { TypeHelper } from "../utils/typeutil";
 import { TypeKindEnum } from "../enums/customtype";
 
 export class ModifyPoint {
@@ -93,8 +93,6 @@ export function getExtCodeInfo(contractInfo: ContractProgram): SourceModifier {
         sourceModifier.addModifyPoint(new ModifyPoint(s.range, ModifyType.REPLACE, code));
     });
 
-//    MessageDecoratorNodeDef
-//    ActionFunctionDef
     sourceModifier.addModifyPoint(new ModifyPoint(contractInfo.contract.range, ModifyType.APPEND, exportMain));
     sourceModifier.toModifyFileMap();
     return sourceModifier;

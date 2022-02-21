@@ -1,10 +1,10 @@
-import * as env from "./env"
+import * as env from "./env";
 
 export function printi(n: i64): void {
     env.printi(n);
 }
 
-export function printString(s: String): void {
+export function printString(s: string): void {
     let s1 = String.UTF8.encode(s);
     let dv = new DataView(s1);
     env.prints_l(dv.dataStart, dv.byteLength);

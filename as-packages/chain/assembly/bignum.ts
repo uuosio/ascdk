@@ -1,5 +1,5 @@
-import { i128, u128, u256 } from "as-bignum"
-import { Encoder, Decoder, Packer } from "./serializer"
+import { i128, u128, u256 } from "as-bignum";
+import { Encoder, Decoder, Packer } from "./serializer";
 
 export class I128 extends i128 implements Packer {
     pack(): u8[] {

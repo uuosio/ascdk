@@ -1,5 +1,5 @@
-import { memcpy } from "./env"
-import { calcPackedVarUint32Length } from "./varint"
+import { memcpy } from "./env";
+import { calcPackedVarUint32Length } from "./varint";
 
 export namespace Utils {
     export function getDataStart<T>(arr: Array<T>): usize {
@@ -50,7 +50,7 @@ export namespace Utils {
             if (a[i] == b[i]) {
                 continue;
             } else if (a[i] > b[i]) {
-                return 1
+                return 1;
             } else {
                 return -1;
             }

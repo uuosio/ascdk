@@ -1,5 +1,5 @@
 import { CONFIG } from "../config/compile";
-const scope = CONFIG.scope;
+// const scope = CONFIG.scope;
 
 // parameters: ParameterNodeDef[] = [];
 // methodName: string;

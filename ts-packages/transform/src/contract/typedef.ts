@@ -14,7 +14,6 @@ import { TypeKindEnum } from "../enums/customtype";
 import { ClassInterpreter } from "./classdef";
 import { Strings } from "../utils/primitiveutil";
 import { CONFIG } from "../config/compile";
-import { ElementUtil } from "../utils/utils";
 export class NodeTypeInfo {
     constructor(public type: TypeKindEnum) {}
 }
@@ -60,8 +59,8 @@ export class NamedTypeNodeDef extends BaseNamedTypeDef {
         this.codecType = TypeHelper.getCodecType(this.current.name);
         this.codecTypeAlias = this.getNameSpace() + this.codecType;
         if (this.typeKind != TypeKindEnum.ARRAY && this.typeKind != TypeKindEnum.MAP) {
-//            this.plainTypeNode = this.codecTypeAlias;
-//            this.definedCodeType = this.codecType;
+            //            this.plainTypeNode = this.codecTypeAlias;
+            //            this.definedCodeType = this.codecType;
         }
         this.resolveArguments();
     }
@@ -216,8 +215,8 @@ export class NamedTypeNodeDef extends BaseNamedTypeDef {
                 return type;
             }
             let classTypeKind = TypeHelper.getTypeKindByName(element.name);
-            if (classTypeKind == TypeKindEnum.USER_CLASS) {
-            }
+            // if (classTypeKind == TypeKindEnum.USER_CLASS) {
+            // }
             return classTypeKind;
         }
         return TypeKindEnum.USER_CLASS;

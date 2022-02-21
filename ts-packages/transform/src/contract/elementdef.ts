@@ -135,16 +135,16 @@ export class MessageDecoratorNodeDef extends DecoratorNodeDef {
         super(decorator);
         if (decorator.args) {
             if (decorator.args.length == 0 || decorator.args.length > 2) {
-                throw new Error(`Decorator: Invalid action decorator. Trace: ${RangeUtil.location(decorator.range)} `)
+                throw new Error(`Decorator: Invalid action decorator. Trace: ${RangeUtil.location(decorator.range)} `);
             }
 
-            //TODO: verify name
+            // TODO: verify name
             this.actionName = AstUtil.getIdentifier(decorator.args[0]);
             if (decorator.args.length != 2) {
                 return;
             }
 
-            let notify = AstUtil.getBinaryExprRight(decorator.args[1])
+            let notify = AstUtil.getBinaryExprRight(decorator.args[1]);
             if (notify == 'true') {
                 this.notify = true;
             }
@@ -229,7 +229,7 @@ export class ActionFunctionDef extends FunctionDef {
 }
 
 export class DBIndexFunctionDef {
-    _index: number = 0;
+    _index = 0;
     messageDecorator: DecoratorNodeDef;
     bodyRange: Range;
     getterPrototype: FunctionDef | null;
@@ -251,7 +251,7 @@ export class DBIndexFunctionDef {
         }
 
         AstUtil.checkPublic(propertyPrototype.getterPrototype!.declaration);
-        let decoratorKind: ContractDecoratorKind
+        let decoratorKind: ContractDecoratorKind;
         if (indexType == 0) {
             decoratorKind = ContractDecoratorKind.PRIMARY;
         } else {

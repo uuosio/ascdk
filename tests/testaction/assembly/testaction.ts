@@ -1,5 +1,5 @@
-import * as chain from "as-chain"
-import { Utils } from "as-chain/utils"
+import * as chain from "as-chain";
+import { Utils } from "as-chain/utils";
 
 @contract("hello")
 class MyContract {
@@ -15,7 +15,7 @@ class MyContract {
 
     @action("saygoodbye")
     sayGoodbye(name: string): void {
-        chain.printString(`+++goodbye, ${name}\n`)    
+        chain.printString(`+++goodbye, ${name}\n`);
     }
     
     @action("sayhello")
@@ -25,13 +25,12 @@ class MyContract {
         }
 
         {
-            let syn = new chain.Symbol("EOS", 4)
+            let syn = new chain.Symbol("EOS", 4);
             chain.printString(syn.toString());
 
             chain.printString(" ");
-            let b = new chain.Asset(<i64>(10), syn)
-            chain.printString(b.toString())
-//            return;
+            let b = new chain.Asset(<i64>(10), syn);
+            chain.printString(b.toString());
         }
         // let  = Utils.stringToU8Array(name);
         let enc = new chain.Encoder(1 + name.length);
@@ -42,6 +41,6 @@ class MyContract {
             chain.Name.fromString("saygoodbye"),
             enc.getBytes());
         a.send();
-        chain.printString(`hello, ${name}\n`)
+        chain.printString(`hello, ${name}\n`);
     }
 }

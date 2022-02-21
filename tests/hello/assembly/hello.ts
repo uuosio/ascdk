@@ -1,4 +1,4 @@
-import * as chain from "as-chain"
+import * as chain from "as-chain";
 
 @contract("hello")
 class MyContract {
@@ -14,6 +14,6 @@ class MyContract {
 
     @action("sayhello")
     sayHello(): void {
-        chain.printString("hello, blockchain world!")
+        chain.printString("hello, blockchain world!");
     }
 }

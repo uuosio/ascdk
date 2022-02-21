@@ -24,7 +24,7 @@ export class APIOptionImpl implements APIOptions {
             if (sourceModifier.fileExtMap.has(filename)) {
                 let extCodes = sourceModifier.fileExtMap.get(filename);
                 extCodes!.sort((a: ModifyPoint, b: ModifyPoint) => (b.range.end - a.range.end)).forEach(item => {
-                    console.log("++++++point.code:", item.code)
+                    console.log("++++++point.code:", item.code);
                     text = this.modifySourceText(text, item);
                 });
             }

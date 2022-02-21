@@ -1,15 +1,15 @@
-import { Packer } from "./serializer"
+import { Packer } from "./serializer";
 
 export function calcPackedVarUint32Length(val: u32): usize {
-	let n: u32 = 0;
+    let n: u32 = 0;
     while (true) {
-		val >>= 7;
-		n += 1;
-		if (val <= 0) {
-			break;
-		}
+        val >>= 7;
+        n += 1;
+        if (val <= 0) {
+            break;
+        }
     }
-	return n;
+    return n;
 }
 
 export class VarInt32 implements Packer {
@@ -71,6 +71,6 @@ export class VarUint32 implements Packer {
 
     @inline @operator('==')
     static eq(a: VarUint32, b: VarUint32): bool {
-      return a.n == b.n;
+        return a.n == b.n;
     }
 }

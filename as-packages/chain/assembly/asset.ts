@@ -1,5 +1,5 @@
-import { check } from "./system"
-import { Encoder, Decoder, Packer } from "./serializer"
+import { check } from "./system";
+import { Encoder, Decoder, Packer } from "./serializer";
 import { U128 } from "./bignum";
 
 const MAX_AMOUNT: i64 = (1 << 62) - 1;
@@ -7,12 +7,14 @@ const MAX_AMOUNT: i64 = (1 << 62) - 1;
 export function isValid(sym: u64): bool {
     let i = 0;
     for (; i<7; i++) {
-        let c = <u8>(sym & 0xFF)
-        if (c >= <u8>65 && c <= <u8>90) { //('A' <= c && c <= 'Z')
+        let c = <u8>(sym & 0xFF);
+        // ('A' <= c && c <= 'Z')
+        if (c >= <u8>65 && c <= <u8>90) {
+            true;
         } else {
             return false;
         }
-        sym >>= 8
+        sym >>= 8;
         if ((sym & 0xFF) == 0) {
             break;
         }
@@ -22,10 +24,10 @@ export function isValid(sym: u64): bool {
     for (; i<7; i++) {
         sym >>= 8;
         if ((sym & 0xFF) != 0) {
-            return false
+            return false;
         }
     }
-    return true
+    return true;
 }
 
 export class Symbol implements Packer {
@@ -36,7 +38,7 @@ export class Symbol implements Packer {
         this.value = 0;
         for (let i=0; i<name.length; i++) {
             let v: u64 = <u64>name.charCodeAt(name.length-1-i);
-            check(v >= 65 && v <= 90, "Invalid character")
+            check(v >= 65 && v <= 90, "Invalid character");
             this.value <<= 8;
             this.value |= v;
         }
@@ -61,7 +63,7 @@ export class Symbol implements Packer {
     }
 
     isValid(): bool {
-        let sym = this.code()
+        let sym = this.code();
         return isValid(sym);
     }
 
@@ -85,7 +87,7 @@ export class Symbol implements Packer {
             buf[n] = <u8>(value & 0xFF);
             n += 1;
         }
-        return String.UTF8.decode(buf.slice(0, n).buffer)
+        return String.UTF8.decode(buf.slice(0, n).buffer);
     }
 
     toString(): string {
@@ -191,8 +193,8 @@ export class Asset implements Packer {
     static sub(a: Asset, b: Asset): Asset {
         check(a.symbol.value == b.symbol.value, "symbol not the same");
         let amount = a.amount - b.amount;
-        check(amount >= -MAX_AMOUNT, "subtraction underflow")
-        check(amount <= MAX_AMOUNT, "subtraction overflow")
+        check(amount >= -MAX_AMOUNT, "subtraction underflow");
+        check(amount <= MAX_AMOUNT, "subtraction overflow");
         return new Asset(amount, Symbol.fromU64(a.symbol.value));
     }
   

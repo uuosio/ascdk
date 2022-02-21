@@ -17,7 +17,7 @@ import {
     primary,
     secondary,
     action,
-} from "as-chain"
+} from "as-chain";
 
 @table("mydata")
 class MyData {
@@ -27,7 +27,7 @@ class MyData {
         public c: U128=new U128(),
         public d: f64=0.0,
         public e: U256=new U256(),
-        ) {
+    ) {
     }
 
     @primary
@@ -126,24 +126,24 @@ class MyContract {
         it = mi.end();
         it = mi.previous(it);
         value = mi.get(it);
-        printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}\n`)
+        printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}\n`);
         check(value.a == 7 && value.b == 8 && value.c == new U128(9) && value.d == 9.9, "bad value");
 
         let idx = <IDX64>mi.getIdxDB(0);
         let idxIt = idx.findPrimary(7);
-        printString(`++++++++${idxIt.i.i}, ${idxIt.value}\n`)
+        printString(`++++++++${idxIt.i.i}, ${idxIt.value}\n`);
 
-        {//4, 5, 6
+        {// 4, 5, 6
             // let idx64 = <IDX64>idx;
             let idx64 = changetype<IDX64>(idx);
             let idxIt = idx64.find(5);
-            printString(`+++++++++idx64.find: ${idxIt.i}, ${idxIt.primary}\n`)
+            printString(`+++++++++idx64.find: ${idxIt.i}, ${idxIt.primary}\n`);
             check(idxIt.primary == 4, "bad value");
         }
 
-        //1 2 3
-        //4 5 6
-        //7 8 9
+        // 1 2 3
+        // 4 5 6
+        // 7 8 9
         {
             let secondary = newSecondaryValue_u64(2);
             let ret = idx.lowerBoundEx(secondary);
@@ -162,7 +162,7 @@ class MyContract {
             check(it.primary == 7, "bad primary value");
         }
 
-        {//1, 2, 3
+        {// 1, 2, 3
             let idxIt = idx.find(2);
             printString(`+++++++++idx.find(2): ${idxIt.i}, ${idxIt.primary}\n`);
             check(idxIt.primary == 1, "bad value");
@@ -172,9 +172,9 @@ class MyContract {
             check(ret.isOk(), "bad scondary value");
         }
 
-        //1 22 3 3.3
-        //4 5 6 6.6
-        //7 8 9 9.9
+        // 1 22 3 3.3
+        // 4 5 6 6.6
+        // 7 8 9 9.9
         {
             let idx128 = <IDX128>mi.getIdxDB(1);
             let idxRet = idx128.findPrimary(1);
@@ -199,9 +199,9 @@ class MyContract {
             check(ret.value.value[0] == 9, "idx128.lowerBound 2: bad secondary value!");
         }
 
-        //1 22 3 3.3 11
-        //4 5 6 6.6 
-        //7 8 9 9.9
+        // 1 22 3 3.3 11
+        // 4 5 6 6.6 
+        // 7 8 9 9.9
         {
             let idxf64 = <IDXF64>mi.getIdxDB(2);
             let idxRet = idxf64.findPrimary(1);
@@ -227,9 +227,9 @@ class MyContract {
             check(ret.value == 9.9, "idx128.lowerBound 4: bad secondary value!");
         }
 
-        //1 22 3 3.3 11
-        //4 5 6 6.6 44
-        //7 8 9 9.9 77
+        // 1 22 3 3.3 11
+        // 4 5 6 6.6 44
+        // 7 8 9 9.9 77
         {
             let idx256 = <IDX256>mi.getIdxDB(3);
             let idxRet = idx256.findPrimary(1);

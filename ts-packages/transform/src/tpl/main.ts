@@ -1,6 +1,6 @@
 import { CONFIG } from "../config/compile";
 
-let scope = CONFIG.scope;
+// let scope = CONFIG.scope;
 
 export const mainTpl = `
 export function apply(receiver: u64, firstReceiver: u64, action: u64): void {

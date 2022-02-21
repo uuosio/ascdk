@@ -7,9 +7,9 @@
 // }
 
 export class ABITable {
-	name: string="";
-	type: string="";
-	index_type: string="";
+	name = "";
+	type = "";
+	index_type = "";
 	key_names: string[] = [];
 	key_types: string[] = [];
 }
@@ -20,15 +20,9 @@ export class ABITable {
 // 	RicardianContract string `json:"ricardian_contract"`
 // }
 export class ABIAction {
-	name: string="";
-	type: string="";
-	ricardian_contract: string = "";
-
-	constructor(name: string, type: string, ricardian_contract: string = "") {
-		this.name = name;
-		this.type = type;
-		this.ricardian_contract = ricardian_contract;
-	}
+	name = "";
+	type = "";
+	ricardian_contract = "";
 }
 
 // type ABIStructField struct {
@@ -37,8 +31,8 @@ export class ABIAction {
 // }
 
 export class ABIStructField {
-	name: string = "";
-	type: string = "";
+	name = "";
+	type = "";
 }
 
 // type ABIStruct struct {
@@ -47,8 +41,8 @@ export class ABIStructField {
 // 	Fields []ABIStructField `json:"fields"`
 // }
 export class ABIStruct {
-	name: string="";
-	base: string="";
+	name = "";
+	base = "";
 	fields: ABIStructField[] = [];
 }
 
@@ -65,7 +59,7 @@ export class ABIStruct {
 // }
 
 export class ABI {
-	version: string = "eosio::abi/1.1";
+	version = "eosio::abi/1.1";
 	structs: ABIStruct[] = [];
 	types: string[] = [];
 	actions: ABIAction[] = [];

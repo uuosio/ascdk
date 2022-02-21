@@ -1,7 +1,7 @@
-import { IDXDB, SecondaryValue, SecondaryIterator } from "./idxdb"
-import { DBI64, PrimaryValue } from "./dbi64"
-import { Name } from "./name"
-import { check } from "./system"
+import { IDXDB, SecondaryValue, SecondaryIterator } from "./idxdb";
+import { DBI64, PrimaryValue } from "./dbi64";
+import { Name } from "./name";
+import { check } from "./system";
 
 export const SAME_PAYER = new Name();
 
@@ -42,7 +42,7 @@ export class MultiIndex<T extends MultiIndexValue> {
 
     update(it: PrimaryIterator, value: T, payer: Name): void {
         this.db.update(it.i, payer.N, value.pack());
-        let primary = value.getPrimaryValue()
+        let primary = value.getPrimaryValue();
         for (let i=0; i<this.idxdbs.length; i++) {
             let ret = this.idxdbs[i].findPrimaryEx(primary);
             let newValue = value.getSecondaryValue(i);

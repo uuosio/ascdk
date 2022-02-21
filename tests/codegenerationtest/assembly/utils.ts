@@ -3,7 +3,7 @@ class _MyTable {
     constructor(public a: u64 = 0) {}
     @primary
     get primary(): u64 {
-        return this.a
+        return this.a;
     }
 }
 

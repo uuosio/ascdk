@@ -1,10 +1,9 @@
-import * as env from "./env"
-import {printString} from "./debug"
-import {Packer} from "./serializer"
+import * as env from "./env";
+import {printString} from "./debug";
+import {Packer} from "./serializer";
 
 export function say_hello(): void {
-    printString("hello,world from dbi64")
-//    env.db_remove_i64(-1 as i32);
+    printString("hello,world from dbi64");
 }
 
 export interface PrimaryValue extends Packer {
@@ -43,21 +42,21 @@ export class DBI64 {
         let arr = new Array<u8>(size);
         let ptr = arr.dataStart;
         env.db_get_i64(iterator, ptr, size);
-        return arr
+        return arr;
     }
 
     // export declare function db_next_i64(iterator: i32, primary_ptr: usize): i32
     next(iterator: i32): i32 {
         let primary_ptr = __alloc(sizeof<u64>());
-        let itNext = env.db_next_i64(iterator, primary_ptr)
-        return itNext
+        let itNext = env.db_next_i64(iterator, primary_ptr);
+        return itNext;
     }
 
     // export declare function db_previous_i64(iterator: i32, primary_ptr: usize): i32
     previous(iterator: i32): i32 {
         let primary_ptr = __alloc(sizeof<u64>());
-        let itNext = env.db_previous_i64(iterator, primary_ptr)
-        return itNext
+        let itNext = env.db_previous_i64(iterator, primary_ptr);
+        return itNext;
     }
 
     // export declare function db_find_i64(code: u64, scope: u64, table: u64, id: u64): i32

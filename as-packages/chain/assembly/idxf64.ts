@@ -1,6 +1,6 @@
-import {IDXDB, SecondaryValue, SecondaryType, SecondaryIterator, SecondaryReturnValue} from "./idxdb"
-import * as env from "./env"
-import { assert } from "./system"
+import {IDXDB, SecondaryValue, SecondaryType, SecondaryIterator, SecondaryReturnValue} from "./idxdb";
+import * as env from "./env";
+import { assert } from "./system";
 
 class IDXF64ReturnValue {
     constructor(
@@ -54,14 +54,14 @@ export class IDXF64 extends IDXDB {
     findPrimary(primary: u64): IDXF64ReturnValue {
         let secondary_ptr = __alloc(sizeof<f64>());
         let it = env.db_idx_double_find_primary(this.code, this.scope, this.table, secondary_ptr, primary);
-        let i = new SecondaryIterator(it, primary, this.dbIndex)
+        let i = new SecondaryIterator(it, primary, this.dbIndex);
         return new IDXF64ReturnValue(i, load<f64>(secondary_ptr));
     }
 
     findPrimaryEx(primary: u64): SecondaryReturnValue {
         let secondary_ptr = __alloc(sizeof<f64>());
         let it = env.db_idx_double_find_primary(this.code, this.scope, this.table, secondary_ptr, primary);
-        let i = new SecondaryIterator(it, primary, this.dbIndex)
+        let i = new SecondaryIterator(it, primary, this.dbIndex);
         let value = new Array<u64>(1);
         value[0] = load<u64>(secondary_ptr);
         let secondary = new SecondaryValue(SecondaryType.F64, value);
