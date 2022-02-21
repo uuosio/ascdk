@@ -26,11 +26,12 @@ class MyContract {
 
         {
             let syn = new chain.Symbol("EOS", 4);
-            chain.printString(syn.toString());
-
+            chain.printString(`${syn}\n`);
+            chain.printString(`${syn.precision()}\n`)
             chain.printString(" ");
-            let b = new chain.Asset(<i64>(10), syn);
+            let b = new chain.Asset(10, syn);
             chain.printString(b.toString());
+            return
         }
         // let  = Utils.stringToU8Array(name);
         let enc = new chain.Encoder(1 + name.length);

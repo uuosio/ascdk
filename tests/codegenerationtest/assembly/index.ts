@@ -75,7 +75,7 @@ class MyContract {
         let mystruct = new MyStruct();
         let data = chain.readActionData();
         mystruct.unpack(data);
-        chain.printString(`++++++${mystruct.a1}, ${mystruct.a2}`);
+        chain.printString(`++++++${mystruct.a1}, ${mystruct.a2} ${mystruct.a3}`);
     }
 
     @action("inccc", notify=true)
