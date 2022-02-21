@@ -39,8 +39,8 @@ export class Symbol implements Packer {
         for (let i=0; i<name.length; i++) {
             let v: u64 = <u64>name.charCodeAt(name.length-1-i);
             check(v >= 65 && v <= 90, "Invalid character");
-            this.value <<= 8;
             this.value |= v;
+            this.value <<= 8;
         }
         this.value |= precision;
     }

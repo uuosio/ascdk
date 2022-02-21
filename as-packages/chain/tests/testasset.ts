@@ -28,7 +28,9 @@ class MyContract {
             let sym = new Symbol("EOS", 4);
             let ret = sym.isValid();
             check(ret, "bad symbol");
-            
+            check(sym.precision() == 4, "bad precision");
+            check(sym.toString() == '4,EOS', "bad symbol")
+
             let value = this.stringToU64('EOS');
             ret = isValid(value);
             check(ret, "bad value");
