@@ -63,7 +63,7 @@ export class TypeHelper {
         
         ["f32", "float32"],
         ["f64", "float64"],
-        ["f128", "float128"],
+        ["Float128", "float128"],
         
         ["TimePoint", "time_point"],
         

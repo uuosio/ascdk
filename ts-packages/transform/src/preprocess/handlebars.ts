@@ -223,6 +223,8 @@ Handlebars.registerHelper("getSecondaryValue", function (fn: DBIndexFunctionDef)
         plainType = 'U128';
     } else if (plainType == 'chain.U256') {
         plainType = 'U256';
+    }  else if (plainType == 'chain.Float128') {
+        plainType = 'Float128';
     }
     console.log("+++++++++getSecondaryValue:", fn._index);
     code.push(`case ${fn._index}: {`);
@@ -239,6 +241,8 @@ Handlebars.registerHelper("setSecondaryValue", function (fn: DBIndexFunctionDef)
         plainType = 'U128';
     } else if (plainType == 'chain.U256') {
         plainType = 'U256';
+    }  else if (plainType == 'chain.Float128') {
+        plainType = 'Float128';
     }
 
     code.push(`case ${fn._index}: {`);
@@ -254,7 +258,7 @@ const dbTypeToDBClass: Map<string, string> = new Map([
     ['U128', 'IDX128'],
     ['U256', 'IDX256'],
     ['F64', 'IDXF64'],
-    ['F128', 'IDXF128'],
+    ['FLOAT128', 'IDXF128'],
 ]);
 
 Handlebars.registerHelper("newSecondaryDB", function (fn: DBIndexFunctionDef) {
@@ -264,6 +268,8 @@ Handlebars.registerHelper("newSecondaryDB", function (fn: DBIndexFunctionDef) {
         plainType = 'U128';
     } else if (plainType == 'chain.U256') {
         plainType = 'U256';
+    } else if (plainType == 'chain.Float128') {
+        plainType = 'Float128';
     }
 
     plainType = plainType.toUpperCase();

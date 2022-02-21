@@ -17,6 +17,7 @@ import {
     primary,
     secondary,
     action,
+    Float128,
 } from "as-chain";
 
 @table("mydata")
@@ -27,6 +28,7 @@ class MyData {
         public c: U128=new U128(),
         public d: f64=0.0,
         public e: U256=new U256(),
+        public f: Float128=new Float128(),
     ) {
     }
 
@@ -73,6 +75,16 @@ class MyData {
     @secondary
     set evalue(value: U256) {
         this.e = value;
+    }
+
+    @secondary
+    get fvalue(): Float128 {
+        return this.f;
+    }
+
+    @secondary
+    set fvalue(value: Float128) {
+        this.f = value;
     }
 }
 
