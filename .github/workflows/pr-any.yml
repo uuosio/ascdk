@@ -8,21 +8,26 @@ jobs:
   pr:
     strategy:
       matrix:
+        python-version: [3.9]
         step: ['lint', 'test:chain']
     name: ${{ matrix.step }}
     runs-on: ubuntu-18.04
     steps:
-    - uses: actions/checkout@v2
-    - name: Install dependencies
-      run: |
-        python -m pip install -U pip setuptools
-        python -m pip install wheel
-        python -m pip install pytest
-    - name: Install EOS test framework
-      if: ${{ matrix.os != 'windows-latest' }}
-      run: |
-        python -m pip install ipyeos
-    - name: ${{ matrix.step }}
-      run: |
-        yarn install --immutable | grep -v 'YN0013'
-        yarn ${{ matrix.step }}
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          python3 -m pip install -U pip setuptools
+          python3 -m pip install wheel
+          python3 -m pip install pytest
+      - name: Install EOS test framework
+        if: ${{ matrix.os != 'windows-latest' }}
+        run: |
+          python3 -m pip install ipyeos
+      - name: ${{ matrix.step }}
+        run: |
+          yarn install --immutable | grep -v 'YN0013'
+          yarn ${{ matrix.step }}
