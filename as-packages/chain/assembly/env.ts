@@ -91,5 +91,14 @@ export declare function db_idx256_upperbound(code: u64, scope: u64, table: u64, 
 export declare function db_idx256_end(code: u64, scope: u64, table: u64): i32
 
 
+export declare function  assert_sha256(data_ptr: usize, length: u32, hash_ptr: usize): void;
+export declare function  assert_sha1(data_ptr: usize, length: u32, hash_120_ptr: usize): void;
+export declare function  assert_sha512(data_ptr: usize, length: u32, hash_ptr: usize): void;
+export declare function  assert_ripemd160(data_ptr: usize, length: u32, hash_ptr: usize): void;
+export declare function  sha256(data_ptr: usize, length: u32, hash_ptr: usize): void;
+export declare function  sha1(data_ptr: usize, length: u32, hash_ptr: usize): void;
+export declare function  sha512(data_ptr: usize, length: u32, hash_ptr: usize): void;
+export declare function  ripemd160(data_ptr: usize, length: u32, hash_ptr: usize): void;
+
 export declare function recover_key(digest_ptr: usize, sig_ptr: usize, siglen: u32, pub_ptr: usize, publen: u32): i32
 export declare function assert_recover_key(digest_ptr: usize, sig_ptr: usize, siglen: u32, pub_ptr: usize, publen: u32): void

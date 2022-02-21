@@ -42,7 +42,24 @@ export {
 export { Name } from "./name";
 export { Action, PermissionLevel } from "./action";
 export { Asset, Symbol, isValid } from "./asset";
-export { PublicKey, Signature, Checksum160, Checksum256, Checksum512, RecoverKey, AssertRecoverKey } from "./crypto";
+export {
+    PublicKey,
+    Signature,
+    Checksum160,
+    Checksum256,
+    Checksum512,
+    recoverKey,
+    assertRecoverKey,
+
+    assertSha256,
+    assertSha1,
+    assertSha512,
+    assertRipemd160,
+    sha256,
+    sha1,
+    sha512,
+    ripemd160,
+} from "./crypto";
 
 export * from "./serializer";
 export { Utils } from "./utils";

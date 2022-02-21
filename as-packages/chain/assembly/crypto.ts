@@ -3,7 +3,7 @@ import { Decoder, Encoder, Packer } from "./serializer";
 import { Utils } from "./utils";
 import { print } from "./debug"
 
-import { recover_key, assert_recover_key } from "./env";
+import * as env from "./env";
 
 export class Checksum160 implements Packer {
     data!: u8[];
@@ -364,7 +364,6 @@ export class Signature implements Packer {
 
     @inline @operator('==')
     static eq(a: Signature, b: Signature): bool {
-        print(`++++++++:${a}, ${b}`)
         return Utils.bytesCmp(a.data, b.data) == 0;
     }
 
@@ -373,23 +372,70 @@ export class Signature implements Packer {
         return Utils.bytesCmp(a.data, b.data) != 0;
     }
 }
-// export function RecoverKey(digest_ptr: usize, sig_ptr: usize, siglen: u32, pub_ptr: usize, publen: u32): i32
-// export function AssertRecoverKey(digest_ptr: usize, sig_ptr: usize, siglen: u32, pub_ptr: usize, publen: u32): void
 
-export function RecoverKey(digest: Checksum256, sig: Signature): PublicKey {
+export function recoverKey(digest: Checksum256, sig: Signature): PublicKey {
     let rawDigest = digest.pack();
     let rawSig = sig.pack();
     let rawPub = new Array<u8>(34);
-    let ret = recover_key(rawDigest.dataStart, rawSig.dataStart, rawSig.length, rawPub.dataStart, rawPub.length);
+    let ret = env.recover_key(rawDigest.dataStart, rawSig.dataStart, rawSig.length, rawPub.dataStart, rawPub.length);
     check(ret == 34, "bad recover_key return");
     let pub = new PublicKey();
     pub.unpack(rawPub);
     return pub;
 }
 
-export function AssertRecoverKey(digest: Checksum256, sig: Signature, pub: PublicKey): void {
+export function assertRecoverKey(digest: Checksum256, sig: Signature, pub: PublicKey): void {
     let rawDigest = digest.pack();
     let rawSig = sig.pack();
     let rawPub = pub.pack();
-    assert_recover_key(rawDigest.dataStart, rawSig.dataStart, rawSig.length, rawPub.dataStart, rawPub.length);
+    env.assert_recover_key(rawDigest.dataStart, rawSig.dataStart, rawSig.length, rawPub.dataStart, rawPub.length);
 }
+
+export function assertSha256(data: u8[], hash: Checksum256): void {
+    env.assert_sha256(data.dataStart, data.length, hash.pack().dataStart);
+}
+
+export function assertSha1(data: u8[], hash: Checksum160): void {
+    env.assert_sha1(data.dataStart, data.length, hash.pack().dataStart);
+}
+
+export function assertSha512(data: u8[], hash: Checksum512): void {
+    env.assert_sha512(data.dataStart, data.length, hash.pack().dataStart);
+}
+
+export function assertRipemd160(data: u8[], hash: Checksum160): void {
+    env.assert_ripemd160(data.dataStart, data.length, hash.pack().dataStart);
+}
+
+export function sha256(data: u8[]): Checksum256 {
+    let hash = new Checksum256();
+    let rawHash = new Array<u8>(32);
+    env.sha256(data.dataStart, data.length, rawHash.dataStart);
+    hash.data = rawHash;
+    return hash;
+}
+
+export function sha1(data: u8[]): Checksum160 {
+    let hash = new Checksum160();
+    let rawHash = new Array<u8>(20);
+    env.sha1(data.dataStart, data.length, rawHash.dataStart);
+    hash.data = rawHash;
+    return hash;
+}
+
+export function  sha512(data: u8[]): Checksum512 {
+    let hash = new Checksum512();
+    let rawHash = new Array<u8>(64);
+    env.sha512(data.dataStart, data.length, rawHash.dataStart);
+    hash.data = rawHash;
+    return hash;
+}
+
+export function  ripemd160(data: u8[]): Checksum160 {
+    let hash = new Checksum160();
+    let rawHash = new Array<u8>(20);
+    env.ripemd160(data.dataStart, data.length, rawHash.dataStart);
+    hash.data = rawHash;
+    return hash;
+}
+
