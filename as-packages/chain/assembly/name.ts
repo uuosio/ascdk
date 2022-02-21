@@ -102,4 +102,9 @@ export class Name implements Packer {
     static eq(a: Name, b: Name): bool {
         return a.N == b.N;
     }
+
+    @inline @operator('!=')
+    static neq(a: Name, b: Name): bool {
+        return a.N != b.N;
+    }
 }

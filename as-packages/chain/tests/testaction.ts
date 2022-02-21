@@ -43,7 +43,7 @@ class MyContract {
 
     @action("saygoodbye")
     sayGoodbye(name: string): void {
-        check(getSender() == this.receiver, "sender should be empty");
+        check(getSender() == this.receiver, "invalid sender");
         printString(`+++goodbye, ${name}\n`);
     }
     
