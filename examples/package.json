@@ -19,15 +19,12 @@
       "assemblyscript"
     ],
     "scripts": {
-      "build-hello": "npx eosio-asc ./hello/hello.ts",
-      "build-inlineaction": "npx eosio-asc ./inlineaction/inlineaction.ts",
-      "build-eosio.token": "npx eosio-asc ./eosio.token/eosio.token.ts",
-      "test-hello": "npx eosio-asc ./hello/hello.ts && run-ipyeos -m pytest -s -x test.py -k test_hello",
-      "test-inlineaction": "npx eosio-asc ./inlineaction/inlineaction.ts && run-ipyeos -m pytest -s -x test.py -k test_action",
-      "test-eosio.token": "npx eosio-asc ./eosio.token/eosio.token.ts && run-ipyeos -m pytest -s -x test.py -k test_token",
-      "test-counter": "npx eosio-asc ./counter/counter.ts && run-ipyeos -m pytest -s -x test.py -k test_counter",
-      "test-codegeneration": "npx eosio-asc ./codegeneration/codegeneration.ts && run-ipyeos -m pytest -s -x test.py -k test_codegeneration",
-      "test": "npm run test-hello && npm run test-inlineaction && npm run test-eosio.token && npm run test-counter && npm run test-codegeneration"
+      "test:hello": "npx eosio-asc ./hello/hello.ts && run-ipyeos -m pytest -s -x test.py -k test_hello",
+      "test:inlineaction": "npx eosio-asc ./inlineaction/inlineaction.ts && run-ipyeos -m pytest -s -x test.py -k test_action",
+      "test:eosio.token": "npx eosio-asc ./eosio.token/eosio.token.ts && run-ipyeos -m pytest -s -x test.py -k test_token",
+      "test:counter": "npx eosio-asc ./counter/counter.ts && run-ipyeos -m pytest -s -x test.py -k test_counter",
+      "test:codegeneration": "npx eosio-asc ./codegeneration/codegeneration.ts && run-ipyeos -m pytest -s -x test.py -k test_codegeneration",
+      "test": "yarn test:hello && yarn test:inlineaction && yarn test:eosio.token && yarn test:counter && yarn test:codegeneration"
     },
     "dependencies": {
       "@assemblyscript/loader": "^0.19.22",
