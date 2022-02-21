@@ -9,7 +9,8 @@ jobs:
     strategy:
       matrix:
         python-version: [3.9]
-        step: ['lint', 'test:chain']
+        step: ['test:chain']
+        # step: ['lint', 'test:chain']
     name: ${{ matrix.step }}
     runs-on: ubuntu-18.04
     steps:
