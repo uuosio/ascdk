@@ -23,6 +23,12 @@ export class ABIAction {
 	name = "";
 	type = "";
 	ricardian_contract = "";
+
+	constructor(name: string, type: string, ricardian_contract = "") {
+		this.name = name;
+		this.type = type;
+		this.ricardian_contract = ricardian_contract;
+	}
 }
 
 // type ABIStructField struct {
