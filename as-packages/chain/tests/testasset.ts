@@ -46,6 +46,8 @@ class MyContract {
         {
             let a = new Asset(10, new Symbol("EOS", 4));
             let b = new Asset(5, new Symbol("EOS", 4));
+
+            // Operators
             check( a > b, "a > b");
             check( b < a, "b > a");
             check( a != b, "a != b");
@@ -53,6 +55,15 @@ class MyContract {
             check( a + b == new Asset(15, new Symbol("EOS", 4)), "bad value");
             check( a / b == new Asset(2, new Symbol("EOS", 4)), "bad value");
             check( a * b == new Asset(50, new Symbol("EOS", 4)), "bad value");
+
+            // Direct
+            check( Asset.gt(a, b), "a > b");
+            check( Asset.lt(b, a), "b > a");
+            check( Asset.ne(a, b), "a != b");
+            check( Asset.sub(a, b) == new Asset(5, new Symbol("EOS", 4)), "bad value");
+            check( Asset.add(a, b) == new Asset(15, new Symbol("EOS", 4)), "bad value");
+            check( Asset.div(a, b) == new Asset(2, new Symbol("EOS", 4)), "bad value");
+            check( Asset.mul(a, b) == new Asset(50, new Symbol("EOS", 4)), "bad value");
         }
         printString('done!\n');
     }
