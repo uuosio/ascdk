@@ -1,4 +1,13 @@
-import { Asset, Name, contract, action, packer, printString, Action, PermissionLevel, check } from "as-chain";
+import {
+    Asset,
+    Name,
+    Action,
+    PermissionLevel,
+    contract, action, packer, 
+    printString,
+    check,
+    getSender,
+} from "as-chain";
 
 @packer
 class MyData {
@@ -34,11 +43,13 @@ class MyContract {
 
     @action("saygoodbye")
     sayGoodbye(name: string): void {
+        check(getSender() == this.receiver, "sender should be empty");
         printString(`+++goodbye, ${name}\n`);
     }
     
     @action("sayhello")
     sayHello(name: string): void {
+        check(getSender() == new Name(0), "sender should be empty");
         let hello = new MyData('alice');
         let a = new Action(
             [new PermissionLevel(this.receiver, Name.fromString("active"))],

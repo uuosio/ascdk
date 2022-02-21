@@ -28,6 +28,7 @@ export {
 export {MultiIndex, MultiIndexValue, SAME_PAYER} from "./mi";
 
 export {
+    getSender,
     readActionData,
     actionDataSize,
     requireRecipient,

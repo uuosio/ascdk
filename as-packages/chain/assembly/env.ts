@@ -6,6 +6,8 @@ export declare function prints(n: usize): void
 export declare function prints_l(cstr: usize, len: usize): void
 export declare function printhex(ptr: usize, len: usize): void
 
+export declare function get_sender(): u64;
+
 export declare function read_action_data(ptr: usize, len: u32): usize
 export declare function action_data_size(): u32
 export declare function require_recipient(name: u64): void

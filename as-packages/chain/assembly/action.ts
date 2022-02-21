@@ -3,6 +3,11 @@ import { Encoder, Decoder, Packer } from "./serializer";
 import { Name } from "./name";
 import { calcPackedVarUint32Length } from "./varint";
 
+
+export function getSender(): Name {
+    return new Name(env.get_sender());
+}
+
 export function readActionData(): u8[] {
     let size = env.action_data_size();
     var arr = new Array<u8>(size);
