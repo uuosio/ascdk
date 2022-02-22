@@ -1,6 +1,6 @@
 import { PermissionLevel, Action } from "./action"
-import { MultiIndexValue } from "./mi"
 import { Name } from "./name"
+import { Packer } from "./serializer"
 
 export class ActionWrapperAct {
     constructor(
@@ -9,7 +9,7 @@ export class ActionWrapperAct {
         public permissionLevel: PermissionLevel
     ){}
 
-    send <T extends MultiIndexValue>(data: T): void {
+    send <T extends Packer>(data: T): void {
         const permissions = [this.permissionLevel]
         const action = new Action(permissions, this.contract, this.action, data.pack())
         action.send()

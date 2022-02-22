@@ -34,14 +34,14 @@ Handlebars.registerHelper("generateActionMember", function (fn: ParameterNodeDef
     let code: string[] = [];
     let plainType = fn.type.plainTypeNode;
     if (plainType == 'string') {
-        code.push(` ${fn.name}: string = "";`);
+        code.push(`public ${fn.name}: string = "",`);
     } else if (plainType == 'string[]') {
-        code.push(` ${fn.name}: string[] = [];`);
+        code.push(`public ${fn.name}: string[] = [],`);
     } else {
         if (TypeHelper.isPrimitiveType(fn.type.typeKind)) {
-            code.push(` ${fn.name}: ${plainType};`);
+            code.push(`public ${fn.name}: ${plainType},`);
         } else {
-            code.push(` ${fn.name}!: ${plainType};`);
+            code.push(`public ${fn.name}!: ${plainType},`);
         }
     }
     return code.join(EOL);

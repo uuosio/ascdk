@@ -4,10 +4,13 @@ import { CONFIG } from "../config/compile";
 // parameters: ParameterNodeDef[] = [];
 // methodName: string;
 
-export const actionTpl = `class {{methodName}}Action implements _chain.Packer {
-    {{#each parameters}}
-    {{#generateActionMember .}}{{/generateActionMember}}
-    {{/each}}
+export const actionTpl = `
+class {{methodName}}Action implements _chain.Packer {
+    constructor (
+        {{#each parameters}}
+        {{#generateActionMember .}}{{/generateActionMember}}
+        {{/each}}
+    ) {}
 
     pack(): u8[] {
         let enc = new _chain.Encoder(this.getSize());
