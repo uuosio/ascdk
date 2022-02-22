@@ -3,6 +3,7 @@ import { CONFIG } from "../config/compile";
 // let scope = CONFIG.scope;
 
 export const mainTpl = `
+
 export function apply(receiver: u64, firstReceiver: u64, action: u64): void {
   let _receiver = new _chain.Name(receiver);
   let _firstReceiver = new _chain.Name(firstReceiver);

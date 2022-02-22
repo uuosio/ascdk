@@ -34,16 +34,41 @@ Handlebars.registerHelper("generateActionMember", function (fn: ParameterNodeDef
     let code: string[] = [];
     let plainType = fn.type.plainTypeNode;
     if (plainType == 'string') {
-        code.push(`public ${fn.name}: string = "",`);
+        code.push(` ${fn.name}: string = "";`);
     } else if (plainType == 'string[]') {
-        code.push(`public ${fn.name}: string[] = [],`);
+        code.push(` ${fn.name}: string[] = [];`);
     } else {
         if (TypeHelper.isPrimitiveType(fn.type.typeKind)) {
-            code.push(`public ${fn.name}: ${plainType},`);
+            code.push(` ${fn.name}: ${plainType};`);
         } else {
-            code.push(`public ${fn.name}!: ${plainType},`);
+            code.push(` ${fn.name}!: ${plainType};`);
         }
     }
+    return code.join(EOL);
+});
+
+Handlebars.registerHelper("generateActionParam", function (fn: ParameterNodeDef) {
+    let code: string[] = [];
+    let plainType = fn.type.plainTypeNode;
+
+    if (plainType == 'string') {
+        code.push(` ${fn.name}: string = "",`);
+    } else if (plainType == 'string[]') {
+        code.push(` ${fn.name}: string[] = [],`);
+    } else {
+        if (TypeHelper.isPrimitiveType(fn.type.typeKind)) {
+            code.push(` ${fn.name}: ${plainType} = 0,`);
+        } else {
+            code.push(` ${fn.name}: ${plainType} | null = null,`);
+        }
+    }
+
+    return code.join(EOL);
+});
+
+Handlebars.registerHelper("generateActionConstructor", function (fn: ParameterNodeDef) {
+    let code: string[] = [];
+    code.push(` if(${fn.name}) this.${fn.name} = ${fn.name};`);
     return code.join(EOL);
 });
 
