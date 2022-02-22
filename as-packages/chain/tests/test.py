@@ -190,3 +190,14 @@ def test_print():
     r = chain.push_action('hello', 'test', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
     chain.produce_block()
+
+def test_tx():
+    code, abi = get_code_and_abi('testtransaction')
+    chain.deploy_contract('hello', code, abi, 0)
+
+    args = dict(
+    )
+
+    r = chain.push_action('hello', 'testtx', args, {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])
+    chain.produce_block()

@@ -81,6 +81,14 @@ export class Action implements Packer{
         public data: u8[]) {
     }
 
+    static new(
+        authorization: PermissionLevel[],
+        account: Name,
+        name: Name,
+        packer: Packer): Action {
+        return new Action(authorization, account, name, packer.pack());
+    }
+
     send(): void {
         let data = this.pack();
         env.send_inline(data.dataStart, data.length);

@@ -102,7 +102,7 @@ export declare function db_idx256_lowerbound(code: u64, scope: u64, table: u64, 
 export declare function db_idx256_upperbound(code: u64, scope: u64, table: u64, data_ptr: usize, data_len: u32, primary_ptr: usize): i32
 export declare function db_idx256_end(code: u64, scope: u64, table: u64): i32
 
-
+//crypto
 export declare function assert_sha256(data_ptr: usize, length: u32, hash_ptr: usize): void;
 export declare function assert_sha1(data_ptr: usize, length: u32, hash_120_ptr: usize): void;
 export declare function assert_sha512(data_ptr: usize, length: u32, hash_ptr: usize): void;
@@ -114,3 +114,14 @@ export declare function ripemd160(data_ptr: usize, length: u32, hash_ptr: usize)
 
 export declare function recover_key(digest_ptr: usize, sig_ptr: usize, siglen: u32, pub_ptr: usize, publen: u32): i32
 export declare function assert_recover_key(digest_ptr: usize, sig_ptr: usize, siglen: u32, pub_ptr: usize, publen: u32): void
+
+//transaction
+export declare function send_deferred(sender_id_u128_ptr: usize, payer: u64, serialized_transaction_ptr: usize, size: u32, replace_existing: u32): void;
+export declare function cancel_deferred(sender_id_u128_ptr: usize): i32;
+export declare function read_transaction(buffer_ptr: usize, size: u32): usize;
+export declare function transaction_size(): usize;
+export declare function tapos_block_num(): u32;
+export declare function tapos_block_prefix(): u32;
+export declare function expiration(): u32;
+export declare function get_action(type: u32, index: u32, buff_ptr: usize, size: u32): i32;
+export declare function get_context_free_data(index: u32, buff_ptr: usize, size: u32): i32;

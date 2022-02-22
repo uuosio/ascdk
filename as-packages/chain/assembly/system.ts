@@ -170,6 +170,6 @@ export function currentTimeMS(): u64 {
     return env.current_time() / 1000;
 }
 
-export function currentTimeSec(): u64 {
-    return env.current_time() / 1000000;
+export function currentTimeSec(): u32 {
+    return <u32>(env.current_time() / 1000000);
 }
