@@ -1,25 +1,19 @@
-import { Contract, PermissionLevel, printString, action, contract, packer, ActionWrapper } from "as-chain"
-
-@packer
-class MyData {
-    constructor(
-        public name: string
-    ){}
-}
+import { Contract, PermissionLevel, printString, action, contract, ActionWrapper } from "as-chain"
 
 @contract("inlineaction")
 class InlineAction extends Contract {
+    static sayGoodbyeAction: ActionWrapper = new ActionWrapper("saygoodbye");
+    static sayHelloAction: ActionWrapper = new ActionWrapper("sayhello");
+    
     @action("saygoodbye")
-    sayGoodbye(name: string): void {
-        printString(`+++goodbye, ${name}\n`)    
+    sayGoodbye(name: string, name2: string): void {
+        printString(`+++goodbye, ${name} ${name2}\n`)    
     }
     
     @action("sayhello")
     sayHello(name: string): void {
-        const actionData = new MyData('alice');
-        const actionWrapper = new ActionWrapper("saygoodbye")
-        const action = actionWrapper.act(this.receiver, new PermissionLevel(this.receiver))
-        action.send(actionData)
+        const action = InlineAction.sayGoodbyeAction.act(this.receiver, new PermissionLevel(this.receiver))
+        action.send(new sayGoodbyeAction('alice', 'bob'))
         printString(`hello, ${name}\n`)
     }
 }
