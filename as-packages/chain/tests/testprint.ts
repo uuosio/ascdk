@@ -9,21 +9,11 @@ import {
     printqf,
     printn,
     Float128,
-    Name,
+    Contract,
 } from "as-chain";
 
 @contract("hello")
-class MyContract {
-    receiver: Name;
-    firstReceiver: Name;
-    action: Name
-
-    constructor(receiver: Name, firstReceiver: Name, action: Name) {
-        this.receiver = receiver;
-        this.firstReceiver = firstReceiver;
-        this.action = action;
-    }
-
+class MyContract extends Contract{
     @action("test")
     testPrint(
         a1: Float128

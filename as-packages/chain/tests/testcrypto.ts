@@ -22,6 +22,7 @@ import {
 
     print,
     check,
+    Contract,
 } from "as-chain";
 
 @packer
@@ -40,17 +41,7 @@ class TestClass<T extends u32> {
 }
 
 @contract("hello")
-class MyContract {
-    receiver: Name;
-    firstReceiver: Name;
-    action: Name
-
-    constructor(receiver: Name, firstReceiver: Name, action: Name) {
-        this.receiver = receiver;
-        this.firstReceiver = firstReceiver;
-        this.action = action;
-    }
-
+class MyContract extends Contract {
     @action("test")
     Test(message: string, digest: Checksum256, sig: Signature, pub: PublicKey): void {
         // message:'hello,world'

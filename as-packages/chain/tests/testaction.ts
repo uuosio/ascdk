@@ -7,6 +7,7 @@ import {
     printString,
     check,
     getSender,
+    Contract,
 } from "as-chain";
 
 @packer
@@ -17,13 +18,7 @@ class MyData {
 }
 
 @contract("hello")
-class MyContract {
-    constructor(
-        public receiver: Name,
-        public firstReceiver: Name,
-        public action: Name) {
-    }
-
+class MyContract extends Contract {
     @action("testgencode")
     testGenCode(
         a1: string,

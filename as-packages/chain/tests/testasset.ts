@@ -1,17 +1,7 @@
-import { Name, Asset, Symbol, check, isValid, printString, contract, action } from "as-chain";
+import { Asset, Symbol, check, isValid, printString, contract, action, Contract } from "as-chain";
 
 @contract("hello")
-class MyContract {
-    receiver: Name;
-    firstReceiver: Name;
-    action: Name
-
-    constructor(receiver: Name, firstReceiver: Name, action: Name) {
-        this.receiver = receiver;
-        this.firstReceiver = firstReceiver;
-        this.action = action;
-    }
-
+class MyContract extends Contract{
     stringToU64(s: string): u64 {
         let value: u64 = 0;
         for (let i=0; i<s.length; i++) {

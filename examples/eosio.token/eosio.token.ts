@@ -1,10 +1,8 @@
-import { Name, Asset, Symbol, check, requireAuth, MultiIndex, hasAuth, isAccount, requireRecipient, contract, action, SAME_PAYER } from 'as-chain'
+import { Name, Asset, Symbol, check, requireAuth, MultiIndex, hasAuth, isAccount, requireRecipient, contract, action, SAME_PAYER, Contract } from 'as-chain'
 import { Account, Stat, currency_stats, account } from './tables';
 
 @contract("eosio.token")
-class TokenContract {
-    constructor(public receiver: Name, public firstReceiver: Name, public action: Name) {}
-
+class TokenContract extends Contract {
     getStatTable(sym: Symbol): MultiIndex<currency_stats> {
         return Stat.new(this.receiver, new Name(sym.code()));
     }

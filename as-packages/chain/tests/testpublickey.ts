@@ -1,4 +1,4 @@
-import { Name, PublicKey, packer, action, contract, printString, printHex, check } from "as-chain";
+import { PublicKey, packer, action, contract, printString, printHex, check, Contract } from "as-chain";
 
 @packer
 class MyData {
@@ -8,13 +8,7 @@ class MyData {
 }
 
 @contract("hello")
-class MyContract {
-    constructor(
-        public receiver: Name,
-        public firstReceiver: Name,
-        public action: Name) {
-    }
-    
+class MyContract extends Contract {
     hexToBytes(hex: string): u8[] {
         let bytes = new Array<u8>();
         for (let c = 0; c < hex.length; c += 2) {
