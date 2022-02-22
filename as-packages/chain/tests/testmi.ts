@@ -18,6 +18,7 @@ import {
     secondary,
     action,
     Float128,
+    Contract,
 } from "as-chain";
 
 @table("mydata")
@@ -89,17 +90,7 @@ class MyData {
 }
 
 @contract("hello")
-class MyContract {
-    receiver: Name;
-    firstReceiver: Name;
-    action: Name
-
-    constructor(receiver: Name, firstReceiver: Name, action: Name) {
-        this.receiver = receiver;
-        this.firstReceiver = firstReceiver;
-        this.action = action;
-    }
-
+class MyContract extends Contract{
     @action("testmi")
     testmi(): void {
         let mi = MyData.new(this.receiver, this.receiver);

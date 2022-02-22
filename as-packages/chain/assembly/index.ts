@@ -50,6 +50,8 @@ export {
 
 export {MultiIndex, MultiIndexValue, SAME_PAYER} from "./mi";
 
+export {Contract, ActionWrapper} from "./helpers"
+
 export {
     getSender,
     readActionData,

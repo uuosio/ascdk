@@ -1,4 +1,4 @@
-import { Name, Action, PermissionLevel, printString, action, contract, packer } from "as-chain"
+import { Contract, PermissionLevel, printString, action, contract, packer, ActionWrapper } from "as-chain"
 
 @packer
 class MyData {
@@ -7,14 +7,8 @@ class MyData {
     ){}
 }
 
-@contract("hello")
-class MyContract {
-    constructor(
-        public receiver: Name,
-        public firstReceiver: Name,
-        public action: Name) {
-    }
-
+@contract("inlineaction")
+class InlineAction extends Contract {
     @action("saygoodbye")
     sayGoodbye(name: string): void {
         printString(`+++goodbye, ${name}\n`)    
@@ -22,14 +16,10 @@ class MyContract {
     
     @action("sayhello")
     sayHello(name: string): void {
-        let hello = new MyData('alice');
-        let a = new Action(
-            [new PermissionLevel(this.receiver, Name.fromString("active"))],
-            this.receiver,
-            Name.fromString("saygoodbye"),
-            hello.pack(),
-        );
-        a.send();
+        const actionData = new MyData('alice');
+        const actionWrapper = new ActionWrapper("saygoodbye")
+        const action = actionWrapper.act(this.receiver, new PermissionLevel(this.receiver))
+        action.send(actionData)
         printString(`hello, ${name}\n`)
     }
 }

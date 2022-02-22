@@ -6,21 +6,12 @@ import {
     check,
     TimePoint,
     TimePointSec,
-    print
+    print,
+    Contract
 } from "as-chain";
 
 @contract("hello")
-class MyContract {
-    receiver: Name;
-    firstReceiver: Name;
-    action: Name
-
-    constructor(receiver: Name, firstReceiver: Name, action: Name) {
-        this.receiver = receiver;
-        this.firstReceiver = firstReceiver;
-        this.action = action;
-    }
-
+class MyContract extends Contract{
     @action("test")
     testSerializer(
         a1: TimePoint,

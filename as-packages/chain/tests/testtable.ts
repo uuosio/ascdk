@@ -1,4 +1,4 @@
-import { Name, Asset, MultiIndex, primary, contract, table, action } from "as-chain";
+import { Asset, Contract, primary, contract, table, action } from "as-chain";
 
 @table("mytable")
 class MyTable {
@@ -15,17 +15,7 @@ class MyTable {
 }
 
 @contract("hello")
-class MyContract {
-    receiver: Name;
-    firstReceiver: Name;
-    action: Name
-
-    constructor(receiver: Name, firstReceiver: Name, action: Name) {
-        this.receiver = receiver;
-        this.firstReceiver = firstReceiver;
-        this.action = action;
-    }
-
+class MyContract extends Contract{
     @action("testtable")
     testTable(): void {
         let mi = MyTable.new(this.receiver, this.receiver);
