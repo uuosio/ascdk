@@ -1,10 +1,11 @@
-import { Asset, Name, table, primary } from "as-chain";
+import { Asset, Name, table, primary, Table } from "as-chain";
 
 @table("accounts")
-export class account {
+export class account extends Table {
     balance: Asset;
 
     constructor (balance: Asset = new Asset()) {
+        super();
         this.balance = balance;
     }
 
@@ -15,7 +16,7 @@ export class account {
 }
 
 @table("stat")
-export class currency_stats {
+export class currency_stats extends Table {
     supply: Asset;
     max_supply: Asset;
     issuer: Name;
@@ -25,6 +26,7 @@ export class currency_stats {
        max_supply: Asset =  new Asset(),
        issuer: Name = new Name(),
     ) {
+        super();
         this.supply = supply;
         this.max_supply = max_supply;
         this.issuer = issuer;

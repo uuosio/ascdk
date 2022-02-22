@@ -3,6 +3,8 @@ import {
     requireRecipient,
     Name,
     Contract,
+    action,
+    contract,
 } from "as-chain";
 
 @contract("hello")

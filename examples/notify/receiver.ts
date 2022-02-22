@@ -1,6 +1,8 @@
 import {
     print,
     Contract,
+    action,
+    contract,
 } from "as-chain";
 
 @contract("hello")

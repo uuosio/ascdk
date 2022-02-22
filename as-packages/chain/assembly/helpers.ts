@@ -1,6 +1,8 @@
 import { PermissionLevel, Action } from "./action"
-import { MultiIndexValue } from "./mi"
+import { SecondaryValue, newSecondaryValue_u64 } from "./idxdb"
+import { MultiIndex, MultiIndexValue } from "./mi"
 import { Name } from "./name"
+import { check } from "./system"
 
 export class ActionWrapperAct {
     constructor(
@@ -43,4 +45,41 @@ export class Contract {
         public firstReceiver: Name,
         public action: Name
     ) {}
+}
+
+export class Table implements MultiIndexValue {
+    pack(): u8[] {
+        check(false, "not implemented");
+        return [];
+    }
+    
+    unpack(_: u8[]): usize {
+        check(false, "not implemented");
+        return 0;
+    }
+
+    getSize(): usize {
+        check(false, "not implemented");
+        return 0;
+    }
+
+    getPrimaryValue(): u64 {
+        check(false, "not implemented");
+        return 0;
+    }
+
+    getSecondaryValue(_: i32): SecondaryValue {
+        check(false, "not implemented");
+        return newSecondaryValue_u64(0);
+    }
+
+    setSecondaryValue(_: usize, __: SecondaryValue): void {
+        check(false, "not implemented");
+    };
+
+    static new <T extends MultiIndexValue>(_: Name, __: Name): MultiIndex<T> {
+        check(false, "not implemented");
+        // @ts-ignore
+        return new MultiIndex<T>(_, __, new Name(), () => new Name(), []);
+    }
 }
