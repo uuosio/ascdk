@@ -26,10 +26,10 @@ export class ContractTransform extends Transform {
         const internalFile = internalPath[internalPath.length - 2]
         const abi = preprocess.getAbiInfo(info);
         const out = preprocess.getExtCodeInfo(info);
-        const baseDir = path.dirname(source.normalizedPath);
+        const baseDir = path.join(...internalFolder, "target");
         out.entryDir = baseDir;
         process.sourceModifier = out;
-        const abiPath = path.join('..', path.sep, '..', ...internalFolder, "target", `${internalFile}.abi`);
+        const abiPath = path.join('..', path.sep, '..', baseDir, `${internalFile}.abi`);
         console.log("++++++writeFile:", abiPath);
         this.writeFile(abiPath, abi, baseDir);
     }
