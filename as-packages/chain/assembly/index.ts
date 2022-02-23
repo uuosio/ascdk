@@ -50,7 +50,7 @@ export {
 
 export {MultiIndex, MultiIndexValue, SAME_PAYER} from "./mi";
 
-export {Contract, ActionWrapper} from "./helpers"
+export {Contract, ActionWrapper, Table} from "./helpers"
 
 export {
     getSender,
@@ -68,6 +68,21 @@ export {
 export { Name } from "./name";
 export { Action, PermissionLevel } from "./action";
 export { Asset, Symbol, isValid } from "./asset";
+
+export {
+    sendDeferred,
+    cancelDeferred,
+    readTransaction,
+    transactionSize,    
+    taposBlockNum,
+    taposBlockPrefix,
+    transactionExpiration,
+    getAction,
+    getContextFreeData,
+    TransactionExtension,    
+    Transaction,
+} from "./transaction";
+
 export {
     PublicKey,
     Signature,

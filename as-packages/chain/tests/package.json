@@ -31,6 +31,7 @@
     "test:crypto": "npx eosio-asc testcrypto.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_crypto",
     "test:system": "npx eosio-asc testsystem.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_system",
     "test:print": "npx eosio-asc testprint.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_print",
+    "test:transaction": "npx eosio-asc testtransaction.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_tx",
     "test": "yarn test:publickey && yarn test:table && yarn test:asset && yarn test:action && yarn test:mi && yarn test:serializer && yarn test:crypto && yarn test:system"
   },
   "dependencies": {

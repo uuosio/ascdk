@@ -235,7 +235,7 @@ Handlebars.registerHelper("getPrimaryValue", function (fn: DBIndexFunctionDef) {
 });
 
 Handlebars.registerHelper("ExtractClassBody", function (range: Range) {
-    let src = range.toString();
+    let src = range.toString().replace(/super\(\);?/, '');
     let start = src.indexOf('{');
     let end = src.lastIndexOf('}');
     return src.substring(start+1, end-1);
