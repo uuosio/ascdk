@@ -1,8 +1,14 @@
-import { Name, Asset, Symbol, check, requireAuth, MultiIndex, hasAuth, isAccount, requireRecipient, contract, action, SAME_PAYER, Contract } from 'as-chain'
+import { Name, Asset, Symbol, check, requireAuth, MultiIndex, hasAuth, isAccount, requireRecipient, contract, action, SAME_PAYER, Contract, ActionWrapper } from 'as-chain'
 import { Account, Stat, currency_stats, account } from './tables';
 
-@contract("eosio.token")
-class TokenContract extends Contract {
+class HelperContract extends Contract {
+    static createAction: ActionWrapper = new ActionWrapper("create");
+    static sayHelloAction: ActionWrapper = new ActionWrapper("issue");
+    static retireAction: ActionWrapper = new ActionWrapper("retire");
+    static transferAction: ActionWrapper = new ActionWrapper("transfer");
+    static openAction: ActionWrapper = new ActionWrapper("open");
+    static closeAction: ActionWrapper = new ActionWrapper("close");
+
     getStatTable(sym: Symbol): MultiIndex<currency_stats> {
         return Stat.new(this.receiver, new Name(sym.code()));
     }
@@ -10,7 +16,10 @@ class TokenContract extends Contract {
     getAccountsTable(accountName: Name): MultiIndex<account> {
         return Account.new(this.receiver, accountName);
     }
+}
 
+@contract("eosio.token")
+class TokenContract extends HelperContract {
     @action("create")
     create(issuer: Name, maximum_supply: Asset): void {
         requireAuth(this.receiver);

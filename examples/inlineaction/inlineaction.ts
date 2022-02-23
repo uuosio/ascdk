@@ -1,4 +1,4 @@
-import { Contract, PermissionLevel, printString, action, contract, ActionWrapper, Asset, Symbol, packer } from "as-chain"
+import { Contract, PermissionLevel, printString, action, contract, ActionWrapper, Asset, Symbol } from "as-chain"
 
 @contract("inlineaction")
 class InlineAction extends Contract {
