@@ -57,7 +57,7 @@ var APIOptionImpl = /** @class */ (function () {
         var sourceModifier = process.sourceModifier ? process.sourceModifier : new preprocess_1.SourceModifier();
         for (let [key, value] of sourceModifier.fileExtension) {
             baseDir = sourceModifier.entryDir;
-            let filePath = path.join(baseDir, "extension", path.basename(key));
+            let filePath = path.join(baseDir, path.basename(key));
             if (!fs.existsSync(path.dirname(filePath))) mkdirp(path.dirname(filePath));
             fs.writeFileSync(filePath, value);
         }
