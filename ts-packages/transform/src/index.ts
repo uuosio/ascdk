@@ -29,7 +29,7 @@ export class ContractTransform extends Transform {
         const baseDir = path.join(...internalFolder, "target");
         out.entryDir = baseDir;
         process.sourceModifier = out;
-        const abiPath = path.join('..', path.sep, '..', baseDir, `${internalFile}.abi`);
+        const abiPath = path.join(internalFolder.map(_ => '..').join(path.sep), '..', baseDir, `${internalFile}.abi`);
         console.log("++++++writeFile:", abiPath);
         this.writeFile(abiPath, abi, baseDir);
     }
