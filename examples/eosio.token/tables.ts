@@ -1,6 +1,7 @@
 import { Asset, Name, table, primary, Table } from "as-chain";
 
 @table("accounts")
+
 export class account extends Table {
     balance: Asset;
 

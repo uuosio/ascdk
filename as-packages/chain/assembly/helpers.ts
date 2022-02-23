@@ -2,6 +2,7 @@ import { PermissionLevel, Action } from "./action"
 import { SecondaryValue, newSecondaryValue_u64 } from "./idxdb"
 import { MultiIndex, MultiIndexValue } from "./mi"
 import { Name } from "./name"
+import { Packer } from "./serializer"
 import { check } from "./system"
 
 export class ActionWrapperAct {
@@ -11,7 +12,7 @@ export class ActionWrapperAct {
         public permissionLevel: PermissionLevel
     ){}
 
-    send <T extends MultiIndexValue>(data: T): void {
+    send <T extends Packer>(data: T): void {
         const permissions = [this.permissionLevel]
         const action = new Action(permissions, this.contract, this.action, data.pack())
         action.send()
