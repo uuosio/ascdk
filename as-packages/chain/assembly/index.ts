@@ -36,6 +36,7 @@ export {
     IDXDB,
     SecondaryType,
     SecondaryValue,
+    SecondaryIterator,
     newSecondaryValue_u64,
     newSecondaryValue_U128,
     newSecondaryValue_U256,
@@ -48,7 +49,7 @@ export {
     getSecondaryValue_Float128,
 } from "./idxdb";
 
-export {MultiIndex, MultiIndexValue, SAME_PAYER} from "./mi";
+export {PrimaryIterator, MultiIndex, MultiIndexValue, SAME_PAYER} from "./mi";
 
 export {Contract, ActionWrapper, Table} from "./helpers"
 

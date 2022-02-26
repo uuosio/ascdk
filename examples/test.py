@@ -56,13 +56,13 @@ def test_action():
     logger.info('++++++elapsed: %s', r['elapsed'])
 
 def test_counter():
-    (code, abi) = get_code_and_abi('counter')
+    code, abi = get_code_and_abi('counter')
     chain.deploy_contract('hello', code, abi, 0)
 
-    args = struct.pack('II', 11, 22)
-    r = chain.push_action('hello', 'dec2', args, {'hello': 'active'})
-
-    r = chain.push_action('hello', 'zzzzzzzzzzzz', args, {'hello': 'active'})
+    for i in range(10):
+        r = chain.push_action('hello', 'inc', {}, {'hello': 'active'})
+        chain.produce_block()
+        logger.info('++++elapsed:%s', r['elapsed'])
 
 def test_token():
     (code, abi) = get_code_and_abi('eosio.token')

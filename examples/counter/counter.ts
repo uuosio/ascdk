@@ -1,92 +1,56 @@
-import * as chain from "as-chain";
-import { MyTable } from "./utils";
+import {
+    primary,
+    table,
+    contract,
+    action,
 
-@table("mydata")
-class MyData {
-    primary: u64;
-    count: u64;
+    Name,
+    Table,
+    Contract,
+    print,
+} from "as-chain";
 
-    constructor(primary: u64, cout: u64) {
-        this.primary = primary;
+@table("counter")
+class Counter extends Table {
+    public key: u64;
+    public count: u64;
+    constructor(count: u64=0) {
+        super();
         this.count = count;
-    }
-
-    sayHello(): void {
-        // 
+        this.key = Name.fromString("counter").N;
     }
 
     @primary
-    get getPrimary(): u64 {
-        //
-    }
-
-    @secondary
-    getByCount(): u64 {
-        //
-    }
-
-    @secondary
-    get bar(): u64 {
-        return this._bar;
-    }
-
-    @secondary
-    set bar(value: u64) {
-        this._bar = value;
-    }
-
-    @secondary
-    get foo(): u64 {
-        return this._bar;
-    }
-
-    @secondary
-    set foo(value: u64) {
-        this._bar = value;
+    get primary(): u64 {
+        return this.key;
     }
 }
 
-@contract("hello")
-class MyContract {
-    receiver: chain.Name;
-    firstReceiver: chain.Name;
-    action: chain.Name;
-    mytable: MyTable;
-
-    constructor(receiver: chain.Name, firstReceiver: chain.Name, action: chain.Name) {
-        this.receiver = receiver;
-        this.firstReceiver = firstReceiver;
-        this.action = action;
-        this.mytable = new MyTable();
+@contract("mycontract")
+class MyContract extends Contract {
+    constructor(receiver: Name, firstReceiver: Name, action: Name) {
+        super(receiver, firstReceiver, action);
     }
 
-    @action("inccc", notify=true)
-    inc(n: u32, m: u32): void {
-        // let v = this.stored.value;
-        // this.stored.value = ++v;
-    }
+    @action("inc")
+    inc(): void {
+        let mi = Counter.new(this.receiver, this.receiver);
+        let it = mi.find(Name.fromString("counter").N);
+        var counter: Counter;
+        if (it.isOk()) {
+            counter = mi.get(it);
+        } else {
+            counter = new Counter(0);
+        }
+        
+        counter.count += 1;
+        print(`++++++++count:${counter.count}`);
 
-    @action("dec")
-    dec(n: u32, m: u32): u32 {
-        return 0;
-    }
-
-    @action("dec2")
-    dec2(n: u32, m: u32): void {
-        chain.printui(n);
-        chain.printString(" ");
-        chain.printui(m);
-    }
-
-    @action("zzzzzzzzzzzz")
-    fullname(n: u32, m: u32): void {
-        chain.printString("fullname test:");
-        chain.printui(n);
-        chain.printString("--------");
-        chain.printui(m);
-
-        let name = chain.Name.fromString("zzzzzzzzzzzzj");
-        chain.printString(" ");
-        chain.printString(name.toString());
+        let payer: Name = this.receiver;
+        if (it.isOk()) {
+            mi.update(it, counter, payer);
+        } else {
+            mi.store(counter, payer);
+        }
     }
 }
