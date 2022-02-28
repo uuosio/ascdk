@@ -51,6 +51,7 @@ export class NamedTypeNodeDef extends BaseNamedTypeDef {
 
     constructor(parent: Element, typeNode: NamedTypeNode) {
         super(parent, typeNode);
+        console.log("++++", typeNode.range.toString());
         this.definedCodeType = this.plainTypeNode;
         this.plainType = typeNode.name.range.toString();
         this.current = this.getCurrentElement();

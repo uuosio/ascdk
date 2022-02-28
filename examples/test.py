@@ -93,3 +93,10 @@ def test_notify():
         'name': 'alice'
     }
     r = chain.push_action('hello', 'sayhello', args, {'hello': 'active'})
+
+def test_singleton():
+    (code, abi) = get_code_and_abi('singleton')
+    chain.deploy_contract('hello', code, abi, 0)
+    for i in range(10):
+        r = chain.push_action('hello', 'test', {}, {'hello': 'active'})
+        chain.produce_block()

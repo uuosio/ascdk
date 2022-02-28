@@ -49,7 +49,8 @@ export {
     getSecondaryValue_Float128,
 } from "./idxdb";
 
-export {PrimaryIterator, MultiIndex, MultiIndexValue, SAME_PAYER} from "./mi";
+export { PrimaryIterator, MultiIndex, MultiIndexValue, SAME_PAYER } from "./mi";
+export { Singleton } from "./singleton";
 
 export {Contract, ActionWrapper, Table} from "./helpers"
 

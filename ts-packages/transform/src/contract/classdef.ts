@@ -128,6 +128,7 @@ export class ContractInterpreter extends ClassInterpreter {
 export class TableInterpreter extends ClassInterpreter {
     // The first case is lower.
     tableName: string;
+    singleton: boolean;
     version: string;
     primaryFuncDef: DBIndexFunctionDef | null = null;
     secondaryFuncDefs: DBIndexFunctionDef[] = [];
@@ -139,6 +140,16 @@ export class TableInterpreter extends ClassInterpreter {
         this.resolveContractClass();
         let decorator = AstUtil.getSpecifyDecorator(clzPrototype.declaration, ContractDecoratorKind.TABLE)!;
         this.tableName = AstUtil.getIdentifier(decorator.args![0]);
+        if (decorator.args!.length == 2) {
+            let arg = AstUtil.getIdentifier(decorator.args![1]);
+            if (arg == "singleton") {
+                this.singleton = true;
+            } else {
+                this.singleton = false;
+            }
+        } else {
+            this.singleton = false;
+        }
     }
 
     private resolveContractClass(): void {

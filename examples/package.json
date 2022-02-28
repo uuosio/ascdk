@@ -23,6 +23,7 @@
     "test:inlineaction": "npx eosio-asc ./inlineaction/inlineaction.ts && run-ipyeos -m pytest -s -x test.py -k test_action",
     "test:eosio.token": "npx eosio-asc ./eosio.token/eosio.token.ts && run-ipyeos -m pytest -s -x test.py -k test_token",
     "test:counter": "npx eosio-asc ./counter/counter.ts && run-ipyeos -m pytest -s -x test.py -k test_counter",
+    "test:singleton": "npx eosio-asc ./singleton/singleton.ts && run-ipyeos -m pytest -s -x test.py -k test_singleton",
     "test:codegeneration": "npx eosio-asc ./codegeneration/codegeneration.ts && run-ipyeos -m pytest -s -x test.py -k test_codegeneration",
 
     "build:sender": "npx eosio-asc ./notify/sender.ts",

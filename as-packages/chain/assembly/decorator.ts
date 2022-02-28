@@ -16,9 +16,13 @@ export function ignore(_: string): any {
 export function packed(_: string): any {
     //
 }
-export function table(_: string): any {
+
+export function table(_: string, __: string=""): any {
     //
 }
+
+export const singleton: string = "";
+
 export function serializer(_: string): any {
     //
 }

@@ -201,3 +201,14 @@ def test_tx():
     r = chain.push_action('hello', 'testtx', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
     chain.produce_block()
+
+def test_singleton():
+    code, abi = get_code_and_abi('testsingleton')
+    chain.deploy_contract('hello', code, abi, 0)
+
+    args = dict(
+    )
+
+    r = chain.push_action('hello', 'test', args, {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])
+    chain.produce_block()

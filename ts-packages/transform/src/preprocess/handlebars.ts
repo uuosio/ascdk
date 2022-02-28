@@ -4,6 +4,7 @@ import { FieldDef, ParameterNodeDef, ActionFunctionDef, DBIndexFunctionDef } fro
 import { TypeKindEnum } from "../enums/customtype";
 import { EosioUtils } from "../utils/utils";
 import { TypeHelper } from "../utils/typeutil";
+import { TableInterpreter } from "../contract/classdef";
 
 import {
     Range,
@@ -239,6 +240,28 @@ Handlebars.registerHelper("ExtractClassBody", function (range: Range) {
     let start = src.indexOf('{');
     let end = src.lastIndexOf('}');
     return src.substring(start+1, end-1);
+});
+
+Handlebars.registerHelper("generategetPrimaryFunction", function (table: TableInterpreter) {
+    let code: string[] = [];
+    if (table.singleton) {
+        code.push(
+        `
+        getPrimaryValue(): u64 {
+            return _chain.Name.fromString("${table.tableName}").N;
+        }
+        `
+        );
+    } else {
+        code.push(
+            `
+            getPrimaryValue(): u64 {
+                return this.${table.primaryFuncDef!.getterPrototype!.declaration.name.text}
+            }
+            `
+        );
+    }
+    return code.join(EOL);
 });
 
 Handlebars.registerHelper("getSecondaryValue", function (fn: DBIndexFunctionDef) {

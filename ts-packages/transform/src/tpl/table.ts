@@ -32,9 +32,7 @@ export const tableTpl = `
         return size;
     }
 
-    getPrimaryValue(): u64 {
-        return this.{{{primaryFuncDef.getterPrototype.declaration.name.text}}}
-    }
+    {{{generategetPrimaryFunction this}}}
 
     getSecondaryValue(i: i32): _chain.SecondaryValue {
         switch (i) {
@@ -57,18 +55,30 @@ export const tableTpl = `
         }
     }
 
-    static new(code: _chain.Name, scope: _chain.Name): _chain.MultiIndex<{{className}}> {
-        let newObj = ():{{className}} => {
-            return new {{className}}();
-        };
-        let tableName = _chain.Name.fromString("{{tableName}}");
-        let idxTableBase: u64 = (tableName.N & 0xfffffffffffffff0);
+    {{#if singleton}}
+        static new(code: _chain.Name, scope: _chain.Name): _chain.Singleton<{{className}}> {
+            let newObj = ():{{className}} => {
+                return new {{className}}();
+            };
+            let tableName = _chain.Name.fromString("{{tableName}}");
+            return new _chain.Singleton<{{className}}>(code, scope, tableName, newObj);
+        }
+    {{else}}
+        static new(code: _chain.Name, scope: _chain.Name): _chain.MultiIndex<{{className}}> {
+            let newObj = ():{{className}} => {
+                return new {{className}}();
+            };
+            let tableName = _chain.Name.fromString("{{tableName}}");
+            let idxTableBase: u64 = (tableName.N & 0xfffffffffffffff0);
 
-        let indexes: _chain.IDXDB[] = [
-            {{#each secondaryFuncDefs}}
-            {{{newSecondaryDB .}}}
-            {{/each}}
-        ];
-        return new _chain.MultiIndex<{{className}}>(code, scope, tableName, newObj, indexes);
-    }
+            let indexes: _chain.IDXDB[] = [
+                {{#each secondaryFuncDefs}}
+                {{{newSecondaryDB .}}}
+                {{/each}}
+            ];
+            return new _chain.MultiIndex<{{className}}>(code, scope, tableName, newObj, indexes);
+        }
+    {{/if}}
+    
+
 }`;
