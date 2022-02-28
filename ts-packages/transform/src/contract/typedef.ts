@@ -8,6 +8,7 @@ import {
     ClassPrototype,
 } from "assemblyscript";
 
+import { RangeUtil } from "../utils/utils";
 
 import { TypeHelper } from "../utils/typeutil";
 import { TypeKindEnum } from "../enums/customtype";
@@ -55,7 +56,7 @@ export class NamedTypeNodeDef extends BaseNamedTypeDef {
         this.plainType = typeNode.name.range.toString();
         this.current = this.getCurrentElement();
         if (!this.current) {
-            throw Error(`unknown Type: ${this.plainType}`);
+            throw Error(`unknown Type:! Trace: ${RangeUtil.location(typeNode.range)}`);
         }
         this.typeKind = this.getTypeKind();
         this.abiType = TypeHelper.getAbiType(this.plainType);

@@ -5,6 +5,7 @@ import { TypeKindEnum } from "../enums/customtype";
 import { EosioUtils } from "../utils/utils";
 import { TypeHelper } from "../utils/typeutil";
 import { TableInterpreter } from "../contract/classdef";
+import { RangeUtil } from "../utils/utils";
 
 import {
     Range,
@@ -92,7 +93,7 @@ Handlebars.registerHelper("actionParameterSerialize", function (field: Parameter
             code.push(`enc.packObjectArray(this.${field.name});`);
         }
     } else if (field.type.typeKind == TypeKindEnum.MAP) {
-        throw Error("map type does not supported currently!");
+        throw Error(`map type does not supported currently!Trace ${RangeUtil.location(field.parameterNode.range)}`);
     } else {
         let plainType = field.type.plainTypeNode;
         let numType = numberTypeMap.get(plainType);
@@ -136,7 +137,7 @@ Handlebars.registerHelper("actionParameterDeserialize", function (field: Paramet
             }`);
         }
     } else if (field.type.typeKind == TypeKindEnum.MAP) {
-        throw Error("map does not supported currently!");
+        throw Error(`map does not supported currently!Trace: ${RangeUtil.location(field.parameterNode.range)}`);
     } else {
         let plainType = field.type.plainTypeNode;
         let numType = numberTypeMap.get(plainType);
@@ -183,7 +184,7 @@ Handlebars.registerHelper("actionParameterGetSize", function (field: ParameterNo
             `);
         }
     } else if (field.type.typeKind == TypeKindEnum.MAP) {
-        throw Error('map does not supported currently');
+        throw Error(`map type does not supported currently!Trace ${RangeUtil.location(field.parameterNode.range)}`);
     } else {
         let plainType = field.type.plainTypeNode;
         let numType = numberTypeMap.get(plainType);
@@ -212,7 +213,7 @@ function handleAction(action: ActionFunctionDef): string {
     code.push(`        args.unpack(actionData);`);
     code.push(`        mycontract.${action.methodName}(${parameters.join(',')})`);
     code.push(`      }`);
-    return code.join(EOL);    
+    return code.join(EOL);
 }
 
 Handlebars.registerHelper("handleAction", function (action: ActionFunctionDef) {

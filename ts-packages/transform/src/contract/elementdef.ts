@@ -91,7 +91,7 @@ export class FieldDef {
 }
 
 export class ParameterNodeDef {
-    private parameterNode: ParameterNode;
+    parameterNode: ParameterNode;
     name: string;
     type: NamedTypeNodeDef;
 
