@@ -36,21 +36,19 @@ class MyContract extends Contract {
     inc(): void {
         let mi = Counter.new(this.receiver, this.receiver);
         let it = mi.find(Name.fromString("counter").N);
-        var counter: Counter;
-        if (it.isOk()) {
-            counter = mi.get(it);
-        } else {
-            counter = new Counter(0);
-        }
-        
-        counter.count += 1;
-        print(`++++++++count:${counter.count}`);
-
+        let count: u64 = 0;
         let payer: Name = this.receiver;
+
         if (it.isOk()) {
+            let counter = mi.get(it);
+            counter.count += 1;
             mi.update(it, counter, payer);
+            count = counter.count;
         } else {
+            let counter = new Counter(1);
             mi.store(counter, payer);
+            count = 1;
         }
+        print(`++++++++count:${count}`);
     }
 }
