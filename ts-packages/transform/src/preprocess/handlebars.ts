@@ -326,6 +326,28 @@ Handlebars.registerHelper("newSecondaryDB", function (fn: DBIndexFunctionDef) {
     return code.join(EOL);
 });
 
+Handlebars.registerHelper("generateGetIdxDBFunction", function (fn: DBIndexFunctionDef) {
+    let code: string[] = [];
+    let plainType = fn.getterPrototype!.returnType!.plainTypeNode;
+    if (plainType == 'chain.U128') {
+        plainType = 'U128';
+    } else if (plainType == 'chain.U256') {
+        plainType = 'U256';
+    } else if (plainType == 'chain.Float128') {
+        plainType = 'Float128';
+    }
+
+    plainType = plainType.toUpperCase();
+    let dbClass = dbTypeToDBClass.get(plainType);
+    
+    code.push(`
+        get ${fn.getterPrototype!.declaration.name.text}DB(): _chain.${dbClass} {
+            return <_chain.${dbClass}>this.idxdbs[${fn._index}];
+        }
+    `);
+    return code.join(EOL);
+});
+
 /**
  * Register the tag of each.
  */

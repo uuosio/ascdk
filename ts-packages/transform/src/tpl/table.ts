@@ -4,6 +4,12 @@ import { CONFIG } from "../config/compile";
 
 export const tableTpl = `
 
+{{export}}class {{className}}DB extends _chain.MultiIndex<{{className}}> {
+    {{#each secondaryFuncDefs}}
+    {{{generateGetIdxDBFunction .}}}
+    {{/each}}
+}
+
 {{export}}class {{className}} implements _chain.MultiIndexValue {
 
     {{{ExtractClassBody range}}}
@@ -64,7 +70,7 @@ export const tableTpl = `
             return new _chain.Singleton<{{className}}>(code, scope, tableName, newObj);
         }
     {{else}}
-        static new(code: _chain.Name, scope: _chain.Name): _chain.MultiIndex<{{className}}> {
+        static new(code: _chain.Name, scope: _chain.Name): {{className}}DB {
             let newObj = ():{{className}} => {
                 return new {{className}}();
             };
@@ -76,7 +82,7 @@ export const tableTpl = `
                 {{{newSecondaryDB .}}}
                 {{/each}}
             ];
-            return new _chain.MultiIndex<{{className}}>(code, scope, tableName, newObj, indexes);
+            return new {{className}}DB(code, scope, tableName, newObj, indexes);
         }
     {{/if}}
     

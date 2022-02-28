@@ -132,7 +132,7 @@ class MyContract extends Contract{
         printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}\n`);
         check(value.a == 7 && value.b == 8 && value.c == new U128(9) && value.d == 9.9, "bad value");
 
-        let idx = <IDX64>mi.getIdxDB(0);
+        let idx = mi.bvalueDB;
         let idxIt = idx.findPrimary(7);
         printString(`++++++++${idxIt.i.i}, ${idxIt.value}\n`);
 
@@ -179,7 +179,7 @@ class MyContract extends Contract{
         // 4 5 6 6.6
         // 7 8 9 9.9
         {
-            let idx128 = <IDX128>mi.getIdxDB(1);
+            let idx128 = mi.cvalueDB;
             let idxRet = idx128.findPrimary(1);
             check(idxRet.value == new U128(3), "bad idx128 value");
             let it = idx128.previous(idxRet.i);
@@ -206,7 +206,7 @@ class MyContract extends Contract{
         // 4 5 6 6.6 
         // 7 8 9 9.9
         {
-            let idxf64 = <IDXF64>mi.getIdxDB(2);
+            let idxf64 = mi.dvalueDB;
             let idxRet = idxf64.findPrimary(1);
             check(idxRet.value == 3.3, "bad idx128 value");
             let it = idxf64.previous(idxRet.i);
@@ -234,7 +234,7 @@ class MyContract extends Contract{
         // 4 5 6 6.6 44
         // 7 8 9 9.9 77
         {
-            let idx256 = <IDX256>mi.getIdxDB(3);
+            let idx256 =mi.evalueDB;
             let idxRet = idx256.findPrimary(1);
             check(idxRet.value == new U256(11), "bad idx128 value");
             let it = idx256.previous(idxRet.i);
