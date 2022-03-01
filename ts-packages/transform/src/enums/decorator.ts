@@ -7,6 +7,8 @@ export enum ContractDecoratorKind {
     PACKED,
     TABLE,
     SERIALIZER,
+    OPTIONAL,
+    BINARYEXTENSION,
     PRIMARY,
     SECONDARY,
 }

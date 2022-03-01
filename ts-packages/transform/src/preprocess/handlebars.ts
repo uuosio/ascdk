@@ -6,6 +6,7 @@ import { EosioUtils } from "../utils/utils";
 import { TypeHelper } from "../utils/typeutil";
 import { TableInterpreter } from "../contract/classdef";
 import { RangeUtil } from "../utils/utils";
+import { NamedTypeNodeDef } from "../contract/typedef";
 
 import {
     Range,
@@ -74,47 +75,45 @@ Handlebars.registerHelper("generateActionConstructor", function (fn: ParameterNo
     return code.join(EOL);
 });
 
-Handlebars.registerHelper("actionParameterSerialize", function (field: ParameterNodeDef) {
+function fieldSerialize(name: string, type: NamedTypeNodeDef) {
     let code: string[] = [];
-    if (field.type.typeKind == TypeKindEnum.ARRAY) {
-        let plainType = field.type.plainTypeNode;
+    if (type.typeKind == TypeKindEnum.ARRAY) {
+        let plainType = type.plainTypeNode;
         if (plainType.indexOf('Array<') >= 0) {
             plainType = plainType.replace('Array<', '').replace('>', '');
         } else {
             plainType = plainType.replace('[]', '');
         }
-        console.log(`++++++++plainType:${plainType}, ${field.name}`);
         let numType = numberTypeMap.get(plainType.replace('[]', ''));
         if (numType) {
-            code.push(`enc.packNumberArray<${numType}>(this.${field.name})`);
+            code.push(`    enc.packNumberArray<${numType}>(this.${name})`);
         } else if (plainType == 'string') {
-            code.push(`enc.packStringArray(this.${field.name})`);
+            code.push(`    enc.packStringArray(this.${name})`);
         } else {
-            code.push(`enc.packObjectArray(this.${field.name});`);
+            code.push(`    enc.packObjectArray(this.${name});`);
         }
-    } else if (field.type.typeKind == TypeKindEnum.MAP) {
-        throw Error(`map type does not supported currently!Trace ${RangeUtil.location(field.parameterNode.range)}`);
+    } else if (type.typeKind == TypeKindEnum.MAP) {
+        throw Error(`map type does not supported currently!Trace ${RangeUtil.location(parameterNode.range)}`);
     } else {
-        let plainType = field.type.plainTypeNode;
+        let plainType = type.plainTypeNode;
         let numType = numberTypeMap.get(plainType);
         if (numType) {
-            code.push(`enc.packNumber<${numType}>(this.${field.name});`);
+            code.push(`    enc.packNumber<${numType}>(this.${name});`);
         } else if (plainType == 'boolean') {
-            code.push(`enc.packNumber<u8>(<u8>this.${field.name});`);
+            code.push(`    enc.packNumber<u8>(<u8>this.${name});`);
         } else if (plainType == 'string') {
-            code.push(`enc.packString(this.${field.name});`);
+            code.push(`    enc.packString(this.${name});`);
         } else {
-            code.push(`enc.pack(this.${field.name});`);
+            code.push(`    enc.pack(this.${name});`);
         }
     }
     return code.join(EOL);
-});
+}
 
-Handlebars.registerHelper("actionParameterDeserialize", function (field: ParameterNodeDef) {
+function fieldDeserialize(name: string, type: NamedTypeNodeDef) {
     let code: string[] = [];
-    if (field.type.typeKind == TypeKindEnum.ARRAY) {
-        let plainType = field.type.plainTypeNode;
-        console.log(`++++++++plainType:${plainType}, ${field.name}`);
+    if (type.typeKind == TypeKindEnum.ARRAY) {
+        let plainType = type.plainTypeNode;
         if (plainType.indexOf('Array<') >= 0) {
             plainType = plainType.replace('Array<', '').replace('>', '');
         } else {
@@ -122,44 +121,44 @@ Handlebars.registerHelper("actionParameterDeserialize", function (field: Paramet
         }
         let numType = numberTypeMap.get(plainType);
         if (numType) {
-            code.push(`this.${field.name} = dec.unpackNumberArray<${numType}>();`);
+            code.push(`    this.${name} = dec.unpackNumberArray<${numType}>();`);
         } else if (plainType == 'string' ) {
-            code.push(`this.${field.name} = dec.unpackStringArray();`);
+            code.push(`    this.${name} = dec.unpackStringArray();`);
         } else {
             code.push(`{
                 let length = <i32>dec.unpackLength();
-                this.${field.name} = new Array<${plainType}>(length)
+                this.${name} = new Array<${plainType}>(length)
                 for (let i=0; i<length; i++) {
                     let obj = new ${plainType}();
-                    this.${field.name}[i] = obj;
+                    this.${name}[i] = obj;
                     dec.unpack(obj);
                 }
             }`);
         }
-    } else if (field.type.typeKind == TypeKindEnum.MAP) {
-        throw Error(`map does not supported currently!Trace: ${RangeUtil.location(field.parameterNode.range)}`);
+    } else if (type.typeKind == TypeKindEnum.MAP) {
+        throw Error(`map does not supported currently!Trace: ${RangeUtil.location(parameterNode.range)}`);
     } else {
-        let plainType = field.type.plainTypeNode;
+        let plainType = type.plainTypeNode;
         let numType = numberTypeMap.get(plainType);
         if (numType) {
-            code.push(`this.${field.name} = dec.unpackNumber<${numType}>();`);
+            code.push(`    this.${name} = dec.unpackNumber<${numType}>();`);
         } else if (plainType == 'boolean') {
-            code.push(`this.${field.name} = <boolean>dec.unpackNumber<u8>();`);
+            code.push(`    this.${name} = <boolean>dec.unpackNumber<u8>();`);
         } else if (plainType == 'string') {
-            code.push(`this.${field.name} = dec.unpackString();`);
+            code.push(`    this.${name} = dec.unpackString();`);
         } else {
-            code.push(`this.${field.name} = new ${plainType}();`);
-            code.push(`        dec.unpack(this.${field.name});`);
+            code.push(`    this.${name} = new ${plainType}();`);
+            code.push(`    dec.unpack(this.${name});`);
         }
     }
     return code.join(EOL);
-});
+}
 
-Handlebars.registerHelper("actionParameterGetSize", function (field: ParameterNodeDef) {
+function fieldGetSize(name: string, type: NamedTypeNodeDef) {
     let code: string[] = [];
-    if (field.type.typeKind == TypeKindEnum.ARRAY) {
-        code.push(`size += _chain.calcPackedVarUint32Length(this.${field.name}.length);`);
-        let plainType = field.type.plainTypeNode;
+    if (type.typeKind == TypeKindEnum.ARRAY) {
+        code.push(`    size += _chain.calcPackedVarUint32Length(this.${name}.length);`);
+        let plainType = type.plainTypeNode;
 
         if (plainType.indexOf('Array<') >= 0) {
             plainType = plainType.replace('Array<', '').replace('>', '');
@@ -169,34 +168,109 @@ Handlebars.registerHelper("actionParameterGetSize", function (field: ParameterNo
 
         let numType = numberTypeMap.get(plainType);
         if (numType) {
-            code.push(`        size += sizeof<${plainType}>()*this.${field.name}.length;`);
+            code.push(`    size += sizeof<${plainType}>()*this.${name}.length;`);
         } else if (plainType == 'string') {
             code.push(`
-            for (let i=0; i<this.${field.name}.length; i++) {
-                size += _chain.Utils.calcPackedStringLength(this.${field.name}[i]);
+            for (let i=0; i<this.${name}.length; i++) {
+                size += _chain.Utils.calcPackedStringLength(this.${name}[i]);
             }
             `);
         } else {
             code.push(`
-            for (let i=0; i<this.${field.name}.length; i++) {
-                size += this.${field.name}[i].getSize();
+            for (let i=0; i<this.${name}.length; i++) {
+                size += this.${name}[i].getSize();
             }
             `);
         }
-    } else if (field.type.typeKind == TypeKindEnum.MAP) {
-        throw Error(`map type does not supported currently!Trace ${RangeUtil.location(field.parameterNode.range)}`);
+    } else if (type.typeKind == TypeKindEnum.MAP) {
+        throw Error(`map type does not supported currently!Trace ${RangeUtil.location(parameterNode.range)}`);
     } else {
-        let plainType = field.type.plainTypeNode;
+        let plainType = type.plainTypeNode;
         let numType = numberTypeMap.get(plainType);
         if (numType) {
-            code.push(`size += sizeof<${numType}>();`);
+            code.push(`    size += sizeof<${numType}>();`);
         } else if (plainType == 'string') {
-            code.push(`size += _chain.Utils.calcPackedStringLength(this.${field.name});`);
+            code.push(`    size += _chain.Utils.calcPackedStringLength(this.${name});`);
         } else {
-            code.push(`size += this.${field.name}.getSize();`);
+            code.push(`    size += this.${name}.getSize();`);
         }
     }
     return code.join(EOL);
+}
+
+Handlebars.registerHelper("optionalSerialize", function (field: FieldDef) {
+    let code = `
+        if (this.${field.name}) {
+            enc.packNumber<u8>(1);
+        } else {
+            enc.packNumber<u8>(0);
+            return enc.getBytes();
+        }
+    `;
+    return code + fieldSerialize(field.name+"!", field.type);
+});
+
+Handlebars.registerHelper("optionalDeserialize", function (field: FieldDef) {
+    let code = `
+        let hasValue = dec.unpackNumber<u8>();
+        if (hasValue == 0) {
+            this.${field.name} = null;
+            return 1;
+        }
+    `;
+    return code + fieldDeserialize(field.name+"!", field.type);
+});
+
+Handlebars.registerHelper("optionalGetSize", function (field: FieldDef) {
+    let code = `
+        if (!this.${field.name}) {
+            return 1;
+        }
+        size += 1;
+    `;
+    return code + fieldGetSize(field.name+"!", field.type);
+});
+
+Handlebars.registerHelper("binaryExtensionSerialize", function (field: FieldDef) {
+    let code = `
+        if (this.${field.name}) {
+            enc.packNumber<u8>(1);
+        } else {
+            enc.packNumber<u8>(0);
+            return enc.getBytes();
+        }
+    `;
+    return code + fieldSerialize(field.name+"!", field.type);
+});
+
+Handlebars.registerHelper("binaryExtensionDeserialize", function (field: FieldDef) {
+    let code = `
+        if (dec.isEnd()) {
+            return 0;
+        }
+    `;
+    return code + fieldDeserialize(field.name+"!", field.type);
+});
+
+Handlebars.registerHelper("binaryExtensionGetSize", function (field: FieldDef) {
+    let code = `
+        if (!this.${field.name}) {
+            return 0;
+        }
+    `;
+    return code + fieldGetSize(field.name+"!", field.type);
+});
+
+Handlebars.registerHelper("actionParameterSerialize", function (field: ParameterNodeDef) {
+    return fieldSerialize(field.name, field.type);
+});
+
+Handlebars.registerHelper("actionParameterDeserialize", function (field: ParameterNodeDef) {
+    return fieldDeserialize(field.name, field.type);
+});
+
+Handlebars.registerHelper("actionParameterGetSize", function (field: ParameterNodeDef) {
+    return fieldGetSize(field.name, field.type);
 });
 
 function handleAction(action: ActionFunctionDef): string {

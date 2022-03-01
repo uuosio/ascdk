@@ -1,0 +1,41 @@
+{
+  "name": "as-chain-tests",
+  "version": "0.0.1",
+  "description": "chain module for assemblyscript",
+  "main": "js/index.js",
+  "types": "assembly/index.ts",
+  "author": "learnforpractice <learnforpractice@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uuosio/as-chain.git"
+  },
+  "bugs": {
+    "url": "https://github.com/uuosio/as-chain/issues"
+  },
+  "keywords": [
+    "wasm",
+    "webassembly",
+    "assemblyscript"
+  ],
+  "scripts": {
+    "build": "yarn build:release",
+    "test:codegen": "npx eosio-asc testcodegen.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_codegen",
+    "test": "yarn test:codegen"
+  },
+  "dependencies": {
+    "@assemblyscript/loader": "^0.19.22",
+    "as-bignum": "^0.2.18"
+  },
+  "devDependencies": {
+    "assemblyscript": "^0.19.22"
+  },
+  "files": [
+    "assembly/",
+    "build/",
+    "README.md",
+    "LICENSE",
+    "package.json",
+    "yarn.lock"
+  ]
+}

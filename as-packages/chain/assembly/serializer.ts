@@ -145,6 +145,10 @@ export class Decoder {
         return this.buf.slice(this.pos, this.buf.length);
     }
 
+    isEnd(): bool {
+        return this.pos >= <u32>this.buf.length;
+    }
+
     incPos(n: u32): void {
         this.pos += n;
         check(this.pos <= <u32>this.buf.length, "Decoder.incPos: buffer overflow");

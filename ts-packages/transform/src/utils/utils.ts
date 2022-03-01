@@ -48,6 +48,22 @@ export class ElementUtil {
         return false;
     }
 
+    static isOptionalClassPrototype(element: Element): boolean {
+        if (element.kind == ElementKind.CLASS_PROTOTYPE) {
+            let clzPrototype = <ClassPrototype>element;
+            return AstUtil.hasSpecifyDecorator(clzPrototype.declaration, ContractDecoratorKind.OPTIONAL);
+        }
+        return false;
+    }
+
+    static isBinaryExtensionClassPrototype(element: Element): boolean {
+        if (element.kind == ElementKind.CLASS_PROTOTYPE) {
+            let clzPrototype = <ClassPrototype>element;
+            return AstUtil.hasSpecifyDecorator(clzPrototype.declaration, ContractDecoratorKind.BINARYEXTENSION);
+        }
+        return false;
+    }
+
     static isExtendCodec(element: Element): boolean {
         if (element.kind == ElementKind.CLASS_PROTOTYPE) {
             return ElementUtil.impledInterfaces(<ClassPrototype>element).includes("Codec");

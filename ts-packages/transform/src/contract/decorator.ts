@@ -10,12 +10,20 @@ function fromNode(nameNode: Expression): ContractDecoratorKind {
                 if (nameStr == "action") return ContractDecoratorKind.ACTION;
                 break;
             }
+            case CharCode.b: {
+                if (nameStr == "binaryextension") return ContractDecoratorKind.BINARYEXTENSION;
+                break;
+            }
             case CharCode.c: {
                 if (nameStr == "contract") return ContractDecoratorKind.CONTRACT;
                 break;
             }
             case CharCode.i: {
                 if (nameStr == "ignore") return ContractDecoratorKind.IGNORE;
+                break;
+            }
+            case CharCode.o: {
+                if (nameStr == "optional") return ContractDecoratorKind.OPTIONAL;
                 break;
             }
             case CharCode.p: {
@@ -43,7 +51,7 @@ export function getCustomDecoratorKind(decorator: DecoratorNode): ContractDecora
     }
     let kind = fromNode(decorator.name);
     if (kind == ContractDecoratorKind.OTHER) {
-        throw new Error(`The contract don't support the decorator ${decorator.name.range.toString()}, please eheck ${RangeUtil.location(decorator.range)}`);
+        throw new Error(`The contract don't support the decorator ${decorator.name.range.toString()}, please check ${RangeUtil.location(decorator.range)}`);
     }
     return kind;
 }

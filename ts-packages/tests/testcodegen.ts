@@ -1,5 +1,6 @@
 import {
     Asset,
+    Symbol,
     Name,
     Action,
     PermissionLevel,
@@ -13,7 +14,21 @@ import {
 @packer
 class MyData {
     constructor(
-        public name: string
+        public name: string = ""
+    ){}
+}
+
+@optional
+class MyOptional {
+    constructor(
+        public a: Asset | null = null
+    ){}
+}
+
+@binaryextension
+class MyExtension {
+    constructor(
+        public a: Asset | null = null
     ){}
 }
 
@@ -39,8 +54,37 @@ class MyContract extends Contract {
         a2: Asset,
         a3: u64,
         a4: u64[],
-        a5?: Asset[],
+        a5: Asset[],
+        a6: MyOptional,
+        a7: MyData,
+        a8: MyExtension,
     ): void {
+        check(!a6.a, "bad value");
+        check(a7.name == "alice", "bad value");
+        check(!a8.a, "bad value");
+        printString(`+++test gen code
+        ${a1},
+        ${a2},
+        ${a3},
+        ${a4},
+        ${a5},
+        \n`);
+    }
+
+    @action("testgencode2")
+    testGenCode2(
+        a1: string,
+        a2: Asset,
+        a3: u64,
+        a4: u64[],
+        a5: Asset[],
+        a6: MyOptional,
+        a7: MyData,
+        a8: MyExtension,
+    ): void {
+        check(a6.a == new Asset(10000, new Symbol("EOS", 4)), "bad value");
+        check(a7.name == "alice", "bad value");
+        check(a8.a == new Asset(120000, new Symbol("EOS", 4)), "bad value");
         printString(`+++test gen code
         ${a1},
         ${a2},
