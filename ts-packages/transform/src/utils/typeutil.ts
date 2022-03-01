@@ -56,8 +56,8 @@ export class TypeHelper {
         ["u32", "uint32"],
         ["i64", "int64"],
         ["u64", "uint64"],
-        ["i128", "int128"],
-        ["u128", "uint128"],
+        ["I128", "int128"],
+        ["U128", "uint128"],
         ["VarInt32", "varint32"],
         ["VarUint32", "varuint32"],
         
@@ -77,6 +77,7 @@ export class TypeHelper {
         
         ["Checksum160", "checksum160"],
         ["Checksum256", "checksum256"],
+        ["U256", "checksum256"],
         ["Checksum512", "checksum512"],
         ["PublicKey", "public_key"],
         ["Signature", "signature"],
