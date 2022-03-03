@@ -25,11 +25,9 @@ export interface MultiIndexValue extends PrimaryValue {
 export class MultiIndex<T extends MultiIndexValue> {
     db: DBI64;
     idxdbs: Array<IDXDB>;
-    newObj: () => T;
-    constructor(code: Name, scope: Name, table: Name, newObj: () => T, indexes: Array<IDXDB> = []) {
+    constructor(code: Name, scope: Name, table: Name, indexes: Array<IDXDB> = []) {
         this.db = new DBI64(code.N, scope.N, table.N);
         this.idxdbs = indexes;
-        this.newObj = newObj;
     }
 
     store(value: T, payer: Name): PrimaryIterator {
@@ -72,7 +70,7 @@ export class MultiIndex<T extends MultiIndexValue> {
 
     get(iterator: PrimaryIterator): T {
         let data = this.db.get(iterator.i);
-        let ret = this.newObj();
+        let ret = instantiate<T>();
         ret.unpack(data);
         return ret;
     }

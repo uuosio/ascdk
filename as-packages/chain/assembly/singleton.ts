@@ -4,11 +4,9 @@ import { Name } from "./name";
 export class Singleton<T extends MultiIndexValue> {
     key: u64;
     mi: MultiIndex<T>;
-    newObj: () => T;
-    constructor(code: Name, scope: Name, table: Name, newObj: () => T) {
+    constructor(code: Name, scope: Name, table: Name) {
         this.key = table.N;
-        this.newObj = newObj;
-        this.mi = new MultiIndex<T>(code, scope, table, newObj);
+        this.mi = new MultiIndex<T>(code, scope, table);
     }
 
     set(value: T, payer: Name): void {
@@ -25,7 +23,7 @@ export class Singleton<T extends MultiIndexValue> {
         if (it.isOk()) {
             return this.mi.get(it);
         }
-        return this.newObj();
+        return instantiate<T>();
     }
 
     remove(): void {

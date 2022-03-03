@@ -63,17 +63,11 @@ export const tableTpl = `
 
     {{#if singleton}}
         static new(code: _chain.Name, scope: _chain.Name): _chain.Singleton<{{className}}> {
-            let newObj = ():{{className}} => {
-                return new {{className}}();
-            };
             let tableName = _chain.Name.fromString("{{tableName}}");
-            return new _chain.Singleton<{{className}}>(code, scope, tableName, newObj);
+            return new _chain.Singleton<{{className}}>(code, scope, tableName);
         }
     {{else}}
         static new(code: _chain.Name, scope: _chain.Name): {{className}}DB {
-            let newObj = ():{{className}} => {
-                return new {{className}}();
-            };
             let tableName = _chain.Name.fromString("{{tableName}}");
             let idxTableBase: u64 = (tableName.N & 0xfffffffffffffff0);
 
@@ -82,7 +76,7 @@ export const tableTpl = `
                 {{{newSecondaryDB .}}}
                 {{/each}}
             ];
-            return new {{className}}DB(code, scope, tableName, newObj, indexes);
+            return new {{className}}DB(code, scope, tableName, indexes);
         }
     {{/if}}
     
