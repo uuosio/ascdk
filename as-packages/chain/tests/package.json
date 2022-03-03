@@ -33,7 +33,8 @@
     "test:print": "npx eosio-asc testprint.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_print",
     "test:transaction": "npx eosio-asc testtransaction.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_tx",
     "test:singleton": "npx eosio-asc testsingleton.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_singleton",
-    "test": "yarn test:publickey && yarn test:table && yarn test:asset && yarn test:action && yarn test:mi && yarn test:serializer && yarn test:crypto && yarn test:system && yarn test:singleton"
+    "test:variant": "npx eosio-asc testvariant.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_variant",
+    "test": "yarn test:publickey && yarn test:table && yarn test:asset && yarn test:action && yarn test:mi && yarn test:serializer && yarn test:crypto && yarn test:system && yarn test:singleton && yarn test:variant"
   },
   "dependencies": {
     "@assemblyscript/loader": "^0.19.22",

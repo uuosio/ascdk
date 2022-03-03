@@ -3,7 +3,16 @@ import { Range } from "assemblyscript";
 import { ContractProgram} from "../contract/contract";
 import { ActionFunctionDef } from "../contract/elementdef";
 
-import { mainTpl, actionTpl, tableTpl, serializerTpl, optionalTpl, binaryExtensionTpl} from "../tpl";
+import {
+    mainTpl,
+    actionTpl,
+    tableTpl,
+    serializerTpl,
+    optionalTpl,
+    binaryExtensionTpl,
+    variantTpl,
+} from "../tpl";
+
 import { CONFIG } from "../config/compile";
 import { EosioUtils, RangeUtil } from "../utils/utils";
 
@@ -100,7 +109,10 @@ export function getExtCodeInfo(contractInfo: ContractProgram): SourceModifier {
         sourceModifier.addModifyPoint(new ModifyPoint(s.range, ModifyType.REPLACE, code));
     });
 
-    
+    contractInfo.variants.forEach(table => {
+        let code = Handlebars.compile(variantTpl)(table);
+        sourceModifier.addModifyPoint(new ModifyPoint(table.range, ModifyType.REPLACE, code));
+    });
 
     sourceModifier.addModifyPoint(new ModifyPoint(contractInfo.contract.range, ModifyType.APPEND, exportMain));
     sourceModifier.toModifyFileMap();

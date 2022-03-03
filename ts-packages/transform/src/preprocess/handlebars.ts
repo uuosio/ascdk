@@ -231,6 +231,133 @@ Handlebars.registerHelper("optionalGetSize", function (field: FieldDef) {
     return code + fieldGetSize(field.name+"!", field.type);
 });
 
+Handlebars.registerHelper("variantSerialize", function (field: FieldDef) {
+    let code;
+    let plainType = field.type.plainTypeNode;
+    if (TypeHelper.isNumberType(field.type.typeKind)) {
+        code = `
+        if (this._index == ${field._index}) {
+            enc.packNumber<${plainType}>(this.${field.name});
+        }`;
+    } else if (TypeHelper.isStringType(field.type.typeKind)) {
+        code = `
+        if (this._index == ${field._index}) {
+            enc.packString(this.${field.name});
+        }`;
+    } else {
+        code = `
+        if (this._index == ${field._index}) {
+            if (!this.${field.name}) {
+                this.${field.name} = instantiate<${field.type.plainTypeNode}>();
+            }
+            enc.pack(this.${field.name}!);
+        }`;    
+    }
+    return code;
+});
+
+Handlebars.registerHelper("variantDeserialize", function (field: FieldDef) {
+    let code;
+    let plainType = field.type.plainTypeNode;
+    if (TypeHelper.isNumberType(field.type.typeKind)) {
+        code = `
+        if (this._index == ${field._index}) {
+            this.${field.name} = dec.unpackNumber<${plainType}>();
+        }`;
+    } else if (TypeHelper.isStringType(field.type.typeKind)) {
+        code = `
+        if (this._index == ${field._index}) {
+            this.${field.name} = dec.unpackString();
+        }`;
+    } else {
+        code = `
+        if (this._index == ${field._index}) {
+            if (!this.${field.name}) {
+                this.${field.name} = instantiate<${field.type.plainTypeNode}>();
+            }
+            dec.unpack(this.${field.name}!);
+        }`;
+    }
+    return code;
+});
+
+Handlebars.registerHelper("variantGetSize", function (field: FieldDef) {
+    let code;
+    let plainType = field.type.plainTypeNode;
+    if (TypeHelper.isNumberType(field.type.typeKind)) {
+        code = `
+        if (this._index == ${field._index}) {
+            return 1 + sizeof<${plainType}>();
+        }`;
+    } else if (TypeHelper.isStringType(field.type.typeKind)) {
+        code = `
+        if (this._index == ${field._index}) {
+            return 1 + _chain.Utils.calcPackedStringLength(this.${field.name});
+        }`;
+    } else {
+        //isUserClassType
+        code = `
+        if (this._index == ${field._index}) {
+            return 1 + this.${field.name}!.getSize();
+        }`;
+    }
+
+    return code;
+});
+
+Handlebars.registerHelper("variantNew", function (field: FieldDef) {
+    let code: string[] = [];
+    let plainType = field.type.plainTypeNode;
+    if (plainType == 'string') {
+        code.push(`
+        if (isString<T>()) {
+            obj._index = ${field._index};
+            obj.${field.name} = ""
+        }
+        `);
+    } else {
+        if (TypeHelper.isNumberType(field.type.typeKind)) {
+            code.push(`
+        if (nameof<T>() == "${plainType}") {
+            obj._index = ${field._index};
+            obj.${field.name} = 0;
+        }`);
+        } else {
+            code.push(`
+        if (idof<${field.type.plainTypeNode}>() == id) {
+            obj._index = ${field._index};
+            obj.${field.name} = instantiate<${plainType}>();
+        }`);
+        }
+    }
+    return code.join(EOL);
+});
+
+Handlebars.registerHelper("variantGet", function (field: FieldDef) {
+    let code: string[] = [];
+    code.push(`
+    is${field.name}(): bool {
+        return this._index == ${field._index};
+    }`);
+
+    let plainType = field.type.plainTypeNode;
+    if (TypeHelper.isPrimitiveType(field.type.typeKind)) {
+        code.push(`
+    get${field.name}(): ${plainType} {
+        _chain.check(this._index == ${field._index}, "wrong variant type");
+        return this.${field.name};
+    }`);
+    } else {
+        code.push(`
+    get${field.name}(): ${plainType} {
+        _chain.check(this._index == ${field._index}, "wrong variant type");
+        return this.${field.name}!;
+    }`);
+    }
+    return code.join(EOL);
+});
+
+
 Handlebars.registerHelper("binaryExtensionSerialize", function (field: FieldDef) {
     let code = `
         if (this.${field.name}) {

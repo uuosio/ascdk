@@ -9,6 +9,7 @@ export enum ContractDecoratorKind {
     SERIALIZER,
     OPTIONAL,
     BINARYEXTENSION,
+    VARIANT,
     PRIMARY,
     SECONDARY,
 }

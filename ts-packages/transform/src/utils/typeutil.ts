@@ -130,6 +130,18 @@ export class TypeHelper {
             || type == TypeKindEnum.STRING;
     }
 
+    static isNumberType(type: TypeKindEnum): boolean {
+        return type == TypeKindEnum.NUMBER;
+    }
+
+    static isStringType(type: TypeKindEnum): boolean {
+        return type == TypeKindEnum.STRING;
+    }
+
+    static isUserClassType(type: TypeKindEnum): boolean {
+        return type == TypeKindEnum.USER_CLASS;
+    }
+
     /**
      * Get the type kind that is not code type.
      * @param typeName 

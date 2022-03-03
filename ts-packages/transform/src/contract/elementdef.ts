@@ -45,6 +45,7 @@ export class DecoratorsInfo {
     }
 }
 export class FieldDef {
+    _index = 0;
     protected fieldPrototype: FieldPrototype;
     name: string;
     type!: NamedTypeNodeDef;

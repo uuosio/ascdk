@@ -64,6 +64,14 @@ export class ElementUtil {
         return false;
     }
 
+    static isVariantClassPrototype(element: Element): boolean {
+        if (element.kind == ElementKind.CLASS_PROTOTYPE) {
+            let clzPrototype = <ClassPrototype>element;
+            return AstUtil.hasSpecifyDecorator(clzPrototype.declaration, ContractDecoratorKind.VARIANT);
+        }
+        return false;
+    }
+
     static isExtendCodec(element: Element): boolean {
         if (element.kind == ElementKind.CLASS_PROTOTYPE) {
             return ElementUtil.impledInterfaces(<ClassPrototype>element).includes("Codec");

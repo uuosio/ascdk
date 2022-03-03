@@ -64,6 +64,11 @@ export class ABIStruct {
 // 	ErrorMessages    []string    `json:"error_messages"`
 // }
 
+export class VariantDef {
+	name = "";
+	types: string[] = [];
+}
+
 export class ABI {
 	version = "eosio::abi/1.1";
 	structs: ABIStruct[] = [];
@@ -71,7 +76,7 @@ export class ABI {
 	actions: ABIAction[] = [];
 	tables: ABITable[] = [];
 	ricardian_clauses: string[] = [];
-	variants: string[] = [];
+	variants: VariantDef[] = [];
 	abi_extensions: string[] = [];
 	error_messages: string[] = [];
 }

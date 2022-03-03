@@ -40,6 +40,10 @@ function fromNode(nameNode: Expression): ContractDecoratorKind {
                 if (nameStr == "table") return ContractDecoratorKind.TABLE;
                 break;
             }
+            case CharCode.v: {
+                if (nameStr == "variant") return ContractDecoratorKind.VARIANT;
+                break;
+            }
         }
     }
     return ContractDecoratorKind.OTHER;

@@ -13,7 +13,15 @@ import {
 
 import { NamedTypeNodeDef } from "./typedef";
 import { RangeUtil } from "../utils/utils";
-import { ABI, ABIAction, ABIStruct, ABIStructField, ABITable } from "../abi/abi";
+import {
+    ABI,
+    ABIAction,
+    ABIStruct,
+    ABIStructField,
+    ABITable,
+    VariantDef,
+} from "../abi/abi";
+
 import { ActionFunctionDef } from "../contract/elementdef";
 import { TypeKindEnum } from "../enums/customtype";
 import { TypeHelper } from "../utils/typeutil";
@@ -25,6 +33,7 @@ export class ContractProgram {
     serializers: SerializerInterpreter[] = [];
     optionals: SerializerInterpreter[] = [];
     binaryExtensions: SerializerInterpreter[] = [];
+    variants: SerializerInterpreter[] = [];
     customAbiTypes: SerializerInterpreter[] = [];
 
     public definedTypeMap: Map<string, NamedTypeNodeDef> = new Map<string, NamedTypeNodeDef>();
@@ -79,6 +88,11 @@ export class ContractProgram {
                 }
                 this.binaryExtensions.push(intercepter);
             }
+
+            if (ElementUtil.isVariantClassPrototype(element)) {
+                let intercepter = new SerializerInterpreter(<ClassPrototype>element);
+                this.variants.push(intercepter);
+            }
         });
 
         if (countContract != 1) {
@@ -110,6 +124,14 @@ export class ContractProgram {
             })) {
                 this.customAbiTypes.push(cls);
             }
+            return cls.className;
+        }
+
+        cls = this.variants.find(x => {
+            return x.className == plainType;
+        });
+
+        if (cls) {
             return cls.className;
         }
 
@@ -164,6 +186,17 @@ export class ContractProgram {
     
     getAbiInfo() {
         let abi = new ABI();
+
+        this.variants.forEach((variant, i) => {
+            let def = new VariantDef();
+            def.name = variant.className;
+            variant.fields.forEach((field, i) => {
+                let ret = this.parseField(field.name, field.type);
+                def.types.push(ret.type);
+            });
+            abi.variants.push(def);
+        });
+
         this.tables.forEach((table, i) => {
             let abiTable = new ABITable();
             abiTable.name = table.tableName;

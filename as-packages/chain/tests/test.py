@@ -212,3 +212,20 @@ def test_singleton():
     r = chain.push_action('hello', 'test', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
     chain.produce_block()
+
+def test_variant():
+    code, abi = get_code_and_abi('testvariant')
+    chain.deploy_contract('hello', code, abi, 0)
+
+    args = dict(
+        a = ['uint64', 10],
+        b = ['asset', '1.0000 EOS']
+    )
+
+    r = chain.push_action('hello', 'test', args, {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])
+    chain.produce_block()
+
+    r = chain.push_action('hello', 'test2', b'', {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])
+    chain.produce_block()
