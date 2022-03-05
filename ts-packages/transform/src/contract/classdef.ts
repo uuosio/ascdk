@@ -10,7 +10,7 @@ import {
     OperatorKind
 } from "assemblyscript";
 
-import { AstUtil, ElementUtil, DecoratorUtil } from "../utils/utils";
+import { AstUtil, ElementUtil, DecoratorUtil, EosioUtils } from "../utils/utils";
 
 import { Strings } from "../utils/primitiveutil";
 import { FieldDef, FunctionDef, ActionFunctionDef, DBIndexFunctionDef} from "./elementdef";
@@ -139,6 +139,11 @@ export class TableInterpreter extends ClassInterpreter {
         this.resolveContractClass();
         let decorator = AstUtil.getSpecifyDecorator(clzPrototype.declaration, ContractDecoratorKind.TABLE)!;
         this.tableName = AstUtil.getIdentifier(decorator.args![0]);
+
+        if (!EosioUtils.isValidName(this.tableName)) {
+            throw new Error(`Decorator: Invalid table name. Trace: ${RangeUtil.location(decorator.range)} `);
+        }
+
         if (decorator.args!.length == 2) {
             let arg = AstUtil.getIdentifier(decorator.args![1]);
             if (arg == "singleton") {

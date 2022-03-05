@@ -13,7 +13,7 @@ import {
     FunctionDeclaration
 } from "assemblyscript";
 
-import { AstUtil, DecoratorUtil, ElementUtil, RangeUtil } from "../utils/utils";
+import { AstUtil, DecoratorUtil, ElementUtil, RangeUtil, EosioUtils } from "../utils/utils";
 import { ContractDecoratorKind } from "../enums/decorator";
 import { FieldDefHelper, TypeHelper } from "../utils/typeutil";
 import { TypeKindEnum } from "../enums/customtype";
@@ -141,6 +141,9 @@ export class MessageDecoratorNodeDef extends DecoratorNodeDef {
 
             // TODO: verify name
             this.actionName = AstUtil.getIdentifier(decorator.args[0]);
+            if (!EosioUtils.isValidName(this.actionName)) {
+                throw new Error(`Decorator: Invalid action name. Trace: ${RangeUtil.location(decorator.range)} `);
+            }
             if (decorator.args.length != 2) {
                 return;
             }
