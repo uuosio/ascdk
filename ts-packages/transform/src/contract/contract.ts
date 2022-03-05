@@ -91,6 +91,14 @@ export class ContractProgram {
 
             if (ElementUtil.isVariantClassPrototype(element)) {
                 let intercepter = new SerializerInterpreter(<ClassPrototype>element);
+                let fieldMap = new Map<string, boolean>();
+                intercepter.fields.forEach(x => {
+                    let tp = x.type.plainTypeNode
+                    if (fieldMap.has(tp)) {
+                        throw new Error(`Duplicated type in variant ${intercepter.className}! Trace ${RangeUtil.location(x.declaration.range)}`)
+                    }
+                    fieldMap.set(tp, true);
+                })
                 this.variants.push(intercepter);
             }
         });
