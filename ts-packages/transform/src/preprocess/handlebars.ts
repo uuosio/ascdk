@@ -93,7 +93,7 @@ function fieldSerialize(name: string, type: NamedTypeNodeDef) {
             code.push(`    enc.packObjectArray(this.${name});`);
         }
     } else if (type.typeKind == TypeKindEnum.MAP) {
-        throw Error(`map type is not supported currently!Trace ${RangeUtil.location(parameterNode.range)}`);
+        throw Error(`map type is not supported currently!Trace ${RangeUtil.location(type.typeNode.range)}`);
     } else {
         let plainType = type.plainTypeNode;
         let numType = numberTypeMap.get(plainType);
@@ -136,7 +136,7 @@ function fieldDeserialize(name: string, type: NamedTypeNodeDef) {
             }`);
         }
     } else if (type.typeKind == TypeKindEnum.MAP) {
-        throw Error(`map is not supported currently!Trace: ${RangeUtil.location(parameterNode.range)}`);
+        throw Error(`map is not supported currently!Trace: ${RangeUtil.location(type.typeNode.range)}`);
     } else {
         let plainType = type.plainTypeNode;
         let numType = numberTypeMap.get(plainType);
@@ -183,7 +183,7 @@ function fieldGetSize(name: string, type: NamedTypeNodeDef) {
             `);
         }
     } else if (type.typeKind == TypeKindEnum.MAP) {
-        throw Error(`map type is not supported currently!Trace ${RangeUtil.location(parameterNode.range)}`);
+        throw Error(`map type is not supported currently!Trace ${RangeUtil.location(type.typeNode.range)}`);
     } else {
         let plainType = type.plainTypeNode;
         let numType = numberTypeMap.get(plainType);

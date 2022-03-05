@@ -21,7 +21,7 @@ export class NodeTypeInfo {
 
 export class BaseNamedTypeDef {
     protected parent: Element;
-    protected typeNode: NamedTypeNode;
+    typeNode: NamedTypeNode;
     plainTypeNode: string;
 
     constructor(parent: Element, typeNode: NamedTypeNode) {
