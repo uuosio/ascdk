@@ -37,9 +37,9 @@ export const variantTpl = `
         let obj = new {{className}}();
         let id: u32 = 0;
         if (isInteger<T>()) {
-            id = 0;
+            id = 0xffffffff;
         } else if (isString<T>()) {
-            id = 1;
+            id = 0xfffffffe;
         } else {
             id = idof<T>();
         }
