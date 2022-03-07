@@ -8,6 +8,7 @@ import { ElementUtil } from "../utils/utils";
 import {
     ContractInterpreter,
     SerializerInterpreter,
+    ClassInterpreter,
     TableInterpreter
 } from "./classdef";
 
@@ -34,7 +35,7 @@ export class ContractProgram {
     optionals: SerializerInterpreter[] = [];
     binaryExtensions: SerializerInterpreter[] = [];
     variants: SerializerInterpreter[] = [];
-    customAbiTypes: SerializerInterpreter[] = [];
+    customAbiTypes: ClassInterpreter[] = [];
 
     public definedTypeMap: Map<string, NamedTypeNodeDef> = new Map<string, NamedTypeNodeDef>();
 
@@ -122,9 +123,15 @@ export class ContractProgram {
             return tp;
         }
 
-        let cls = this.serializers.find(x => {
+        let cls = <ClassInterpreter>this.serializers.find(x => {
             return x.className == plainType;
         });
+
+        if (!cls) {
+            cls = <ClassInterpreter>this.tables.find(x => {
+                return x.className == plainType;
+            });
+        }
 
         if (cls) {
             if (!this.customAbiTypes.find(x => {
@@ -135,7 +142,7 @@ export class ContractProgram {
             return cls.className;
         }
 
-        cls = this.variants.find(x => {
+        cls = <ClassInterpreter>this.variants.find(x => {
             return x.className == plainType;
         });
 
@@ -143,7 +150,7 @@ export class ContractProgram {
             return cls.className;
         }
 
-        cls = this.optionals.find(x => {
+        cls = <ClassInterpreter>this.optionals.find(x => {
             return x.className == plainType;
         });
 
@@ -155,7 +162,7 @@ export class ContractProgram {
             }
         }
 
-        cls = this.binaryExtensions.find(x => {
+        cls = <ClassInterpreter>this.binaryExtensions.find(x => {
             return x.className == plainType;
         });
 
@@ -243,6 +250,14 @@ export class ContractProgram {
         });
 
         this.customAbiTypes.forEach(cls => {
+            let found = abi.structs.find(x => {
+                return x.name == cls.className
+            });
+
+            if (found) {
+                return;
+            }
+
             let abiStruct = new ABIStruct();
             abiStruct.name = cls.className;
             abiStruct.base = "";
