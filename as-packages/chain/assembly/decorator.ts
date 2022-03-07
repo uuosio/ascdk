@@ -7,7 +7,7 @@ export function other(_: string): any {
 export function contract(_: string): any {
     //
 }
-export function action(_: string): any {
+export function action(_: string, __?: any): any {
     //
 }
 export function ignore(_: string): any {
