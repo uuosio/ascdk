@@ -13,12 +13,18 @@ export { IDX256 } from "./idx256";
 export {
     assert,
     check,
-    TimePoint,
-    TimePointSec,
-    currentTimeNS,
-    currentTimeMS,
+    currentTimePoint,
+    currentTime,
+    currentTimeMs,
     currentTimeSec,
 } from "./system";
+
+export {
+    Microseconds,
+    TimePoint,
+    TimePointSec,
+    BlockTimestamp
+} from "./time"
 
 export {
     prints,

@@ -1,7 +1,8 @@
 import * as env from "./env";
 import { U128 } from "./bignum";
 import { VarUint32, calcPackedVarUint32Length } from "./varint";
-import { TimePointSec, currentTimeSec } from "./system";
+import { TimePointSec } from "./time";
+import { currentTimeSec } from "./system";
 import { Action } from "./action";
 import { Packer, Encoder, Decoder } from "./serializer";
 import { Name } from "./name"
