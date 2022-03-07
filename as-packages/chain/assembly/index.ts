@@ -57,6 +57,7 @@ export {Contract, ActionWrapper, Table} from "./helpers"
 export {
     getSender,
     readActionData,
+    unpackActionData,
     actionDataSize,
     requireRecipient,
     requireAuth,

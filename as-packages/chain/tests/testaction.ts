@@ -1,5 +1,6 @@
 import {
     Asset,
+    Symbol,
     Name,
     Action,
     PermissionLevel,
@@ -8,6 +9,7 @@ import {
     check,
     getSender,
     Contract,
+    unpackActionData,
 } from "as-chain";
 
 @packer
@@ -48,6 +50,27 @@ class MyContract extends Contract {
         ${a4},
         ${a5},
         \n`);
+        // a1 = 'hello',
+        // a2 = '1.0000 EOS',
+        // a3 = 12345,
+        // a4 = [1, 2, 3],
+        // a5 = ['1.0001 EOS', '2.0002 EOS'],
+        check(a1 == 'hello', "");
+        check(a2 == new Asset(10000, new Symbol("EOS", 4)), "");
+        check(a3 == 12345, "");
+        check(a4[0] == 1 && a4[1] == 2 && a4[2] == 3, "");
+        check(a5[0] == new Asset(10001, new Symbol("EOS", 4)) &&
+            a5[1] == new Asset(20002, new Symbol("EOS", 4)), "");
+
+{
+    let t = unpackActionData<testGenCodeAction>();
+    check(t.a1 == 'hello', "");
+    check(t.a2 == new Asset(10000, new Symbol("EOS", 4)), "");
+    check(t.a3 == 12345, "");
+    check(t.a4[0] == 1 && t.a4[1] == 2 && t.a4[2] == 3, "");
+    check(t.a5[0] == new Asset(10001, new Symbol("EOS", 4)) &&
+        t.a5[1] == new Asset(20002, new Symbol("EOS", 4)), "");
+}
     }
 
     @action("saygoodbye")

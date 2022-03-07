@@ -17,6 +17,13 @@ export function readActionData(): u8[] {
     return arr;
 }
 
+export function unpackActionData<T>(): T {
+    let data = readActionData()
+    let ret = instantiate<T>()
+    ret.unpack(data)
+    return ret
+}
+
 export function actionDataSize(): u32 {
     return env.action_data_size();
 }
