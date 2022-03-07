@@ -81,6 +81,6 @@ export class Table implements MultiIndexValue {
     static new <T extends MultiIndexValue>(_: Name, __: Name): MultiIndex<T> {
         check(false, "not implemented");
         // @ts-ignore
-        return new MultiIndex<T>(_, __, new Name(), () => new Name(), []);
+        return new MultiIndex<T>(_, __, new Name(), []);
     }
 }

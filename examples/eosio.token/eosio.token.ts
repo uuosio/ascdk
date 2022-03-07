@@ -1,7 +1,7 @@
 import { Name, Asset, Symbol, check, requireAuth, MultiIndex, hasAuth, isAccount, requireRecipient, contract, action, SAME_PAYER, Contract, ActionWrapper } from 'as-chain'
 import { Account, Stat, currency_stats, account } from './tables';
 
-class HelperContract extends Contract {
+export class HelperContract extends Contract {
     static createAction: ActionWrapper = new ActionWrapper("create");
     static sayHelloAction: ActionWrapper = new ActionWrapper("issue");
     static retireAction: ActionWrapper = new ActionWrapper("retire");
@@ -10,11 +10,11 @@ class HelperContract extends Contract {
     static closeAction: ActionWrapper = new ActionWrapper("close");
 
     getStatTable(sym: Symbol): MultiIndex<currency_stats> {
-        return Stat.new(this.receiver, new Name(sym.code()));
+        return Stat.new<currency_stats>(this.receiver, new Name(sym.code()));
     }
 
     getAccountsTable(accountName: Name): MultiIndex<account> {
-        return Account.new(this.receiver, accountName);
+        return Account.new<account>(this.receiver, accountName);
     }
 }
 

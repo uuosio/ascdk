@@ -19,10 +19,11 @@ import {
     action,
     Float128,
     Contract,
+    Table,
 } from "as-chain";
 
 @table("mydata")
-class MyData {
+class MyData extends Table {
     constructor(
         public a: u64=0,
         public b: u64=0,
@@ -31,6 +32,7 @@ class MyData {
         public e: U256=new U256(),
         public f: Float128=new Float128(),
     ) {
+        super();
     }
 
     @primary
@@ -93,7 +95,7 @@ class MyData {
 class MyContract extends Contract{
     @action("testmi")
     testmi(): void {
-        let mi = MyData.new(this.receiver, this.receiver);
+        let mi = MyData.new<MyData>(this.receiver, this.receiver);
         let value = new MyData(1, 2, new U128(3), 3.3, new U256(11));
         mi.store(value, this.receiver);
 
