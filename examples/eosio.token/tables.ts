@@ -1,4 +1,5 @@
-import { Asset, Name, table, primary, Table } from "as-chain";
+import { Asset, Symbol, Name, table, primary, Table } from "as-chain";
+import { MultiIndex } from 'as-chain'
 
 @table("accounts")
 export class account extends Table {
@@ -32,3 +33,11 @@ export class currency_stats extends Table {
 
 export class Account extends account {}
 export class Stat extends currency_stats {}
+
+export function getStatTable(code: Name, sym: Symbol): MultiIndex<currency_stats> {
+    return currency_stats.new(code, new Name(sym.code()));
+}
+
+export function getAccountsTable(code: Name, accountName: Name): MultiIndex<account> {
+    return account.new(code, accountName);
+}

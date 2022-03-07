@@ -31,7 +31,7 @@ class MyContract extends Contract {
     test(): void {
         let payer = this.receiver;
         {
-            let db = Counter.new<Counter>(this.receiver, this.receiver);
+            let db = Counter.new(this.receiver, this.receiver);
             let value = db.get()
             check(value.count == 0, "bad value");
             value.count += 1;
@@ -40,7 +40,7 @@ class MyContract extends Contract {
         }
 
         {
-            let db = Counter.new<Counter>(this.receiver, this.receiver);
+            let db = Counter.new(this.receiver, this.receiver);
             let value = db.get()
             check(value.count == 1, "bad value");
             

@@ -1,5 +1,5 @@
 import { Name, Asset, Symbol, check, requireAuth, MultiIndex, hasAuth, isAccount, requireRecipient, contract, action, SAME_PAYER, Contract, ActionWrapper } from 'as-chain'
-import { Account, Stat, currency_stats, account } from './tables';
+import { Account, Stat, getStatTable, getAccountsTable, currency_stats, account } from './tables';
 
 export class HelperContract extends Contract {
     static createAction: ActionWrapper = new ActionWrapper("create");
@@ -8,14 +8,6 @@ export class HelperContract extends Contract {
     static transferAction: ActionWrapper = new ActionWrapper("transfer");
     static openAction: ActionWrapper = new ActionWrapper("open");
     static closeAction: ActionWrapper = new ActionWrapper("close");
-
-    getStatTable(sym: Symbol): MultiIndex<currency_stats> {
-        return Stat.new<currency_stats>(this.receiver, new Name(sym.code()));
-    }
-
-    getAccountsTable(accountName: Name): MultiIndex<account> {
-        return Account.new<account>(this.receiver, accountName);
-    }
 }
 
 @contract("eosio.token")
@@ -28,7 +20,7 @@ class TokenContract extends HelperContract {
         check(maximum_supply.isValid(), "invalid supply");
         check(maximum_supply.amount > 0, "max-supply must be positive");
 
-        const statstable = this.getStatTable(sym);
+        const statstable = getStatTable(this.receiver,sym);
         statstable.requireNotFind(sym.code(), "token with symbol already exists");
 
         const zeroSupply = new Asset(0, maximum_supply.symbol);
@@ -42,7 +34,7 @@ class TokenContract extends HelperContract {
         check(sym.isValid(), "invalid symbol name");
         check(memo.length <= 256, "memo has more than 256 bytes");
 
-        const statstable = this.getStatTable(sym);
+        const statstable = getStatTable(this.receiver,sym);
         const existing = statstable.requireFind(sym.code(), "token with symbol does not exist, create token before issue");
         const st = statstable.get(existing);
         check(to == st.issuer,  "tokens can only be issued to issuer account");
@@ -66,7 +58,7 @@ class TokenContract extends HelperContract {
         check(sym.isValid(), "invalid symbol name");
         check(memo.length <= 256, "memo has more than 256 bytes");
 
-        const statstable = this.getStatTable(sym);
+        const statstable = getStatTable(this.receiver,sym);
         const existing = statstable.requireFind(sym.code(), "token with symbol does not exist");
         const st = statstable.get(existing);
 
@@ -88,7 +80,7 @@ class TokenContract extends HelperContract {
         requireAuth(from);
         check(isAccount(to), "to account does not exist");
         const sym = quantity.symbol;
-        const statstable = this.getStatTable(sym);
+        const statstable = getStatTable(this.receiver,sym);
         const existing = statstable.requireFind(sym.code(), "token with symbol does not exist");
         const st = statstable.get(existing);
 
@@ -107,7 +99,7 @@ class TokenContract extends HelperContract {
     }
 
     subBalance(owner: Name, value: Asset): void {
-        const fromAcnts = this.getAccountsTable(owner);
+        const fromAcnts = getAccountsTable(this.receiver,owner);
 
         const from = fromAcnts.requireFind(value.symbol.code(), "no balance object found");
 
@@ -119,7 +111,7 @@ class TokenContract extends HelperContract {
     }
 
     addBalance(owner: Name, value: Asset, ramPayer: Name): void {
-        const toAcnts = this.getAccountsTable(owner);
+        const toAcnts = getAccountsTable(this.receiver,owner);
         const to = toAcnts.find(value.symbol.code());
         if (!to.isOk()) {
             const account = new Account(value);
@@ -137,12 +129,12 @@ class TokenContract extends HelperContract {
 
         check(isAccount(owner), "owner account does not exist");
 
-        const statstable = this.getStatTable(symbol);
+        const statstable = getStatTable(this.receiver,symbol);
         const existing = statstable.requireFind(symbol.code(), "symbol does not exist");
         const st = statstable.get(existing);
         check(st.supply.symbol == symbol, "symbol precision mismatch");
 
-        const acnts = this.getAccountsTable(owner);
+        const acnts = getAccountsTable(this.receiver,owner);
         const it = acnts.find(symbol.code());
         if (!it.isOk()) {
             const account = new Account(new Asset(0, symbol));
@@ -153,7 +145,7 @@ class TokenContract extends HelperContract {
     @action("close")
     close(owner: Name, symbol: Symbol): void {
         requireAuth(owner);
-        const acnts = this.getAccountsTable(owner);
+        const acnts = getAccountsTable(this.receiver,owner);
         const it = acnts.requireFind(symbol.code(), "Balance row already deleted or never existed. Action won't have any effect.");
         const account = acnts.get(it);
         check(account.balance.amount == 0, "Cannot close because the balance is not zero.");

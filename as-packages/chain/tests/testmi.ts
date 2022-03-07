@@ -95,7 +95,7 @@ class MyData extends Table {
 class MyContract extends Contract{
     @action("testmi")
     testmi(): void {
-        let mi = MyData.new<MyData>(this.receiver, this.receiver);
+        let mi = MyData.new(this.receiver, this.receiver);
         let value = new MyData(1, 2, new U128(3), 3.3, new U256(11));
         mi.store(value, this.receiver);
 
