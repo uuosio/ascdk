@@ -1,6 +1,7 @@
 import { check } from "./system";
 import { Encoder, Decoder, Packer } from "./serializer";
 import { U128 } from "./bignum";
+import { Name } from "./name";
 
 const MAX_AMOUNT: i64 = (1 << 62) - 1;
 
@@ -138,6 +139,52 @@ export class Symbol implements Packer {
     }
 }
 
+export class ExtendedSymbol implements Packer {
+    constructor(
+        public sym: Symbol=new Symbol(),
+        public contract: Name=new Name()) {
+    }
+
+    toString(): string {
+        return this.sym.toString() + "@" + this.contract.toString();
+    }
+
+    pack(): u8[] {
+        let enc = new Encoder(this.getSize());
+        enc.pack(this.sym);
+        enc.pack(this.contract);
+        return enc.getBytes();
+    }
+
+    unpack(data: u8[]): usize {
+        let dec = new Decoder(data);
+        dec.unpack(this.sym);
+        check(this.sym.isValid(), "invalid extended symbol");
+        dec.unpack(this.contract);
+        return dec.getPos();
+    }
+
+    getSize(): usize {
+        return 16;
+    }
+
+    @inline @operator('==')
+    static eq(a: ExtendedSymbol, b: ExtendedSymbol): bool {
+      return a.sym == b.sym && a.contract == b.contract;
+    }
+
+    @inline @operator('!=')
+    static neq(a: ExtendedSymbol, b: ExtendedSymbol): bool {
+        return !(a.sym == b.sym && a.contract == b.contract);
+    }
+
+    @inline @operator('<')
+    static lt(a: ExtendedSymbol, b: ExtendedSymbol): bool {
+      return a.sym.value < b.sym.value && a.contract.N < b.contract.N;
+    }
+}
+
+
 export class Asset implements Packer {
     constructor(
         public amount: i64=0,
@@ -256,5 +303,92 @@ export class Asset implements Packer {
     static gte(a: Asset, b: Asset): bool {
         check(a.symbol.value == b.symbol.value, "symbol not the same");
         return a.amount >= b.amount;
+    }
+}
+
+
+export class ExtendedAsset implements Packer {
+    constructor(
+        public quantity: Asset=new Asset(),
+        public contract: Name=new Name()) {
+    }
+
+    static fromInteger(v: i64, s: ExtendedSymbol): ExtendedAsset {
+        return new ExtendedAsset(new Asset(v, s.sym), s.contract);
+    }
+
+    getExtendedSymbol(): ExtendedSymbol {
+        return new ExtendedSymbol(this.quantity.symbol, this.contract);
+    }
+
+    toString(): string {
+        return this.quantity.toString() + "@" + this.contract.toString();
+    }
+
+    pack(): u8[] {
+        let enc = new Encoder(this.getSize());
+        enc.pack(this.quantity);
+        enc.pack(this.contract);
+        return enc.getBytes();
+    }
+
+    unpack(data: u8[]): usize {
+        let dec = new Decoder(data);
+        dec.unpack(this.quantity);
+        check(this.quantity.isValid(), "invalid asset");
+        dec.unpack(this.contract);
+        return dec.getPos();
+    }
+
+    getSize(): usize {
+        return 24;
+    }
+
+    @inline @operator('-')
+    static sub(a: ExtendedAsset, b: ExtendedAsset): ExtendedAsset {
+        check(a.contract == b.contract, "contract not the same");
+        let quantity = Asset.sub(a.quantity, b.quantity);
+        return new ExtendedAsset(quantity, a.contract);
+    }
+
+    @inline @operator('+')
+    static add(a: ExtendedAsset, b: ExtendedAsset): ExtendedAsset {
+        check(a.contract == b.contract, "contract not the same");
+        let quantity = Asset.add(a.quantity, b.quantity);
+        return new ExtendedAsset(quantity, a.contract);
+    }
+
+    @inline @operator('<')
+    static lt(a: ExtendedAsset, b: ExtendedAsset): bool {
+        check(a.contract == b.contract, "contract not the same");
+        return a.quantity < b.quantity;
+    }
+
+    @inline @operator('>')
+    static gt(a: ExtendedAsset, b: ExtendedAsset): bool {
+        check(a.contract == b.contract, "contract not the same");
+        return a.quantity > b.quantity;
+    }
+
+    @inline @operator('==')
+    static eq(a: ExtendedAsset, b: ExtendedAsset): bool {
+        return a.quantity == b.quantity && a.contract == b.contract;
+    }
+
+    @inline @operator('!=')
+    static ne(a: ExtendedAsset, b: ExtendedAsset): bool {
+        return !(a.quantity == b.quantity && a.contract == b.contract);
+    }
+  
+    @inline @operator('<=')
+    static lte(a: ExtendedAsset, b: ExtendedAsset): bool {
+        check(a.contract == b.contract, "contract not the same");
+        return a.quantity <= b.quantity;
+    }
+  
+    @inline @operator('>=')
+    static gte(a: ExtendedAsset, b: ExtendedAsset): bool {
+        check(a.contract == b.contract, "contract not the same");
+        return a.quantity >= b.quantity;
     }
 }
