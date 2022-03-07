@@ -1,6 +1,7 @@
 import { ExtendedAsset, Name, table, primary, Table, singleton, secondary } from "as-chain";
+import { accounts, globall, escrows } from "./constants";
 
-@table("accounts")
+@table(accounts)
 export class account extends Table {
     constructor (
         public name: Name = new Name(),
@@ -16,7 +17,7 @@ export class account extends Table {
     }
 }
 
-@table("globall", singleton)
+@table(globall, singleton)
 export class global extends Table {
     constructor (
        public escrow_id: u64 = 0,
@@ -25,7 +26,7 @@ export class global extends Table {
     }
 }
 
-@table("escrows")
+@table(escrows)
 export class escrow extends Table {
     constructor (
        public id: u64 = 0,
@@ -50,7 +51,6 @@ export class escrow extends Table {
         return this.from.N;
     }
 
-    @secondary
     set byFrom(value: u64) {
         this.from.N = value;
     }
@@ -60,7 +60,6 @@ export class escrow extends Table {
         return this.to.N;
     }
 
-    @secondary
     set byTo(value: u64) {
         this.to.N = value;
     }

@@ -1,32 +1,33 @@
-import { ExtendedAsset, unpackActionData, Name, check, contract, action, Contract, MultiIndex, Singleton, requireAuth, isAccount, ActionWrapper, PermissionLevel, hasAuth, requireRecipient } from 'as-chain'
-import { NftTransfer, TokenTransfer } from './external';
-import { account, Account, Escrow, Globall, global, escrow } from './tables';
-
-const ATOMICASSETS_CONTRACT = Name.fromString("atomicassets");
+import { ExtendedAsset, unpackActionData, Name, check, contract, action, Contract, MultiIndex, Singleton, requireAuth, isAccount, ActionWrapper, PermissionLevel, hasAuth, requireRecipient, notify } from 'as-chain'
+import { startescrow, fillescrow, cancelescrow, logescrow, transfer, accounts, escrows, globall, atomicassets } from './constants';
+import { NftTransfer, TokenTransfer, transfer_nfts, transfer_tokens } from './external';
+import { account, Account, Escrow, global, escrow } from './tables';
 
 class HelperContract extends Contract {
     static logEscrowAW: ActionWrapper = new ActionWrapper("logescrow");
     static transferAW: ActionWrapper = new ActionWrapper("transfer");
 
     getAccountsTable(): MultiIndex<account> {
-        return Account.new(this.receiver, this.receiver);
+        return new MultiIndex<account>(this.receiver, this.receiver, accounts);
     }
+    
     getEscrowsTable(): MultiIndex<escrow> {
-        return Escrow.new(this.receiver, this.receiver);
+        return new MultiIndex<escrow>(this.receiver, this.receiver, escrows);
     }
+    
     getConfigSingleton(): Singleton<global> {
-        return Globall.new(this.receiver, this.receiver);
+        return new Singleton<global>(this.receiver, this.receiver, globall);
     }
 }
 
-@contract("escrow")
+@contract(escrow)
 class EscrowContract extends HelperContract {
     /**
      * BALANCE
      */
-    @action("transfer", notify=true)
+    @action(transfer, notify)
     transfer(): void {
-        if (this.receiver == ATOMICASSETS_CONTRACT) {
+        if (this.receiver == atomicassets) {
             let t = unpackActionData<NftTransfer>()
 
             // Skip if outgoing
@@ -207,28 +208,9 @@ class EscrowContract extends HelperContract {
     }
 
     /**
-     * Transfer
-     */
-    transfer_tokens(to: Name, tokens: ExtendedAsset[], memo: string): void {
-        for (let i = 0; i < tokens.length; i++) {
-            const action = EscrowContract.transferAW.act(tokens[i].contract, new PermissionLevel(this.receiver))
-            const actionParams = new TokenTransfer(this.receiver, to, tokens[i].quantity, memo)
-            action.send(actionParams)
-        }
-    }
-    
-    transfer_nfts(to: Name, nfts: u64[], memo: string): void {
-        for (let i = 0; i < nfts.length; i++) {
-            const action = EscrowContract.transferAW.act(ATOMICASSETS_CONTRACT, new PermissionLevel(this.receiver))
-            const actionParams = new NftTransfer(this.receiver, to, nfts, memo)
-            action.send(actionParams)
-        }
-    }
-
-    /**
      * Escrow
      */
-    @action("startescrow")
+    @action(startescrow)
     startescrow(
         from: Name,
         to: Name,
@@ -277,7 +259,7 @@ class EscrowContract extends HelperContract {
         action.send(actionParams)
     }
 
-    @action("fillescrow")
+    @action(fillescrow)
     fillescrow(
         fulfiller: Name,
         id: u64
@@ -298,8 +280,8 @@ class EscrowContract extends HelperContract {
         this.sub_balance_nfts(existingEscrow.to, existingEscrow.toNfts);
       
         // Send out
-        this.transfer_tokens(existingEscrow.to, existingEscrow.toTokens, "");
-        this.transfer_nfts(existingEscrow.to, existingEscrow.toNfts, "");
+        transfer_tokens(this.receiver, existingEscrow.to, existingEscrow.toTokens, "");
+        transfer_nfts(this.receiver, existingEscrow.to, existingEscrow.toNfts, "");
   
         // Log
         const action = EscrowContract.logEscrowAW.act(this.receiver, new PermissionLevel(this.receiver))
@@ -310,7 +292,7 @@ class EscrowContract extends HelperContract {
         escrowsTable.remove(escrowItr);
     }
 
-    @action("cancelescrow")
+    @action(cancelescrow)
     cancelescrow(
         id: u64
     ): void {
@@ -333,7 +315,7 @@ class EscrowContract extends HelperContract {
         escrowsTable.remove(escrowItr);
     }
 
-    @action("logescrow")
+    @action(logescrow)
     logescrow(
         escrow: escrow,
         status: string
