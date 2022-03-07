@@ -1,4 +1,4 @@
-import { packer, Name, Asset, Table, ActionWrapper, ExtendedAsset, PermissionLevel } from "as-chain"
+import { packer, Name, Asset, Table, ExtendedAsset, PermissionLevel } from "as-chain"
 import { atomicassets, transfer } from "./balance.constants";
 
 /* This is a class that represents a transfer of token */
@@ -27,9 +27,6 @@ export class NftTransfer extends Table {
     }
 }
 
-/* This is a way to create an ActionWrapper object that is tied to a specific action. */
-export const transferAW: ActionWrapper = new ActionWrapper(transfer);
-
 /**
  * Send tokens from one account to another
  * @param {Name} from - Name of the account to transfer tokens from.
@@ -39,7 +36,7 @@ export const transferAW: ActionWrapper = new ActionWrapper(transfer);
  */
 export function sendTransferTokens(from: Name, to: Name, tokens: ExtendedAsset[], memo: string): void {
     for (let i = 0; i < tokens.length; i++) {
-        const action = transferAW.act(tokens[i].contract, new PermissionLevel(from))
+        const action = transfer.act(tokens[i].contract, new PermissionLevel(from))
         const actionParams = new TokenTransfer(from, to, tokens[i].quantity, memo)
         action.send(actionParams)
     }
@@ -54,7 +51,7 @@ export function sendTransferTokens(from: Name, to: Name, tokens: ExtendedAsset[]
  */
 export function sendTransferNfts(from: Name, to: Name, nfts: u64[], memo: string): void {
     for (let i = 0; i < nfts.length; i++) {
-        const action = transferAW.act(atomicassets, new PermissionLevel(from))
+        const action = transfer.act(atomicassets, new PermissionLevel(from))
         const actionParams = new NftTransfer(from, to, nfts, memo)
         action.send(actionParams)
     }

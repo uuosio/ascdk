@@ -1,14 +1,14 @@
-import { Name } from "as-chain"
+import { ActionWrapper, Name } from "as-chain"
 
 // Contract
 export const balance = Name.fromString("balance")
 
 // Tables
-export const accounts = Name.fromString("escraccountsow")
+export const accounts = Name.fromString("accounts")
 
 // Actions
-export const withdraw = Name.fromString("withdraw")
-export const transfer = Name.fromString("transfer")
+export const withdraw = new ActionWrapper(Name.fromString("withdraw"))
+export const transfer = new ActionWrapper(Name.fromString("transfer"))
 
 // External
 export const atomicassets = Name.fromString("atomicassets");
