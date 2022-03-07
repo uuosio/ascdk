@@ -3,7 +3,6 @@ import { CONFIG } from "../config/compile";
 // let scope = CONFIG.scope;
 
 export const tableTpl = `
-
 {{export}}class {{className}}DB extends _chain.MultiIndex<{{className}}> {
     {{#each secondaryFuncDefs}}
     {{{generateGetIdxDBFunction .}}}
@@ -11,7 +10,6 @@ export const tableTpl = `
 }
 
 {{export}}class {{className}} implements _chain.MultiIndexValue {
-
     {{{ExtractClassBody range}}}
 
     pack(): u8[] {
@@ -62,23 +60,21 @@ export const tableTpl = `
     }
 
     {{#if singleton}}
-        static new(code: _chain.Name, scope: _chain.Name): _chain.Singleton<{{className}}> {
-            let tableName = _chain.Name.fromString("{{tableName}}");
-            return new _chain.Singleton<{{className}}>(code, scope, tableName);
-        }
+    static new(code: _chain.Name, scope: _chain.Name): _chain.Singleton<{{className}}> {
+        let tableName = _chain.Name.fromString("{{tableName}}");
+        return new _chain.Singleton<{{className}}>(code, scope, tableName);
+    }
     {{else}}
-        static new(code: _chain.Name, scope: _chain.Name): {{className}}DB {
-            let tableName = _chain.Name.fromString("{{tableName}}");
-            let idxTableBase: u64 = (tableName.N & 0xfffffffffffffff0);
+    static new(code: _chain.Name, scope: _chain.Name): {{className}}DB {
+        let tableName = _chain.Name.fromString("{{tableName}}");
+        let idxTableBase: u64 = (tableName.N & 0xfffffffffffffff0);
 
-            let indexes: _chain.IDXDB[] = [
-                {{#each secondaryFuncDefs}}
-                {{{newSecondaryDB .}}}
-                {{/each}}
-            ];
-            return new {{className}}DB(code, scope, tableName, indexes);
-        }
+        let indexes: _chain.IDXDB[] = [
+            {{#each secondaryFuncDefs}}
+            {{{newSecondaryDB .}}}
+            {{/each}}
+        ];
+        return new {{className}}DB(code, scope, tableName, indexes);
+    }
     {{/if}}
-    
-
 }`;
