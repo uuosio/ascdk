@@ -25,11 +25,13 @@
     "test:counter": "npx eosio-asc ./counter/counter.ts && run-ipyeos -m pytest -s -x test.py -k test_counter",
     "test:singleton": "npx eosio-asc ./singleton/singleton.ts && run-ipyeos -m pytest -s -x test.py -k test_singleton",
     "test:codegeneration": "npx eosio-asc ./codegeneration/codegeneration.ts && run-ipyeos -m pytest -s -x test.py -k test_codegeneration",
+    "test:escrow": "npx eosio-asc ./escrow/escrow.ts && run-ipyeos -m pytest -s -x test.py -k test_escrow",
+    "test:notify": "yarn build:sender && yarn build:receiver && run-ipyeos -m pytest -s -x test.py -k test_notify",
+    "test": "yarn test:hello && yarn test:inlineaction && yarn test:eosio.token && yarn test:counter && yarn test:codegeneration",
 
     "build:sender": "npx eosio-asc ./notify/sender.ts",
     "build:receiver": "npx eosio-asc ./notify/receiver.ts",
-    "test:notify": "yarn build:sender && yarn build:receiver && run-ipyeos -m pytest -s -x test.py -k test_notify",
-    "test": "yarn test:hello && yarn test:inlineaction && yarn test:eosio.token && yarn test:counter && yarn test:codegeneration"
+    "build:escrow": "npx eosio-asc ./escrow/escrow.ts"
   },
   "dependencies": {
     "@assemblyscript/loader": "^0.19.22",

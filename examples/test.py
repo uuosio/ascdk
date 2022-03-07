@@ -100,3 +100,7 @@ def test_singleton():
     for i in range(10):
         r = chain.push_action('hello', 'test', {}, {'hello': 'active'})
         chain.produce_block()
+
+def test_escrow():
+    (code, abi) = get_code_and_abi('escrow')
+    chain.deploy_contract('hello', code, abi, 0)

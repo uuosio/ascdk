@@ -22,6 +22,7 @@ export function table(_: string, __: string=""): any {
 }
 
 export const singleton: string = "";
+export const notify: string = "";
 
 export function serializer(_: string): any {
     //
