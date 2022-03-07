@@ -1,18 +1,10 @@
-import { Name, Asset, Symbol, check, requireAuth, MultiIndex, hasAuth, isAccount, requireRecipient, contract, action, SAME_PAYER, Contract, ActionWrapper } from 'as-chain'
-import { Account, Stat, getStatTable, getAccountsTable, currency_stats, account } from './tables';
+import { Name, Asset, Symbol, check, requireAuth, hasAuth, isAccount, requireRecipient, contract, action, SAME_PAYER, Contract } from 'as-chain'
+import { token, create, issue, retire, transfer, open, close } from './eosio.token.constants';
+import { Account, Stat } from './eosio.token.tables';
 
-export class HelperContract extends Contract {
-    static createAction: ActionWrapper = new ActionWrapper("create");
-    static sayHelloAction: ActionWrapper = new ActionWrapper("issue");
-    static retireAction: ActionWrapper = new ActionWrapper("retire");
-    static transferAction: ActionWrapper = new ActionWrapper("transfer");
-    static openAction: ActionWrapper = new ActionWrapper("open");
-    static closeAction: ActionWrapper = new ActionWrapper("close");
-}
-
-@contract("eosio.token")
-class TokenContract extends HelperContract {
-    @action("create")
+@contract(token)
+class TokenContract extends Contract {
+    @action(create)
     create(issuer: Name, maximum_supply: Asset): void {
         requireAuth(this.receiver);
 
@@ -20,7 +12,7 @@ class TokenContract extends HelperContract {
         check(maximum_supply.isValid(), "invalid supply");
         check(maximum_supply.amount > 0, "max-supply must be positive");
 
-        const statstable = getStatTable(this.receiver,sym);
+        const statstable = Stat.getTable(this.receiver, sym);
         statstable.requireNotFind(sym.code(), "token with symbol already exists");
 
         const zeroSupply = new Asset(0, maximum_supply.symbol);
@@ -28,13 +20,13 @@ class TokenContract extends HelperContract {
         statstable.store(value, this.receiver);
     }
 
-    @action("issue")
+    @action(issue)
     issue(to: Name, quantity: Asset, memo: string): void {
         const sym = quantity.symbol;
         check(sym.isValid(), "invalid symbol name");
         check(memo.length <= 256, "memo has more than 256 bytes");
 
-        const statstable = getStatTable(this.receiver,sym);
+        const statstable = Stat.getTable(this.receiver, sym);
         const existing = statstable.requireFind(sym.code(), "token with symbol does not exist, create token before issue");
         const st = statstable.get(existing);
         check(to == st.issuer,  "tokens can only be issued to issuer account");
@@ -52,13 +44,13 @@ class TokenContract extends HelperContract {
         this.addBalance(st.issuer, quantity, st.issuer);
     }
 
-    @action("retire")
+    @action(retire)
     retire(quantity: Asset, memo: string): void {
         const sym = quantity.symbol;
         check(sym.isValid(), "invalid symbol name");
         check(memo.length <= 256, "memo has more than 256 bytes");
 
-        const statstable = getStatTable(this.receiver,sym);
+        const statstable = Stat.getTable(this.receiver, sym);
         const existing = statstable.requireFind(sym.code(), "token with symbol does not exist");
         const st = statstable.get(existing);
 
@@ -74,13 +66,13 @@ class TokenContract extends HelperContract {
         this.subBalance(st.issuer, quantity);
     }
 
-    @action("transfer")
+    @action(transfer)
     transfer(from: Name, to: Name, quantity: Asset, memo: string): void {
         check(from != to, "cannot transfer to self");
         requireAuth(from);
         check(isAccount(to), "to account does not exist");
         const sym = quantity.symbol;
-        const statstable = getStatTable(this.receiver,sym);
+        const statstable = Stat.getTable(this.receiver, sym);
         const existing = statstable.requireFind(sym.code(), "token with symbol does not exist");
         const st = statstable.get(existing);
 
@@ -99,7 +91,7 @@ class TokenContract extends HelperContract {
     }
 
     subBalance(owner: Name, value: Asset): void {
-        const fromAcnts = getAccountsTable(this.receiver,owner);
+        const fromAcnts = Account.getTable(this.receiver, owner)
 
         const from = fromAcnts.requireFind(value.symbol.code(), "no balance object found");
 
@@ -111,7 +103,7 @@ class TokenContract extends HelperContract {
     }
 
     addBalance(owner: Name, value: Asset, ramPayer: Name): void {
-        const toAcnts = getAccountsTable(this.receiver,owner);
+        const toAcnts = Account.getTable(this.receiver, owner)
         const to = toAcnts.find(value.symbol.code());
         if (!to.isOk()) {
             const account = new Account(value);
@@ -123,18 +115,18 @@ class TokenContract extends HelperContract {
         }
     }
 
-    @action("open")
+    @action(open)
     open(owner: Name, symbol: Symbol, ram_payer: Name): void {
         requireAuth(ram_payer);
 
         check(isAccount(owner), "owner account does not exist");
 
-        const statstable = getStatTable(this.receiver,symbol);
+        const statstable = Stat.getTable(this.receiver, symbol);
         const existing = statstable.requireFind(symbol.code(), "symbol does not exist");
         const st = statstable.get(existing);
         check(st.supply.symbol == symbol, "symbol precision mismatch");
 
-        const acnts = getAccountsTable(this.receiver,owner);
+        const acnts = Account.getTable(this.receiver, owner)
         const it = acnts.find(symbol.code());
         if (!it.isOk()) {
             const account = new Account(new Asset(0, symbol));
@@ -142,17 +134,13 @@ class TokenContract extends HelperContract {
         }
     }
 
-    @action("close")
+    @action(close)
     close(owner: Name, symbol: Symbol): void {
         requireAuth(owner);
-        const acnts = getAccountsTable(this.receiver,owner);
+        const acnts = Account.getTable(this.receiver, owner)
         const it = acnts.requireFind(symbol.code(), "Balance row already deleted or never existed. Action won't have any effect.");
         const account = acnts.get(it);
         check(account.balance.amount == 0, "Cannot close because the balance is not zero.");
         acnts.remove(it);
     }
-}
-
-export function createTokenContract (contractAccount: Name): TokenContract {
-    return new TokenContract(contractAccount, new Name(0), new Name(0));
 }

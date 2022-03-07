@@ -20,9 +20,12 @@ export class ActionWrapperAct {
 }
 
 export class ActionWrapper {
-    public action: Name
-    constructor(action: string){
-        this.action = Name.fromString(action)
+    constructor(
+        public action: Name = new Name()
+    ){}
+
+    static fromString(s: string): ActionWrapper {
+        return new ActionWrapper(Name.fromString(s))
     }
 
     /**

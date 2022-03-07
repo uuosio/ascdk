@@ -1,30 +1,40 @@
-import { ExtendedAsset, unpackActionData, Name, check, contract, action, Contract, MultiIndex, Singleton, requireAuth, isAccount, ActionWrapper, PermissionLevel, hasAuth, requireRecipient, notify } from 'as-chain'
-import { startescrow, fillescrow, cancelescrow, logescrow, transfer, accounts, escrows, globall, atomicassets } from './constants';
-import { NftTransfer, TokenTransfer, transfer_nfts, transfer_tokens } from './external';
-import { account, Account, Escrow, global, escrow } from './tables';
+import { ExtendedAsset, unpackActionData, Name, check, action, Contract, notify, contract, requireAuth } from 'as-chain'
+import { transfer, atomicassets, withdraw, balance } from './balance.constants';
+import { NftTransfer, sendTransferNfts, sendTransferTokens, TokenTransfer } from './balance.inline';
+import { Account } from './balance.tables';
 
-class HelperContract extends Contract {
-    static logEscrowAW: ActionWrapper = new ActionWrapper("logescrow");
-    static transferAW: ActionWrapper = new ActionWrapper("transfer");
-
-    getAccountsTable(): MultiIndex<account> {
-        return new MultiIndex<account>(this.receiver, this.receiver, accounts);
-    }
-    
-    getEscrowsTable(): MultiIndex<escrow> {
-        return new MultiIndex<escrow>(this.receiver, this.receiver, escrows);
-    }
-    
-    getConfigSingleton(): Singleton<global> {
-        return new Singleton<global>(this.receiver, this.receiver, globall);
-    }
-}
-
-@contract(escrow)
-class EscrowContract extends HelperContract {
+@contract(balance)
+export class BalanceContract extends Contract {
     /**
      * BALANCE
      */
+    @action(withdraw)
+    withdraw(
+        account: Name,
+        tokens: ExtendedAsset[],
+        nfts: u64[]
+    ): void {
+        requireAuth(account)
+
+        // Substract Tokens and NFTs
+        this.subBalanceTokens(account, tokens)
+        this.subBalanceNfts(account, nfts)
+
+        // Transfer Tokens and NFTs
+        sendTransferTokens(this.receiver, account, tokens, "")
+        sendTransferNfts(this.receiver, account, nfts, "")
+
+        // Find account
+        const accountsTable = Account.getTable(this.receiver);
+        const accountItr = accountsTable.requireFind(account.N, "account does not exist");
+        const existingAccount = accountsTable.get(accountItr);
+        
+        // If both nfts and tokens empty, delete account
+        if (existingAccount.nfts.length == 0 && existingAccount.tokens.length == 0) {
+            accountsTable.remove(accountItr);
+        }
+    }
+
     @action(transfer, notify)
     transfer(): void {
         if (this.receiver == atomicassets) {
@@ -39,7 +49,7 @@ class EscrowContract extends HelperContract {
             check(t.to == this.receiver, "Invalid Deposit");
         
             // Add nfts
-            this.add_balance_nfts(t.from, t.asset_ids);
+            this.addBalanceNfts(t.from, t.asset_ids);
         } else {
             let t = unpackActionData<TokenTransfer>()
 
@@ -66,11 +76,11 @@ class EscrowContract extends HelperContract {
         
             // Add balance
             const balance_to_add = new ExtendedAsset(t.quantity, token_contract)
-            this.add_balance_tokens(t.from, [balance_to_add]);
+            this.addBalanceTokens(t.from, [balance_to_add]);
         }
     }
 
-    add_balance_tokens (account: Name, tokens: ExtendedAsset[]): void {
+    addBalanceTokens(account: Name, tokens: ExtendedAsset[]): void {
         // Validation
         tokens.forEach(token => {
             check(token.quantity.isValid(), "valid quantity");
@@ -78,7 +88,7 @@ class EscrowContract extends HelperContract {
         })
 
         // Get Account
-        const accountsTable = this.getAccountsTable();
+        const accountsTable = Account.getTable(this.receiver);
         const accountItr = accountsTable.find(account.N);
     
         // Account does not exist
@@ -120,9 +130,9 @@ class EscrowContract extends HelperContract {
         }
     }
 
-    add_balance_nfts(account: Name, nfts: u64[]): void {
+    addBalanceNfts(account: Name, nfts: u64[]): void {
         // Get Account
-        const accountsTable = this.getAccountsTable();
+        const accountsTable = Account.getTable(this.receiver);
         const accountItr = accountsTable.find(account.N);
     
         // Account does not exist
@@ -145,9 +155,9 @@ class EscrowContract extends HelperContract {
         }
     }
 
-    sub_balance_tokens (account: Name, tokens: ExtendedAsset[]): void {
+    subBalanceTokens(account: Name, tokens: ExtendedAsset[]): void {
         // Get Account
-        const accountsTable = this.getAccountsTable();
+        const accountsTable = Account.getTable(this.receiver);
         const accountItr = accountsTable.requireFind(account.N, "account does not exist");
         const existingAccount = accountsTable.get(accountItr);
     
@@ -184,9 +194,9 @@ class EscrowContract extends HelperContract {
         }
     }
 
-    sub_balance_nfts(account: Name, nfts: u64[]): void {
+    subBalanceNfts(account: Name, nfts: u64[]): void {
         // Get Account
-        const accountsTable = this.getAccountsTable();
+        const accountsTable = Account.getTable(this.receiver);
         const accountItr = accountsTable.requireFind(account.N, "account does not exist");
         const existingAccount = accountsTable.get(accountItr);
     
@@ -205,121 +215,5 @@ class EscrowContract extends HelperContract {
 
         // Save to table
         accountsTable.update(accountItr, existingAccount, account);
-    }
-
-    /**
-     * Escrow
-     */
-    @action(startescrow)
-    startescrow(
-        from: Name,
-        to: Name,
-        fromTokens: ExtendedAsset[],
-        fromNfts: u64[],
-        toTokens: ExtendedAsset[],
-        toNfts: u64[],
-        expiry: u32
-    ): void {
-        requireAuth(from);
-
-        // Validation
-        // TODO
-        // check(expiry > currentTimePoint().secSinceEpoch(), "expiry must be in future");
-        check(to == new Name() || isAccount(to), "to must be empty or a valid account");
-
-        // Substract balances
-        this.sub_balance_tokens(from, fromTokens);
-        this.sub_balance_nfts(from, fromNfts);
-      
-        // Get config
-        const configSingleton = this.getConfigSingleton()
-        const config = configSingleton.get()
-
-        const newEscrow = new Escrow(
-            config.escrow_id,
-            from,
-            to,
-            fromTokens,
-            fromNfts,
-            toTokens,
-            toNfts,
-            expiry
-        )
-
-        // Update config
-        config.escrow_id++;
-        configSingleton.set(config, this.receiver);
-
-        // Save escrow
-        this.getEscrowsTable().store(newEscrow, from);
-
-        // Log
-        const action = EscrowContract.logEscrowAW.act(this.receiver, new PermissionLevel(this.receiver))
-        const actionParams = new logescrowAction(newEscrow, "start")
-        action.send(actionParams)
-    }
-
-    @action(fillescrow)
-    fillescrow(
-        fulfiller: Name,
-        id: u64
-    ): void {
-        requireAuth(fulfiller);
-  
-        // Get Escrow
-        const escrowsTable = this.getEscrowsTable();
-        const escrowItr = escrowsTable.requireFind(id, "no escrow with ID found.");
-        const existingEscrow = escrowsTable.get(escrowItr);
-    
-        check(hasAuth(existingEscrow.to) || hasAuth(existingEscrow.to), "incorrect to account");
-
-        existingEscrow.to = fulfiller;
-      
-        // Substract balances
-        this.sub_balance_tokens(existingEscrow.to, existingEscrow.toTokens);
-        this.sub_balance_nfts(existingEscrow.to, existingEscrow.toNfts);
-      
-        // Send out
-        transfer_tokens(this.receiver, existingEscrow.to, existingEscrow.toTokens, "");
-        transfer_nfts(this.receiver, existingEscrow.to, existingEscrow.toNfts, "");
-  
-        // Log
-        const action = EscrowContract.logEscrowAW.act(this.receiver, new PermissionLevel(this.receiver))
-        const actionParams = new logescrowAction(existingEscrow, "fill")
-        action.send(actionParams)
-
-        // Erase
-        escrowsTable.remove(escrowItr);
-    }
-
-    @action(cancelescrow)
-    cancelescrow(
-        id: u64
-    ): void {
-        // Get Escrow
-        const escrowsTable = this.getEscrowsTable();
-        const escrowItr = escrowsTable.requireFind(id, "no escrow with ID found.");
-        const existingEscrow = escrowsTable.get(escrowItr);
-    
-        check(hasAuth(existingEscrow.from) || hasAuth(existingEscrow.to), "must have auth of from or to of escrow");
-
-        requireRecipient(existingEscrow.from);
-        requireRecipient(existingEscrow.to);
-  
-        // Log
-        const action = EscrowContract.logEscrowAW.act(this.receiver, new PermissionLevel(this.receiver))
-        const actionParams = new logescrowAction(existingEscrow, "cancel")
-        action.send(actionParams)
-
-        // Erase
-        escrowsTable.remove(escrowItr);
-    }
-
-    @action(logescrow)
-    logescrow(
-        escrow: escrow,
-        status: string
-    ): void {
-        requireAuth(this.receiver)
     }
 }

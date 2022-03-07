@@ -19,19 +19,28 @@
     "assemblyscript"
   ],
   "scripts": {
-    "test:hello": "npx eosio-asc ./hello/hello.ts && run-ipyeos -m pytest -s -x test.py -k test_hello",
-    "test:inlineaction": "npx eosio-asc ./inlineaction/inlineaction.ts && run-ipyeos -m pytest -s -x test.py -k test_action",
-    "test:eosio.token": "npx eosio-asc ./eosio.token/eosio.token.ts && run-ipyeos -m pytest -s -x test.py -k test_token",
-    "test:counter": "npx eosio-asc ./counter/counter.ts && run-ipyeos -m pytest -s -x test.py -k test_counter",
-    "test:singleton": "npx eosio-asc ./singleton/singleton.ts && run-ipyeos -m pytest -s -x test.py -k test_singleton",
-    "test:codegeneration": "npx eosio-asc ./codegeneration/codegeneration.ts && run-ipyeos -m pytest -s -x test.py -k test_codegeneration",
-    "test:escrow": "npx eosio-asc ./escrow/escrow.ts && run-ipyeos -m pytest -s -x test.py -k test_escrow",
+    "test": "yarn run-p test:*",
+    "test:hello": "yarn build:hello && run-ipyeos -m pytest -s -x test.py -k test_hello",
+    "test:inlineaction": "yarn build:inlineaction && run-ipyeos -m pytest -s -x test.py -k test_action",
+    "test:counter": "yarn build:counter && run-ipyeos -m pytest -s -x test.py -k test_counter",
+    "test:singleton": "yarn build:singleton && run-ipyeos -m pytest -s -x test.py -k test_singleton",
+    "test:codegeneration": "yarn build:codegeneration && run-ipyeos -m pytest -s -x test.py -k test_codegeneration",
     "test:notify": "yarn build:sender && yarn build:receiver && run-ipyeos -m pytest -s -x test.py -k test_notify",
-    "test": "yarn test:hello && yarn test:inlineaction && yarn test:eosio.token && yarn test:counter && yarn test:codegeneration",
+    "test:eosio.token": "yarn build:eosio.token && run-ipyeos -m pytest -s -x test.py -k test_token",
+    "test:escrow": "yarn build:escrow && run-ipyeos -m pytest -s -x test.py -k test_escrow",
+    "test:balance": "yarn build:balance && yarn build:receiver && run-ipyeos -m pytest -s -x test.py -k test_balance",
 
+    "build": "yarn run-p build:*",
+    "build:hello": "npx eosio-asc ./hello/hello.ts",
+    "build:inlineaction": "npx eosio-asc ./inlineaction/inlineaction.ts",
+    "build:counter": "npx eosio-asc ./counter/counter.ts",
+    "build:singleton": "npx eosio-asc ./singleton/singleton.ts",
+    "build:codegeneration": "npx eosio-asc ./codegeneration/codegeneration.ts",
     "build:sender": "npx eosio-asc ./notify/sender.ts",
     "build:receiver": "npx eosio-asc ./notify/receiver.ts",
-    "build:escrow": "npx eosio-asc ./escrow/escrow.ts"
+    "build:eosio.token": "npx eosio-asc ./eosio.token/eosio.token.contract.ts",
+    "build:escrow": "npx eosio-asc ./escrow/escrow.contract.ts",
+    "build:balance": "npx eosio-asc ./balance/balance.contract.ts"
   },
   "dependencies": {
     "@assemblyscript/loader": "^0.19.22",
@@ -39,7 +48,8 @@
     "as-chain": "0.0.1"
   },
   "devDependencies": {
-    "assemblyscript": "^0.19.22"
+    "assemblyscript": "^0.19.22",
+    "npm-run-all": "^4.1.5"
   },
   "files": [
     "assembly/",

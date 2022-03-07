@@ -1,21 +1,5 @@
-import { ExtendedAsset, Name, table, primary, Table, singleton, secondary } from "as-chain";
-import { accounts, globall, escrows } from "./constants";
-
-@table(accounts)
-export class account extends Table {
-    constructor (
-        public name: Name = new Name(),
-        public tokens: ExtendedAsset[] = [],
-        public nfts: u64[] = [],
-    ) {
-        super();
-    }
-
-    @primary
-    get primary(): u64 {
-        return this.name.N;
-    }
-}
+import { ExtendedAsset, Name, table, primary, Table, singleton, secondary, MultiIndex, Singleton } from "as-chain";
+import { globall, escrows } from "./escrow.constants";
 
 @table(globall, singleton)
 export class global extends Table {
@@ -23,6 +7,10 @@ export class global extends Table {
        public escrow_id: u64 = 0,
     ) {
         super();
+    }
+
+    static getSingleton(code: Name): Singleton<Global> {
+        return new Singleton<Global>(code, code, globall);
     }
 }
 
@@ -63,8 +51,11 @@ export class escrow extends Table {
     set byTo(value: u64) {
         this.to.N = value;
     }
+   
+    static getTable(code: Name): MultiIndex<Escrow> {
+        return new MultiIndex<Escrow>(code, code, escrows);
+    }
 }
 
-export class Account extends account {}
-export class Globall extends global {}
+export class Global extends global {}
 export class Escrow extends escrow {}

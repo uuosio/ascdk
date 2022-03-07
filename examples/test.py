@@ -32,10 +32,13 @@ a = {
 }
 chain.push_action('eosio', 'updateauth', a, {test_account1:'active'})
 
-def get_code_and_abi(entryName):
-    with open('./' + entryName + '/target/' + entryName + '.wasm', 'rb') as f:
+def get_code_and_abi(folderName, fileName=""):
+    if (fileName == ""):
+        fileName = folderName
+
+    with open('./' + folderName + '/target/' + fileName + '.wasm', 'rb') as f:
         code = f.read()
-    with open('./' + entryName + '/target/' + entryName + '.abi', 'rb') as f:
+    with open('./' + folderName + '/target/' + fileName + '.abi', 'rb') as f:
         abi = f.read()
     return (code, abi)
     
@@ -65,7 +68,7 @@ def test_counter():
         logger.info('++++elapsed:%s', r['elapsed'])
 
 def test_token():
-    (code, abi) = get_code_and_abi('eosio.token')
+    (code, abi) = get_code_and_abi('eosio.token', 'eosio.token.contract')
     chain.deploy_contract('hello', code, abi, 0)
 
 def test_codegeneration():
@@ -102,5 +105,9 @@ def test_singleton():
         chain.produce_block()
 
 def test_escrow():
-    (code, abi) = get_code_and_abi('escrow')
+    (code, abi) = get_code_and_abi('escrow', 'escrow.contract')
+    chain.deploy_contract('hello', code, abi, 0)
+
+def test_balance():
+    (code, abi) = get_code_and_abi('balance', 'balance.contract')
     chain.deploy_contract('hello', code, abi, 0)
