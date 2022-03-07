@@ -78,7 +78,7 @@ class MyContract {
         chain.printString(`++++++${mystruct.a1}, ${mystruct.a2} ${mystruct.a3}`);
     }
 
-    @action("inccc", notify=true)
+    @action("inccc", notify)
     inc(n: u32, m: u32): void {
         // let v = this.stored.value;
         // this.stored.value = ++v;

@@ -7,7 +7,7 @@ import {
 
 @contract("hello")
 class MyContract extends Contract {
-    @action("sayhello", notify=true)
+    @action("sayhello", notify)
     sayHello(name: string): void {
         print(`notify: hello ${name}!`);
     }

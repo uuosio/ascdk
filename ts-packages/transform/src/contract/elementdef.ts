@@ -148,9 +148,13 @@ export class MessageDecoratorNodeDef extends DecoratorNodeDef {
                 return;
             }
 
-            let notify = AstUtil.getBinaryExprRight(decorator.args[1]);
-            if (notify == 'true') {
-                this.notify = true;
+            if (decorator.args!.length == 2) {
+                let arg = AstUtil.getIdentifier(decorator.args![1]);
+                if (arg == "notify") {
+                    this.notify = true;
+                } else {
+                    this.notify = false;
+                }
             }
         }
     }
