@@ -1,4 +1,4 @@
-import { ExtendedAsset, Name, check, contract, action, requireAuth, isAccount, hasAuth, requireRecipient } from 'as-chain'
+import { currentTimePoint, ExtendedAsset, Name, check, contract, action, requireAuth, isAccount, hasAuth, requireRecipient } from 'as-chain'
 import { BalanceContract, sendTransferNfts, sendTransferTokens } from '../balance';
 import { startescrow, fillescrow, cancelescrow, logescrow, ESCROW_STATUS } from './escrow.constants';
 import { sendLogEscrow } from './escrow.inline';
@@ -23,7 +23,7 @@ class EscrowContract extends BalanceContract {
 
         // Validation
         // TODO
-        // check(expiry > currentTimePoint().secSinceEpoch(), "expiry must be in future");
+        check(expiry > currentTimePoint().secSinceEpoch(), "expiry must be in future");
         check(to == new Name() || isAccount(to), "to must be empty or a valid account");
 
         // Substract balances
