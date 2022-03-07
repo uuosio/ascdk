@@ -143,7 +143,6 @@ class MyContract extends Contract{
         }
 
         {
-            /* A placeholder for `a31: ExtendedAsset,` */
             let data = Utils.hexToBytes('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABB');
             let _a24 = new Checksum256();
             _a24.data = data;
