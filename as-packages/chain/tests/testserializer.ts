@@ -19,6 +19,7 @@ import {
     TimePoint,
     TimePointSec,
     Contract,
+    ExtendedAsset,
 } from "as-chain";
 
 @packer
@@ -130,7 +131,7 @@ class MyContract extends Contract{
         // a28: Symbol,
         // a29: SymbolCode,
         a30: Asset,
-        // a31: ExtendedAsset,
+        a31: ExtendedAsset,
         a32: string[],
     ): void {     
         {
@@ -142,6 +143,7 @@ class MyContract extends Contract{
         }
 
         {
+            /* A placeholder for `a31: ExtendedAsset,` */
             let data = Utils.hexToBytes('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABB');
             let _a24 = new Checksum256();
             _a24.data = data;
@@ -186,6 +188,7 @@ class MyContract extends Contract{
         a24 = ${a24},
         a26 = ${a26},
         a30 = ${a30},
+        a31 = ${a31},
         a32 = ${a32},
         `);
     }

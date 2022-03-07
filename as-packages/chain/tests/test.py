@@ -82,7 +82,7 @@ def test_1serializer():
         # a28: chain.Symbol,
         # a29: chain.SymbolCode,
         a30 = '0.1000 EOS',
-        # a31: chain.ExtendedAsset,
+        a31 = ['0.1000 EOS', 'eosio.token'],
         a32 = ['helloo', 'worldd'],
     )
     r = chain.push_action('hello', 'test2', args, {'hello': 'active'})

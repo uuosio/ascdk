@@ -69,7 +69,7 @@ export {
 
 export { Name } from "./name";
 export { Action, PermissionLevel } from "./action";
-export { Asset, Symbol, isValid } from "./asset";
+export { Asset, ExtendedAsset, Symbol, ExtendedSymbol, isValid } from "./asset";
 
 export {
     sendDeferred,
