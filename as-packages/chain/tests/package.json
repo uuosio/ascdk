@@ -22,6 +22,8 @@
     "build": "yarn build:release",
     "build:debug": "npx asc assembly/index.ts -b build/debug/chain.wasm -t build/debug/chain.wat --debug --sourceMap --runtime stub",
     "build:release": "npx asc assembly/index.ts -b build/release/chain.wasm -t build/release/chain.wat -O3 --sourceMap --runtime stub",
+
+    "test": "yarn run-p test:* --max-parallel 1",
     "test:publickey": "npx eosio-asc testpublickey.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_publickey",
     "test:table": "npx eosio-asc testtable.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_table",
     "test:asset": "npx eosio-asc testasset.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_asset",
@@ -33,15 +35,15 @@
     "test:print": "npx eosio-asc testprint.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_print",
     "test:transaction": "npx eosio-asc testtransaction.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_tx",
     "test:singleton": "npx eosio-asc testsingleton.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_singleton",
-    "test:variant": "npx eosio-asc testvariant.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_variant",
-    "test": "yarn test:publickey && yarn test:table && yarn test:asset && yarn test:action && yarn test:mi && yarn test:serializer && yarn test:crypto && yarn test:system && yarn test:singleton && yarn test:variant"
+    "test:variant": "npx eosio-asc testvariant.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_variant"
   },
   "dependencies": {
     "@assemblyscript/loader": "^0.19.22",
     "as-bignum": "^0.2.18"
   },
   "devDependencies": {
-    "assemblyscript": "^0.19.22"
+    "assemblyscript": "^0.19.22",
+    "npm-run-all": "^4.1.5"
   },
   "files": [
     "assembly/",
