@@ -24,7 +24,7 @@
     "test:chain": "yarn --cwd ./as-packages/chain/tests test",
     "test:examples": "yarn --cwd ./examples test",
     "test:codegen": "yarn --cwd ./ts-packages/tests test",
-    "test": "yarn test:chain && yarn test:examples && && yarn test:codegen"
+    "test": "yarn test:chain && yarn test:examples && yarn test:codegen"
   },
   "private": true,
   "devDependencies": {
