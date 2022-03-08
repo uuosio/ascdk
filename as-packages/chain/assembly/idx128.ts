@@ -39,8 +39,8 @@ export class IDX128 extends IDXDB {
 
     update(iterator: SecondaryIterator, secondary: U128, payer: u64): void {
         let arr = new Array<u64>(2);
-        store<u64>(arr.dataStart, value.lo);
-        store<u64>(arr.dataStart + 8, value.hi);
+        store<u64>(arr.dataStart, secondary.lo);
+        store<u64>(arr.dataStart + 8, secondary.hi);
         env.db_idx128_update(iterator.i, payer, arr.dataStart);
     }
 

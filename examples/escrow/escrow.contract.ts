@@ -4,9 +4,6 @@ import { startescrow, fillescrow, cancelescrow, logescrow, ESCROW_STATUS } from 
 import { sendLogEscrow } from './escrow.inline';
 import { Global, Escrow, escrow } from './escrow.tables';
 
-/**
- * Contract
- */
 @contract(escrow)
 class EscrowContract extends BalanceContract {
     @action(startescrow)
@@ -22,7 +19,6 @@ class EscrowContract extends BalanceContract {
         requireAuth(from);
 
         // Validation
-        // TODO
         check(expiry > currentTimePoint().secSinceEpoch(), "expiry must be in future");
         check(to == new Name() || isAccount(to), "to must be empty or a valid account");
 

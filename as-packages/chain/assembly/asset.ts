@@ -77,7 +77,7 @@ export class Symbol implements Packer {
     }
 
     getSymbolString(): string {
-        let buf = new Array<u8>(7);
+        let buf = new Uint8Array(7);
         let n: i32 = 0;
         let value = this.value;
         for (;;) {
@@ -252,7 +252,7 @@ export class Asset implements Packer {
         check(b.amount >= 0, "bad amount");
         let _a = new U128(<u64>a.amount);
         let _b = new U128(<u64>b.amount);
-        let _c = _a * _b;
+        let _c = U128.mul(_a, _b);
 
         let max_amount = new U128(MAX_AMOUNT);
         // let min_amount = new I128(-MAX_AMOUNT);

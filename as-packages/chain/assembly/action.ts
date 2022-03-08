@@ -17,7 +17,7 @@ export function readActionData(): u8[] {
     return arr;
 }
 
-export function unpackActionData<T>(): T {
+export function unpackActionData<T extends Packer>(): T {
     let data = readActionData()
     let ret = instantiate<T>()
     ret.unpack(data)

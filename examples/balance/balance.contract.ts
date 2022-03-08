@@ -5,9 +5,7 @@ import { Account } from './balance.tables';
 
 @contract(balance)
 export class BalanceContract extends Contract {
-    /**
-     * BALANCE
-     */
+
     @action(withdraw)
     withdraw(
         account: Name,

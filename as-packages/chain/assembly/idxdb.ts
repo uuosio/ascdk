@@ -32,7 +32,7 @@ export class SecondaryValue {
     }
 }
 
-export function newSecondaryValue_double(value: T): SecondaryValue {
+export function newSecondaryValue_double<T extends number>(value: T): SecondaryValue {
     let arr = new Array<u64>(sizeof<T>()/8);
     arr[0] = value;
     return new SecondaryValue(SecondaryType.F64, arr);

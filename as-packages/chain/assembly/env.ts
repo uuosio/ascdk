@@ -7,12 +7,12 @@ export declare function prints(n: usize): void;
 export declare function prints_l(cstr: usize, len: usize): void;
 export declare function printhex(ptr: usize, len: usize): void;
 
-export declare function  printi128(i128_ptr: usize): void;
-export declare function  printui128(i128_ptr: usize): void;
-export declare function  printsf(value: f32): void;
-export declare function  printdf(value: f64): void;
-export declare function  printqf(f128_ptr: usize): void;
-export declare function  printn(name: u64): void;
+export declare function printi128(i128_ptr: usize): void;
+export declare function printui128(i128_ptr: usize): void;
+export declare function printsf(value: f32): void;
+export declare function printdf(value: f64): void;
+export declare function printqf(f128_ptr: usize): void;
+export declare function printn(name: u64): void;
 
 // system
 export declare function get_sender(): u64;

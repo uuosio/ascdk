@@ -1,7 +1,6 @@
 import { check } from "./system";
 import { Decoder, Encoder, Packer } from "./serializer";
 import { Utils } from "./utils";
-import { print } from "./debug"
 
 import * as env from "./env";
 

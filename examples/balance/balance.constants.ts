@@ -1,4 +1,4 @@
-import { ActionWrapper, Name } from "as-chain"
+import { ActionWrapper, Name, packer, Table } from "as-chain"
 
 // Contract
 export const balance = Name.fromString("balance")
@@ -12,3 +12,7 @@ export const transfer = new ActionWrapper(Name.fromString("transfer"))
 
 // External
 export const atomicassets = Name.fromString("atomicassets");
+
+// Include
+@packer
+class empty extends Table { constructor() { super(); } }
