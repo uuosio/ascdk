@@ -50,9 +50,7 @@ export function sendTransferTokens(from: Name, to: Name, tokens: ExtendedAsset[]
  * @param {string} memo - A string that will be stored in the blockchain as the memo for this transfer.
  */
 export function sendTransferNfts(from: Name, to: Name, nfts: u64[], memo: string): void {
-    for (let i = 0; i < nfts.length; i++) {
-        const action = transfer.act(atomicassets, new PermissionLevel(from))
-        const actionParams = new NftTransfer(from, to, nfts, memo)
-        action.send(actionParams)
-    }
+    const action = transfer.act(atomicassets, new PermissionLevel(from))
+    const actionParams = new NftTransfer(from, to, nfts, memo)
+    action.send(actionParams)
 }
