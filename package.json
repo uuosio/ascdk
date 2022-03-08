@@ -1,5 +1,5 @@
 {
-  "name": "eosio-asc",
+  "name": "ascdk",
   "version": "0.1.0",
   "description": "compile assemblyscript to substrate wasm contract",
   "keywords": [

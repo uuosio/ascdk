@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env ts-node-transpile-only
 
 const tailArgs = process.argv.indexOf("--");
 if (~tailArgs) {
@@ -14,7 +14,7 @@ if (~tailArgs) {
 
 try { require("source-map-support").install(); } catch (e) { }
 
-const asc = module.exports = require("eosio-transform/src/asc/asc.js");
+const asc = module.exports = require("eosio-asc/src/asc/asc.js");
 // const asc = module.exports = require("assemblyscript/cli/asc.js");
 const path = require("path");
 const ARGS = [
@@ -30,7 +30,7 @@ const ARGS = [
     "abort= ",
     "-O2",
     "--transform",
-    "eosio-transform/index.ts"
+    "eosio-asc/index.ts"
 ]
 
 if (true) {
@@ -52,7 +52,7 @@ if (true) {
                 let wastPath = path.join(dirname, "target", `${targetName}.wast`);
                 args.push("-b", wasmPath)
                 args.push("-t", wastPath)
-                const ascOption = require("eosio-transform/src/ascoption.js");
+                const ascOption = require("eosio-asc/src/ascoption.js");
                 let apiOption = new ascOption.APIOptionImpl();
                 process.exitCode = asc.main(args, apiOption);
                 apiOption.writeExtensionFile();
@@ -62,5 +62,3 @@ if (true) {
         return process.exitCode
     });
 }
-
-

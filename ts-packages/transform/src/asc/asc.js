@@ -183,7 +183,8 @@ exports.defaultShrinkLevel = 1;
 
 /** Bundled library files. */
 exports.libraryFiles = exports.isBundle ? BUNDLE_LIBRARY : (() => { // set up if not a bundle
-    const libDir = path.join(__dirname, "../../../../node_modules/assemblyscript", "std", "assembly");
+    const nodeModulesFix = __dirname.includes('node_modules/') ? "../" : ""
+    const libDir = path.join(__dirname, nodeModulesFix, "../../../../node_modules/assemblyscript", "std", "assembly");
     const bundled = {};
     find
         .files(libDir, defaultExtension.re_except_d)
@@ -195,8 +196,9 @@ exports.libraryFiles = exports.isBundle ? BUNDLE_LIBRARY : (() => { // set up if
 
 /** Bundled definition files. */
 exports.definitionFiles = exports.isBundle ? BUNDLE_DEFINITIONS : (() => { // set up if not a bundle
+    const nodeModulesFix = __dirname.includes('node_modules/') ? "../" : ""
     const readDefinition = name => fs.readFileSync(
-        path.join(__dirname, "../../../../node_modules/assemblyscript", "std", name, "index" + defaultExtension.ext_d),
+        path.join(__dirname, nodeModulesFix, "../../../../node_modules/assemblyscript", "std", name, "index" + defaultExtension.ext_d),
         "utf8"
     );
     return {

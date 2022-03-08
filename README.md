@@ -1,7 +1,9 @@
 # AssemblyScript Smart Contracts Development Kit
 
+## Boilerplate
+Boilerplate to build your own contract: https://github.com/jafri/ascdk-minimal
 
-Run HelloWorld example.
+## Run HelloWorld example.
 
 ```bash
 python3 -m pip install ipyeos
