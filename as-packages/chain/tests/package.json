@@ -35,7 +35,8 @@
     "test:print": "npx eosio-asc testprint.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_print",
     "test:transaction": "npx eosio-asc testtransaction.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_tx",
     "test:singleton": "npx eosio-asc testsingleton.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_singleton",
-    "test:variant": "npx eosio-asc testvariant.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_variant"
+    "test:variant": "npx eosio-asc testvariant.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_variant",
+    "test:gencode": "npx eosio-asc testgencode.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_gencode"
   },
   "dependencies": {
     "@assemblyscript/loader": "^0.19.22",

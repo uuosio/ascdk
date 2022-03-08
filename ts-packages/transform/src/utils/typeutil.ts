@@ -56,24 +56,22 @@ export class TypeHelper {
         ["u32", "uint32"],
         ["i64", "int64"],
         ["u64", "uint64"],
+        
+        ["f32", "float32"],
+        ["f64", "float64"],
+        
+        ["u8[]", "bytes"],
+        ["string", "string"],
+
         ["I128", "int128"],
         ["U128", "uint128"],
         ["VarInt32", "varint32"],
         ["VarUint32", "varuint32"],
-        
-        ["f32", "float32"],
-        ["f64", "float64"],
-        ["Float128", "float128"],
-        
+        ["Float128", "float128"],        
         ["TimePoint", "time_point"],
-        
         ["TimePointSec", "time_point_sec"],
-        ["BlockTimestampType", "block_timestamp_type"],
-        
+        ["BlockTimestampType", "block_timestamp_type"],        
         ["Name", "name"],
-        
-        ["u8[]", "bytes"],
-        ["string", "string"],
         
         ["Checksum160", "checksum160"],
         ["Checksum256", "checksum256"],
@@ -85,6 +83,27 @@ export class TypeHelper {
         ["SymbolCode", "symbol_code"],
         ["Asset", "asset"],
         ["ExtendedAsset", "extended_asset"],
+
+        ["chain.I128", "int128"],
+        ["chain.U128", "uint128"],
+        ["chain.VarInt32", "varint32"],
+        ["chain.VarUint32", "varuint32"],
+        ["chain.Float128", "float128"],        
+        ["chain.TimePoint", "time_point"],
+        ["chain.TimePointSec", "time_point_sec"],
+        ["chain.BlockTimestampType", "block_timestamp_type"],        
+        ["chain.Name", "name"],
+        
+        ["chain.Checksum160", "checksum160"],
+        ["chain.Checksum256", "checksum256"],
+        ["chain.U256", "checksum256"],
+        ["chain.Checksum512", "checksum512"],
+        ["chain.PublicKey", "public_key"],
+        ["chain.Signature", "signature"],
+        ["chain.Symbol", "symbol"],
+        ["chain.SymbolCode", "symbol_code"],
+        ["chain.Asset", "asset"],
+        ["chain.ExtendedAsset", "extended_asset"],
     ]);
 
 

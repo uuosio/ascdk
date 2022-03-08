@@ -72,3 +72,16 @@ def test_codegen():
     r = chain.push_action('hello', 'testgencode2', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
     chain.produce_block()
+
+def test_inspect():
+    code, abi = get_code_and_abi('testinspection')
+    chain.deploy_contract('hello', code, abi, 0)
+
+    args = dict(
+        a1={"data": {"name":"hello", "asset": "1.0000 EOS"}},
+        a2={"a": 123, "b": {"data": {"name":"hello", "asset": "1.0000 EOS"}}}
+    )
+
+    r = chain.push_action('hello', 'testgencode', args, {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])
+    chain.produce_block()

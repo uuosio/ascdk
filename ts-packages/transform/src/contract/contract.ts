@@ -31,11 +31,12 @@ export class ContractProgram {
     program: Program;
     contract!: ContractInterpreter;
     tables: TableInterpreter[] = [];
-    serializers: SerializerInterpreter[] = [];
+    serializers: ClassInterpreter[] = [];
     optionals: SerializerInterpreter[] = [];
     binaryExtensions: SerializerInterpreter[] = [];
     variants: SerializerInterpreter[] = [];
-    customAbiTypes: ClassInterpreter[] = [];
+    customAbiTypes: SerializerInterpreter[] = [];
+    allClasses: ClassInterpreter[] = [];
 
     public definedTypeMap: Map<string, NamedTypeNodeDef> = new Map<string, NamedTypeNodeDef>();
 
@@ -48,6 +49,10 @@ export class ContractProgram {
         let countContract = 0;
 
         this.program.elementsByName.forEach((element, _) => {
+            if (ElementUtil.isClass(element)) {
+                this.allClasses.push(new ClassInterpreter(<ClassPrototype>element));
+            }
+
             if (ElementUtil.isTopContractClass(element)) {
                 countContract ++;
                 this.contract = new ContractInterpreter(<ClassPrototype>element);
@@ -59,11 +64,13 @@ export class ContractProgram {
             if (ElementUtil.isTableClassPrototype(element)) {
                 let intercepter = new TableInterpreter(<ClassPrototype>element);
                 this.tables.push(intercepter);
+                this.CheckClassFields(intercepter);
             }
 
             if (ElementUtil.isSerializerClassPrototype(element)) {
                 let intercepter = new SerializerInterpreter(<ClassPrototype>element);
-                this.serializers.push(intercepter);
+                this.AddSerializer(intercepter);
+                this.CheckClassFields(intercepter);
             }
 
             if (ElementUtil.isOptionalClassPrototype(element)) {
@@ -101,6 +108,7 @@ export class ContractProgram {
                     fieldMap.set(tp, true);
                 })
                 this.variants.push(intercepter);
+                this.CheckClassFields(intercepter);
             }
         });
 
@@ -108,7 +116,61 @@ export class ContractProgram {
             throw new Error(`The entry file should contain only one '@contract', in fact it has ${countContract}`);
         }
 
+        this.contract!.actionFuncDefs.forEach(func => {
+            func.parameters.forEach(para => {
+                let cls = this.allClasses.find(cls => {
+                     return cls.className == para.type.plainTypeNode;
+                });
+                if (cls) {
+                    cls = new SerializerInterpreter(cls.classPrototype)
+                    this.AddSerializer(cls);
+                    this.CheckClassFields(cls);
+                }
+            });
+        });
+
         this.setTypeSequence();
+    }
+
+    private CheckClassFields(cls: ClassInterpreter) {
+        cls.fields.forEach(field => {
+            let cls2 = this.allClasses.find(cls2 => {
+                return cls2.className == field.type.plainTypeNode
+            });
+
+            if (cls2) {
+                cls2 = new SerializerInterpreter(cls2.classPrototype)
+                this.AddSerializer(cls2);
+                this.CheckClassFields(cls2);
+            }
+        });
+    }
+
+    private AddSerializer(cls: ClassInterpreter) {
+        if (TypeHelper.primitiveToAbiMap.get(cls.className)) {
+            return
+        }
+
+        if (this.tables.find(x2 => x2.className == cls.className)) {
+            return
+        }
+
+        if (this.variants.find(x2 => x2.className == cls.className)) {
+            return
+        }
+
+        if (this.optionals.find(x2 => x2.className == cls.className)) {
+            return
+        }
+
+        if (this.binaryExtensions.find(x2 => x2.className == cls.className)) {
+            return
+        }
+
+        if (this.serializers.find(x => x.className == cls.className)) {
+            return
+        }
+        this.serializers.push(cls);
     }
 
     private setTypeSequence(): void {
@@ -123,34 +185,7 @@ export class ContractProgram {
             return tp;
         }
 
-        let cls = <ClassInterpreter>this.serializers.find(x => {
-            return x.className == plainType;
-        });
-
-        if (!cls) {
-            cls = <ClassInterpreter>this.tables.find(x => {
-                return x.className == plainType;
-            });
-        }
-
-        if (cls) {
-            if (!this.customAbiTypes.find(x => {
-                return x.className == plainType;
-            })) {
-                this.customAbiTypes.push(cls);
-            }
-            return cls.className;
-        }
-
-        cls = <ClassInterpreter>this.variants.find(x => {
-            return x.className == plainType;
-        });
-
-        if (cls) {
-            return cls.className;
-        }
-
-        cls = <ClassInterpreter>this.optionals.find(x => {
+        let cls = <ClassInterpreter>this.optionals.find(x => {
             return x.className == plainType;
         });
 
@@ -173,7 +208,30 @@ export class ContractProgram {
                 return type + "$";
             }
         }
+
+        cls = <ClassInterpreter>this.allClasses.find(x => {
+            return x.className == plainType;
+        });
+
+        if (cls) {
+            return cls.className;
+        }
         return "";
+    }
+
+    addAbiClass(cls: SerializerInterpreter) {
+        if (this.customAbiTypes.find(x => x.className == cls.className)) {
+            return;
+        }
+        this.customAbiTypes.push(cls);
+
+        cls.fields.forEach(x => {
+            this.allClasses.forEach(x2 => {
+                if (x2.className == x.type.plainTypeNode) {
+                    this.addAbiClass(new SerializerInterpreter(x2.classPrototype))
+                }
+            });
+        });
     }
 
     parseField(name: string, type: NamedTypeNodeDef) {
@@ -199,8 +257,49 @@ export class ContractProgram {
         return abiField;
     }
     
+    findClass(className: string) {
+        if (TypeHelper.primitiveToAbiMap.get(className)) {
+            return
+        }
+
+        let cls = this.allClasses.find(cls => {
+            return cls.className == className;
+        });
+        if (cls) {
+            return new SerializerInterpreter(cls.classPrototype);
+        }
+    }
+
+    findAllAbiTypes() {
+        [
+            this.variants,
+            this.tables,
+            this.optionals,
+            this.binaryExtensions
+        ].forEach(classes => {
+            classes.forEach(cls => {
+                cls.fields.forEach(field => {
+                    let fieldClassType = this.findClass(field.type.plainTypeNode)
+                    if (fieldClassType) {
+                        this.addAbiClass(fieldClassType);
+                    }
+                });
+            });
+        })
+
+        this.contract.actionFuncDefs.forEach(func => {
+            func.parameters.forEach(parameter => {
+                let cls = this.findClass(parameter.type.plainTypeNode)
+                if (cls) {
+                    this.addAbiClass(cls);
+                }
+            });
+        });
+    }
+
     getAbiInfo() {
         let abi = new ABI();
+        this.findAllAbiTypes();
 
         this.variants.forEach((variant, i) => {
             let def = new VariantDef();

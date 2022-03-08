@@ -229,3 +229,12 @@ def test_variant():
     r = chain.push_action('hello', 'test2', b'', {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
     chain.produce_block()
+
+def test_gencode():
+    code, abi = get_code_and_abi('testgencode')
+    chain.deploy_contract('hello', code, abi, 0)
+
+    args = b''
+    r = chain.push_action('hello', 'test', args, {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])
+    chain.produce_block()

@@ -23,6 +23,13 @@ import { getCustomDecoratorKind } from "../contract/decorator";
 import { ContractDecoratorKind } from "../enums/decorator";
 import { Strings } from "./primitiveutil";
 export class ElementUtil {
+    static isClass(element: Element): boolean {
+        if (element.kind == ElementKind.CLASS_PROTOTYPE) {
+            return true
+        }
+        return false;
+    }
+
     static isTopContractClass(element: Element): boolean {
         if (element.kind == ElementKind.CLASS_PROTOTYPE) {
             let clzPrototype = <ClassPrototype>element;

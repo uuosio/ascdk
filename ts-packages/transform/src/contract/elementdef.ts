@@ -139,7 +139,6 @@ export class MessageDecoratorNodeDef extends DecoratorNodeDef {
                 throw new Error(`Decorator: Invalid action decorator. Trace: ${RangeUtil.location(decorator.range)} `);
             }
 
-            // TODO: verify name
             this.actionName = AstUtil.getIdentifier(decorator.args[0]);
             if (!EosioUtils.isValidName(this.actionName)) {
                 throw new Error(`Decorator: Invalid action name. Trace: ${RangeUtil.location(decorator.range)} `);

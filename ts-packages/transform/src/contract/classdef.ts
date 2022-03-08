@@ -49,6 +49,10 @@ export class ClassInterpreter {
     }
 
     resolveFieldMembers(): void {
+        if (this.fields.length > 0) {
+            return;
+        }
+
         this.classPrototype.instanceMembers &&
             this.classPrototype.instanceMembers.forEach((element, _) => {
                 if (element.kind == ElementKind.FIELD_PROTOTYPE) {
@@ -58,6 +62,10 @@ export class ClassInterpreter {
     }
 
     resolveFunctionMembers(): void {
+        if (this.functions.length > 0) {
+            return;
+        }
+
         this.classPrototype.instanceMembers &&
             this.classPrototype.instanceMembers.forEach((element, _) => {
                 if (element.kind == ElementKind.FUNCTION_PROTOTYPE) {

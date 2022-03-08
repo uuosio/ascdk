@@ -20,8 +20,9 @@
   ],
   "scripts": {
     "build": "yarn build:release",
+    "test": "run-p test:* --max-parallel 1",
     "test:codegen": "npx eosio-asc testcodegen.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_codegen",
-    "test": "yarn test:codegen"
+    "test:inspect": "npx eosio-asc testinspection.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_inspect"
   },
   "dependencies": {
     "@assemblyscript/loader": "^0.19.22",
