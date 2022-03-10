@@ -1,5 +1,5 @@
 import { Decoder, Packer } from "./serializer";
-
+import { check } from "./system"
 const charToSymbol = (c: u16): u16 => {
     if (c >= 97 && c <= 122) {// c >= 'a' && c <= 'z'
         return (c - 97) + 6;
@@ -21,9 +21,8 @@ export function S2N(s: string): u64 {
         let c: u64 = 0;
         if (i < s.length && i <= 12) {
             c = <u64>charToSymbol(<u16>s.charCodeAt(i));
-            if (c==0xffff) {
-                return 0;
-            }
+            check(c!=0xffff, `invalid name ${s}`);
+            return 0;
         }
         if (i < 12) {
             c &= 0x1f;
@@ -76,6 +75,10 @@ export class Name implements Packer {
 
     @inline static fromString(s: string): Name {
         return new Name(S2N(s));
+    }
+
+    @inline static fromU64(n: u64): Name {
+        return new Name(n);
     }
 
     toString(): string {
