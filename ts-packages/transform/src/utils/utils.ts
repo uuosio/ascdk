@@ -19,6 +19,7 @@ import {
     LiteralKind,
     StringLiteralExpression
 } from "assemblyscript";
+
 import { getCustomDecoratorKind } from "../contract/decorator";
 import { ContractDecoratorKind } from "../enums/decorator";
 import { Strings } from "./primitiveutil";
@@ -316,11 +317,11 @@ export class EosioUtils {
 
     public static nameToBytes(s: string): Uint8Array {
         if (typeof s !== 'string') {
-            throw new Error('Expected string containing name');
+            throw new Error(`Expected string containing name:${s}`);
         }
         const regex = new RegExp(/^[.1-5a-z]{0,12}?$/);
         if (!regex.test(s)) {
-            throw new Error('Name should be less than 13 characters and only contain the following symbols .12345abcdefghijklmnopqrstuvwxyz'); // eslint-disable-line
+            throw new Error(`${s}: Name should be less than 13 characters and only contain the following symbols .12345abcdefghijklmnopqrstuvwxyz`); // eslint-disable-line
         }
         const charToSymbol = (c: number): number => {
             if (c >= 'a'.charCodeAt(0) && c <= 'z'.charCodeAt(0)) {
