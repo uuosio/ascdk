@@ -994,6 +994,12 @@ as-bignum@^0.2.18:
   resolved "https://registry.yarnpkg.com/as-bignum/-/as-bignum-0.2.18.tgz#61ed4dd07d4a62107bde227fdb4370190217bf0b"
   integrity sha512-5LODrOr7wvS643oh7PHfyRtbBO9vCcU69vNNvrqh5yovrApM9nRHDeT5XcqnaSI8TqK9ZhN12qhZnq4rdIGcwQ==
 
+as-chain@./as-packages/chain:
+  version "0.0.2"
+  dependencies:
+    "@assemblyscript/loader" "^0.19.22"
+    as-bignum "^0.2.18"
+
 as-chain@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/as-chain/-/as-chain-0.0.1.tgz#b234417899f238376ce6fc72e46de58d671da31a"
