@@ -39,6 +39,15 @@ def get_code_and_abi(entryName):
         abi = f.read()
     return (code, abi)
 
+
+def test_name():
+    (code, abi) = get_code_and_abi('testname')
+    chain.deploy_contract('hello', code, abi, 0)
+
+    args = dict()
+    r = chain.push_action('hello', 'test', args, {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])
+
 def test_1serializer():
     # info = chain.get_account('helloworld11')
     # logger.info(info)
