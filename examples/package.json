@@ -45,7 +45,7 @@
   "dependencies": {
     "@assemblyscript/loader": "^0.19.22",
     "as-bignum": "^0.2.18",
-    "as-chain": "0.0.1"
+    "as-chain": "./as-packages/chain"
   },
   "devDependencies": {
     "assemblyscript": "^0.19.22",

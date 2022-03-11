@@ -319,7 +319,7 @@ export class EosioUtils {
         if (typeof s !== 'string') {
             throw new Error(`Expected string containing name:${s}`);
         }
-        const regex = new RegExp(/^[.1-5a-z]{0,12}?$/);
+        const regex = new RegExp(/^[.1-5a-z]{0,12}[.1-5a-j]?$/);
         if (!regex.test(s)) {
             throw new Error(`${s}: Name should be less than 13 characters and only contain the following symbols .12345abcdefghijklmnopqrstuvwxyz`); // eslint-disable-line
         }

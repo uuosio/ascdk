@@ -1000,14 +1000,6 @@ as-chain@./as-packages/chain:
     "@assemblyscript/loader" "^0.19.22"
     as-bignum "^0.2.18"
 
-as-chain@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/as-chain/-/as-chain-0.0.1.tgz#b234417899f238376ce6fc72e46de58d671da31a"
-  integrity sha512-r98OUUjXkaMKJdBfkH5/njwlqfbUFsg2h7HDlUbAsYkdxyOdwxc/nZoayRtYItwzCjdoCYqY1c8JCpSp3A6oQQ==
-  dependencies:
-    "@assemblyscript/loader" "^0.19.22"
-    as-bignum "^0.2.18"
-
 assemblyscript@0.18:
   version "0.18.32"
   resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.18.32.tgz#cbb76076bd4d9702f4baae0a2910c9755c8e4ecd"
