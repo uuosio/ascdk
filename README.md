@@ -3,13 +3,30 @@
 ## Boilerplate
 Boilerplate to build your own contract: https://github.com/jafri/ascdk-minimal
 
-## Run HelloWorld example.
 
-```bash
+## Installation
+```
+npm i eosio-asc
+```
+
+## Tests
+
+### Install python packages
+```
+python3 -m venv ~/env                                                                               
+source ~/env/bin/activate
+```
+
+```
+python3 -m pip install --upgrade pip
 python3 -m pip install ipyeos
-yarn
+run-ipyeos -m pip install pytest
+```
+
+## Run HelloWorld example test
+```bash
 cd examples
-yarn test-hello
+npm run test:hello
 ```
 
 
