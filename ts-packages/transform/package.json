@@ -13,7 +13,7 @@
     "eosio-asc": "bin/eosio-asc.js"
   },
   "dependencies": {
-    "as-chain": "^0.0.2",
+    "as-chain": "./as-packages/chain",
     "assemblyscript": "0.18",
     "handlebars": "4.7.7",
     "ts-dedent": "^2.2.0"
