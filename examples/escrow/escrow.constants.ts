@@ -5,7 +5,7 @@ export const escrow = Name.fromString("escrow")
 
 // Tables
 export const escrows = Name.fromString("escrows")
-export const accounts = Name.fromString("escraccountsow")
+export const accounts = Name.fromString("escraccounts")
 export const globall = Name.fromString("globall")
 
 // Actions

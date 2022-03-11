@@ -17,6 +17,7 @@ const charToSymbol = (c: u16): u16 => {
 
 export function S2N(s: string): u64 {
     let value: u64 = 0;
+    check(s.length <= 13, `Invalid name: ${s}`);
     for (let i=0; i<=12; i++) {
         let c: u64 = 0;
         if (i < s.length && i <= 12) {
