@@ -15,5 +15,18 @@ class MyContract extends Contract{
 
         let a = "zzzzzzzzzzzzj";
         check(Name.fromString(a).toString() == a, "bad value");
+
+        {
+            let a = Name.fromString("aaa");
+            let b = Name.fromString("aab");
+            check(a < b, "bad value");
+            check(b > a, "bad value");
+
+            check(a <= b, "bad value");
+            check(b >= a, "bad value");
+
+            check(a != b, "bad value");
+            check(!(a == b), "bad value"); 
+        }
     }
 }

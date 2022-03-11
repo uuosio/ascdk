@@ -112,4 +112,24 @@ export class Name implements Packer {
     static neq(a: Name, b: Name): bool {
         return a.N != b.N;
     }
+
+    @inline @operator('<')
+    static lt(a: Name, b: Name): bool {
+        return a.N < b.N;
+    }
+  
+    @inline @operator('>')
+    static gt(a: Name, b: Name): bool {
+        return a.N > b.N;
+    }
+  
+    @inline @operator('<=')
+    static lte(a: Name, b: Name): bool {
+        return a.N <= b.N;
+    }
+  
+    @inline @operator('>=')
+    static gte(a: Name, b: Name): bool {
+        return a.N >= b.N;
+    }
 }
