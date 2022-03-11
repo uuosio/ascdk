@@ -21,8 +21,10 @@ export function S2N(s: string): u64 {
         let c: u64 = 0;
         if (i < s.length && i <= 12) {
             c = <u64>charToSymbol(<u16>s.charCodeAt(i));
-            check(c!=0xffff, `invalid name ${s}`);
-            return 0;
+            if (c==0xffff) {
+                check(false, `invalid name ${s}`);
+                return 0;
+            }
         }
         if (i < 12) {
             c &= 0x1f;
