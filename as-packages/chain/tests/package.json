@@ -23,7 +23,7 @@
     "build:debug": "npx asc assembly/index.ts -b build/debug/chain.wasm -t build/debug/chain.wat --debug --sourceMap --runtime stub",
     "build:release": "npx asc assembly/index.ts -b build/release/chain.wasm -t build/release/chain.wat -O3 --sourceMap --runtime stub",
 
-    "test": "run-p test:* --max-parallel 3",
+    "test": "run-p test:* --max-parallel 1",
     "test:publickey": "npx eosio-asc testpublickey.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_publickey",
     "test:table": "npx eosio-asc testtable.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_table",
     "test:asset": "npx eosio-asc testasset.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_asset",
