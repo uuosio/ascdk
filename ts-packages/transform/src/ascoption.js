@@ -7,6 +7,52 @@ const path = require("path");
 const fs = require("fs");
 const { CONFIG } = require("./config/compile");
 
+const { EosioUtils } = require("./utils/utils");
+
+function optimizeCode(code) {
+    var codeSegments = [];
+    var index = 0;
+    var segmentStart = 0;
+    var segmentEnd = 0;
+    var keyWord = "Name.fromString";
+    do {
+        index = code.indexOf(keyWord, index);
+        if (index < 0) {
+            break;
+        }
+
+        var start = code.indexOf('(', index);
+        start += 1;
+        var end = code.indexOf(')', start + 1);
+        segmentEnd = end;
+
+        var name = code.substring(start, end);
+        start = name.indexOf('"');
+        if (start >= 0) {
+            end = name.indexOf('"', start+1);
+        } else {
+            start = name.indexOf("'", start);
+            end = name.indexOf("'", start+1);
+        }
+
+        if (start < 0) {
+            index += 1;
+            continue;
+        }
+
+        name = name.substring(start + 1, end);
+        name = EosioUtils.nameToHexString(name);
+        codeSegments.push(code.substring(segmentStart, index));
+        codeSegments.push(`Name.fromU64(${name})`);
+        index = index + 1;
+        segmentStart = segmentEnd + 1;
+    } while (true);
+
+    codeSegments.push(code.substring(segmentStart));
+    code = codeSegments.join('');
+    return code;
+}
+
 function modifySourceText(sourceText, point) {
     if (point.mode == preprocess_1.ModifyType.REPLACE) {
         var prefix = sourceText.substring(0, point.range.start);
@@ -29,28 +75,33 @@ var APIOptionImpl = /** @class */ (function () {
     }
     APIOptionImpl.prototype.readFile = function (filename, baseDir) {
         var name = path.resolve(baseDir, filename);
+        var text_1;
         try {
-            var text_1 = fs.readFileSync(name, "utf8");
-            var sourceModifier = process.sourceModifier ? process.sourceModifier : new preprocess_1.SourceModifier();
-            let relativePath = path.relative(baseDir, name).split("\\").join("/");
-            if (sourceModifier.fileExtMap.has(relativePath)) {
-                var extCodes = sourceModifier.fileExtMap.get(relativePath);
-                extCodes.sort((a, b) => {
-                    if (a.mode != b.mode) return a.mode - b.mode;
-                    return (b.range.end - a.range.end); 
-                }).forEach(function (item) {
-                    text_1 = modifySourceText(text_1, item);
-                });
-                let importLang = `import * as _chain from "as-chain";\n`;
-                text_1 = importLang + text_1;
-                sourceModifier.fileExtension.set(filename, text_1);
-                // console.log(`The file ${filename} extension: ${text_1}`);
-            }
-            return text_1;
+            text_1 = fs.readFileSync(name, "utf8");
         }
         catch (e) {
+            // console.log(e);
             return null;
         }
+
+        var sourceModifier = process.sourceModifier ? process.sourceModifier : new preprocess_1.SourceModifier();
+        let relativePath = path.relative(baseDir, name).split("\\").join("/");
+        if (sourceModifier.fileExtMap.has(relativePath)) {
+            var extCodes = sourceModifier.fileExtMap.get(relativePath);
+            extCodes.sort((a, b) => {
+                if (a.mode != b.mode) return a.mode - b.mode;
+                return (b.range.end - a.range.end); 
+            }).forEach(function (item) {
+                text_1 = modifySourceText(text_1, item);
+            });
+            let importLang = `import * as _chain from "as-chain";\n`;
+            text_1 = importLang + text_1;
+            text_1 = optimizeCode(text_1);
+            sourceModifier.fileExtension.set(filename, text_1);
+            // console.log(`The file ${filename} extension: ${text_1}`);
+        }
+        return text_1;
+
     };
 
     APIOptionImpl.prototype.writeExtensionFile = function (baseDir) {
