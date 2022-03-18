@@ -21,9 +21,9 @@
     "prettify": "prettier -w ./**/*.ts --config ./.prettierrc.js",
     "checks": "yarn checks:transform",
     "checks:transform": "yarn --cwd ./ts-packages/transform checks",
-    "test:chain": "yarn --cwd ./as-packages/chain/tests test",
-    "test:examples": "yarn --cwd ./examples test",
     "test:codegen": "yarn --cwd ./ts-packages/tests test",
+    "test:chain": "yarn --cwd ./as-packages/chain/tests test-all",
+    "test:examples": "yarn --cwd ./examples test-all",
     "test": "yarn test:chain && yarn test:examples && yarn test:codegen"
   },
   "private": true,

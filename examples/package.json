@@ -19,7 +19,7 @@
     "assemblyscript"
   ],
   "scripts": {
-    "test": "run-p test:* --max-parallel 1",
+    "test-all": "yarn build && run-ipyeos -m pytest -s -x test.py",
     "test:hello": "yarn build:hello && run-ipyeos -m pytest -s -x test.py -k test_hello",
     "test:inlineaction": "yarn build:inlineaction && run-ipyeos -m pytest -s -x test.py -k test_action",
     "test:counter": "yarn build:counter && run-ipyeos -m pytest -s -x test.py -k test_counter",
@@ -30,7 +30,7 @@
     "test:escrow": "yarn build:escrow && run-ipyeos -m pytest -s -x test.py -k test_escrow",
     "test:balance": "yarn build:balance && yarn build:receiver && run-ipyeos -m pytest -s -x test.py -k test_balance",
 
-    "build": "run-p build:*",
+    "build": "run-p build:* --max-parallel 3",
     "build:hello": "npx eosio-asc ./hello/hello.ts",
     "build:inlineaction": "npx eosio-asc ./inlineaction/inlineaction.ts",
     "build:counter": "npx eosio-asc ./counter/counter.ts",

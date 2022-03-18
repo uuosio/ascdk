@@ -11,26 +11,34 @@ from ipyeos.chaintester import ChainTester
 
 logger = log.get_logger(__name__)
 
-chain = ChainTester()
+chain = None
+def chain_test(fn):
+    def call(*args, **vargs):
+        global chain
+        chain = ChainTester()
 
-test_account1 = 'hello'
-a = {
-    "account": test_account1,
-    "permission": "active",
-    "parent": "owner",
-    "auth": {
-        "threshold": 1,
-        "keys": [
-            {
-                "key": 'EOS6AjF6hvF7GSuSd4sCgfPKq5uWaXvGM2aQtEUCwmEHygQaqxBSV',
-                "weight": 1
+        test_account1 = 'hello'
+        a = {
+            "account": test_account1,
+            "permission": "active",
+            "parent": "owner",
+            "auth": {
+                "threshold": 1,
+                "keys": [
+                    {
+                        "key": 'EOS6AjF6hvF7GSuSd4sCgfPKq5uWaXvGM2aQtEUCwmEHygQaqxBSV',
+                        "weight": 1
+                    }
+                ],
+                "accounts": [{"permission":{"actor":test_account1,"permission": 'eosio.code'}, "weight":1}],
+                "waits": []
             }
-        ],
-        "accounts": [{"permission":{"actor":test_account1,"permission": 'eosio.code'}, "weight":1}],
-        "waits": []
-    }
-}
-chain.push_action('eosio', 'updateauth', a, {test_account1:'active'})
+        }
+        chain.push_action('eosio', 'updateauth', a, {test_account1:'active'})
+        ret = fn(*args, **vargs)
+        chain.free()
+        return ret
+    return call
 
 def get_code_and_abi(entryName):
     with open('./target/' + entryName + '.wasm', 'rb') as f:
@@ -39,7 +47,7 @@ def get_code_and_abi(entryName):
         abi = f.read()
     return (code, abi)
 
-
+@chain_test
 def test_name():
     (code, abi) = get_code_and_abi('testname')
     chain.deploy_contract('hello', code, abi, 0)
@@ -48,6 +56,7 @@ def test_name():
     r = chain.push_action('hello', 'test', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
 
+@chain_test
 def test_1serializer():
     # info = chain.get_account('helloworld11')
     # logger.info(info)
@@ -98,6 +107,7 @@ def test_1serializer():
     logger.info('++++++elapsed: %s', r['elapsed'])
     chain.produce_block()
 
+@chain_test
 def test_mi():
     # info = chain.get_account('helloworld11')
     # logger.info(info)
@@ -111,6 +121,7 @@ def test_mi():
     r = chain.push_action('hello', 'testmi', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
 
+@chain_test
 def test_action():
     # info = chain.get_account('helloworld11')
     # logger.info(info)
@@ -132,6 +143,7 @@ def test_action():
     )
     r = chain.push_action('hello', 'testgencode', args, {'hello': 'active'})
 
+@chain_test
 def test_asset():
     (code, abi) = get_code_and_abi('testasset')
     chain.deploy_contract('hello', code, abi, 0)
@@ -140,6 +152,7 @@ def test_asset():
     logger.info('++++++elapsed: %s', r['elapsed'])
     logger.info('test_asset done!')
 
+@chain_test
 def test_table():
     (code, abi) = get_code_and_abi('testtable')
     chain.deploy_contract('hello', code, abi, 0)
@@ -151,6 +164,7 @@ def test_table():
     logger.info(ret)
     assert ret['rows'][0]['a'] == 1 and ret['rows'][0]['b'] == 2, "bad value"
 
+@chain_test
 def test_publickey():
     (code, abi) = get_code_and_abi('testpublickey')
     chain.deploy_contract('hello', code, abi, 0)
@@ -164,6 +178,7 @@ def test_publickey():
     r = chain.push_action('hello', 'testpub', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
 
+@chain_test
 def test_crypto():
     (code, abi) = get_code_and_abi('testcrypto')
     chain.deploy_contract('hello', code, abi, 0)
@@ -176,6 +191,7 @@ def test_crypto():
     r = chain.push_action('hello', 'test', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
 
+@chain_test
 def test_system():
     (code, abi) = get_code_and_abi('testsystem')
     chain.deploy_contract('hello', code, abi, 0)
@@ -188,6 +204,7 @@ def test_system():
     logger.info('++++++elapsed: %s', r['elapsed'])
     chain.produce_block()
 
+@chain_test
 def test_print():
     (code, abi) = get_code_and_abi('testprint')
     chain.deploy_contract('hello', code, abi, 0)
@@ -200,6 +217,7 @@ def test_print():
     logger.info('++++++elapsed: %s', r['elapsed'])
     chain.produce_block()
 
+@chain_test
 def test_tx():
     code, abi = get_code_and_abi('testtransaction')
     chain.deploy_contract('hello', code, abi, 0)
@@ -211,6 +229,7 @@ def test_tx():
     logger.info('++++++elapsed: %s', r['elapsed'])
     chain.produce_block()
 
+@chain_test
 def test_singleton():
     code, abi = get_code_and_abi('testsingleton')
     chain.deploy_contract('hello', code, abi, 0)
@@ -222,6 +241,7 @@ def test_singleton():
     logger.info('++++++elapsed: %s', r['elapsed'])
     chain.produce_block()
 
+@chain_test
 def test_variant():
     code, abi = get_code_and_abi('testvariant')
     chain.deploy_contract('hello', code, abi, 0)
@@ -239,6 +259,7 @@ def test_variant():
     logger.info('++++++elapsed: %s', r['elapsed'])
     chain.produce_block()
 
+@chain_test
 def test_gencode():
     code, abi = get_code_and_abi('testgencode')
     chain.deploy_contract('hello', code, abi, 0)
