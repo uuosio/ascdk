@@ -34,6 +34,11 @@ const numberTypeMap: Map<string, string> = new Map([
 Handlebars.registerHelper("generateActionMember", function (fn: ParameterNodeDef) {
     let code: string[] = [];
     let plainType = fn.type.plainTypeNode;
+
+    if (fn.type.typeNode.isNullable) {
+        plainType = plainType.split('|')[0].trim();
+    }
+
     if (plainType == 'string') {
         code.push(`${fn.name}: string = "";`);
     } else if (plainType == 'string[]') {
@@ -60,7 +65,15 @@ Handlebars.registerHelper("generateActionParam", function (fn: ParameterNodeDef)
         if (TypeHelper.isPrimitiveType(fn.type.typeKind)) {
             code.push(`${fn.name}: ${plainType} = 0,`);
         } else {
-            code.push(`${fn.name}: ${plainType} | null = null,`);
+            if (fn.type.typeNode.isNullable) {
+                if (plainType.indexOf('null') > 0) {
+                    code.push(`${fn.name}: ${plainType} = null,`);
+                } else {
+                    code.push(`${fn.name}: ${plainType} | null = null,`);
+                }
+            } else {
+                code.push(`${fn.name}: ${plainType} | null = null,`);
+            }
         }
     }
 
@@ -77,6 +90,9 @@ function fieldSerialize(name: string, type: NamedTypeNodeDef) {
     let code: string[] = [];
     if (type.typeKind == TypeKindEnum.ARRAY) {
         let plainType = type.plainTypeNode;
+        if (type.typeNode.isNullable) {
+            plainType = plainType.split('|')[0].trim();
+        }
         if (plainType.indexOf('Array<') >= 0) {
             plainType = plainType.replace('Array<', '').replace('>', '');
         } else {
@@ -94,6 +110,9 @@ function fieldSerialize(name: string, type: NamedTypeNodeDef) {
         throw Error(`map type is not supported currently!Trace ${RangeUtil.location(type.typeNode.range)}`);
     } else {
         let plainType = type.plainTypeNode;
+        if (type.typeNode.isNullable) {
+            plainType = plainType.split('|')[0].trim();
+        }
         let numType = numberTypeMap.get(plainType);
         if (numType) {
             code.push(`enc.packNumber<${numType}>(this.${name});`);
@@ -112,6 +131,10 @@ function fieldDeserialize(name: string, type: NamedTypeNodeDef) {
     let code: string[] = [];
     if (type.typeKind == TypeKindEnum.ARRAY) {
         let plainType = type.plainTypeNode;
+        if (type.typeNode.isNullable) {
+            plainType = plainType.split('|')[0].trim();
+        }
+
         if (plainType.indexOf('Array<') >= 0) {
             plainType = plainType.replace('Array<', '').replace('>', '');
         } else {
@@ -139,6 +162,9 @@ function fieldDeserialize(name: string, type: NamedTypeNodeDef) {
         throw Error(`map is not supported currently!Trace: ${RangeUtil.location(type.typeNode.range)}`);
     } else {
         let plainType = type.plainTypeNode;
+        if (type.typeNode.isNullable) {
+            plainType = plainType.split('|')[0].trim();
+        }
         let numType = numberTypeMap.get(plainType);
         if (numType) {
             code.push(`this.${name} = dec.unpackNumber<${numType}>();`);
@@ -415,16 +441,31 @@ Handlebars.registerHelper("actionParameterGetSize", function (field: ParameterNo
 
 function handleAction(action: ActionFunctionDef): string {
     let parameters: string[] = [];
-    action.parameters.forEach(parameter => {
-        parameters.push(`args.${parameter.name}`, );
-    });
+    let unpackCode = '';
+    if (action.messageDecorator.ignore) {
+        action.parameters.forEach(parameter => {
+            if (TypeHelper.isStringType(parameter.type.typeKind)) {
+                parameters.push(`""`, );
+            } else if (TypeHelper.isNumberType(parameter.type.typeKind)) {
+                parameters.push(`0`, );
+            } else {
+                parameters.push(`null`, );
+            }
+        });
+    } else {
+        action.parameters.forEach(parameter => {
+            parameters.push(`args.${parameter.name}`, );
+        });
+        unpackCode = "args.unpack(actionData);"
+    }
+
     let actionName = action.messageDecorator.actionName;
     let actionNameHex = EosioUtils.nameToHexString(actionName);
 
     return dedent`
         if (action == ${actionNameHex}) {//${actionName}
                     let args = new ${action.methodName}Action();
-                    args.unpack(actionData);
+                    ${unpackCode}
                     mycontract.${action.methodName}(${parameters.join(',')})
                 }
     `;

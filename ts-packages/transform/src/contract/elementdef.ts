@@ -131,6 +131,7 @@ export class MessageDecoratorNodeDef extends DecoratorNodeDef {
     selector = "";
 
     notify = false;
+    ignore = false;
     actionName = ""
     constructor(decorator: DecoratorNode) {
         super(decorator);
@@ -139,20 +140,19 @@ export class MessageDecoratorNodeDef extends DecoratorNodeDef {
                 throw new Error(`Decorator: Invalid action decorator. Trace: ${RangeUtil.location(decorator.range)} `);
             }
 
-            this.actionName = AstUtil.getIdentifier(decorator.args[0]);
+            this.actionName = AstUtil.getIdentifier(decorator.args![0]);
             if (!EosioUtils.isValidName(this.actionName)) {
                 throw new Error(`Decorator: Invalid action name. Trace: ${RangeUtil.location(decorator.range)} `);
             }
-            if (decorator.args.length != 2) {
-                return;
-            }
 
-            if (decorator.args!.length == 2) {
-                let arg = AstUtil.getIdentifier(decorator.args![1]);
+            for (let i=1; i<decorator.args.length; i++) {
+                let arg = AstUtil.getIdentifier(decorator.args![i]);
                 if (arg == "notify") {
                     this.notify = true;
-                } else {
-                    this.notify = false;
+                }
+
+                if (arg == "ignore") {
+                    this.ignore = true;
                 }
             }
         }

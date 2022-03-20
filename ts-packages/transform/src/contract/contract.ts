@@ -238,6 +238,10 @@ export class ContractProgram {
         let abiField = new ABIStructField();
         abiField.name = name;
         let plainType = type.plainTypeNode;
+        if (type.typeNode.isNullable) {
+            plainType = plainType.split('|')[0].trim();
+        }
+
         if (type.typeKind == TypeKindEnum.ARRAY) {
             plainType = plainType.replace('[]', '');
         }
