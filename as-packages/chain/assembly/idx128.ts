@@ -27,12 +27,11 @@ export class IDX128 extends IDXDB {
         check(value.type == SecondaryType.U128, "idx128: bad type");
         check(value.value.length == 2, "idx128: bad value");
         let secondary_ptr = value.value.dataStart;
-        printString(`+++++++++lo, hi: ${value.value[0]}, ${value.value[1]}\n`);
         let it = env.db_idx128_store(this.scope, this.table, payer, id, secondary_ptr);
         env.db_idx128_find_primary(this.code, this.scope, this.table, secondary_ptr, id);
-        let lo = load<u64>(secondary_ptr);
-        let hi = load<u64>(secondary_ptr + 8);
-        printString(`+++++++++lo, hi: ${lo}, ${hi}\n`);
+        // let lo = load<u64>(secondary_ptr);
+        // let hi = load<u64>(secondary_ptr + 8);
+        // printString(`+++++++++lo, hi: ${lo}, ${hi}\n`);
 
         return new SecondaryIterator(it, id, this.dbIndex);
     }
