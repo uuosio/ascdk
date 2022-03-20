@@ -252,7 +252,11 @@ export class ContractProgram {
         }
     
         if (type.typeKind == TypeKindEnum.ARRAY) {
-            abiField.type += '[]';
+            if (abiField.type == "uint8") {
+                abiField.type = "bytes";
+            } else {
+                abiField.type += "[]";
+            }
         }
         return abiField;
     }
