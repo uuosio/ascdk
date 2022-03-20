@@ -134,47 +134,48 @@ class MyContract extends Contract{
         printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}\n`);
         check(value.a == 7 && value.b == 8 && value.c == new U128(9) && value.d == 9.9, "bad value");
 
-        let idx = mi.bvalueDB;
-        let idxIt = idx.findPrimary(7);
-        printString(`++++++++${idxIt.i.i}, ${idxIt.value}\n`);
-
-        {// 4, 5, 6
-            // let idx64 = <IDX64>idx;
-            let idx64 = changetype<IDX64>(idx);
-            let idxIt = idx64.find(5);
-            printString(`+++++++++idx64.find: ${idxIt.i}, ${idxIt.primary}\n`);
-            check(idxIt.primary == 4, "bad value");
-        }
-
-        // 1 2 3
-        // 4 5 6
-        // 7 8 9
         {
-            let secondary = newSecondaryValue_u64(2);
-            let ret = idx.lowerBoundEx(secondary);
-            check(ret.value == 2, "bad value");
-            ret = idx.upperBoundEx(2);
-            check(ret.value == 5, "bad value");
-
-            let it = idx.previous(ret.i);
-            check(it.primary == 1, "bad primary value");
-            it = idx.next(it);
-            check(it.primary == 4, "bad primary value");
-
-            it = idx.end();
-            it = idx.previous(it);
-            printString(`++++++${it.i}, ${it.primary}\n`);
-            check(it.primary == 7, "bad primary value");
-        }
-
-        {// 1, 2, 3
-            let idxIt = idx.find(2);
-            printString(`+++++++++idx.find(2): ${idxIt.i}, ${idxIt.primary}\n`);
-            check(idxIt.primary == 1, "bad value");
-            let secValue = newSecondaryValue_u64(22);
-            mi.idxUpdate(idxIt, secValue, this.receiver);
-            let ret = idx.find(22);
-            check(ret.isOk(), "bad scondary value");
+            let idx = mi.bvalueDB;
+            let idxIt = idx.findPrimary(7);
+            printString(`++++++++${idxIt.i.i}, ${idxIt.value}\n`);
+    
+            {// 4, 5, 6
+                // let idx64 = <IDX64>idx;
+                let idxIt = idx.find(5);
+                printString(`+++++++++idx64.find: ${idxIt.i}, ${idxIt.primary}\n`);
+                check(idxIt.primary == 4, "bad value");
+            }
+    
+            // 1 2 3
+            // 4 5 6
+            // 7 8 9
+            {
+                let secondary = newSecondaryValue_u64(2);
+                let ret = idx.lowerBoundEx(secondary);
+                check(ret.value == 2, "bad value");
+                ret = idx.upperBoundEx(2);
+                check(ret.value == 5, "bad value");
+    
+                let it = idx.previous(ret.i);
+                check(it.primary == 1, "bad primary value");
+                it = idx.next(it);
+                check(it.primary == 4, "bad primary value");
+    
+                it = idx.end();
+                it = idx.previous(it);
+                printString(`++++++${it.i}, ${it.primary}\n`);
+                check(it.primary == 7, "bad primary value");
+            }
+    
+            {// 1, 2, 3
+                let idxIt = idx.find(2);
+                printString(`+++++++++idx.find(2): ${idxIt.i}, ${idxIt.primary}\n`);
+                check(idxIt.primary == 1, "bad value");
+                let secValue = newSecondaryValue_u64(22);
+                mi.idxUpdate(idxIt, secValue, this.receiver);
+                let ret = idx.find(22);
+                check(ret.isOk(), "bad scondary value");
+            }
         }
 
         // 1 22 3 3.3
