@@ -5,9 +5,7 @@ import { CONFIG } from "../config/compile";
 export const serializerTpl = `
 
 {{export}}class {{className}} implements _chain.Packer {
-
     {{{ExtractClassBody range}}}
-
     pack(): u8[] {
         let enc = new _chain.Encoder(this.getSize());
         {{#each fields}}

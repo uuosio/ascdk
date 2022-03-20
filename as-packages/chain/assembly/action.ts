@@ -57,7 +57,7 @@ export function currentReceiver(): u64 {
 }
 export class PermissionLevel implements Packer {
     constructor(
-        public actor: Name,
+        public actor: Name = new Name(0),
         public permission: Name = Name.fromString("active")) {
     }
 

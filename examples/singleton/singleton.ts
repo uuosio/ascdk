@@ -29,7 +29,7 @@ class MyContract extends Contract {
     test(): void {
         let payer = this.receiver;
         let db = Counter.new(this.receiver, this.receiver);
-        let value = db.get()
+        let value = db.get_or_default()
         value.count += 1;
         db.set(value, payer);
         print(`+++++++++${value.count}`);

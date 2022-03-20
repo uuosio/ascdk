@@ -185,6 +185,9 @@ function fieldGetSize(name: string, type: NamedTypeNodeDef) {
     if (type.typeKind == TypeKindEnum.ARRAY) {
         code.push(`size += _chain.calcPackedVarUint32Length(this.${name}.length);`);
         let plainType = type.plainTypeNode;
+        if (type.typeNode.isNullable) {
+            plainType = plainType.split('|')[0].trim();
+        }
 
         if (plainType.indexOf('Array<') >= 0) {
             plainType = plainType.replace('Array<', '').replace('>', '');
