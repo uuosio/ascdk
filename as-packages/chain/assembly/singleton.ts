@@ -27,7 +27,7 @@ export class Singleton<T extends MultiIndexValue> {
         // return instantiate<T>();
     }
 
-    get_or_default(): T {
+    getOrDefault(): T {
         let it = this.mi.find(this.key);
         if (it.isOk()) {
             return this.mi.get(it);
