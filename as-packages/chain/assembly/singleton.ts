@@ -18,7 +18,7 @@ export class Singleton<T extends MultiIndexValue> {
         }
     }
 
-    get(): T | null {
+    getOrNull(): T | null {
         let it = this.mi.find(this.key);
         if (it.isOk()) {
             return this.mi.get(it);
@@ -27,7 +27,7 @@ export class Singleton<T extends MultiIndexValue> {
         // return instantiate<T>();
     }
 
-    getOrDefault(): T {
+    get(): T {
         let it = this.mi.find(this.key);
         if (it.isOk()) {
             return this.mi.get(it);
