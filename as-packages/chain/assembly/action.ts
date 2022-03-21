@@ -52,12 +52,13 @@ export function publicationTime(): u64 {
     return env.publication_time();
 }
 
-export function currentReceiver(): u64 {
-    return env.current_receiver();
+export function currentReceiver(): Name {
+    return new Name(env.current_receiver());
 }
+
 export class PermissionLevel implements Packer {
     constructor(
-        public actor: Name = new Name(0),
+        public actor: Name = new Name(),
         public permission: Name = Name.fromString("active")) {
     }
 
@@ -82,10 +83,11 @@ export class PermissionLevel implements Packer {
 
 export class Action implements Packer{
     constructor(
-        public authorization: PermissionLevel[],
-        public account: Name,
-        public name: Name,
-        public data: u8[]) {
+        public authorization: PermissionLevel[] = [],
+        public account: Name = new Name(),
+        public name: Name = new Name(),
+        public data: u8[] = [],
+        ) {
     }
 
     static new(
