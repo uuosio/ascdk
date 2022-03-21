@@ -4,7 +4,7 @@ import { FieldDef, ParameterNodeDef, ActionFunctionDef, DBIndexFunctionDef } fro
 import { TypeKindEnum } from "../enums/customtype";
 import { EosioUtils } from "../utils/utils";
 import { TypeHelper } from "../utils/typeutil";
-import { TableInterpreter } from "../contract/classdef";
+import { TableInterpreter, ClassInterpreter } from "../contract/classdef";
 import { RangeUtil } from "../utils/utils";
 import { NamedTypeNodeDef } from "../contract/typedef";
 import { Range } from "assemblyscript";
@@ -148,15 +148,14 @@ function fieldDeserialize(name: string, type: NamedTypeNodeDef) {
         } else {
             code.push(dedent`
                 {
-                            let length = <i32>dec.unpackLength();
-                            this.${name} = new Array<${plainType}>(length)
-                            for (let i=0; i<length; i++) {
-                                let obj = new ${plainType}();
-                                this.${name}[i] = obj;
-                                dec.unpack(obj);
-                            }
-                        }
-            `);
+                    let length = <i32>dec.unpackLength();
+                    this.${name} = new Array<${plainType}>(length)
+                    for (let i=0; i<length; i++) {
+                        let obj = new ${plainType}();
+                        this.${name}[i] = obj;
+                        dec.unpack(obj);
+                    }
+                }`);
         }
     } else if (type.typeKind == TypeKindEnum.MAP) {
         throw Error(`map is not supported currently!Trace: ${RangeUtil.location(type.typeNode.range)}`);
@@ -173,8 +172,12 @@ function fieldDeserialize(name: string, type: NamedTypeNodeDef) {
         } else if (plainType == 'string') {
             code.push(`this.${name} = dec.unpackString();`);
         } else {
-            code.push(`this.${name} = new ${plainType}();`);
-            code.push(`        dec.unpack(this.${name});`);
+            code.push(dedent`
+            {
+                let obj = new ${plainType}();
+                dec.unpack(obj);
+                this.${name} = obj;
+            }`);
         }
     }
     return code.join(EOL);
@@ -510,6 +513,9 @@ Handlebars.registerHelper("generategetPrimaryFunction", function (table: TableIn
                 }
         `);
     } else {
+        if (!table.primaryFuncDef) {
+            throw Error(`primary index declaration not found!Trace ${RangeUtil.location(table.range)}`);
+        }
         code.push(dedent`
             getPrimaryValue(): u64 {
                     return this.${table.primaryFuncDef!.getterPrototype!.declaration.name.text}
