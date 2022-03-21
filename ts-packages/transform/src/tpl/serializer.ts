@@ -9,7 +9,7 @@ export const serializerTpl = `
     pack(): u8[] {
         let enc = new _chain.Encoder(this.getSize());
         {{#each fields}}
-        {{{actionParameterSerialize .}}}
+        {{{serializerParameterSerialize .}}}
         {{/each}}
         return enc.getBytes();
     }
@@ -17,7 +17,7 @@ export const serializerTpl = `
     unpack(data: u8[]): usize {
         let dec = new _chain.Decoder(data);
         {{#each fields}}
-        {{{actionParameterDeserialize .}}}
+        {{{serializerParameterDeserialize .}}}
         {{/each}}
         return dec.getPos();
     }
@@ -25,7 +25,7 @@ export const serializerTpl = `
     getSize(): usize {
         let size: usize = 0;
         {{#each fields}}
-        {{{actionParameterGetSize .}}}
+        {{{serializerParameterGetSize .}}}
         {{/each}}
         return size;
     }

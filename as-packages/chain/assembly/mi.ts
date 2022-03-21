@@ -75,6 +75,18 @@ export class MultiIndex<T extends MultiIndexValue> {
         return ret;
     }
 
+    getByKey(primary: u64): T | null {
+        let iterator = this.find(primary);
+        if (!iterator.isOk()) {
+            return null;
+        }
+
+        let data = this.db.get(iterator.i);
+        let ret = instantiate<T>();
+        ret.unpack(data);
+        return ret;
+    }
+
     next(iterator: PrimaryIterator): PrimaryIterator {
         let i = this.db.next(iterator.i);
         return new PrimaryIterator(i);

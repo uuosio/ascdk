@@ -36,10 +36,6 @@ export class U128 extends u128 implements Packer {
         return 16;
     }
 
-    isZero(): bool {
-        return this.lo == 0 && this.hi == 0;
-    }
-
     getSize(): usize {
         return 16;
     }
