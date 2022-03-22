@@ -55,17 +55,20 @@ export class U128 extends u128 implements Packer {
     // mul: u128 x u128 = u128
     @inline @operator('*')
     static mul(a: U128, b: U128): U128 {
-        return <U128>u128.mul(a, b);
+        let ret = u128.mul(a, b);
+        return new U128(ret.lo, ret.hi);
     }
   
     @inline @operator('/')
     static div(a: U128, b: U128): U128 {
-        return <U128>u128.div(a, b);
+        let ret = u128.div(a, b);
+        return new U128(ret.lo, ret.hi);
     }
   
     @inline @operator('%')
     static rem(a: U128, b: U128): U128 {
-        return <U128>u128.rem(a, b);
+        let ret = u128.rem(a, b);
+        return new U128(ret.lo, ret.hi);
     }
 }
 
