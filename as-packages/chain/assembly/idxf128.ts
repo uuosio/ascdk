@@ -78,12 +78,9 @@ export class IDXF128 extends IDXDB {
         return new SecondaryReturnValue(i, secondary);
     }
 
-    find(secondary: SecondaryValue): SecondaryIterator {
-        check(secondary.type == SecondaryType.F128, "idx_long_double: bad secondary type");
-        check(secondary.value.length == 2, "idx_long_double: bad value");
+    find(secondary: Float128): SecondaryIterator {
         let primary_ptr = __alloc(sizeof<u64>());
-        let secondary_ptr = secondary.value.dataStart;
-        let it = env.db_idx_long_double_find_secondary(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
+        let it = env.db_idx_long_double_find_secondary(this.code, this.scope, this.table, secondary.data.dataStart, primary_ptr);
         return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
     }
 
