@@ -15,4 +15,4 @@ export const atomicassets = Name.fromString("atomicassets");
 
 // Include
 @packer
-class empty extends Table { constructor() { super(); } }
+class constants extends Table { constructor() { super(); } }

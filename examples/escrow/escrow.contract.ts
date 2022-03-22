@@ -1,11 +1,13 @@
-import { currentTimePoint, ExtendedAsset, Name, check, contract, action, requireAuth, isAccount, hasAuth, requireRecipient } from 'as-chain'
-import { BalanceContract, sendTransferNfts, sendTransferTokens } from '../balance';
+import { currentTimePoint, ExtendedAsset, Name, check, contract, action, requireAuth, isAccount, hasAuth, requireRecipient, SAME_PAYER, MultiIndex } from 'as-chain'
+import { BalanceContract, OPERATION, sendTransferNfts, sendTransferTokens } from '../balance';
 import { startescrow, fillescrow, cancelescrow, logescrow, ESCROW_STATUS } from './escrow.constants';
 import { sendLogEscrow } from './escrow.inline';
 import { Global, Escrow, escrow } from './escrow.tables';
 
 @contract(escrow)
 class EscrowContract extends BalanceContract {
+    escrowsTable: MultiIndex<Escrow> = Escrow.getTable(this.receiver)
+
     @action(startescrow)
     startescrow(
         from: Name,
@@ -23,8 +25,7 @@ class EscrowContract extends BalanceContract {
         check(to == new Name() || isAccount(to), "to must be empty or a valid account");
 
         // Substract balances
-        this.subBalanceTokens(from, fromTokens);
-        this.subBalanceNfts(from, fromNfts);
+        this.modifyAccount(from, fromTokens, fromNfts, OPERATION.SUB, SAME_PAYER)
       
         // Get config
         const configSingleton = Global.getSingleton(this.receiver)
@@ -46,7 +47,7 @@ class EscrowContract extends BalanceContract {
         configSingleton.set(config, this.receiver);
 
         // Save escrow
-        Escrow.getTable(this.receiver).store(newEscrow, from);
+        this.escrowsTable.store(newEscrow, from);
 
         // Log
         sendLogEscrow(this.receiver, newEscrow, ESCROW_STATUS.START);
@@ -60,27 +61,26 @@ class EscrowContract extends BalanceContract {
         requireAuth(fulfiller);
   
         // Get Escrow
-        const escrowsTable = Escrow.getTable(this.receiver);
-        const escrowItr = escrowsTable.requireFind(id, "no escrow with ID found.");
-        const existingEscrow = escrowsTable.get(escrowItr);
+        const escrowItr = this.escrowsTable.requireFind(id, "no escrow with ID found.");
+        const existingEscrow = this.escrowsTable.get(escrowItr);
     
-        check(hasAuth(existingEscrow.to) || hasAuth(existingEscrow.to), "incorrect to account");
+        check(existingEscrow.to == new Name() || hasAuth(existingEscrow.to), "incorrect to account");
 
         existingEscrow.to = fulfiller;
       
         // Substract balances
-        this.subBalanceTokens(existingEscrow.to, existingEscrow.toTokens);
-        this.subBalanceNfts(existingEscrow.to, existingEscrow.toNfts);
-      
+        this.modifyAccount(existingEscrow.to, existingEscrow.toTokens, existingEscrow.toNfts, OPERATION.SUB, SAME_PAYER)
+
         // Send out
-        sendTransferTokens(this.receiver, existingEscrow.to, existingEscrow.toTokens, "");
-        sendTransferNfts(this.receiver, existingEscrow.to, existingEscrow.toNfts, "");
+        const memo = "escrow " + id.toString() + " completed!"
+        sendTransferTokens(this.receiver, existingEscrow.to, existingEscrow.toTokens, memo);
+        sendTransferNfts(this.receiver, existingEscrow.to, existingEscrow.toNfts, memo);
   
         // Log
         sendLogEscrow(this.receiver, existingEscrow, ESCROW_STATUS.FILL);
 
         // Erase
-        escrowsTable.remove(escrowItr);
+        this.escrowsTable.remove(escrowItr);
     }
 
     @action(cancelescrow)
@@ -88,9 +88,8 @@ class EscrowContract extends BalanceContract {
         id: u64
     ): void {
         // Get Escrow
-        const escrowsTable = Escrow.getTable(this.receiver);
-        const escrowItr = escrowsTable.requireFind(id, "no escrow with ID found.");
-        const existingEscrow = escrowsTable.get(escrowItr);
+        const escrowItr = this.escrowsTable.requireFind(id, "no escrow with ID found.");
+        const existingEscrow = this.escrowsTable.get(escrowItr);
     
         check(hasAuth(existingEscrow.from) || hasAuth(existingEscrow.to), "must have auth of from or to of escrow");
 
@@ -101,7 +100,7 @@ class EscrowContract extends BalanceContract {
         sendLogEscrow(this.receiver, existingEscrow, ESCROW_STATUS.CANCEL);
 
         // Erase
-        escrowsTable.remove(escrowItr);
+        this.escrowsTable.remove(escrowItr);
     }
 
     @action(logescrow)

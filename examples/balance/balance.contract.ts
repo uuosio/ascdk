@@ -1,58 +1,43 @@
-import { ExtendedAsset, unpackActionData, Name, check, action, Contract, notify, contract, requireAuth } from 'as-chain'
+import { ExtendedAsset, unpackActionData, Name, check, action, Contract, notify, contract, requireAuth, MultiIndex, SAME_PAYER } from 'as-chain'
 import { transfer, atomicassets, withdraw, balance } from './balance.constants';
-import { NftTransfer, sendTransferNfts, sendTransferTokens, TokenTransfer } from './balance.inline';
+import { sendTransferTokens, sendTransferNfts, NftTransfer, TokenTransfer } from './balance.inline';
 import { Account } from './balance.tables';
+import { addNfts, addTokens, OPERATION, substractNfts, substractTokens } from './balance.utils';
 
 @contract(balance)
 export class BalanceContract extends Contract {
-
-    @action(withdraw)
-    withdraw(
-        account: Name,
-        tokens: ExtendedAsset[],
-        nfts: u64[]
-    ): void {
-        requireAuth(account)
-
-        // Substract Tokens and NFTs
-        this.subBalanceTokens(account, tokens)
-        this.subBalanceNfts(account, nfts)
-
-        // Transfer Tokens and NFTs
-        sendTransferTokens(this.receiver, account, tokens, "")
-        sendTransferNfts(this.receiver, account, nfts, "")
-
-        // Find account
-        const accountsTable = Account.getTable(this.receiver);
-        const accountItr = accountsTable.requireFind(account.N, "account does not exist");
-        const existingAccount = accountsTable.get(accountItr);
-        
-        // If both nfts and tokens empty, delete account
-        if (existingAccount.nfts.length == 0 && existingAccount.tokens.length == 0) {
-            accountsTable.remove(accountItr);
-        }
-    }
-
+    accountsTable: MultiIndex<Account> = Account.getTable(this.receiver)
+    contract: Name = this.receiver
+    parentContract: Name = this.firstReceiver
+    
+    /**
+     * Incoming notification of "transfer" action from any contract
+     * - If the contract is the atomicassets contract, then the action data is an NFT transfer.
+     * - Else, the action data is a token transfer
+     * @returns Nothing.
+     */
     @action(transfer, notify)
     transfer(): void {
-        if (this.receiver == atomicassets) {
+        if (this.parentContract == atomicassets) {
+            // Unpack nft transfer
             let t = unpackActionData<NftTransfer>()
 
             // Skip if outgoing
-            if (t.from == this.receiver) {
+            if (t.from == this.contract) {
                 return;
             }
         
             // Validate transfer
-            check(t.to == this.receiver, "Invalid Deposit");
+            check(t.to == this.contract, "Invalid Deposit");
         
             // Add nfts
-            this.addBalanceNfts(t.from, t.asset_ids);
+            this.modifyAccount(t.from, [], t.asset_ids, OPERATION.ADD, this.contract)
         } else {
+            // Unpack token transfer
             let t = unpackActionData<TokenTransfer>()
 
             // Skip if outgoing
-            if (t.from == this.receiver) {
+            if (t.from == this.contract) {
                 return;
             }
   
@@ -66,152 +51,62 @@ export class BalanceContract extends Contract {
             }
         
             // Validate transfer
-            check(t.to == this.receiver, "Invalid Deposit");
-        
-            // Deposit
-            const token_contract = this.firstReceiver
-            check(token_contract == Name.fromString("eosio.token"), "only eosio.token tokens are supported");
-        
+            check(t.to == this.contract, "Invalid Deposit");
+
             // Add balance
-            const balance_to_add = new ExtendedAsset(t.quantity, token_contract)
-            this.addBalanceTokens(t.from, [balance_to_add]);
+            const tokens = [new ExtendedAsset(t.quantity, this.parentContract)]
+            this.modifyAccount(t.from, tokens, [], OPERATION.ADD, this.contract)
         }
     }
 
-    addBalanceTokens(account: Name, tokens: ExtendedAsset[]): void {
-        // Validation
-        tokens.forEach(token => {
-            check(token.quantity.isValid(), "valid quantity");
-            check(token.quantity.amount > 0, "quantity must be positive");
-        })
+    /**
+     * Withdraw tokens and NFTs from an account and transfer them to another account
+     * @param {Name} account - Name
+     * @param {ExtendedAsset[]} tokens - An array of `ExtendedAsset` objects.
+     * @param {u64[]} nfts - u64[]
+     */
+    @action(withdraw)
+    withdraw(
+        account: Name,
+        tokens: ExtendedAsset[],
+        nfts: u64[]
+    ): void {
+        // Authenticate account
+        requireAuth(account)
 
-        // Get Account
-        const accountsTable = Account.getTable(this.receiver);
-        const accountItr = accountsTable.find(account.N);
-    
-        // Account does not exist
-        if (!accountItr.isOk) {
-            const newAccount = new Account(account, tokens);
-            accountsTable.store(newAccount, account);
-        }
-        // Account exists
-        else
-        {
-            const existingAccount = accountsTable.get(accountItr);
-    
-            // Loop over tokens to add
-            for (let i = 0; i < tokens.length; i++) {
-                // Assign token
-                const token = tokens[i]
+        // Substract Tokens and NFTs from account balance
+        this.modifyAccount(account, tokens, nfts, OPERATION.SUB, SAME_PAYER)
 
-                // Find index of token
-                let tokenIndex = -1
-                for (let j = 0; j < existingAccount.tokens.length; j++) {
-                    if (existingAccount.tokens[j].getExtendedSymbol() == token.getExtendedSymbol()) {
-                        tokenIndex = j;
-                        break;
-                    }
-                }
-
-                // If token does not exist, add it
-                if (tokenIndex == -1) {
-                    existingAccount.tokens.push(token)
-                }
-                // If token exists, update balance
-                else {
-                    existingAccount.tokens[tokenIndex] = ExtendedAsset.add(existingAccount.tokens[tokenIndex], token)
-                }
-
-                // Save to table
-                accountsTable.update(accountItr, existingAccount, account);
-            }
-        }
+        // Inline transfer Tokens and NFTs from contract to account
+        sendTransferTokens(this.contract, account, tokens, "withdraw")
+        sendTransferNfts(this.contract, account, nfts, "withdraw")
     }
 
-    addBalanceNfts(account: Name, nfts: u64[]): void {
-        // Get Account
-        const accountsTable = Account.getTable(this.receiver);
-        const accountItr = accountsTable.find(account.N);
+    modifyAccount(account: Name, tokens: ExtendedAsset[], nfts: u64[], op: OPERATION, ramPayer: Name = account): void {
+        // Find account
+        const accountItr = this.accountsTable.find(account.N);
+        if (!accountItr.isOk()) {
+            this.accountsTable.store(new Account(account), ramPayer);
+        }
+        
+        // Get account
+        const accountObj = this.accountsTable.get(accountItr)
+
+        // Operation
+        if (op == OPERATION.ADD) {
+            addTokens(accountObj, tokens)
+            addNfts(accountObj, nfts)
+        } else if (op == OPERATION.SUB) {
+            substractTokens(accountObj, tokens)
+            substractNfts(accountObj, nfts)
+        }
     
-        // Account does not exist
-        if (!accountItr.isOk) {
-            const newAccount = new Account(account, [], nfts);
-            accountsTable.store(newAccount, account);
+        // Delete table if no NFTs and no tokens
+        // Update table if any NFT or token found
+        if (accountObj.nfts.length == 0 && accountObj.tokens.length == 0) {
+            this.accountsTable.remove(accountItr);
+        } else {
+            this.accountsTable.update(accountItr, accountObj, ramPayer);
         }
-        // Account exists
-        else
-        {
-            const existingAccount = accountsTable.get(accountItr);
-
-            // Add all NFTs
-            for (let i = 0; i < nfts.length; i++) {
-                existingAccount.nfts.push(nfts[i])
-            }
-
-            // Save to table
-            accountsTable.update(accountItr, existingAccount, account);
-        }
-    }
-
-    subBalanceTokens(account: Name, tokens: ExtendedAsset[]): void {
-        // Get Account
-        const accountsTable = Account.getTable(this.receiver);
-        const accountItr = accountsTable.requireFind(account.N, "account does not exist");
-        const existingAccount = accountsTable.get(accountItr);
-    
-        // Loop over tokens to sub
-        for (let i = 0; i < tokens.length; i++) {
-            // Assign token
-            const token = tokens[i]
-
-            // Validation
-            check(token.quantity.isValid(), "valid quantity");
-            check(token.quantity.amount > 0, "quantity must be positive");
-            
-            // Find index of token
-            let tokenIndex = -1
-            for (let j = 0; j < existingAccount.tokens.length; j++) {
-                if (existingAccount.tokens[j].getExtendedSymbol() == token.getExtendedSymbol()) {
-                    tokenIndex = j
-                    break;
-                }
-            }
-            check(tokenIndex != -1, "no balance found for user to reduce balance")
-            check(existingAccount.tokens[tokenIndex] >= token, "user balance too low");
-
-            // Substract balance
-            existingAccount.tokens[tokenIndex] = ExtendedAsset.sub(existingAccount.tokens[tokenIndex], token)
-
-            // Remove if balance is 0
-            if (existingAccount.tokens[tokenIndex].quantity.amount == 0) {
-                existingAccount.tokens.splice(tokenIndex, 1)
-            }
-
-            // Save to table
-            accountsTable.update(accountItr, existingAccount, account);
-        }
-    }
-
-    subBalanceNfts(account: Name, nfts: u64[]): void {
-        // Get Account
-        const accountsTable = Account.getTable(this.receiver);
-        const accountItr = accountsTable.requireFind(account.N, "account does not exist");
-        const existingAccount = accountsTable.get(accountItr);
-    
-        // Loop over all NFTs to remove
-        for (let i = 0; i < nfts.length; i++) {
-            // Assign NFT
-            const nft = nfts[i]
-
-            // Find NFT in balance and delete if found
-            for (let j = 0; j < existingAccount.nfts.length; j++) {
-                if (existingAccount.nfts[j] == nft) {
-                    existingAccount.nfts.splice(j, 1)
-                }
-            }
-        }
-
-        // Save to table
-        accountsTable.update(accountItr, existingAccount, account);
     }
 }
