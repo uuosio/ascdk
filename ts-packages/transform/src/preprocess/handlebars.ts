@@ -260,7 +260,7 @@ Handlebars.registerHelper("optionalSerialize", function (field: FieldDef) {
             return enc.getBytes();
         }
     `;
-    return code + fieldSerialize(field.name+"!", field.type, false);
+    return code + fieldSerialize(field.name, field.type, false);
 });
 
 Handlebars.registerHelper("optionalDeserialize", function (field: FieldDef) {
@@ -271,7 +271,7 @@ Handlebars.registerHelper("optionalDeserialize", function (field: FieldDef) {
             return 1;
         }
     `;
-    return code + fieldDeserialize(field.name+"!", field.type);
+    return code + fieldDeserialize(field.name, field.type);
 });
 
 Handlebars.registerHelper("optionalGetSize", function (field: FieldDef) {
@@ -281,7 +281,7 @@ Handlebars.registerHelper("optionalGetSize", function (field: FieldDef) {
         }
         size += 1;
     `;
-    return code + fieldGetSize(field.name+"!", field.type, false);
+    return code + fieldGetSize(field.name, field.type, false);
 });
 
 Handlebars.registerHelper("variantSerialize", function (field: FieldDef) {
@@ -433,7 +433,7 @@ Handlebars.registerHelper("binaryExtensionSerialize", function (field: FieldDef)
             return enc.getBytes();
         }
     `;
-    return code + fieldSerialize(field.name+"!", field.type, false);
+    return code + fieldSerialize(field.name, field.type, false);
 });
 
 Handlebars.registerHelper("binaryExtensionDeserialize", function (field: FieldDef) {
@@ -442,7 +442,7 @@ Handlebars.registerHelper("binaryExtensionDeserialize", function (field: FieldDe
             return 0;
         }
     `;
-    return code + fieldDeserialize(field.name+"!", field.type);
+    return code + fieldDeserialize(field.name, field.type);
 });
 
 Handlebars.registerHelper("binaryExtensionGetSize", function (field: FieldDef) {
@@ -451,7 +451,7 @@ Handlebars.registerHelper("binaryExtensionGetSize", function (field: FieldDef) {
             return 0;
         }
     `;
-    return code + fieldGetSize(field.name+"!", field.type, false);
+    return code + fieldGetSize(field.name, field.type, false);
 });
 
 Handlebars.registerHelper("actionParameterSerialize", function (field: ParameterNodeDef) {
