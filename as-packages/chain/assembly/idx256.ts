@@ -88,11 +88,13 @@ export class IDX256 extends IDXDB {
         return new SecondaryReturnValue(i, secondary);
     }
 
-    find(secondary: SecondaryValue): SecondaryIterator {
-        assert(secondary.type == SecondaryType.U256, "idx256: bad secondary type");
-        assert(secondary.value.length == 4, "find: idx256: bad value");
+    find(secondary: U256): SecondaryIterator {
         let primary_ptr = __alloc(sizeof<u64>());
-        let secondary_ptr = secondary.value.dataStart;
+        let secondary_ptr = __alloc(sizeof<u64>()*4);
+        store<u64>(secondary_ptr, secondary.lo1);
+        store<u64>(secondary_ptr + 8, secondary.lo2);
+        store<u64>(secondary_ptr + 16, secondary.hi1);
+        store<u64>(secondary_ptr + 24, secondary.hi2);    
         let it = env.db_idx256_find_secondary(this.code, this.scope, this.table, secondary_ptr, 2, primary_ptr);
         return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
     }

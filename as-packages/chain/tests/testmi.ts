@@ -185,6 +185,16 @@ class MyContract extends Contract{
             let idx128 = mi.cvalueDB;
             let idxRet = idx128.findPrimary(1);
             check(idxRet.value == new U128(3), "bad idx128 value");
+            {
+                let itIdx = idx128.find(new U128(3));
+                check(itIdx.isOk(), "bad idx128 iterator.");
+                check(itIdx.primary == 1, "bad idx128 iterator.");
+    
+                itIdx = idx128.find(new U128(6));
+                check(itIdx.isOk(), "bad idx128 iterator.");
+                check(itIdx.primary == 4, "bad idx128 iterator.");
+            }
+
             let it = idx128.previous(idxRet.i);
             check(it.i == -1, 'bad iterator');
 
@@ -212,6 +222,17 @@ class MyContract extends Contract{
             let idxf64 = mi.dvalueDB;
             let idxRet = idxf64.findPrimary(1);
             check(idxRet.value == 3.3, "bad idx128 value");
+
+            {
+                let itIdx = idxf64.find(3.3);
+                check(itIdx.isOk(), "bad idxf64 iterator.");
+                check(itIdx.primary == 1, "bad idxf64 iterator.");
+    
+                itIdx = idxf64.find(6.6);
+                check(itIdx.isOk(), "bad idxf64 iterator.");
+                check(itIdx.primary == 4, "bad idxf64 iterator.");
+            }
+
             let it = idxf64.previous(idxRet.i);
             check(it.i == -1, 'bad iterator');
 
@@ -240,6 +261,17 @@ class MyContract extends Contract{
             let idx256 =mi.evalueDB;
             let idxRet = idx256.findPrimary(1);
             check(idxRet.value == new U256(11), "bad idx128 value");
+
+            {
+                let itIdx = idx256.find(new U256(11));
+                check(itIdx.isOk(), "bad idx256 iterator.");
+                check(itIdx.primary == 1, "bad idx256 iterator.");
+    
+                itIdx = idx256.find(new U256(44));
+                check(itIdx.isOk(), "bad idx256 iterator.");
+                check(itIdx.primary == 4, "bad idx256 iterator.");
+            }
+
             let it = idx256.previous(idxRet.i);
             check(it.i == -1, 'bad iterator');
 

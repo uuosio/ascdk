@@ -2,7 +2,7 @@ import { IDXDB, SecondaryValue, SecondaryType, SecondaryIterator, SecondaryRetur
 import * as env from "./env";
 import { check } from "./system";
 import { U128 } from "./bignum";
-import { printString } from "./debug";
+import { print } from "./debug";
 
 class IDX128ReturnValue {
     constructor(
@@ -28,7 +28,7 @@ export class IDX128 extends IDXDB {
         check(value.value.length == 2, "idx128: bad value");
         let secondary_ptr = value.value.dataStart;
         let it = env.db_idx128_store(this.scope, this.table, payer, id, secondary_ptr);
-        env.db_idx128_find_primary(this.code, this.scope, this.table, secondary_ptr, id);
+        // env.db_idx128_find_primary(this.code, this.scope, this.table, secondary_ptr, id);
         // let lo = load<u64>(secondary_ptr);
         // let hi = load<u64>(secondary_ptr + 8);
         // printString(`+++++++++lo, hi: ${lo}, ${hi}\n`);
@@ -92,7 +92,7 @@ export class IDX128 extends IDXDB {
         let primary_ptr = __alloc(sizeof<u64>());
         let secondary_ptr = __alloc(sizeof<u64>()*2);
         store<u64>(secondary_ptr, secondary.lo);
-        store<u64>(secondary_ptr, secondary.hi);
+        store<u64>(secondary_ptr+8, secondary.hi);
         let it = env.db_idx128_find_secondary(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
         return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
     }

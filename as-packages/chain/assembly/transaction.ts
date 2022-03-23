@@ -158,7 +158,7 @@ export class Transaction implements Packer {
             let length = <i32>dec.unpackLength();
             this.contextFreeActions = new Array<Action>(length)
             for (let i=0; i<length; i++) {
-                let obj = new Action([], new Name(0), new Name(0), []);
+                let obj = new Action();
                 this.contextFreeActions[i] = obj;
                 dec.unpack(obj);
             }
@@ -168,7 +168,7 @@ export class Transaction implements Packer {
             let length = <i32>dec.unpackLength();
             this.actions = new Array<Action>(length)
             for (let i=0; i<length; i++) {
-                let obj = new Action([], new Name(0), new Name(0), []);
+                let obj = new Action();
                 this.actions[i] = obj;
                 dec.unpack(obj);
             }

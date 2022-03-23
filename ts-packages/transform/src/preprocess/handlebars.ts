@@ -4,7 +4,7 @@ import { FieldDef, ParameterNodeDef, ActionFunctionDef, DBIndexFunctionDef } fro
 import { TypeKindEnum } from "../enums/customtype";
 import { EosioUtils } from "../utils/utils";
 import { TypeHelper } from "../utils/typeutil";
-import { TableInterpreter } from "../contract/classdef";
+import { TableInterpreter, ClassInterpreter } from "../contract/classdef";
 import { RangeUtil } from "../utils/utils";
 import { NamedTypeNodeDef } from "../contract/typedef";
 import { Range } from "assemblyscript";
@@ -86,8 +86,19 @@ Handlebars.registerHelper("generateActionConstructor", function (fn: ParameterNo
     return code.join(EOL);
 });
 
-function fieldSerialize(name: string, type: NamedTypeNodeDef) {
+function fieldSerialize(name: string, type: NamedTypeNodeDef, isActionParam: boolean) {
     let code: string[] = [];
+    let pack_code = "";
+    if (!isActionParam && type.typeNode.isNullable) {
+        pack_code = dedent`\n
+                if (!this.${name}) {
+                    _chain.check(false, "${name} can not be null");
+                }
+        \n`;
+        pack_code += '        ';
+        name = name + "!"
+    }
+
     if (type.typeKind == TypeKindEnum.ARRAY) {
         let plainType = type.plainTypeNode;
         if (type.typeNode.isNullable) {
@@ -100,11 +111,11 @@ function fieldSerialize(name: string, type: NamedTypeNodeDef) {
         }
         let numType = numberTypeMap.get(plainType.replace('[]', ''));
         if (numType) {
-            code.push(`enc.packNumberArray<${numType}>(this.${name})`);
+            pack_code += `enc.packNumberArray<${numType}>(this.${name})`;
         } else if (plainType == 'string') {
-            code.push(`enc.packStringArray(this.${name})`);
+            pack_code += `enc.packStringArray(this.${name})`;
         } else {
-            code.push(`enc.packObjectArray(this.${name});`);
+            pack_code += `enc.packObjectArray(this.${name});`;
         }
     } else if (type.typeKind == TypeKindEnum.MAP) {
         throw Error(`map type is not supported currently!Trace ${RangeUtil.location(type.typeNode.range)}`);
@@ -115,16 +126,16 @@ function fieldSerialize(name: string, type: NamedTypeNodeDef) {
         }
         let numType = numberTypeMap.get(plainType);
         if (numType) {
-            code.push(`enc.packNumber<${numType}>(this.${name});`);
+            pack_code += `enc.packNumber<${numType}>(this.${name});`;
         } else if (plainType == 'boolean') {
-            code.push(`enc.packNumber<u8>(<u8>this.${name});`);
+            pack_code += `enc.packNumber<u8>(<u8>this.${name});`;
         } else if (plainType == 'string') {
-            code.push(`enc.packString(this.${name});`);
+            pack_code += `enc.packString(this.${name});`;
         } else {
-            code.push(`enc.pack(this.${name});`);
+            pack_code += `enc.pack(this.${name});`;
         }
     }
-    return code.join(EOL);
+    return pack_code;
 }
 
 function fieldDeserialize(name: string, type: NamedTypeNodeDef) {
@@ -146,17 +157,17 @@ function fieldDeserialize(name: string, type: NamedTypeNodeDef) {
         } else if (plainType == 'string' ) {
             code.push(`this.${name} = dec.unpackStringArray();`);
         } else {
-            code.push(dedent`
+            code.push(dedent`\n
                 {
-                            let length = <i32>dec.unpackLength();
-                            this.${name} = new Array<${plainType}>(length)
-                            for (let i=0; i<length; i++) {
-                                let obj = new ${plainType}();
-                                this.${name}[i] = obj;
-                                dec.unpack(obj);
-                            }
-                        }
-            `);
+                    let length = <i32>dec.unpackLength();
+                    this.${name} = new Array<${plainType}>(length)
+                    for (let i=0; i<length; i++) {
+                        let obj = new ${plainType}();
+                        this.${name}[i] = obj;
+                        dec.unpack(obj);
+                    }
+                }
+            \n`);
         }
     } else if (type.typeKind == TypeKindEnum.MAP) {
         throw Error(`map is not supported currently!Trace: ${RangeUtil.location(type.typeNode.range)}`);
@@ -173,17 +184,30 @@ function fieldDeserialize(name: string, type: NamedTypeNodeDef) {
         } else if (plainType == 'string') {
             code.push(`this.${name} = dec.unpackString();`);
         } else {
-            code.push(`this.${name} = new ${plainType}();`);
-            code.push(`        dec.unpack(this.${name});`);
+            code.push(dedent`\n        
+                {
+                    let obj = new ${plainType}();
+                    dec.unpack(obj);
+                    this.${name} = obj;
+                }
+                `);
         }
     }
     return code.join(EOL);
 }
 
-function fieldGetSize(name: string, type: NamedTypeNodeDef) {
-    let code: string[] = [];
+function fieldGetSize(name: string, type: NamedTypeNodeDef, isActionParam: boolean) {
+    let code = "";
+    if (!isActionParam && type.typeNode.isNullable) {
+        code = dedent`\n
+            if (!this.${name}) {
+                _chain.check(false, "${name} can not be null");
+            }
+    \n`+"        ";
+        name = name + "!"
+    }
     if (type.typeKind == TypeKindEnum.ARRAY) {
-        code.push(`size += _chain.calcPackedVarUint32Length(this.${name}.length);`);
+        code += `size += _chain.calcPackedVarUint32Length(this.${name}.length);`;
         let plainType = type.plainTypeNode;
         if (type.typeNode.isNullable) {
             plainType = plainType.split('|')[0].trim();
@@ -197,19 +221,19 @@ function fieldGetSize(name: string, type: NamedTypeNodeDef) {
 
         let numType = numberTypeMap.get(plainType);
         if (numType) {
-            code.push(`        size += sizeof<${plainType}>()*this.${name}.length;`);
+            code += `size += sizeof<${plainType}>()*this.${name}.length;`;
         } else if (plainType == 'string') {
-            code.push(dedent`\n
+            code += dedent`\n
                     for (let i=0; i<this.${name}.length; i++) {
                         size += _chain.Utils.calcPackedStringLength(this.${name}[i]);
                     }
-            \n`);
+            \n`;
         } else {
-            code.push(dedent`\n
+        code += dedent`\n
                     for (let i=0; i<this.${name}.length; i++) {
                         size += this.${name}[i].getSize();
                     }
-            \n`);
+            \n`;
         }
     } else if (type.typeKind == TypeKindEnum.MAP) {
         throw Error(`map type is not supported currently!Trace ${RangeUtil.location(type.typeNode.range)}`);
@@ -217,14 +241,14 @@ function fieldGetSize(name: string, type: NamedTypeNodeDef) {
         let plainType = type.plainTypeNode;
         let numType = numberTypeMap.get(plainType);
         if (numType) {
-            code.push(`size += sizeof<${numType}>();`);
+            code += `size += sizeof<${numType}>();`;
         } else if (plainType == 'string') {
-            code.push(`size += _chain.Utils.calcPackedStringLength(this.${name});`);
+            code += `size += _chain.Utils.calcPackedStringLength(this.${name});`;
         } else {
-            code.push(`size += this.${name}.getSize();`);
+            code += `size += this.${name}.getSize();`;
         }
     }
-    return code.join(EOL);
+    return code;
 }
 
 Handlebars.registerHelper("optionalSerialize", function (field: FieldDef) {
@@ -236,7 +260,7 @@ Handlebars.registerHelper("optionalSerialize", function (field: FieldDef) {
             return enc.getBytes();
         }
     `;
-    return code + fieldSerialize(field.name+"!", field.type);
+    return code + fieldSerialize(field.name, field.type, false);
 });
 
 Handlebars.registerHelper("optionalDeserialize", function (field: FieldDef) {
@@ -247,7 +271,7 @@ Handlebars.registerHelper("optionalDeserialize", function (field: FieldDef) {
             return 1;
         }
     `;
-    return code + fieldDeserialize(field.name+"!", field.type);
+    return code + fieldDeserialize(field.name, field.type);
 });
 
 Handlebars.registerHelper("optionalGetSize", function (field: FieldDef) {
@@ -257,7 +281,7 @@ Handlebars.registerHelper("optionalGetSize", function (field: FieldDef) {
         }
         size += 1;
     `;
-    return code + fieldGetSize(field.name+"!", field.type);
+    return code + fieldGetSize(field.name, field.type, false);
 });
 
 Handlebars.registerHelper("variantSerialize", function (field: FieldDef) {
@@ -409,7 +433,7 @@ Handlebars.registerHelper("binaryExtensionSerialize", function (field: FieldDef)
             return enc.getBytes();
         }
     `;
-    return code + fieldSerialize(field.name+"!", field.type);
+    return code + fieldSerialize(field.name, field.type, false);
 });
 
 Handlebars.registerHelper("binaryExtensionDeserialize", function (field: FieldDef) {
@@ -418,7 +442,7 @@ Handlebars.registerHelper("binaryExtensionDeserialize", function (field: FieldDe
             return 0;
         }
     `;
-    return code + fieldDeserialize(field.name+"!", field.type);
+    return code + fieldDeserialize(field.name, field.type);
 });
 
 Handlebars.registerHelper("binaryExtensionGetSize", function (field: FieldDef) {
@@ -427,11 +451,11 @@ Handlebars.registerHelper("binaryExtensionGetSize", function (field: FieldDef) {
             return 0;
         }
     `;
-    return code + fieldGetSize(field.name+"!", field.type);
+    return code + fieldGetSize(field.name, field.type, false);
 });
 
 Handlebars.registerHelper("actionParameterSerialize", function (field: ParameterNodeDef) {
-    return fieldSerialize(field.name, field.type);
+    return fieldSerialize(field.name, field.type, true);
 });
 
 Handlebars.registerHelper("actionParameterDeserialize", function (field: ParameterNodeDef) {
@@ -439,7 +463,19 @@ Handlebars.registerHelper("actionParameterDeserialize", function (field: Paramet
 });
 
 Handlebars.registerHelper("actionParameterGetSize", function (field: ParameterNodeDef) {
-    return fieldGetSize(field.name, field.type);
+    return fieldGetSize(field.name, field.type, true);
+});
+
+Handlebars.registerHelper("serializerParameterSerialize", function (field: ParameterNodeDef) {
+    return fieldSerialize(field.name, field.type, false);
+});
+
+Handlebars.registerHelper("serializerParameterDeserialize", function (field: ParameterNodeDef) {
+    return fieldDeserialize(field.name, field.type);
+});
+
+Handlebars.registerHelper("serializerParameterGetSize", function (field: ParameterNodeDef) {
+    return fieldGetSize(field.name, field.type, false);
 });
 
 function handleAction(action: ActionFunctionDef): string {
@@ -510,6 +546,9 @@ Handlebars.registerHelper("generategetPrimaryFunction", function (table: TableIn
                 }
         `);
     } else {
+        if (!table.primaryFuncDef) {
+            throw Error(`primary index declaration not found!Trace ${RangeUtil.location(table.range)}`);
+        }
         code.push(dedent`
             getPrimaryValue(): u64 {
                     return this.${table.primaryFuncDef!.getterPrototype!.declaration.name.text}
@@ -577,6 +616,9 @@ Handlebars.registerHelper("newSecondaryDB", function (fn: DBIndexFunctionDef) {
 
     plainType = plainType.toUpperCase();
     let dbClass = dbTypeToDBClass.get(plainType);
+    if (!dbClass) {
+        throw Error(`unknown index type!Trace ${RangeUtil.location(fn.bodyRange)}`);
+    }
     code.push(`new _chain.${dbClass}(code.N, scope.N, idxTableBase + ${fn._index}, ${fn._index}),`);
     return code.join(EOL);
 });

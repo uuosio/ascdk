@@ -81,7 +81,7 @@ class MyContract extends Contract {
     
     @action("sayhello")
     sayHello(name: string): void {
-        check(getSender() == new Name(0), "sender should be empty");
+        check(getSender() == new Name(), "sender should be empty");
         let hello = new MyData('alice');
         let a = new Action(
             [new PermissionLevel(this.receiver, Name.fromString("active"))],

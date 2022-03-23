@@ -37,14 +37,24 @@ export class Checksum160 implements Packer {
 }
 
 export class Checksum256 implements Packer {
+    data: u8[];
     constructor(
-        public data: u8[] | null = null
+        data: u8[] | null = null
     ){
+        this.data = new Array<u8>(32);
+        if (data) {
+            check(this.data.length == 32, "bad checksum length");
+            this.assign(data);
+        }
+    }
 
+    assign(value: u8[]): void {
+        check(value.length == 32, "bad assign length");
+        env.memcpy(this.data.dataStart, value.dataStart, 32);
     }
 
     pack(): u8[] {
-        return this.data!;
+        return this.data;
     }
 
     unpack(data: u8[]): usize {
@@ -58,17 +68,17 @@ export class Checksum256 implements Packer {
     }
 
     toString(): string {
-        return Utils.bytesToHex(this.data!);
+        return Utils.bytesToHex(this.data);
     }
 
     @inline @operator('==')
     static eq(a: Checksum256, b: Checksum256): bool {
-        return Utils.bytesCmp(a.data!, b.data!) == 0;
+        return Utils.bytesCmp(a.data, b.data) == 0;
     }
 
     @inline @operator('!=')
     static neq(a: Checksum256, b: Checksum256): bool {
-        return Utils.bytesCmp(a.data!, b.data!) != 0;
+        return Utils.bytesCmp(a.data, b.data) != 0;
     }
 }
 
