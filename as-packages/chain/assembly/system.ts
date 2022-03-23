@@ -2,7 +2,7 @@ import * as env from "./env";
 import { TimePoint } from "./time";
 
 export function assert(test: bool, msg: string): void {
-    let s1 = String.UTF8.encode(msg);
+    let s1 = String.UTF8.encode(msg, false);
     let dv = new DataView(s1);
     let _test = test ? 1 : 0;
     env.eosio_assert(_test, dv.dataStart);
