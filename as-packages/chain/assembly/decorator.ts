@@ -21,6 +21,10 @@ export function table(_: any, __: string=""): any {
     //
 }
 
+export function variant(_: any, __: string=""): any {
+    //
+}
+
 export const singleton: string = "";
 export const notify: string = "";
 
