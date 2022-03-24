@@ -96,14 +96,21 @@ class MyContract extends Contract{
     @action("testmi")
     testmi(): void {
         let mi = MyData.new(this.receiver, this.receiver);
+        check(mi.availablePrimaryKey() == 0, `expected availablePrimaryKey 0, got ${mi.availablePrimaryKey()}`);
+
+        mi = MyData.new(this.receiver, this.receiver);
+
         let value = new MyData(1, 2, new U128(3), 3.3, new U256(11));
         mi.store(value, this.receiver);
+        check(mi.availablePrimaryKey() == 2, `expected availablePrimaryKey 2, got ${mi.availablePrimaryKey()}`);
 
         value = new MyData(4, 5, new U128(6), 6.6, new U256(44));
         mi.store(value, this.receiver);
+        check(mi.availablePrimaryKey() == 5, `expected availablePrimaryKey 5, got ${mi.availablePrimaryKey()}`);
 
         value = new MyData(7, 8, new U128(9), 9.9, new U256(77));
         mi.store(value, this.receiver);
+        check(mi.availablePrimaryKey() == 8, `expected availablePrimaryKey 8, got ${mi.availablePrimaryKey()}`);
 
         let it = mi.find(4);
         check(it.isOk(), "value not found!");

@@ -2,8 +2,12 @@ import { IDXDB, SecondaryValue, SecondaryIterator } from "./idxdb";
 import { DBI64, PrimaryValue } from "./dbi64";
 import { Name } from "./name";
 import { check } from "./system";
+import { print } from "./debug";
 
 export const SAME_PAYER = new Name();
+
+const noAvailablePrimaryKey = <u64>(-2) // Must be the smallest uint64_t value compared to all other tags
+const unsetNextPrimaryKey = <u64>(-1) // No table
 
 export class PrimaryIterator {
     constructor(public i: i32) {}
@@ -13,7 +17,7 @@ export class PrimaryIterator {
     }
 
     isEnd(): bool {
-        return this.i == -2;
+        return this.i == noAvailablePrimaryKey;
     }
 }
 
@@ -25,16 +29,24 @@ export interface MultiIndexValue extends PrimaryValue {
 export class MultiIndex<T extends MultiIndexValue> {
     db: DBI64;
     idxdbs: Array<IDXDB>;
+    nextPrimaryKey: u64 = unsetNextPrimaryKey;
+
     constructor(code: Name, scope: Name, table: Name, indexes: Array<IDXDB> = []) {
         this.db = new DBI64(code.N, scope.N, table.N);
         this.idxdbs = indexes;
     }
 
     store(value: T, payer: Name): PrimaryIterator {
-        let it = this.db.store(value.getPrimaryValue(), value.pack(), payer.N);
+        const it = this.db.store(value.getPrimaryValue(), value.pack(), payer.N);
         for (let i=0; i<this.idxdbs.length; i++) {
             this.idxdbs[i].storeEx(value.getPrimaryValue(), value.getSecondaryValue(i), payer.N);
         }
+
+        const pk = value.getPrimaryValue()
+        if (pk >= this.nextPrimaryKey) {
+            this.nextPrimaryKey = (pk >= noAvailablePrimaryKey) ? noAvailablePrimaryKey : (pk + 1);
+        }
+        
         return new PrimaryIterator(it);
     }
 
@@ -48,6 +60,10 @@ export class MultiIndex<T extends MultiIndexValue> {
                 continue;
             }
             this.idxdbs[i].updateEx(ret.i, value.getSecondaryValue(i), payer.N);
+        }
+
+        if (primary >= this.nextPrimaryKey) {
+            this.nextPrimaryKey = (primary >= noAvailablePrimaryKey) ? noAvailablePrimaryKey : (primary + 1);
         }
     }
 
@@ -124,6 +140,10 @@ export class MultiIndex<T extends MultiIndexValue> {
         return new PrimaryIterator(i);
     }
 
+    begin(): PrimaryIterator {
+        return this.lowerBound(u64.MIN_VALUE)
+    }
+
     end(): PrimaryIterator {
         let i = this.db.end();
         return new PrimaryIterator(i);
@@ -142,5 +162,25 @@ export class MultiIndex<T extends MultiIndexValue> {
         value.setSecondaryValue(it.dbIndex, idxValue);
         this.update(primaryIt, value, payer);
         this.idxdbs[it.dbIndex].updateEx(it, idxValue, payer.N);
+    }
+
+    availablePrimaryKey(): u64 {
+        if (this.nextPrimaryKey == unsetNextPrimaryKey) {
+            if (this.begin().i == this.end().i) {
+                this.nextPrimaryKey = 0;
+            } else {
+                const end = this.end();
+                const itr = this.previous(end)
+                const pk = this.get(itr).getPrimaryValue()
+                if (pk >= noAvailablePrimaryKey) {
+                    this.nextPrimaryKey = noAvailablePrimaryKey
+                } else {
+                    this.nextPrimaryKey = pk + 1
+                }
+            }
+        }
+
+        check(this.nextPrimaryKey < noAvailablePrimaryKey, "next primary key in table is at autoincrement limit")
+        return this.nextPrimaryKey
     }
 }
