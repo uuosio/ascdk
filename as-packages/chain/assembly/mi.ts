@@ -79,8 +79,9 @@ export class MultiIndex<T extends MultiIndexValue> {
         this.db.remove(it.i);
         for (let i=0; i<this.idxdbs.length; i++) {
             let ret = this.idxdbs[i].findPrimaryEx(primary);
-            check(ret.i.isOk(), "secondary value not found!");
-            this.idxdbs[i].remove(ret.i);
+            if (ret.i.isOk()) {
+                this.idxdbs[i].remove(ret.i);
+            }
         }
     }
 
