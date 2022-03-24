@@ -568,7 +568,7 @@ Handlebars.registerHelper("getSecondaryValue", function (fn: DBIndexFunctionDef)
     }  else if (plainType == 'chain.Float128') {
         plainType = 'Float128';
     }
-    console.log("+++++++++getSecondaryValue:", fn._index);
+    // console.log("+++++++++getSecondaryValue:", fn._index);
     code.push(`case ${fn._index}: {`);
     code.push(`                return _chain.newSecondaryValue_${plainType}(this.${fn.setterPrototype!.declaration.name.text});`);
     code.push(`                break;`);

@@ -53,11 +53,11 @@ def print_console(tx):
 
     for trace in tx['action_traces']:
         # logger.info(trace['console'])
-        print(f'{num}:action_traces:%s'%(trace['console'], ))
+        logger.info(f'{num}:action_traces:%s'%(trace['console'], ))
         if not 'inline_traces' in trace:
             continue
         for inline_trace in trace['inline_traces']:
-            print(f'{num}:inline_traces:%s'%(inline_trace['console'], ))
+            logger.info(f'{num}:inline_traces:%s'%(inline_trace['console'], ))
 
 
 class Test(object):

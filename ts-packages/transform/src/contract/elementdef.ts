@@ -245,14 +245,14 @@ export class DBIndexFunctionDef {
     constructor(propertyPrototype: PropertyPrototype, indexType: number) {
         if (propertyPrototype.getterPrototype) {
             this.getterPrototype = new FunctionDef(propertyPrototype.getterPrototype!);
-            console.log("++++getterPrototype.rangeString:", this.getterPrototype.rangeString);
+            // console.log("++++getterPrototype.rangeString:", this.getterPrototype.rangeString);
         } else {
             this.getterPrototype = null;
         }
 
         if (propertyPrototype.setterPrototype) {
             this.setterPrototype = new FunctionDef(propertyPrototype.setterPrototype);
-            console.log("++++setterPrototype.rangeString:", this.setterPrototype.rangeString);
+            // console.log("++++setterPrototype.rangeString:", this.setterPrototype.rangeString);
         } else {
             this.setterPrototype = null;
         }
