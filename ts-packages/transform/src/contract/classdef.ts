@@ -171,11 +171,11 @@ export class TableInterpreter extends ClassInterpreter {
                     if (this.primaryFuncDef) {
                         throw Error(`More than one primary function defined! Trace: ${RangeUtil.location(instance.declaration.range)}`);
                     }
-                    console.log("+++++++primary function:", instance.name);
+                    // console.log("+++++++primary function:", instance.name);
                     this.primaryFuncDef = new DBIndexFunctionDef(<PropertyPrototype>instance, 0);
                 }
                 if (ElementUtil.isSecondaryFuncPrototype(instance)) {
-                    console.log("+++++++secondary function:", instance.name);
+                    // console.log("+++++++secondary function:", instance.name);
                     let actionFunc = new DBIndexFunctionDef(<PropertyPrototype>instance, 1);
                     this.secondaryFuncDefs.push(actionFunc);
                 }
