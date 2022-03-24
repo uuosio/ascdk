@@ -8,7 +8,7 @@ sys.path.append(os.path.join(test_dir, '..'))
 
 from ipyeos import log
 from ipyeos import chaintester
-chaintester.chain_config['contracts_console'] = False
+chaintester.chain_config['contracts_console'] = True
 logger = log.get_logger(__name__)
 
 chain = None
@@ -256,6 +256,34 @@ def test_variant():
     chain.produce_block()
 
     r = chain.push_action('hello', 'test2', b'', {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])
+    chain.produce_block()
+
+    args = dict(
+        a1 = ["int8", 1],
+        a2 = ["int16", 2],
+        a3 = ["int32", 3],
+        a4 = ["int64", 4],
+        a5 = ["uint8", 5],
+        a6 = ["uint16", 6],
+        a7 = ["uint32", 7],
+        a8 = ["uint64", 8],
+        a9 = ["float64", 9.9],
+        a10 = ["float128", "0xffffffffffffffffffffffffffffffff"],
+        a11 = ["string", "hello"],
+        a12 = ["int8[]", [1, 2, 3]],
+        a13 = ["int16[]", [1, 2, 3]],
+        a14 = ["int32[]", [1, 2, 3]],
+        a15 = ["int64[]", [1, 2, 3]],
+        a16 = ["bytes", 'aabbcc'],
+        a17 = ["uint16[]", [1, 2, 3]],
+        a18 = ["uint32[]", [1, 2, 3]],
+        a19 = ["uint64[]", [1, 2, 3]],
+        a20 = ["float64[]", [1.1, 2.2, 3.3]],
+        a21 = ["float128[]", ["0xaafffffffffffffffffffffffffffffa", "0xfffffffffffffffffffffffffffffffb"]],
+        a22 = ["string[]", ["hello", "world"]],
+    )
+    r = chain.push_action('hello', 'test3', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
     chain.produce_block()
 

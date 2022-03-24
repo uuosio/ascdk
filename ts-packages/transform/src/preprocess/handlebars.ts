@@ -157,17 +157,21 @@ function fieldDeserialize(name: string, type: NamedTypeNodeDef) {
         } else if (plainType == 'string' ) {
             code.push(`this.${name} = dec.unpackStringArray();`);
         } else {
+            let exclamationMark = "";
+            if (type.typeNode.isNullable) {
+                exclamationMark = "!"
+            }
             code.push(dedent`\n
-                {
-                    let length = <i32>dec.unpackLength();
-                    this.${name} = new Array<${plainType}>(length)
-                    for (let i=0; i<length; i++) {
-                        let obj = new ${plainType}();
-                        this.${name}[i] = obj;
-                        dec.unpack(obj);
-                    }
+            {
+                let length = <i32>dec.unpackLength();
+                this.${name} = new Array<${plainType}>(length)
+                for (let i=0; i<length; i++) {
+                    let obj = new ${plainType}();
+                    this.${name}${exclamationMark}[i] = obj;
+                    dec.unpack(obj);
                 }
-            \n`);
+            }
+        \n`);
         }
     } else if (type.typeKind == TypeKindEnum.MAP) {
         throw Error(`map is not supported currently!Trace: ${RangeUtil.location(type.typeNode.range)}`);
@@ -287,93 +291,38 @@ Handlebars.registerHelper("optionalGetSize", function (field: FieldDef) {
 Handlebars.registerHelper("variantSerialize", function (field: FieldDef) {
     let code;
     let plainType = field.type.plainTypeNode;
+    
+    let serializeCode = fieldSerialize(field.name, field.type, false);
 
-    if (field.type.typeKind == TypeKindEnum.ARRAY) {
-        throw Error(`Array type is supported in variant! Trace ${RangeUtil.location(field.declaration.range)}`);
-    } else if (field.type.typeKind == TypeKindEnum.MAP) {
-        throw Error(`map type is not supported in variant! Trace ${RangeUtil.location(field.declaration.range)}`);
-    }
+    return `
+    if (this._index == ${field._index}) {
+        ${serializeCode}
+    }`;
 
-    if (TypeHelper.isNumberType(field.type.typeKind)) {
-        code = `
-        if (this._index == ${field._index}) {
-            enc.packNumber<${plainType}>(this.${field.name});
-        }`;
-    } else if (TypeHelper.isStringType(field.type.typeKind)) {
-        code = `
-        if (this._index == ${field._index}) {
-            enc.packString(this.${field.name});
-        }`;
-    } else {
-        code = `
-        if (this._index == ${field._index}) {
-            if (!this.${field.name}) {
-                this.${field.name} = instantiate<${field.type.plainTypeNode}>();
-            }
-            enc.pack(this.${field.name}!);
-        }`;    
-    }
-    return code;
 });
 
 Handlebars.registerHelper("variantDeserialize", function (field: FieldDef) {
-    if (field.type.typeKind == TypeKindEnum.ARRAY) {
-        throw Error(`Array type is supported in variant! Trace ${RangeUtil.location(field.declaration.range)}`);
-    } else if (field.type.typeKind == TypeKindEnum.MAP) {
-        throw Error(`map type is not supported in variant! Trace ${RangeUtil.location(field.declaration.range)}`);
-    }
-
-    let code;
-    let plainType = field.type.plainTypeNode;
-    if (TypeHelper.isNumberType(field.type.typeKind)) {
-        code = `
-        if (this._index == ${field._index}) {
-            this.${field.name} = dec.unpackNumber<${plainType}>();
-        }`;
-    } else if (TypeHelper.isStringType(field.type.typeKind)) {
-        code = `
-        if (this._index == ${field._index}) {
-            this.${field.name} = dec.unpackString();
-        }`;
-    } else {
-        code = `
-        if (this._index == ${field._index}) {
-            if (!this.${field.name}) {
-                this.${field.name} = instantiate<${field.type.plainTypeNode}>();
-            }
-            dec.unpack(this.${field.name}!);
-        }`;
-    }
-    return code;
+    let deserializecode = fieldDeserialize(field.name, field.type);
+    return `
+    if (this._index == ${field._index}) {
+        ${deserializecode}
+    }`;
 });
 
 Handlebars.registerHelper("variantGetSize", function (field: FieldDef) {
-    let code;
-    let plainType = field.type.plainTypeNode;
-    if (TypeHelper.isNumberType(field.type.typeKind)) {
-        code = `
-        if (this._index == ${field._index}) {
-            return 1 + sizeof<${plainType}>();
-        }`;
-    } else if (TypeHelper.isStringType(field.type.typeKind)) {
-        code = `
-        if (this._index == ${field._index}) {
-            return 1 + _chain.Utils.calcPackedStringLength(this.${field.name});
-        }`;
-    } else {
-        //isUserClassType
-        code = `
-        if (this._index == ${field._index}) {
-            return 1 + this.${field.name}!.getSize();
-        }`;
-    }
-
-    return code;
+    let getSize = fieldGetSize(field.name, field.type, false);
+    return `
+    if (this._index == ${field._index}) {
+        ${getSize}
+    }`;
 });
 
 Handlebars.registerHelper("variantNew", function (field: FieldDef) {
     let code: string[] = [];
     let plainType = field.type.plainTypeNode;
+    if (field.type.typeNode.isNullable) {
+        plainType = plainType.split('|')[0].trim();
+    }
     if (plainType == 'string') {
         code.push(`
         if (isString<T>()) {
@@ -414,11 +363,15 @@ Handlebars.registerHelper("variantGet", function (field: FieldDef) {
         return this.${field.name};
     }`);
     } else {
+        let exclamationMark = "";
+        if (field.type.typeNode.isNullable) {
+            exclamationMark = "!"
+        }
         code.push(`
-    get${field.name}(): ${plainType} {
-        _chain.check(this._index == ${field._index}, "wrong variant type");
-        return this.${field.name}!;
-    }`);
+        get${field.name}(): ${plainType} {
+            _chain.check(this._index == ${field._index}, "wrong variant type");
+            return this.${field.name}${exclamationMark};
+        }`);
     }
     return code.join(EOL);
 });

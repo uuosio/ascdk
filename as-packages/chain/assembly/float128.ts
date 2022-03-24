@@ -26,4 +26,14 @@ export class Float128 implements Packer {
     getSize(): usize {
         return 16;
     }
+
+    @inline @operator('==')
+    static eq(a: Float128, b: Float128): bool {
+        return a.data[0] == b.data[0] && a.data[1] == b.data[1];
+    }
+
+    @inline @operator('!=')
+    static ne(a: Float128, b: Float128): bool {
+        return !(a.data[0] == b.data[0] && a.data[1] == b.data[1]);
+    }
 }
