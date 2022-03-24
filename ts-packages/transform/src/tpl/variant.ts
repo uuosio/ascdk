@@ -27,10 +27,11 @@ export const variantTpl = `
     }
 
     getSize(): usize {
+        let size: usize = 1;
         {{#each fields}}
         {{{variantGetSize .}}}
         {{/each}}
-        return 0;
+        return size;
     }
 
     static new<T>(): {{className}} {

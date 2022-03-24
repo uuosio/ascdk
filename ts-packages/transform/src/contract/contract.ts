@@ -244,6 +244,7 @@ export class ContractProgram {
 
         if (type.typeKind == TypeKindEnum.ARRAY) {
             plainType = plainType.replace('[]', '');
+            plainType = plainType.replace('Array<', '').replace('>', '');
         }
 
         if (plainType.indexOf('chain.') == 0) {
@@ -252,7 +253,7 @@ export class ContractProgram {
 
         abiField.type = this.findType(plainType);
         if (!abiField.type) {
-            throw Error(`type not found: ${plainType}`)
+            throw Error(`type of ${name} not found: ${plainType}`)
         }
     
         if (type.typeKind == TypeKindEnum.ARRAY) {
