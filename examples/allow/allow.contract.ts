@@ -1,6 +1,6 @@
 import { Name, Singleton, action, Contract, contract, check, requireAuth, MultiIndex, SAME_PAYER } from 'as-chain'
-import { allow, setallowed, setblocked, setpaused } from './allow.constants';
-import { Allowed, Paused } from './allow.tables';
+import { allow, allowactor, blockactor, setpaused } from './allow.constants';
+import { AllowedActor, Paused } from './allow.tables';
 
 enum UpdateFields {
     IS_ALLOWED = 0,
@@ -12,7 +12,7 @@ export class AllowContract extends Contract {
     contract: Name = this.receiver
     parentContract: Name = this.firstReceiver
 
-    allowedTable: MultiIndex<Allowed> = Allowed.getTable(this.receiver)
+    allowedActorTable: MultiIndex<AllowedActor> = AllowedActor.getTable(this.receiver)
     pausedSingleton: Singleton<Paused> = Paused.getSingleton(this.receiver)
 
     /**
@@ -37,8 +37,8 @@ export class AllowContract extends Contract {
      * @param {Name} actor - Name
      * @param {boolean} isAllowed - boolean
      */
-    @action(setallowed)
-    setallowed(
+    @action(allowactor)
+    allowactor(
         actor: Name,
         isAllowed: boolean
     ): void {
@@ -51,8 +51,8 @@ export class AllowContract extends Contract {
      * @param {Name} actor - Name
      * @param {boolean} isBlocked - boolean
      */
-    @action(setblocked)
-    setblocked(
+    @action(blockactor)
+    blockactor(
         actor: Name,
         isBlocked: boolean
     ): void {
@@ -68,34 +68,34 @@ export class AllowContract extends Contract {
      */
     updateAllowed(actor: Name, fieldToUpdate: UpdateFields, fieldValue: boolean): void {
         // Find or create allowed entry
-        let allowedItr = this.allowedTable.find(actor.N)
-        if (!allowedItr.isOk()) {
-            allowedItr = this.allowedTable.store(new Allowed(actor), this.contract)
+        let allowedActorItr = this.allowedActorTable.find(actor.N)
+        if (!allowedActorItr.isOk()) {
+            allowedActorItr = this.allowedActorTable.store(new AllowedActor(actor), this.contract)
         }
 
         // Get allowed entry
-        const allowed = this.allowedTable.get(allowedItr)
+        const allowedActor = this.allowedActorTable.get(allowedActorItr)
 
         // Update allowed
         if (fieldToUpdate == UpdateFields.IS_ALLOWED) {
-            allowed.isAllowed = fieldValue
+            allowedActor.isAllowed = fieldValue
 
-            if (allowed.isAllowed) {
-                allowed.isBlocked = false
+            if (allowedActor.isAllowed) {
+                allowedActor.isBlocked = false
             }
         } else if (fieldToUpdate == UpdateFields.IS_BLOCKED) {
-            allowed.isBlocked = fieldValue
+            allowedActor.isBlocked = fieldValue
 
-            if (allowed.isBlocked) {
-                allowed.isAllowed = false
+            if (allowedActor.isBlocked) {
+                allowedActor.isAllowed = false
             }
         }
 
         // Save
-        if (!allowed.isAllowed && !allowed.isBlocked) {
-            this.allowedTable.remove(allowedItr)
+        if (!allowedActor.isAllowed && !allowedActor.isBlocked) {
+            this.allowedActorTable.remove(allowedActorItr)
         } else {
-            this.allowedTable.update(allowedItr, allowed, SAME_PAYER);
+            this.allowedActorTable.update(allowedActorItr, allowedActor, SAME_PAYER);
         }
     }
 
@@ -104,15 +104,15 @@ export class AllowContract extends Contract {
      */
     isActorAllowed(actor: Name): boolean {
         // Find entry
-        const allowedItr = this.allowedTable.find(actor.N)
+        const allowedActorItr = this.allowedActorTable.find(actor.N)
 
         // If no entry found, account is allowed
-        if (!allowedItr.isOk()) {
+        if (!allowedActorItr.isOk()) {
             return true
         }
 
         // Get entry
-        const allowed = this.allowedTable.get(allowedItr)
+        const allowed = this.allowedActorTable.get(allowedActorItr)
 
         // isAllowed = true
         //     or
@@ -121,7 +121,7 @@ export class AllowContract extends Contract {
     }
 
     checkActorIsAllowed(actor: Name): void {
-        check(this.isActorAllowed(actor), `Actor ${actor} is now allowed to use ${contract}`)
+        check(this.isActorAllowed(actor), `Actor ${actor} is now allowed to use ${this.contract}`)
     }
 
     isContractPaused(): boolean {

@@ -2,19 +2,11 @@ import { check, ExtendedAsset, packer, Table } from "as-chain"
 import { Account } from "./balance.tables";
 
 /**
- * FIND INDEXES
+ * Find the index of an extended asset in an array of extended assets
+ * @param {ExtendedAsset[]} tokens - The list of tokens to search through.
+ * @param {ExtendedAsset} token - ExtendedAsset
+ * @returns The index of the token in the array of tokens.
  */
-export function findIndexOfU64 (array: u64[], item: u64): i32 {
-    let itemIndex = -1
-    for (let j = 0; j < array.length; j++) {
-        if (array[j] == item) {
-            itemIndex = j
-            break;
-        }
-    }
-    return itemIndex
-}
-
 export function findIndexOfExtendedAsset (tokens: ExtendedAsset[], token: ExtendedAsset): i32 {
     let tokenIndex = -1
     for (let j = 0; j < tokens.length; j++) {
@@ -26,32 +18,34 @@ export function findIndexOfExtendedAsset (tokens: ExtendedAsset[], token: Extend
     return tokenIndex
 }
 
-export function findAndRemoveItemsFromArray (array: u64[], itemsToRemove: u64[]): void {
-    for (let i = 0; i < itemsToRemove.length; i++) {
-        const indexOfItemToRemove = findIndexOfU64(array, itemsToRemove[i])
-        check(indexOfItemToRemove != -1, "item not found in array")
-        array.splice(i, 1)
+/**
+ * The function takes in an account and a list of nfts to remove from the account's balance.
+ * @param {Account} account - Account
+ * @param {u64[]} nftsToRemove - u64[]
+ */
+export function substractNfts(account: Account, nftsToRemove: u64[]): void {
+    for (let i = 0; i < nftsToRemove.length; i++) {
+        const nftToRemoveIndex = account.nfts.indexOf(nftsToRemove[i])
+        check(nftToRemoveIndex != -1, `NFT ${nftsToRemove[i]} not found in balance of ${account.name}`)
+        account.nfts.splice(nftToRemoveIndex, 1)
     }
 }
 
 /**
- * Substract NFT
+ * Add the given nfts to the account's nfts.
+ * @param {Account} account - Account - The account to add the NFTs to.
+ * @param {u64[]} nftsToAdd - u64[]
  */
-export function substractNfts(account: Account, subNfts: u64[]): void {
-    findAndRemoveItemsFromArray(account.nfts, subNfts);
+export function addNfts(account: Account, nftsToAdd: u64[]): void {
+    account.nfts = account.nfts.concat(nftsToAdd)
 }
 
 /**
- * Add NFTs
+ * It finds the index of the token in the array of tokens, 
+ * and then it substracts the balance of the user.
+ * @param {ExtendedAsset[]} tokens - The list of tokens that the user has.
+ * @param {ExtendedAsset} sub - The asset to be subtracted from the user's balance.
  */
-export function addNfts(account: Account, addNfts: u64[]): void {
-    account.nfts = account.nfts.concat(addNfts)
-}
-
-/**
- * Substract Token
- */
-
 export function substractToken (tokens: ExtendedAsset[], sub: ExtendedAsset): void {
     // Validation
     check(sub.quantity.isValid(), "valid quantity");
@@ -72,14 +66,21 @@ export function substractToken (tokens: ExtendedAsset[], sub: ExtendedAsset): vo
     }
 }
 
-export function substractTokens(account: Account, subTokens: ExtendedAsset[]):  void {
-    for (let i = 0; i < subTokens.length; i++) {
-        substractToken(account.tokens, subTokens[i])
+/**
+ * It subtracts the tokens from the account.
+ * @param {Account} account - Account
+ * @param {ExtendedAsset[]} tokensToSubtract - An array of ExtendedAsset objects.
+ */
+export function substractTokens(account: Account, tokensToSubtract: ExtendedAsset[]):  void {
+    for (let i = 0; i < tokensToSubtract.length; i++) {
+        substractToken(account.tokens, tokensToSubtract[i])
     } 
 }
 
 /**
- * ADD
+ * If the token does not exist, add it. If the token exists, update the balance
+ * @param {ExtendedAsset[]} tokens - The list of tokens that the user owns.
+ * @param {ExtendedAsset} add - ExtendedAsset
  */
 export function addToken(tokens: ExtendedAsset[], add: ExtendedAsset): void {
     // Validation
@@ -99,9 +100,14 @@ export function addToken(tokens: ExtendedAsset[], add: ExtendedAsset): void {
     }
 }
 
-export function addTokens(account: Account, subTokens: ExtendedAsset[]): void {
-    for (let i = 0; i < subTokens.length; i++) {
-        addToken(account.tokens, subTokens[i])
+/**
+ * It adds the tokens to the account's tokens array.
+ * @param {Account} account - The account to add the tokens to.
+ * @param {ExtendedAsset[]} tokensToAdd - An array of ExtendedAsset objects.
+ */
+export function addTokens(account: Account, tokensToAdd: ExtendedAsset[]): void {
+    for (let i = 0; i < tokensToAdd.length; i++) {
+        addToken(account.tokens, tokensToAdd[i])
     } 
 }
 

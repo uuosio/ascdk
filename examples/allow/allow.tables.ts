@@ -1,5 +1,5 @@
 import { Name, table, primary, Table, MultiIndex, singleton, Singleton } from "as-chain";
-import { allowed, paused } from "./allow.constants";
+import { allowedactor, allowedtoken, paused } from "./allow.constants";
 
 // scope: contract
 @table(paused, singleton)
@@ -18,8 +18,8 @@ export class PausedSingleton extends Table {
 export class Paused extends PausedSingleton {}
 
 // scope: contract
-@table(allowed)
-export class AllowedTable extends Table {
+@table(allowedactor)
+export class AllowedActorTable extends Table {
     constructor (
         public actor: Name = new Name(),
         public isAllowed: boolean = false,
@@ -33,9 +33,32 @@ export class AllowedTable extends Table {
         return this.actor.N;
     }
 
-    static getTable(code: Name): MultiIndex<Allowed> {
-        return new MultiIndex<Allowed>(code, code, allowed);
+    static getTable(code: Name): MultiIndex<AllowedActor> {
+        return new MultiIndex<AllowedActor>(code, code, allowedactor);
     }
 }
 
-export class Allowed extends AllowedTable {}
+export class AllowedActor extends AllowedActorTable {}
+
+// // scope: contract
+// @table(allowedtoken)
+// export class AllowedTable extends Table {
+//     constructor (
+//         public actor: Name = new Name(),
+//         public isAllowed: boolean = false,
+//         public isBlocked: boolean = false,
+//     ) {
+//         super();
+//     }
+
+//     @primary
+//     get primary(): u64 {
+//         return this.actor.N;
+//     }
+
+//     static getTable(code: Name): MultiIndex<Allowed> {
+//         return new MultiIndex<Allowed>(code, code, allowed);
+//     }
+// }
+
+// export class AllowedToke extends AllowedTable {}

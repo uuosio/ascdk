@@ -25,7 +25,7 @@ class EscrowContract extends BalanceContract {
         check(to == new Name() || isAccount(to), "to must be empty or a valid account");
 
         // Substract balances
-        this.modifyAccount(from, fromTokens, fromNfts, OPERATION.SUB, SAME_PAYER)
+        this.modifyBalance(from, fromTokens, fromNfts, OPERATION.SUB, SAME_PAYER)
       
         // Get config
         const configSingleton = Global.getSingleton(this.receiver)
@@ -69,7 +69,7 @@ class EscrowContract extends BalanceContract {
         existingEscrow.to = fulfiller;
       
         // Substract balances
-        this.modifyAccount(existingEscrow.to, existingEscrow.toTokens, existingEscrow.toNfts, OPERATION.SUB, SAME_PAYER)
+        this.modifyBalance(existingEscrow.to, existingEscrow.toTokens, existingEscrow.toNfts, OPERATION.SUB, SAME_PAYER)
 
         // Send out
         const memo = "escrow " + id.toString() + " completed!"

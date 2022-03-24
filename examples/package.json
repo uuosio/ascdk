@@ -42,6 +42,7 @@
     "build:receiver": "npx eosio-asc ./notify/receiver.ts",
     "build:eosio.token": "npx eosio-asc ./eosio.token/eosio.token.contract.ts",
     "build:escrow": "npx eosio-asc ./escrow/escrow.contract.ts",
+    "build:allow": "npx eosio-asc ./allow/allow.contract.ts",
     "build:balance": "npx eosio-asc ./balance/balance.contract.ts"
   },
   "dependencies": {
