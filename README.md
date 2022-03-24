@@ -1,7 +1,7 @@
 # AssemblyScript Smart Contracts Development Kit
 
 ## Boilerplate
-Boilerplate to build your own contract: https://github.com/jafri/ascdk-minimal
+Boilerplate to build your own contract + testing: https://github.com/ProtonProtocol/typescript-smart-contracts
 
 
 ## Installation

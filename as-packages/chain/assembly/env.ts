@@ -31,6 +31,7 @@ export declare function publication_time(): u64
 export declare function current_receiver(): u64
 
 // void  eosio_assert_message( uint32_t test, const char* msg, uint32_t msg_len );
+export declare function eosio_assert(test: u32, msg_ptr: usize): void;
 export declare function eosio_assert_message(test: u32, msg_ptr: usize, msg_len: usize): void;
 
 export declare function db_store_i64(scope: u64, table: u64, payer: u64, id: u64,  data: usize, len: usize): i32
