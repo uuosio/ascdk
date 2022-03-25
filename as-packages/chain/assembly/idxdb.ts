@@ -1,5 +1,6 @@
 import { U128, U256 } from "./bignum";
 import { Float128 } from "./float128";
+import { check } from "./system";
 
 export class SecondaryIterator {
     constructor(
@@ -76,22 +77,27 @@ export function newSecondaryValue_Float128(value: Float128): SecondaryValue {
 }
 
 export function getSecondaryValue_u64(value: SecondaryValue): u64 {
+    check(value.type == SecondaryType.U64, "secondary must be a u64 value");
     return value.value[0];
 }
 
 export function getSecondaryValue_U128(value: SecondaryValue): U128 {
+    check(value.type == SecondaryType.U128, "secondary must be a U128 value");
     return new U128(value.value[0], value.value[1]);
 }
 
 export function getSecondaryValue_U256(value: SecondaryValue): U256 {
+    check(value.type == SecondaryType.U256, "secondary must be a U256 value");
     return new U256(value.value[0], value.value[1], value.value[2], value.value[3]);
 }
 
 export function getSecondaryValue_f64(value: SecondaryValue): f64 {
+    check(value.type == SecondaryType.F64, "secondary must be a f64 value");
     return load<f64>(value.value.dataStart);
 }
 
 export function getSecondaryValue_Float128(value: SecondaryValue): Float128 {
+    check(value.type == SecondaryType.F128, "secondary must be a Float128 value");
     return new Float128(value.value[0], value.value[1])
 }
 
