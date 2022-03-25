@@ -299,8 +299,15 @@ class MyContract extends Contract{
             check(ret.value.value[0] == 77, "idx256.lowerBound 2: bad secondary value!");
         }
 
+        // Update by value
+        value = new MyData(7, 89, new U128(100), 9.98);
+        mi.update(value, this.receiver);
+        value = mi.get(it);
+        check(value.a == 7 && value.b == 89 && value.c == new U128(100) && value.d == 9.98, "bad value");
+
+        // Update by iterator
         value = new MyData(7, 88, new U128(99), 9.99);
-        mi.update(it, value, this.receiver);
+        mi.updateItr(it, value, this.receiver);
         value = mi.get(it);
         check(value.a == 7 && value.b == 88 && value.c == new U128(99) && value.d == 9.99, "bad value");
 
@@ -308,9 +315,21 @@ class MyContract extends Contract{
         // 4 5 6
         // 7 8 10
         {
-            let it = mi.find(1);
-            mi.remove(it);
+            // Remove by value
+            mi.remove(value);
+            let it = mi.find(7);
+            check(!it.isOk(), "bad iterator!");
+
+            // Remove by iterator
             it = mi.find(1);
+            mi.removeItr(it);
+
+            it = mi.find(1);
+            check(!it.isOk(), "bad iterator!");
+
+            // Remove by value
+            mi.removeEx(4);
+            it = mi.find(4);
             check(!it.isOk(), "bad iterator!");
         }
     }

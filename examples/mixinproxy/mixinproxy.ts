@@ -156,7 +156,7 @@ class MyContract extends Contract{
         if (it.isOk()) {
             let record = db.get(it);
             record.total += asset;
-            db.update(it, record, new Name());
+            db.updateItr(it, record, new Name());
         } else {
             db.store(new TotalFee(asset), this.receiver);
         }
@@ -176,7 +176,7 @@ class MyContract extends Contract{
             let it = db.find(fee.symbol.code());
             let record = new TransferFee(fee);
             if (it.isOk()) {
-                db.update(it, record, new Name());
+                db.updateItr(it, record, new Name());
             } else {
                 db.store(record, this.receiver);
             }
@@ -235,7 +235,7 @@ class MyContract extends Contract{
             if (!it.isOk()) {
                 break;
             }
-            db.remove(it);
+            db.removeItr(it);
             this.incNonce();
             nonce += 1;
         }
@@ -249,7 +249,7 @@ class MyContract extends Contract{
             if (record.nonce > nonce) {
                 break;
             }
-            db.remove(it);
+            db.removeItr(it);
         }
     }
 
@@ -271,7 +271,7 @@ class MyContract extends Contract{
         if (it.isOk()) {
             let item = db.get(it);
             item.count += 1;
-            db.update(it, item, new Name());
+            db.updateItr(it, item, new Name());
         } else {
             let item = new Counter(KEY_NONCE, 2);
             db.store(item, this.receiver);
@@ -426,7 +426,7 @@ class MyContract extends Contract{
             if (it.isOk()) {
                 let item = db.get(it);
                 if (this.handleExpiration(item.event!)) {
-                    db.remove(it);
+                    db.removeItr(it);
                     return;
                 }
             }
@@ -437,7 +437,7 @@ class MyContract extends Contract{
             let it = db.lowerBound(0);
             check(it.isOk(), "error event not found!");
             let record = db.get(it);
-            db.remove(it);
+            db.removeItr(it);
             this.handleEvent(record.event, record.origin_extra);
         }
     }
@@ -450,7 +450,7 @@ class MyContract extends Contract{
         let it = db.find(nonce);
         check (it.isOk(), "pending event not found");
         let record = db.get(it);
-        db.remove(it);
+        db.removeItr(it);
         this.handleEvent(record.event!, origin_extra);
     }
 //action execpending
@@ -459,7 +459,7 @@ class MyContract extends Contract{
 // 	db := NewPendingEventDB(c.self, c.self)
 // 	it, item := db.Get(nonce)
 // 	check(it.IsOk(), "pending event not found")
-// 	db.Remove(it)
+// 	db.removeItr(it)
 // 	check(len(origin_extra) > 0, "origin_extra not not be empty")
 // 	c.HandleEvent(&item.event, origin_extra)
 // }
@@ -634,7 +634,7 @@ class MyContract extends Contract{
         let db = MixinAsset.new(this.receiver, this.receiver);
         let it = db.find(symbol.code());
         check(it.isOk(), "asset does not exists!");
-        db.remove(it);
+        db.removeItr(it);
     }
 
     @action("setaccfee")
@@ -710,7 +710,7 @@ class MyContract extends Contract{
         } else {
             let item = db.get(it);
             item.count += 1;
-            db.update(it, item, new Name());
+            db.updateItr(it, item, new Name());
             return item.count;
         }
     }

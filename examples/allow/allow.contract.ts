@@ -93,9 +93,9 @@ export class AllowContract extends Contract {
 
         // Save
         if (!allowedActor.isAllowed && !allowedActor.isBlocked) {
-            this.allowedActorTable.remove(allowedActorItr)
+            this.allowedActorTable.remove(allowedActor)
         } else {
-            this.allowedActorTable.update(allowedActorItr, allowedActor, SAME_PAYER);
+            this.allowedActorTable.update(allowedActor, SAME_PAYER);
         }
     }
 

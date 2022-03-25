@@ -80,7 +80,7 @@ class EscrowContract extends BalanceContract {
         sendLogEscrow(this.receiver, existingEscrow, ESCROW_STATUS.FILL);
 
         // Erase
-        this.escrowsTable.remove(escrowItr);
+        this.escrowsTable.removeItr(escrowItr);
     }
 
     @action(cancelescrow)
@@ -100,7 +100,7 @@ class EscrowContract extends BalanceContract {
         sendLogEscrow(this.receiver, existingEscrow, ESCROW_STATUS.CANCEL);
 
         // Erase
-        this.escrowsTable.remove(escrowItr);
+        this.escrowsTable.removeItr(escrowItr);
     }
 
     @action(logescrow)

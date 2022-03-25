@@ -10,12 +10,7 @@ export class Singleton<T extends MultiIndexValue> {
     }
 
     set(value: T, payer: Name): void {
-        let it = this.mi.find(this.key);
-        if (it.isOk()) {
-            this.mi.update(it, value, payer);
-        } else {
-            this.mi.store(value, payer);
-        }
+        this.mi.set(value, payer)
     }
 
     getOrNull(): T | null {
@@ -38,7 +33,7 @@ export class Singleton<T extends MultiIndexValue> {
     remove(): void {
         let it = this.mi.find(this.key);
         if (it.isOk()) {
-            this.mi.remove(it);
+            this.mi.removeItr(it);
         }
     }
 }

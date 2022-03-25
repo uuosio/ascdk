@@ -39,7 +39,7 @@ class TokenContract extends Contract {
         check(quantity.amount <= st.max_supply.amount - st.supply.amount, "quantity exceeds available supply");
 
         st.supply = Asset.add(st.supply, quantity);
-        statstable.update(existing, st, SAME_PAYER);
+        statstable.updateItr(existing, st, SAME_PAYER);
 
         this.addBalance(st.issuer, quantity, st.issuer);
     }
@@ -61,7 +61,7 @@ class TokenContract extends Contract {
         check(quantity.symbol == st.supply.symbol, "symbol precision mismatch");
 
         st.supply = Asset.sub(st.supply, quantity);
-        statstable.update(existing, st, SAME_PAYER);
+        statstable.updateItr(existing, st, SAME_PAYER);
 
         this.subBalance(st.issuer, quantity);
     }
@@ -99,7 +99,7 @@ class TokenContract extends Contract {
         check(account.balance.amount >= value.amount, "overdrawn balance");
 
         account.balance = Asset.sub(account.balance, value);
-        fromAcnts.update(from, account, owner);
+        fromAcnts.updateItr(from, account, owner);
     }
 
     addBalance(owner: Name, value: Asset, ramPayer: Name): void {
@@ -111,7 +111,7 @@ class TokenContract extends Contract {
         } else {
             const account = toAcnts.get(to);
             account.balance = Asset.add(account.balance, value);
-            toAcnts.update(to, account, ramPayer);
+            toAcnts.updateItr(to, account, ramPayer);
         }
     }
 
@@ -141,6 +141,6 @@ class TokenContract extends Contract {
         const it = acnts.requireFind(symbol.code(), "Balance row already deleted or never existed. Action won't have any effect.");
         const account = acnts.get(it);
         check(account.balance.amount == 0, "Cannot close because the balance is not zero.");
-        acnts.remove(it);
+        acnts.removeItr(it);
     }
 }

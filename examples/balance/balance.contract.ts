@@ -143,9 +143,9 @@ export class BalanceContract extends AllowContract {
         // Delete table if no NFTs and no tokens
         // Update table if any NFT or token found
         if (account.nfts.length == 0 && account.tokens.length == 0) {
-            this.accountsTable.remove(accountItr);
+            this.accountsTable.remove(account);
         } else {
-            this.accountsTable.update(accountItr, account, ramPayer);
+            this.accountsTable.update(account, ramPayer);
         }
     }
 }

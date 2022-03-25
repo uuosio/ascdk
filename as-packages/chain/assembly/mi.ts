@@ -36,10 +36,10 @@ export class MultiIndex<T extends MultiIndexValue> {
         this.idxdbs = indexes;
     }
 
-    upsert(value: T, payer: Name): PrimaryIterator {
+    set(value: T, payer: Name): PrimaryIterator {
         let it = this.find(value.getPrimaryValue());
         if (it.isOk()) {
-            this.update(it, value, payer);
+            this.updateItr(it, value, payer);
         } else {
             it = this.store(value, payer);
         }
@@ -60,7 +60,12 @@ export class MultiIndex<T extends MultiIndexValue> {
         return new PrimaryIterator(it);
     }
 
-    update(it: PrimaryIterator, value: T, payer: Name): void {
+    update(value: T, payer: Name): void {
+        let it = this.find(value.getPrimaryValue());
+        this.updateItr(it, value, payer)
+    }
+
+    updateItr(it: PrimaryIterator, value: T, payer: Name): void {
         this.db.update(it.i, payer.N, value.pack());
         let primary = value.getPrimaryValue();
         for (let i=0; i<this.idxdbs.length; i++) {
@@ -77,7 +82,12 @@ export class MultiIndex<T extends MultiIndexValue> {
         }
     }
 
-    remove(iterator: PrimaryIterator): void {
+    remove(value: T): void {
+        let primary = value.getPrimaryValue();
+        this.removeEx(primary);
+    }
+
+    removeItr(iterator: PrimaryIterator): void {
         let value = this.get(iterator);
         let primary = value.getPrimaryValue();
         this.removeEx(primary);
@@ -107,11 +117,13 @@ export class MultiIndex<T extends MultiIndexValue> {
         if (!iterator.isOk()) {
             return null;
         }
+        return this.get(iterator)
+    }
 
-        let data = this.db.get(iterator.i);
-        let ret = instantiate<T>();
-        ret.unpack(data);
-        return ret;
+    requireGetByKey(primary: u64, getError: string = `Could not get item with id ${primary}`): T {
+        let iterator = this.find(primary);
+        check(iterator.isOk(), getError);
+        return this.get(iterator)
     }
 
     next(iterator: PrimaryIterator): PrimaryIterator {
@@ -171,7 +183,7 @@ export class MultiIndex<T extends MultiIndexValue> {
         let primaryIt = this.find(it.primary);
         let value = this.get(primaryIt);
         value.setSecondaryValue(it.dbIndex, idxValue);
-        this.update(primaryIt, value, payer);
+        this.updateItr(primaryIt, value, payer);
         this.idxdbs[it.dbIndex].updateEx(it, idxValue, payer.N);
     }
 
