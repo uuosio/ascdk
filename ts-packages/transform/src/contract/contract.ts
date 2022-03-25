@@ -226,8 +226,11 @@ export class ContractProgram {
         this.customAbiTypes.push(cls);
 
         cls.fields.forEach(x => {
+            let plainType = x.type.plainTypeNode;
+            plainType = plainType.replace('[]', '');
+            plainType = plainType.replace('Array<', '').replace('>', '');
             this.allClasses.forEach(x2 => {
-                if (x2.className == x.type.plainTypeNode) {
+                if (x2.className == plainType) {
                     this.addAbiClass(new SerializerInterpreter(x2.classPrototype))
                 }
             });
@@ -288,7 +291,10 @@ export class ContractProgram {
         ].forEach(classes => {
             classes.forEach(cls => {
                 cls.fields.forEach(field => {
-                    let fieldClassType = this.findClass(field.type.plainTypeNode)
+                    let plainType = field.type.plainTypeNode;
+                    plainType = plainType.replace('[]', '');
+                    plainType = plainType.replace('Array<', '').replace('>', '');    
+                    let fieldClassType = this.findClass(plainType)
                     if (fieldClassType) {
                         this.addAbiClass(fieldClassType);
                     }
