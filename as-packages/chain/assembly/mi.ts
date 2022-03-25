@@ -171,7 +171,7 @@ export class MultiIndex<T extends MultiIndexValue> {
         let primaryIt = this.find(it.primary);
         let value = this.get(primaryIt);
         value.setSecondaryValue(it.dbIndex, idxValue);
-        this.db.update(primaryIt.i, payer.N, value.pack());
+        this.update(primaryIt, value, payer);
         this.idxdbs[it.dbIndex].updateEx(it, idxValue, payer.N);
     }
 
