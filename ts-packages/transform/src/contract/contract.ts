@@ -267,6 +267,8 @@ export class ContractProgram {
     }
     
     findClass(className: string) {
+        className = className.replace('[]', '')
+
         if (TypeHelper.primitiveToAbiMap.get(className)) {
             return
         }
