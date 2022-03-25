@@ -36,6 +36,16 @@ export class MultiIndex<T extends MultiIndexValue> {
         this.idxdbs = indexes;
     }
 
+    upsert(value: T, payer: Name): PrimaryIterator {
+        let it = this.find(value.getPrimaryValue());
+        if (it.isOk()) {
+            this.update(it, value, payer);
+        } else {
+            it = this.store(value, payer);
+        }
+        return it
+    }
+
     store(value: T, payer: Name): PrimaryIterator {
         const it = this.db.store(value.getPrimaryValue(), value.pack(), payer.N);
         for (let i=0; i<this.idxdbs.length; i++) {
