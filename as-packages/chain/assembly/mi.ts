@@ -36,7 +36,7 @@ export class MultiIndex<T extends MultiIndexValue> {
         this.idxdbs = indexes;
     }
 
-    upsert(value: T, payer: Name): PrimaryIterator {
+    set(value: T, payer: Name): PrimaryIterator {
         let it = this.find(value.getPrimaryValue());
         if (it.isOk()) {
             this.update(it, value, payer);
