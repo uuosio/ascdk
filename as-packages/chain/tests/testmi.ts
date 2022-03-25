@@ -1,4 +1,11 @@
 import {
+    table,
+    contract,
+    primary,
+    secondary,
+    action,
+    Table,
+
     Name,
     U128,
     U256,
@@ -12,14 +19,9 @@ import {
     newSecondaryValue_U256,
     printString,
     check,
-    table,
-    contract,
-    primary,
-    secondary,
-    action,
     Float128,
     Contract,
-    Table,
+    print,
 } from "as-chain";
 
 @table("mydata")
@@ -141,6 +143,7 @@ class MyContract extends Contract{
         printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}\n`);
         check(value.a == 7 && value.b == 8 && value.c == new U128(9) && value.d == 9.9, "bad value");
 
+        print("++++++++++++++test IDX64++++++++++++++\n");
         {
             let idx = mi.bvalueDB;
             let idxIt = idx.findPrimary(7);
@@ -173,19 +176,10 @@ class MyContract extends Contract{
                 printString(`++++++${it.i}, ${it.primary}\n`);
                 check(it.primary == 7, "bad primary value");
             }
-    
-            {// 1, 2, 3
-                let idxIt = idx.find(2);
-                printString(`+++++++++idx.find(2): ${idxIt.i}, ${idxIt.primary}\n`);
-                check(idxIt.primary == 1, "bad value");
-                let secValue = newSecondaryValue_u64(22);
-                mi.idxUpdate(idxIt, secValue, this.receiver);
-                let ret = idx.find(22);
-                check(ret.isOk(), "bad scondary value");
-            }
         }
 
-        // 1 22 3 3.3
+        print("++++++++++++++test IDX128 ++++++++++++++\n");
+        // 1 2 3 3.3
         // 4 5 6 6.6
         // 7 8 9 9.9
         {
@@ -222,7 +216,8 @@ class MyContract extends Contract{
             check(ret.value.value[0] == 9, "idx128.lowerBound 2: bad secondary value!");
         }
 
-        // 1 22 3 3.3 11
+        print("++++++++++++++test IDXF64 ++++++++++++++\n");
+        // 1 2 3 3.3 11
         // 4 5 6 6.6 
         // 7 8 9 9.9
         {
@@ -261,13 +256,14 @@ class MyContract extends Contract{
             check(ret.value == 9.9, "idx128.lowerBound 4: bad secondary value!");
         }
 
-        // 1 22 3 3.3 11
+        print("++++++++++++++test IDX256 ++++++++++++++");
+        // 1 2 3 3.3 11
         // 4 5 6 6.6 44
         // 7 8 9 9.9 77
         {
             let idx256 =mi.evalueDB;
             let idxRet = idx256.findPrimary(1);
-            check(idxRet.value == new U256(11), "bad idx128 value");
+            check(idxRet.value == new U256(11), "bad idx256 value");
 
             {
                 let itIdx = idx256.find(new U256(11));
@@ -299,14 +295,57 @@ class MyContract extends Contract{
             check(ret.value.value[0] == 77, "idx256.lowerBound 2: bad secondary value!");
         }
 
+        print("++++++++++++++test IdxUpdate++++++++++++++");
+        // 1 2 3 3.3 11
+        {
+            let idx = mi.bvalueDB;
+            let idxIt = idx.find(2);
+            printString(`+++++++++idx.find(2): ${idxIt.i}, ${idxIt.primary}\n`);
+            check(idxIt.primary == 1, "bad value");
+            mi.updateBvalue(idxIt, 22, this.receiver);
+            let ret = idx.find(22);
+            check(ret.isOk(), "bad scondary value");
+        }
+
+        // 1 2 3 3.3 11
+        {
+            let idx = mi.cvalueDB;
+            let idxIt = idx.find(new U128(3));
+            printString(`+++++++++idx.find(3): ${idxIt.i}, ${idxIt.primary}\n`);
+            check(idxIt.primary == 1, "bad value");
+            mi.updateCvalue(idxIt, new U128(33), this.receiver);
+            let ret = idx.find(new U128(33));
+            check(ret.isOk(), "bad scondary value");
+        }
+
+        // 1 22 33 3.3 11
+        {
+            let idx = mi.dvalueDB;
+            let idxIt = idx.find(3.3);
+            printString(`+++++++++idx.find(3.3): ${idxIt.i}, ${idxIt.primary}\n`);
+            check(idxIt.primary == 1, "bad value");
+            mi.updateDvalue(idxIt, 3.33, this.receiver);
+            let ret = idx.find(3.33);
+            check(ret.isOk(), "bad scondary value");
+        }
+
+        // 1 22 33 3.33 11
+        {
+            let idx = mi.evalueDB;
+            let idxIt = idx.find(new U256(11));
+            printString(`+++++++++idx.find(11): ${idxIt.i}, ${idxIt.primary}\n`);
+            check(idxIt.primary == 1, "bad value");
+            mi.updateEvalue(idxIt, new U256(111), this.receiver);
+            let ret = idx.find(new U256(111));
+            check(ret.isOk(), "bad scondary value");
+        }
+
         value = new MyData(7, 88, new U128(99), 9.99);
         mi.update(it, value, this.receiver);
         value = mi.get(it);
         check(value.a == 7 && value.b == 88 && value.c == new U128(99) && value.d == 9.99, "bad value");
 
-        // 1 22 3
-        // 4 5 6
-        // 7 8 10
+        // 1 2 3 3.3 11
         {
             let it = mi.find(1);
             mi.remove(it);

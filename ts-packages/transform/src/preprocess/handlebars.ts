@@ -598,6 +598,33 @@ Handlebars.registerHelper("generateGetIdxDBFunction", function (fn: DBIndexFunct
     return code.join(EOL);
 });
 
+Handlebars.registerHelper("generateSetIdxDBValueFunction", function (fn: DBIndexFunctionDef) {
+    let code: string[] = [];
+    let plainType = fn.getterPrototype!.returnType!.plainTypeNode;
+    if (plainType == 'chain.U128') {
+        plainType = 'U128';
+    } else if (plainType == 'chain.U256') {
+        plainType = 'U256';
+    } else if (plainType == 'chain.Float128') {
+        plainType = 'Float128';
+    }
+
+    let dbClass = dbTypeToDBClass.get(plainType.toUpperCase());
+    
+    let getter = fn.getterPrototype!.declaration.name.text;
+    let valueName = getter.charAt(0).toUpperCase();
+    valueName += getter.slice(1);
+
+    code.push(dedent`
+        update${valueName}(idxIt: _chain.SecondaryIterator, value: ${plainType}, payer: Name): _chain.${dbClass} {
+            let secValue = _chain.newSecondaryValue_${plainType}(value);
+            this.idxUpdate(idxIt, secValue, payer);
+            return <_chain.${dbClass}>this.idxdbs[${fn._index}];
+        }
+    `);
+    return code.join(EOL);
+});
+
 /**
  * Register the tag of each.
  */

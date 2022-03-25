@@ -7,6 +7,10 @@ export const tableTpl = `
     {{#each secondaryFuncDefs}}
     {{{generateGetIdxDBFunction .}}}
     {{/each}}
+
+    {{#each secondaryFuncDefs}}
+    {{{generateSetIdxDBValueFunction .}}}
+    {{/each}}    
 }
 
 {{export}}class {{className}} implements _chain.MultiIndexValue {
