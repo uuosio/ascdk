@@ -90,7 +90,7 @@ export function getExtCodeInfo(contractInfo: ContractProgram): SourceModifier {
     });
 
     contractInfo.tables.forEach(table => {
-        if (table.ignore) {
+        if (table.no_codegen) {
             return;
         }
         let code = Handlebars.compile(tableTpl)(table);

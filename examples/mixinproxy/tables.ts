@@ -154,8 +154,7 @@ export class Counter {
     }
 }
 
-//table processes ignore
-@table("processes", ignore)
+@table("processes", noabigen)
 export class Process {
     constructor(
         public contract: Name = new Name(),

@@ -136,7 +136,8 @@ export class TableInterpreter extends ClassInterpreter {
     // The first case is lower.
     tableName: string;
     singleton: boolean = false;
-    ignore: boolean = false;
+    no_codegen: boolean = false;
+    no_abigen: boolean = false;
     version: string;
     primaryFuncDef: DBIndexFunctionDef | null = null;
     secondaryFuncDefs: DBIndexFunctionDef[] = [];
@@ -158,8 +159,12 @@ export class TableInterpreter extends ClassInterpreter {
                 this.singleton = true;
             }
 
-            if (arg == "ignore") {
-                this.ignore = true;
+            if (arg == "nocodegen") {
+                this.no_codegen = true;
+            }
+
+            if (arg == "noabigen") {
+                this.no_abigen = true;
             }
         }
     }

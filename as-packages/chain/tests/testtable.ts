@@ -4,6 +4,8 @@ import {
     contract,
     table,
     action,
+    secondary,
+    singleton,
 
     Name,
     Asset,
@@ -18,6 +20,7 @@ import {
     SecondaryValue,
     SecondaryType,
     MultiIndex,
+    IDXDB,
 } from "as-chain";
 
 
@@ -55,7 +58,6 @@ export class escrow extends Table {
         return this.from.N;
     }
 
-    @secondary
     set byFrom(value: u64) {
         this.from.N = value;
     }
@@ -65,7 +67,6 @@ export class escrow extends Table {
         return this.to.N;
     }
 
-    @secondary
     set byTo(value: u64) {
         this.to.N = value;
     }
@@ -90,7 +91,7 @@ class MyTable extends Table {
 class MyTable2DB extends MultiIndex<MyTable2> {
 }
 
-@table("mytable2", ignore)
+@table("mytable2", nocodegen)
 class MyTable2 implements MultiIndexValue {
     
     constructor(

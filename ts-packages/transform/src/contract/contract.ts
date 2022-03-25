@@ -321,6 +321,10 @@ export class ContractProgram {
         });
 
         this.tables.forEach((table, i) => {
+            if (table.no_abigen) {
+                return;
+            }
+
             let abiTable = new ABITable();
             abiTable.name = table.tableName;
             abiTable.type = table.className;
