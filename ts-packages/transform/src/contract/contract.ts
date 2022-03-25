@@ -343,6 +343,11 @@ export class ContractProgram {
         });
 
         this.contract.actionFuncDefs.forEach((func, i) => {
+            // Ignore notify actions in ABI
+            if ((<ActionFunctionDef>func).messageDecorator.notify) {
+                return;
+            }
+
             let actionName = (<ActionFunctionDef>func).messageDecorator.actionName;
             let action = new ABIAction(actionName, actionName);
             abi.actions.push(action);
