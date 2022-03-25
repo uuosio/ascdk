@@ -1,14 +1,23 @@
 import {
-    Name,
-    Asset,
-    Contract,
+    ignore,
     primary,
     contract,
     table,
     action,
+
+    Name,
+    Asset,
+    Contract,
     ExtendedAsset,
     requireAuth,
     Table,
+
+    Encoder,
+    Decoder,
+    MultiIndexValue,
+    SecondaryValue,
+    SecondaryType,
+    MultiIndex,
 } from "as-chain";
 
 
@@ -78,6 +87,83 @@ class MyTable extends Table {
     }
 }
 
+class MyTable2DB extends MultiIndex<MyTable2> {
+}
+
+@table("mytable2", ignore)
+class MyTable2 implements MultiIndexValue {
+    
+    constructor(
+        public a: u64=0,
+        public b: u64=0,
+        public c: Asset = new Asset()
+    ) {
+        
+    }
+
+    @primary
+    get getPrimary(): u64 {
+        return this.a;
+    }
+
+    pack(): u8[] {
+        let enc = new Encoder(this.getSize());
+        enc.packNumber<u64>(this.a);
+        enc.packNumber<u64>(this.b);
+        enc.pack(this.c);
+        return enc.getBytes();
+    }
+    
+    unpack(data: u8[]): usize {
+        let dec = new Decoder(data);
+        this.a = dec.unpackNumber<u64>();
+        this.b = dec.unpackNumber<u64>();
+        
+        {
+            let obj = new Asset();
+            dec.unpack(obj);
+            this.c = obj;
+        }
+        return dec.getPos();
+    }
+
+    getSize(): usize {
+        let size: usize = 0;
+        size += sizeof<u64>();
+        size += sizeof<u64>();
+        size += this.c.getSize();
+        return size;
+    }
+
+    getPrimaryValue(): u64 {
+        return this.getPrimary
+    }
+
+    getSecondaryValue(i: i32): SecondaryValue {
+        switch (i) {
+            default:
+                assert(false, "bad db index!");
+                return new SecondaryValue(SecondaryType.U64, new Array<u64>(0));
+        }
+    }
+
+    setSecondaryValue(i: i32, value: SecondaryValue): void {
+        switch (i) {
+            default:
+                assert(false, "bad db index!");
+        }
+    }
+
+    static new(code: Name, scope: Name): MyTable2DB {
+        let tableName = Name.fromU64(0x97B263C542000000);
+        let idxTableBase: u64 = (tableName.N & 0xfffffffffffffff0);
+
+        let indexes: IDXDB[] = [
+        ];
+        return new MyTable2DB(code, scope, tableName, indexes);
+    }
+}
+
 @contract("hello")
 class MyContract extends Contract{
     @action("logescrow")
@@ -90,6 +176,8 @@ class MyContract extends Contract{
 
     @action("testtable")
     testTable(): void {
+        let a: u8[] = [1, 2, 3];
+        let b = changetype<usize>(a);
         let mi = MyTable.new(this.receiver, this.receiver);
         let value = new MyTable(1, 2);
         mi.store(value, this.receiver);

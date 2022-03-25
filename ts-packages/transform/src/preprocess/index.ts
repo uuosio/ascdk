@@ -90,6 +90,9 @@ export function getExtCodeInfo(contractInfo: ContractProgram): SourceModifier {
     });
 
     contractInfo.tables.forEach(table => {
+        if (table.ignore) {
+            return;
+        }
         let code = Handlebars.compile(tableTpl)(table);
         sourceModifier.addModifyPoint(new ModifyPoint(table.range, ModifyType.REPLACE, code));
     });

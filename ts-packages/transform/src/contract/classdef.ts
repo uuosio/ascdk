@@ -135,7 +135,8 @@ export class ContractInterpreter extends ClassInterpreter {
 export class TableInterpreter extends ClassInterpreter {
     // The first case is lower.
     tableName: string;
-    singleton: boolean;
+    singleton: boolean = false;
+    ignore: boolean = false;
     version: string;
     primaryFuncDef: DBIndexFunctionDef | null = null;
     secondaryFuncDefs: DBIndexFunctionDef[] = [];
@@ -151,16 +152,15 @@ export class TableInterpreter extends ClassInterpreter {
         if (!EosioUtils.isValidName(this.tableName)) {
             throw new Error(`Decorator: Invalid table name. Trace: ${RangeUtil.location(decorator.range)} `);
         }
-
-        if (decorator.args!.length == 2) {
+        for (let i=1; i<decorator.args!.length; i++) {
             let arg = AstUtil.getIdentifier(decorator.args![1]);
             if (arg == "singleton") {
                 this.singleton = true;
-            } else {
-                this.singleton = false;
             }
-        } else {
-            this.singleton = false;
+
+            if (arg == "ignore") {
+                this.ignore = true;
+            }
         }
     }
 
