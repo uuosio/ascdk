@@ -1,25 +1,12 @@
 import { IDXDB, SecondaryValue, SecondaryIterator } from "./idxdb";
-import { DBI64, PrimaryValue } from "./dbi64";
+import { DBI64, PrimaryIterator, PrimaryValue, UNKNOWN_PRIMARY_KEY } from "./dbi64";
 import { Name } from "./name";
 import { check } from "./system";
-import { print } from "./debug";
 
 export const SAME_PAYER = new Name();
 
 const noAvailablePrimaryKey = <u64>(-2) // Must be the smallest uint64_t value compared to all other tags
 const unsetNextPrimaryKey = <u64>(-1) // No table
-
-export class PrimaryIterator {
-    constructor(public i: i32) {}
-
-    isOk(): bool {
-        return this.i >= 0;
-    }
-
-    isEnd(): bool {
-        return this.i == noAvailablePrimaryKey;
-    }
-}
 
 export interface MultiIndexValue extends PrimaryValue {
     getSecondaryValue(index: usize): SecondaryValue;
@@ -57,14 +44,19 @@ export class MultiIndex<T extends MultiIndexValue> {
             this.nextPrimaryKey = (pk >= noAvailablePrimaryKey) ? noAvailablePrimaryKey : (pk + 1);
         }
         
-        return new PrimaryIterator(it);
+        return it;
     }
 
     update(it: PrimaryIterator, value: T, payer: Name): void {
         let primary = value.getPrimaryValue();
-        let i = this.db.find(primary);
-        check(i == it.i, "primary key can't be changed during update!");
-        this.db.update(it.i, payer.N, value.pack());
+        if (it.primary == UNKNOWN_PRIMARY_KEY) {
+            let it2 = this.db.find(primary);
+            check(it2.i == it.i, "primary key can't be changed during update!");    
+        } else {
+            check(primary == it.primary, "primary key can't be changed during update!");
+        }
+
+        this.db.update(it, payer.N, value.pack());
         for (let i=0; i<this.idxdbs.length; i++) {
             let ret = this.idxdbs[i].findPrimaryEx(primary);
             let newValue = value.getSecondaryValue(i);
@@ -98,7 +90,7 @@ export class MultiIndex<T extends MultiIndexValue> {
     }
 
     get(iterator: PrimaryIterator): T {
-        let data = this.db.get(iterator.i);
+        let data = this.db.get(iterator);
         let ret = instantiate<T>();
         ret.unpack(data);
         return ret;
@@ -110,25 +102,22 @@ export class MultiIndex<T extends MultiIndexValue> {
             return null;
         }
 
-        let data = this.db.get(iterator.i);
+        let data = this.db.get(iterator);
         let ret = instantiate<T>();
         ret.unpack(data);
         return ret;
     }
 
     next(iterator: PrimaryIterator): PrimaryIterator {
-        let i = this.db.next(iterator.i);
-        return new PrimaryIterator(i);
+        return this.db.next(iterator.i);
     }
 
     previous(iterator: PrimaryIterator): PrimaryIterator {
-        let i = this.db.previous(iterator.i);
-        return new PrimaryIterator(i);
+        return this.db.previous(iterator.i);
     }
 
     find(id: u64): PrimaryIterator {
-        let i = this.db.find(id);
-        return new PrimaryIterator(i);
+        return this.db.find(id);
     }
 
     requireFind(id: u64, findError: string = `Could not find item with id ${id}`): PrimaryIterator {
@@ -144,13 +133,11 @@ export class MultiIndex<T extends MultiIndexValue> {
     }
 
     lowerBound(id: u64): PrimaryIterator {
-        let i = this.db.lowerBound(id);
-        return new PrimaryIterator(i);
+        return this.db.lowerBound(id);
     }
 
     upperBound(id: u64): PrimaryIterator {
-        let i = this.db.upperBound(id);
-        return new PrimaryIterator(i);
+        return this.db.upperBound(id);
     }
 
     begin(): PrimaryIterator {
@@ -158,8 +145,7 @@ export class MultiIndex<T extends MultiIndexValue> {
     }
 
     end(): PrimaryIterator {
-        let i = this.db.end();
-        return new PrimaryIterator(i);
+        return this.db.end();
     }
 
     getIdxDB(i: i32): IDXDB {
@@ -173,7 +159,7 @@ export class MultiIndex<T extends MultiIndexValue> {
         let primaryIt = this.find(it.primary);
         let value = this.get(primaryIt);
         value.setSecondaryValue(it.dbIndex, idxValue);
-        this.db.update(primaryIt.i, payer.N, value.pack());
+        this.db.update(primaryIt, payer.N, value.pack());
         this.idxdbs[it.dbIndex].updateEx(it, idxValue, payer.N);
     }
 
