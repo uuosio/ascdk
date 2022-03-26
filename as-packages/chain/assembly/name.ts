@@ -134,3 +134,35 @@ export class Name implements Packer {
         return a.N >= b.N;
     }
 }
+
+export function nameToSuffix(name: Name): Name {
+    let remainingBitsAfterLastActualDot: u32 = 0
+    let tmp: u32 = 0
+
+    for (let remainingBits: i32 = 59; remainingBits >= 4; remainingBits -=5) {
+        // Get characters one-by-one in name in order from left to right (not including the 13th character)
+        const c = (name.N >> remainingBits) & <u64>(0x1F);
+        if (!c) { // if this character is a dot
+            tmp = <u32>(remainingBits)
+        } else { // if this character is not a dot
+            remainingBitsAfterLastActualDot = tmp;
+        }
+    }
+
+    const thirteenthCharacter: u64 = name.N & <u64>(0x0F)
+    if(thirteenthCharacter) { // if 13th character is not a dot
+        remainingBitsAfterLastActualDot = tmp;
+    }
+
+    if(remainingBitsAfterLastActualDot == 0) // there is no actual dot in the %name other than potentially leading dots
+        return new Name(name.N);
+
+    // At this point remaining_bits_after_last_actual_dot has to be within the range of 4 to 59 (and restricted to increments of 5).
+
+    // Mask for remaining bits corresponding to characters after last actual dot, except for 4 least significant bits (corresponds to 13th character).
+    const mask: u64 = (<u64>(1) << remainingBitsAfterLastActualDot) - 16;
+    const shift: u32 =  64 - remainingBitsAfterLastActualDot;
+
+    const nameValue = ((name.N & mask) << shift) + (thirteenthCharacter << (shift-1))
+    return new Name(nameValue)
+}

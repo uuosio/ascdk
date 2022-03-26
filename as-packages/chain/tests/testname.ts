@@ -3,6 +3,7 @@ import {
     Name,
     check,
     Contract,
+    nameToSuffix,
 } from "as-chain";
 
 @contract("hello")
@@ -28,5 +29,10 @@ class MyContract extends Contract{
             check(a != b, "bad value");
             check(!(a == b), "bad value"); 
         }
+
+        // Check suffix
+        check(nameToSuffix(Name.fromString("eosio")).toString() == "eosio", "bad value - suffix 1");
+        check(nameToSuffix(Name.fromString("")).toString() == "", "bad value - suffix 2");
+        check(nameToSuffix(Name.fromString("eosio.token")).toString() == "token", "bad value - suffix 3");
     }
 }

@@ -74,7 +74,7 @@ export {
     currentReceiver
 } from "./action";
 
-export { Name } from "./name";
+export { Name, nameToSuffix } from "./name";
 export { Action, PermissionLevel } from "./action";
 export { Asset, ExtendedAsset, Symbol, ExtendedSymbol, isValid } from "./asset";
 
