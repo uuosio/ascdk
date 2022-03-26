@@ -90,11 +90,16 @@ export class IDX128 extends IDXDB {
 
     find(secondary: U128): SecondaryIterator {
         let primary_ptr = __alloc(sizeof<u64>());
-        let secondary_ptr = __alloc(sizeof<u64>()*2);
-        store<u64>(secondary_ptr, secondary.lo);
-        store<u64>(secondary_ptr+8, secondary.hi);
-        let it = env.db_idx128_find_secondary(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
-        return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
+        let secondaryCopy = new Array<u64>(2);
+        secondaryCopy[0] = secondary.lo;
+        secondaryCopy[1] = secondary.hi;
+        let secondary_ptr = secondaryCopy.dataStart;
+        let it = env.db_idx128_lowerbound(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
+        if (secondary.lo == secondaryCopy[0] && secondary.hi == secondaryCopy[1]) {
+            return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
+        } else {
+            return new SecondaryIterator(-1, 0, this.dbIndex);
+        }
     }
 
     lowerBound(secondary: U128): SecondaryIterator {

@@ -90,13 +90,23 @@ export class IDX256 extends IDXDB {
 
     find(secondary: U256): SecondaryIterator {
         let primary_ptr = __alloc(sizeof<u64>());
-        let secondary_ptr = __alloc(sizeof<u64>()*4);
-        store<u64>(secondary_ptr, secondary.lo1);
-        store<u64>(secondary_ptr + 8, secondary.lo2);
-        store<u64>(secondary_ptr + 16, secondary.hi1);
-        store<u64>(secondary_ptr + 24, secondary.hi2);    
-        let it = env.db_idx256_find_secondary(this.code, this.scope, this.table, secondary_ptr, 2, primary_ptr);
-        return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
+        let secondaryCopy = new Array<u64>(4);
+        secondaryCopy[0] = secondary.lo1;
+        secondaryCopy[1] = secondary.lo2;
+        secondaryCopy[2] = secondary.hi1;
+        secondaryCopy[3] = secondary.hi2;
+
+        let it = env.db_idx256_lowerbound(this.code, this.scope, this.table, secondaryCopy.dataStart, 2, primary_ptr);
+        if (
+            secondaryCopy[0] == secondary.lo1 &&
+            secondaryCopy[1] == secondary.lo2 &&
+            secondaryCopy[2] == secondary.hi1 &&
+            secondaryCopy[3] == secondary.hi2
+        ) {
+            return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
+        } else {
+            return new SecondaryIterator(-1, 0, this.dbIndex);
+        }
     }
 
     lowerBound(value: U256): SecondaryIterator {
