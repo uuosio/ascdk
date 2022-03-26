@@ -61,8 +61,10 @@ export class MultiIndex<T extends MultiIndexValue> {
     }
 
     update(it: PrimaryIterator, value: T, payer: Name): void {
-        this.db.update(it.i, payer.N, value.pack());
         let primary = value.getPrimaryValue();
+        let i = this.db.find(primary);
+        check(i == it.i, "primary key can't be changed during update!");
+        this.db.update(it.i, payer.N, value.pack());
         for (let i=0; i<this.idxdbs.length; i++) {
             let ret = this.idxdbs[i].findPrimaryEx(primary);
             let newValue = value.getSecondaryValue(i);
@@ -171,7 +173,7 @@ export class MultiIndex<T extends MultiIndexValue> {
         let primaryIt = this.find(it.primary);
         let value = this.get(primaryIt);
         value.setSecondaryValue(it.dbIndex, idxValue);
-        this.update(primaryIt, value, payer);
+        this.db.update(primaryIt.i, payer.N, value.pack());
         this.idxdbs[it.dbIndex].updateEx(it, idxValue, payer.N);
     }
 
