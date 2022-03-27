@@ -223,6 +223,11 @@ export class ContractProgram {
         if (this.customAbiTypes.find(x => x.className == cls.className)) {
             return;
         }
+
+        if (ElementUtil.isVariantClassPrototype(cls.classPrototype)) {
+            return;
+        }
+
         this.customAbiTypes.push(cls);
 
         cls.fields.forEach(x => {
