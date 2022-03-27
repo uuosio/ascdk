@@ -83,12 +83,12 @@ export declare function db_idx_double_end(code: u64, scope: u64, table: u64): i3
 export declare function db_idx_long_double_store(scope: u64, table: u64, payer: u64, id: u64, secondary_ptr: usize): i32
 export declare function db_idx_long_double_update(iterator: i32, payer: u64, secondary_ptr: usize): void
 export declare function db_idx_long_double_remove(iterator: i32): void
-export declare function db_idx_long_double_next(iterator: i32, primary_ptr: u64): i32
-export declare function db_idx_long_double_previous(iterator: i32, primary_ptr: u64): i32
+export declare function db_idx_long_double_next(iterator: i32, primary_ptr: usize): i32
+export declare function db_idx_long_double_previous(iterator: i32, primary_ptr: usize): i32
 export declare function db_idx_long_double_find_primary(code: u64, scope: u64, table: u64, secondary_ptr: usize, primary: u64): i32
-export declare function db_idx_long_double_find_secondary(code: u64, scope: u64, table: u64, secondary_ptr: usize, primary_ptr: u64): i32
-export declare function db_idx_long_double_lowerbound(code: u64, scope: u64, table: u64, secondary_ptr: usize, primary_ptr: u64): i32
-export declare function db_idx_long_double_upperbound(code: u64, scope: u64, table: u64, secondary_ptr: usize, primary_ptr: u64): i32
+export declare function db_idx_long_double_find_secondary(code: u64, scope: u64, table: u64, secondary_ptr: usize, primary_ptr: usize): i32
+export declare function db_idx_long_double_lowerbound(code: u64, scope: u64, table: u64, secondary_ptr: usize, primary_ptr: usize): i32
+export declare function db_idx_long_double_upperbound(code: u64, scope: u64, table: u64, secondary_ptr: usize, primary_ptr: usize): i32
 export declare function db_idx_long_double_end(code: u64, scope: u64, table: u64): i32;
 
 

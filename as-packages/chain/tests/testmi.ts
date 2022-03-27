@@ -17,11 +17,14 @@ import {
     newSecondaryValue_f64,
     newSecondaryValue_U128,
     newSecondaryValue_U256,
+    getSecondaryValue_Float128,
     printString,
     check,
     Float128,
     Contract,
     print,
+    DBI64,
+    newSecondaryValue_Float128,
 } from "as-chain";
 
 @table("mydata")
@@ -102,15 +105,15 @@ class MyContract extends Contract{
 
         mi = MyData.new(this.receiver, this.receiver);
 
-        let value = new MyData(1, 2, new U128(3), 3.3, new U256(11));
+        let value = new MyData(1, 2, new U128(3), 3.3, new U256(11), new Float128(0xaa));
         mi.store(value, this.receiver);
         check(mi.availablePrimaryKey() == 2, `expected availablePrimaryKey 2, got ${mi.availablePrimaryKey()}`);
 
-        value = new MyData(4, 5, new U128(6), 6.6, new U256(44));
+        value = new MyData(4, 5, new U128(6), 6.6, new U256(44), new Float128(0xbb));
         mi.store(value, this.receiver);
         check(mi.availablePrimaryKey() == 5, `expected availablePrimaryKey 5, got ${mi.availablePrimaryKey()}`);
 
-        value = new MyData(7, 8, new U128(9), 9.9, new U256(77));
+        value = new MyData(7, 8, new U128(9), 9.9, new U256(77), new Float128(0xcc));
         mi.store(value, this.receiver);
         check(mi.availablePrimaryKey() == 8, `expected availablePrimaryKey 8, got ${mi.availablePrimaryKey()}`);
 
@@ -293,6 +296,45 @@ class MyContract extends Contract{
 
             ret = idx256.upperBoundEx(secondary);
             check(ret.value.value[0] == 77, "idx256.lowerBound 2: bad secondary value!");
+        }
+
+        print("++++++++++++++test IDXFloat128 ++++++++++++++");
+        // 1 2 3 3.3 11 3.33
+        // 4 5 6 6.6 44 6.66
+        // 7 8 9 9.9 77 9.99
+        {
+            let idxf128 =mi.fvalueDB;
+            let idxRet = idxf128.findPrimary(1);
+            check(idxRet.value == new Float128(0xaa), "bad idxf128 value");
+ 
+            {
+                let itIdx = idxf128.find(new Float128(0xaa));
+                check(itIdx.isOk(), "bad idxf128 iterator.");
+                check(itIdx.primary == 1, "bad idxf128 iterator.");
+    
+                itIdx = idxf128.find(new Float128(0xbb));
+                check(itIdx.isOk(), "bad idxf128 iterator.");
+                check(itIdx.primary == 4, "bad idxf128 iterator.");
+            }
+ 
+            let it = idxf128.previous(idxRet.i);
+            check(it.i == -1, 'bad iterator');
+
+            it = idxf128.next(idxRet.i);
+            check(it.primary == 4, "bad primary value!");
+            it = idxf128.lowerBound(new Float128(0xbb));
+            check(it.primary == 4, "idxf128.lowerBound: bad primary value!");
+
+            it = idxf128.upperBound(new Float128(0xbb));
+            check(it.primary == 7, "idxf128.lowerBound: bad primary value!");
+
+            let ret = idxf128.lowerBoundEx(newSecondaryValue_Float128(new Float128(0xbb)));
+            let value = getSecondaryValue_Float128(ret.value);
+            check(value == new Float128(0xbb), "idxf128.lowerBound 1: bad secondary value!");
+
+            ret = idxf128.upperBoundEx(newSecondaryValue_Float128(new Float128(0xbb)));
+            value = getSecondaryValue_Float128(ret.value);
+            check(value == new Float128(0xcc), "idxf128.lowerBound 2: bad secondary value!");
         }
 
         print("++++++++++++++test IdxUpdate++++++++++++++");

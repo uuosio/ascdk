@@ -80,11 +80,34 @@ export class IDXF128 extends IDXDB {
 
     find(secondary: Float128): SecondaryIterator {
         let primary_ptr = __alloc(sizeof<u64>());
-        let it = env.db_idx_long_double_find_secondary(this.code, this.scope, this.table, secondary.data.dataStart, primary_ptr);
+
+        let secondaryCopy = new Array<u64>(2);
+        secondaryCopy[0] = secondary.data[0];
+        secondaryCopy[1] = secondary.data[1];
+        let secondary_ptr = secondaryCopy.dataStart;
+
+        let it = env.db_idx_long_double_lowerbound(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
+        if (secondary.data[0] == secondaryCopy[0] && secondary.data[1] == secondaryCopy[1]) {
+            return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
+        } else {
+            return new SecondaryIterator(-1, 0, this.dbIndex);
+        }
+    }
+
+    lowerBound(secondary: Float128): SecondaryIterator {
+        let primary_ptr = __alloc(sizeof<u64>());
+
+        let secondaryCopy = new Array<u64>(2);
+        secondaryCopy[0] = secondary.data[0];
+        secondaryCopy[1] = secondary.data[1];
+        let secondary_ptr = secondaryCopy.dataStart;
+
+        let it = env.db_idx_long_double_lowerbound(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
+
         return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
     }
 
-    lowerbound(secondary: SecondaryValue): SecondaryReturnValue {
+    lowerBoundEx(secondary: SecondaryValue): SecondaryReturnValue {
         check(secondary.type == SecondaryType.F128, "idx_long_double: bad secondary type");
         check(secondary.value.length == 2, "idx_long_double: bad value");
         let primary_ptr = __alloc(sizeof<u64>());
@@ -102,7 +125,19 @@ export class IDXF128 extends IDXDB {
         return new SecondaryReturnValue(iterator, value);
     }
 
-    upperbound(secondary: SecondaryValue): SecondaryReturnValue {
+    upperBound(secondary: Float128): SecondaryIterator {
+        let primary_ptr = __alloc(sizeof<u64>());
+
+        let secondaryCopy = new Array<u64>(2);
+        secondaryCopy[0] = secondary.data[0];
+        secondaryCopy[1] = secondary.data[1];
+        let secondary_ptr = secondaryCopy.dataStart;
+        let it = env.db_idx_long_double_upperbound(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
+
+        return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
+    }
+
+    upperBoundEx(secondary: SecondaryValue): SecondaryReturnValue {
         check(secondary.type == SecondaryType.F128, "idx_long_double: bad secondary type");
         check(secondary.value.length == 2, "idx_long_double: bad value");
         let primary_ptr = __alloc(sizeof<u64>());

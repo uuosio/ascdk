@@ -73,8 +73,13 @@ export class IDX64 extends IDXDB {
         let primary_ptr = __alloc(sizeof<u64>());
         let secondary_ptr = __alloc(sizeof<u64>());
         store<u64>(secondary_ptr, secondary);
-        let it = env.db_idx64_find_secondary(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
-        return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
+        let it = env.db_idx64_lowerbound(this.code, this.scope, this.table, secondary_ptr, primary_ptr);
+        let secondary2 = load<u64>(secondary_ptr);
+        if (secondary2 == secondary) {
+            return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
+        } else {
+            return new SecondaryIterator(-1, 0, this.dbIndex);
+        }
     }
 
     lowerBound(secondary: u64): SecondaryIterator {
