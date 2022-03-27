@@ -94,7 +94,7 @@ export class IDXF128 extends IDXDB {
         }
     }
 
-    lowerbound(secondary: Float128): SecondaryIterator {
+    lowerBound(secondary: Float128): SecondaryIterator {
         let primary_ptr = __alloc(sizeof<u64>());
 
         let secondaryCopy = new Array<u64>(2);
@@ -107,7 +107,7 @@ export class IDXF128 extends IDXDB {
         return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
     }
 
-    lowerboundEx(secondary: SecondaryValue): SecondaryReturnValue {
+    lowerBoundEx(secondary: SecondaryValue): SecondaryReturnValue {
         check(secondary.type == SecondaryType.F128, "idx_long_double: bad secondary type");
         check(secondary.value.length == 2, "idx_long_double: bad value");
         let primary_ptr = __alloc(sizeof<u64>());
@@ -125,7 +125,7 @@ export class IDXF128 extends IDXDB {
         return new SecondaryReturnValue(iterator, value);
     }
 
-    upperbound(secondary: Float128): SecondaryIterator {
+    upperBound(secondary: Float128): SecondaryIterator {
         let primary_ptr = __alloc(sizeof<u64>());
 
         let secondaryCopy = new Array<u64>(2);
@@ -137,7 +137,7 @@ export class IDXF128 extends IDXDB {
         return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
     }
 
-    upperboundEx(secondary: SecondaryValue): SecondaryReturnValue {
+    upperBoundEx(secondary: SecondaryValue): SecondaryReturnValue {
         check(secondary.type == SecondaryType.F128, "idx_long_double: bad secondary type");
         check(secondary.value.length == 2, "idx_long_double: bad value");
         let primary_ptr = __alloc(sizeof<u64>());
