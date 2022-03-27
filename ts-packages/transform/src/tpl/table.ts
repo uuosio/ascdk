@@ -70,7 +70,7 @@ export const tableTpl = `
     }
     {{else}}
     static new(code: _chain.Name, scope: _chain.Name): {{className}}DB {
-        let tableName = _chain.Name.fromString("{{tableName}}");
+        let tableName = _chain.Name.fromString("{{tableName}}"); //{{tableName}}
         let idxTableBase: u64 = (tableName.N & 0xfffffffffffffff0);
 
         let indexes: _chain.IDXDB[] = [

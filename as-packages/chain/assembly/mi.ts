@@ -51,7 +51,8 @@ export class MultiIndex<T extends MultiIndexValue> {
         let primary = value.getPrimaryValue();
         if (it.primary == UNKNOWN_PRIMARY_KEY) {
             let it2 = this.db.find(primary);
-            check(it2.i == it.i, "primary key can't be changed during update!");    
+            check(it2.i == it.i, "primary key can't be changed during update!");
+            it.primary = primary;
         } else {
             check(primary == it.primary, "primary key can't be changed during update!");
         }
