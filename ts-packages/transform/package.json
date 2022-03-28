@@ -1,6 +1,6 @@
 {
-  "name": "proton-asc",
-  "version": "0.2.27",
+  "name": "eosio-asc",
+  "version": "0.2.28",
   "description": "Build tool for building AssemblyScript projects",
   "license": "MIT",
   "main": "index.ts",
@@ -10,7 +10,7 @@
     "build": "rm -rf dist/* && tsc -p tsconfig.json"
   },
   "bin": {
-    "proton-asc": "bin/eosio-asc.js"
+    "eosio-asc": "bin/eosio-asc.js"
   },
   "dependencies": {
     "as-chain": "0.0.16",
