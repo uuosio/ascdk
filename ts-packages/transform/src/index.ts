@@ -3,6 +3,7 @@ import * as preprocess from "./preprocess";
 import { getContractInfo } from "./contract/contract";
 import { Program } from "assemblyscript";
 import * as path from "path";
+import process from "process"
 
 // TODO: refactor to ts code
 export class ContractTransform extends Transform {

@@ -9,6 +9,7 @@ import { RangeUtil } from "../utils/utils";
 import { NamedTypeNodeDef } from "../contract/typedef";
 import { Range } from "assemblyscript";
 import dedent from "ts-dedent"
+import process from "process"
 
 const WIN = process.platform === "win32";
 const EOL = WIN ? "\r\n" : "\n";
