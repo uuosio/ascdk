@@ -14,7 +14,9 @@
     "allowJs": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "emitDeclarationOnly": true,
+    "declaration": true
   },
   "exclude": [
     "as-pect.config.js",
