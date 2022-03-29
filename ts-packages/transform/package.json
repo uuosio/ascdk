@@ -1,6 +1,6 @@
 {
   "name": "eosio-asc",
-  "version": "0.2.48",
+  "version": "0.2.49",
   "description": "Build tool for building AssemblyScript projects",
   "license": "MIT",
   "main": "index.ts",
