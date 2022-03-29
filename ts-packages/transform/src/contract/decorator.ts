@@ -1,46 +1,47 @@
-import { CharCode, DecoratorKind, DecoratorNode, Expression, IdentifierExpression, NodeKind } from "assemblyscript";
+import { DecoratorKind, DecoratorNode, Expression, IdentifierExpression, NodeKind } from "assemblyscript";
 import { ContractDecoratorKind } from "../enums/decorator";
+import { LowerCaseCode } from "../utils/charutil";
 import { RangeUtil } from "../utils/utils";
 
 function fromNode(nameNode: Expression): ContractDecoratorKind {
     if (nameNode.kind == NodeKind.IDENTIFIER) {
         let nameStr = (<IdentifierExpression>nameNode).text;
         switch (nameStr.charCodeAt(0)) {
-            case CharCode.a: {
+            case LowerCaseCode.a: {
                 if (nameStr == "action") return ContractDecoratorKind.ACTION;
                 break;
             }
-            case CharCode.b: {
+            case LowerCaseCode.b: {
                 if (nameStr == "binaryextension") return ContractDecoratorKind.BINARYEXTENSION;
                 break;
             }
-            case CharCode.c: {
+            case LowerCaseCode.c: {
                 if (nameStr == "contract") return ContractDecoratorKind.CONTRACT;
                 break;
             }
-            case CharCode.i: {
+            case LowerCaseCode.i: {
                 if (nameStr == "ignore") return ContractDecoratorKind.IGNORE;
                 break;
             }
-            case CharCode.o: {
+            case LowerCaseCode.o: {
                 if (nameStr == "optional") return ContractDecoratorKind.OPTIONAL;
                 break;
             }
-            case CharCode.p: {
+            case LowerCaseCode.p: {
                 if (nameStr == "packer") return ContractDecoratorKind.SERIALIZER;
                 if (nameStr == "primary") return ContractDecoratorKind.PRIMARY;
                 break;
             }
-            case CharCode.s: {
+            case LowerCaseCode.s: {
                 if (nameStr == "secondary") return ContractDecoratorKind.SECONDARY;
                 if (nameStr == "serializer") return ContractDecoratorKind.SERIALIZER;
                 break;
             }
-            case CharCode.t: {
+            case LowerCaseCode.t: {
                 if (nameStr == "table") return ContractDecoratorKind.TABLE;
                 break;
             }
-            case CharCode.v: {
+            case LowerCaseCode.v: {
                 if (nameStr == "variant") return ContractDecoratorKind.VARIANT;
                 break;
             }
