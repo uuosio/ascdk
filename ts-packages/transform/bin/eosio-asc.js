@@ -37,7 +37,6 @@ if (true) {
     console.log("Build Starting ······")
     asc.ready.then(() => {
         let args = process.argv.slice(2).concat(ARGS);
-        console.log(args)
         process.exitCode = asc.main(args);
         if (process.exitCode != 0) {
             return process.exitCode;
