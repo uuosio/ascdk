@@ -1,6 +1,6 @@
 {
   "name": "eosio-asc",
-  "version": "0.2.56",
+  "version": "0.2.58",
   "description": "Build tool for building AssemblyScript projects",
   "license": "MIT",
   "main": "index.ts",
@@ -13,7 +13,7 @@
     "eosio-asc": "bin/eosio-asc.js"
   },
   "dependencies": {
-    "as-chain": "0.0.17",
+    "as-chain": "0.0.19",
     "assemblyscript": "0.18",
     "handlebars": "4.7.7",
     "ts-dedent": "^2.2.0"
