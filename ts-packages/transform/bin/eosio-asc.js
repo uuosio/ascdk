@@ -18,19 +18,15 @@ const asc = module.exports = require("eosio-asc/src/asc/asc.js");
 // const asc = module.exports = require("assemblyscript/cli/asc.js");
 const path = require("path");
 const ARGS = [
-    // "--importMemory",
-    "--initialMemory",
-    "1",
-    // "--maximumMemory",
-    // "16",
-    // "--noExportMemory",
-    "--runtime",
-    "stub",
-    "--use",
-    "abort= ",
+    "--initialMemory", "1",
+    "--runtime", "stub",
+    "--use", "abort= ",
     "-O2",
-    "--transform",
-    "eosio-asc/index.ts"
+    "--disable", "mutable-globals",
+    "--disable", "sign-extension",
+    "--disable", "nontrapping-f2i",
+    "--disable", "bulk-memory",
+    "--transform", "eosio-asc/index.ts"
 ]
 
 if (true) {
