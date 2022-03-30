@@ -38,6 +38,7 @@
     "README.md",
     "LICENSE",
     "package.json",
-    "yarn.lock"
+    "yarn.lock",
+    "types.d.ts"
   ]
 }
