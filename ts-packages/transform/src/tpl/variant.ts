@@ -6,7 +6,7 @@ export const variantTpl = `
 
 {{export}}class {{className}} implements _chain.Packer {
     _index: u8;
-    {{{ExtractClassBody range}}}
+    value: usize;
 
     pack(): u8[] {
         let enc = new _chain.Encoder(this.getSize());
@@ -34,16 +34,10 @@ export const variantTpl = `
         return size;
     }
 
-    static new<T>(): {{className}} {
+    static new<T>(value: T): {{className}} {
         let obj = new {{className}}();
-        let id: u32 = 0;
-        if (isInteger<T>()) {
-            id = 0xffffffff;
-        } else if (isString<T>()) {
-            id = 0xfffffffe;
-        } else {
-            id = idof<T>();
-        }
+        let v = new _chain.VariantValue<T>(value);
+        obj.value = changetype<usize>(v);
         {{#each fields}}
         {{{variantNew .}}}
         {{/each}}

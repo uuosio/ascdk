@@ -56,6 +56,7 @@ export class NamedTypeNodeDef extends BaseNamedTypeDef {
         this.plainType = typeNode.name.range.toString();
         this.current = this.getCurrentElement();
         if (!this.current) {
+            return;
             throw Error(`unknown Type:! Trace: ${RangeUtil.location(typeNode.range)}`);
         }
         this.typeKind = this.getTypeKind();
