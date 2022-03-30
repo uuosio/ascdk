@@ -191,6 +191,22 @@ export class Asset implements Packer {
         public symbol: Symbol=new Symbol()) {
     }
 
+    static fromString(assetStr: string): Asset {
+        const splitAsset = assetStr.split(' ')
+        const amountStr = splitAsset[0]
+        const symbolCodeStr = splitAsset[1]
+
+        const splitAmount = amountStr.split('.')
+        const precision = splitAmount.length == 1 ? 0 : splitAmount[1].length;
+        const rawAmount = I64.parseInt(`${splitAmount[0]}${splitAmount[1]}`, 10)
+
+        const symbol = new Symbol(symbolCodeStr, <u8>(precision))
+        const asset = new Asset(rawAmount, symbol)
+        check(asset.isValid(), "invalid asset");
+
+        return asset
+    }
+
     isAmountWithinRange(): bool {
         return -MAX_AMOUNT <= this.amount && this.amount <= MAX_AMOUNT;
     }
@@ -200,12 +216,12 @@ export class Asset implements Packer {
     }
 
     toString(): string {
-        let precision = <i32>(this.symbol.value & 0xFF);
-        let div = 10;
-        for (let i=0; i<precision; i++) {
-            div *= 10;
+        const precision = this.symbol.precision();
+        let rawAmount = this.amount.toString().padStart(precision + 1, '0')
+        if (precision > 0) {
+            rawAmount = rawAmount.slice(0, rawAmount.length - precision) + "." + rawAmount.slice(rawAmount.length - precision, rawAmount.length)
         }
-        return (this.amount/div).toString() + '.' + (this.amount%div).toString().padStart(precision, '0') + " " + this.symbol.getSymbolString();
+        return rawAmount + " " + this.symbol.getSymbolString()
     }
 
     pack(): u8[] {

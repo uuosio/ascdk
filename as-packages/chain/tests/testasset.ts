@@ -39,6 +39,12 @@ class MyContract extends Contract{
             let a = new Asset(10, new Symbol("EOS", 4));
             let b = new Asset(5, new Symbol("EOS", 4));
 
+            // From string
+            check( Asset.eq(a, Asset.fromString("0.0010 EOS")), `${a} does not match ${Asset.fromString("0.0010 EOS")}`);
+            check( Asset.ne(a, Asset.fromString("0.0005 EOS")), `${a} matches ${Asset.fromString("0.0005 EOS")}`);
+            check( Asset.eq(b, Asset.fromString("0.0005 EOS")), `${b} does not match ${Asset.fromString("0.0005 EOS")}`);
+            check( Asset.ne(b, Asset.fromString("0.0010 EOS")), `${b} matches ${Asset.fromString("0.0010 EOS")}`);
+
             // Operators
             check( a + b == new Asset(15, new Symbol("EOS", 4)), "bad value 5");
             check( a - b == new Asset(5, new Symbol("EOS", 4)), "bad value 6");

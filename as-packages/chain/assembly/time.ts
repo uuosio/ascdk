@@ -345,8 +345,7 @@ export class BlockTimestamp implements Packer {
     }
 
     setTimePoint(t: TimePoint): void {
-        const microSinceEpoch = t.timeSinceEpoch().count();
-        const msecSinceEpoch  = microSinceEpoch / 1000;
+        const msecSinceEpoch  = t.msSinceEpoch();
         this.slot = <u32>((msecSinceEpoch - BlockTimestamp.blockTimestampEpoch) / BlockTimestamp.blockIntervalMs)
     }
 
