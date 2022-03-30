@@ -9,6 +9,7 @@ export { IDXF64 } from "./idxf64";
 export { IDXF128 } from "./idxf128";
 export { IDX128 } from "./idx128";
 export { IDX256 } from "./idx256";
+export { VariantValue } from "./variant";
 
 export {
     assert,
@@ -58,7 +59,7 @@ export {
 export { MultiIndex, MultiIndexValue, SAME_PAYER } from "./mi";
 export { Singleton } from "./singleton";
 
-export {Contract, ActionWrapper, Table} from "./helpers"
+export {Contract, ActionWrapper, Table, InlineAction} from "./helpers"
 
 export {
     getSender,
@@ -113,4 +114,3 @@ export {
 
 export * from "./serializer";
 export { Utils } from "./utils";
-export * from "./decorator";

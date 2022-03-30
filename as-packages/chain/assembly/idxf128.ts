@@ -13,8 +13,6 @@ class IDXF128ReturnValue {
 
 export class IDXF128 extends IDXDB {
     store(id: u64, value: Float128, payer: u64): SecondaryIterator {
-        check(value.type == SecondaryType.F128, "idx_long_double: bad type");
-        check(value.value.length == 2, "idx_long_double: bad value");
         let secondary_ptr = value.data.dataStart;
         let it = env.db_idx_long_double_store(this.scope, this.table, payer, id, secondary_ptr);
         return new SecondaryIterator(it, id, this.dbIndex);
@@ -29,10 +27,8 @@ export class IDXF128 extends IDXDB {
     }
 
     update(iterator: SecondaryIterator, secondary: Float128, payer: u64): void {
-        check(secondary.type == SecondaryType.F128, "idx_long_double: bad value");
-        check(secondary.data.length == 2, "idx_long_double: bad value");
-        let secondary_ptr = secondary.value.dataStart;
-        env.db_idx_long_double_update(iterator, payer, secondary_ptr);
+        let secondary_ptr = secondary.data.dataStart;
+        env.db_idx_long_double_update(iterator.i, payer, secondary_ptr);
     }
 
     updateEx(iterator: SecondaryIterator, secondary: SecondaryValue, payer: u64): void {

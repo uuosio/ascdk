@@ -1,4 +1,4 @@
-import { ActionWrapper, Name, packer, Table } from "as-chain"
+import { ActionWrapper, Name, Table } from "as-chain"
 
 // Contract
 export const balance = Name.fromString("balance")

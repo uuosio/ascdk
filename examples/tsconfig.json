@@ -9,7 +9,7 @@
     "noImplicitReturns": true,
     "baseUrl": "./",
     "paths": {},
-    "typeRoots": ["node_modules/assemblyscript/std"],
+    "typeRoots": ["node_modules/assemblyscript/std", "node_modules/as-chain/types.d.ts"],
     "types": ["assembly"],
     "allowJs": true,
     "esModuleInterop": true,

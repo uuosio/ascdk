@@ -4,7 +4,6 @@ import {
     Name,
     Action,
     PermissionLevel,
-    contract, action, packer, 
     printString,
     check,
     getSender,

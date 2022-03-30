@@ -1,6 +1,4 @@
 import {
-    packer,
-
     Name,
     PublicKey,
     PermissionLevel,

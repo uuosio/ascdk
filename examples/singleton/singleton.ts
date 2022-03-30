@@ -1,9 +1,4 @@
 import {
-    table,
-    contract,
-    action,
-    singleton,
-
     Name,
     Table,
     Contract,

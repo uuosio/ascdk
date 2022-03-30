@@ -51,7 +51,7 @@ export class Contract {
     ) {}
 }
 
-export class Table implements MultiIndexValue {
+export class MockPacker implements MultiIndexValue {
     pack(): u8[] {
         check(false, "not implemented");
         return [];
@@ -87,3 +87,6 @@ export class Table implements MultiIndexValue {
         return new MultiIndex<Table>(_, __, new Name(), []);
     }
 }
+
+export class Table extends MockPacker {}
+export class InlineAction extends Table {}

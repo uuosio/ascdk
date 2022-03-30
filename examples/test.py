@@ -121,6 +121,11 @@ def test_singleton():
         chain.produce_block()
 
 @chain_test
+def test_allow():
+    (code, abi) = get_code_and_abi('allow', 'allow.contract')
+    chain.deploy_contract('hello', code, abi, 0)
+
+@chain_test
 def test_escrow():
     (code, abi) = get_code_and_abi('escrow', 'escrow.contract')
     chain.deploy_contract('hello', code, abi, 0)

@@ -1,9 +1,4 @@
 import {
-    primary,
-    table,
-    contract,
-    action,
-
     Name,
     Table,
     Contract,

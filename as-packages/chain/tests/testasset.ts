@@ -1,4 +1,4 @@
-import { ExtendedAsset, Asset, Symbol, check, isValid, printString, contract, action, Contract, Name } from "as-chain";
+import { ExtendedAsset, Asset, Symbol, check, isValid, printString, Contract, Name } from "as-chain";
 
 @contract("hello")
 class MyContract extends Contract{

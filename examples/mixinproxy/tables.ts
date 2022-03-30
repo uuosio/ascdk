@@ -1,12 +1,5 @@
 import {
-    table,
-    primary,
-    secondary,
-    singleton,
-    ignore,
-
     Table,
-
     U128,
     U256,
     Name,
@@ -14,8 +7,6 @@ import {
     Signature,
     Symbol,
     Asset,
-    Action,
-    Checksum256,
 } from "as-chain"
 
 @table("signers")
