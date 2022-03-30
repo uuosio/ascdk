@@ -1,27 +1,21 @@
 import {
-    packer,
-    table,
-    primary,
-
-    currentReceiver,
-
     Name,
     Asset,
-    Symbol,
     Action,
     PermissionLevel,
-    check
+    InlineAction
 } from "as-chain"
 
 export const MIXIN_WTOKENS: Name = Name.fromString("mixinwtokens");
 export const MAX_SUPPLY: i64 = 100000000000000;
 
 @packer
-export class Create {
+export class Create extends InlineAction {
     constructor(
         public issuer: Name = new Name(),
         public maximum_supply: Asset = new Asset(),
     ){
+        super()
     }
 
     send(actor: Name): void {
@@ -34,12 +28,13 @@ export class Create {
 }
 
 @packer
-export class Issue {
+export class Issue extends InlineAction {
     constructor(
         public to: Name = new Name(),
         public quantity: Asset = new Asset(),
         public memo: string = "",
     ) {
+        super();
     }
 
     send(actor: Name): void {
@@ -53,11 +48,12 @@ export class Issue {
 }
 
 @packer
-export class Retire {
+export class Retire extends InlineAction {
     constructor(
         public quantity: Asset = new Asset(),
         public memo: string = "",
     ) {
+        super();
     }
 
     send(actor: Name): void {
@@ -70,13 +66,14 @@ export class Retire {
 }
 
 @packer
-export class Transfer {
+export class Transfer extends InlineAction {
     constructor(
         public from: Name = new Name(),
         public to: Name = new Name(),
         public quantity: Asset = new Asset(),
         public memo: string = ""
-        ) {
+    ) {
+        super();
     }
 
     send(actor: Name): void {

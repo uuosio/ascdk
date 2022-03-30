@@ -2,15 +2,8 @@ import {
     Asset,
     Symbol,
     Float128,
-
-    Checksum256,
     Contract,
-    primary,
-    contract,
-    table,
-    action,
     print,
-    printHex,
     Utils,
     check,
 } from "as-chain";

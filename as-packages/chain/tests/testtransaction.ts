@@ -1,9 +1,4 @@
 import {
-    packer,
-    action,
-    contract,
-
-    Packer,
     Contract,
     Name,
     PermissionLevel,

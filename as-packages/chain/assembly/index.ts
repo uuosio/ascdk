@@ -59,7 +59,7 @@ export {
 export { MultiIndex, MultiIndexValue, SAME_PAYER } from "./mi";
 export { Singleton } from "./singleton";
 
-export {Contract, ActionWrapper, Table} from "./helpers"
+export {Contract, ActionWrapper, Table, InlineAction} from "./helpers"
 
 export {
     getSender,
@@ -114,4 +114,3 @@ export {
 
 export * from "./serializer";
 export { Utils } from "./utils";
-export * from "./decorator";

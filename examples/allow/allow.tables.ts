@@ -1,5 +1,5 @@
-import { Name, table, primary, Table, MultiIndex, singleton, Singleton } from "as-chain";
-import { allowedactor, allowedtoken, paused } from "./allow.constants";
+import { Name, Table, MultiIndex, Singleton } from "as-chain";
+import { allowedactor, paused } from "./allow.constants";
 
 // scope: contract
 @table(paused, singleton)

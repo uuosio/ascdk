@@ -1,5 +1,4 @@
 import {
-    print,
     Name,
     check,
     Contract,

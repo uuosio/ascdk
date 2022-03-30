@@ -1,18 +1,8 @@
 import {
-    table,
-    contract,
-    primary,
-    secondary,
-    action,
-    Table,
-
     Name,
+    Table,
     U128,
     U256,
-    IDX64,
-    IDXF64,
-    IDX128,
-    IDX256,
     newSecondaryValue_u64,
     newSecondaryValue_f64,
     newSecondaryValue_U128,
@@ -23,7 +13,6 @@ import {
     Float128,
     Contract,
     print,
-    DBI64,
     newSecondaryValue_Float128,
 } from "as-chain";
 

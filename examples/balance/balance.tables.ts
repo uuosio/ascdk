@@ -1,4 +1,4 @@
-import { ExtendedAsset, Name, table, primary, Table, MultiIndex, singleton, Singleton } from "as-chain";
+import { ExtendedAsset, Name, Table, MultiIndex, Singleton } from "as-chain";
 import { global, accounts } from "./balance.constants";
 
 @table(global, singleton)

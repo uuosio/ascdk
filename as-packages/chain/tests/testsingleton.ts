@@ -1,10 +1,4 @@
 import {
-    primary,
-    table,
-    contract,
-    action,
-    singleton,
-
     Name,
     Table,
     Contract,
@@ -12,7 +6,7 @@ import {
     check,
 } from "as-chain";
 
-@table("counter", singleton)
+@table("counter", "singleton")
 class Counter extends Table {
     public count: u64;
     constructor(count: u64=0) {

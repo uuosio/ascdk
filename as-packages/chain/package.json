@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "description": "chain module for assemblyscript",
   "main": "js/index.js",
-  "types": "assembly/index.ts",
+  "types": "./types.d.ts",
   "author": "learnforpractice <learnforpractice@gmail.com>",
   "license": "MIT",
   "repository": {

@@ -1,15 +1,7 @@
 import {
-    primary,
-    contract,
-    table,
-    action,
-    Table,
-    ignore,
-
     Contract,
     U128,
     U256,
-    Signature,
     sha256,
     recoverKey,
 
@@ -27,10 +19,7 @@ import {
     requireAuth,
     currentTimeSec,
     assertSha256,
-    Encoder,
     Utils,
-
-    printHex,
 } from "as-chain";
 
 import {
@@ -58,7 +47,6 @@ import {
 import {
     Create,
     Issue,
-    Retire,
     Transfer,
 
     currency_stats,

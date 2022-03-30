@@ -1,7 +1,6 @@
 import {
     Asset,
-    contract,
-    action,
+
     Contract,
 } from "as-chain";
 
@@ -14,7 +13,7 @@ class MyData {
     public data!: MyData2;
 }
 
-@table("hello", singleton)
+@table("hello", "singleton")
 class MyTable {
     aaa: u64;
     bbb: u64;
