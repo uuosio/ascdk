@@ -1,16 +1,10 @@
 import {
-    Name,
     Asset,
-    packer,
-    contract,
-    action,
     Signature,
     PublicKey,
     Checksum256,
-
     recoverKey,
     assertRecoverKey,
-
     assertSha256,
     assertSha1,
     assertSha512,
@@ -19,7 +13,6 @@ import {
     sha1,
     sha512,
     ripemd160,
-
     print,
     check,
     Contract,

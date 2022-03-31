@@ -1,4 +1,4 @@
-import { Contract, PermissionLevel, printString, action, contract, ActionWrapper, Asset, Symbol, Table, packer } from "as-chain"
+import { Contract, PermissionLevel, printString, ActionWrapper, Asset, Symbol, Table } from "as-chain"
 
 @packer
 class SayGoodbye extends Table {

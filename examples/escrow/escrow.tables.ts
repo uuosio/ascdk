@@ -1,4 +1,4 @@
-import { ExtendedAsset, Name, table, primary, Table, singleton, secondary, MultiIndex, Singleton } from "as-chain";
+import { ExtendedAsset, Name, Table, MultiIndex, Singleton } from "as-chain";
 import { globall, escrows } from "./escrow.constants";
 
 @table(globall, singleton)

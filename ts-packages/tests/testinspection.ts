@@ -1,9 +1,6 @@
 import {
     Asset,
     Symbol,
-    contract,
-    action,
-
     print,
     check,
     Contract,

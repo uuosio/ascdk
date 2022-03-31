@@ -1,12 +1,4 @@
 import {
-    ignore,
-    primary,
-    contract,
-    table,
-    action,
-    secondary,
-    singleton,
-
     Name,
     Asset,
     Contract,

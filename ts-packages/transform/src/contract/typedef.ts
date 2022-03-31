@@ -38,15 +38,15 @@ export class BaseNamedTypeDef {
  */
 export class NamedTypeNodeDef extends BaseNamedTypeDef {
     current!: Element;
-    typeKind: TypeKindEnum;
+    typeKind!: TypeKindEnum;
     typeArguments: NamedTypeNodeDef[] = [];
     plainType: string; // Main type name
-    codecType: string; // Main type codecType name
-    codecTypeAlias: string; // original contract type
+    codecType: string = ""; // Main type codecType name
+    codecTypeAlias: string = ""; // original contract type
     // Used for array and map
     instanceType = ""; // Specify contract type that concrete type
     definedCodeType = ""; // define Cdoe type
-    abiType: string;
+    abiType: string = "";
     index = 0;
     capacity = 0;
 
