@@ -367,6 +367,16 @@ Handlebars.registerHelper("variantGet", function (field: FieldDef) {
     return code.join(EOL);
 });
 
+Handlebars.registerHelper("variantGenericGet", function (field: FieldDef) {
+    let code: string[] = [];
+    let plainType = field.type.plainTypeNode;
+    code.push(dedent`\n
+            if (idof<_chain.VariantValue<T>>() == idof<_chain.VariantValue<${plainType}>>()) {
+                _chain.check(this._index == ${field._index}, "wrong variant type");
+            }
+    \n`);
+    return code.join(EOL);
+});
 
 Handlebars.registerHelper("binaryExtensionSerialize", function (field: FieldDef) {
     let code = `

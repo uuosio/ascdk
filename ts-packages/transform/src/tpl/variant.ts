@@ -48,5 +48,12 @@ export const variantTpl = `
     {{{variantGet .}}}
     {{/each}}
 
+    get<T>(): T {
+        {{#each fields}}
+        {{{variantGenericGet .}}}
+        {{/each}}
+        let value = changetype<_chain.VariantValue<T>>(this.value);
+        return value.value;
+    }
 }`;
 

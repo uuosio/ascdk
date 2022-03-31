@@ -108,32 +108,43 @@ class MyContract extends Contract{
         ): void {
             check(a1.isi8(), "bad value 1");
             check(a1.geti8() == 1, "bad value 1");
+            check(a1.get<i8>() == 1, "bad value 1");
 
             check(a2.isi16(), "bad value 2");
             check(a2.geti16() == 2, "bad value 2");
+            check(a2.get<i16>() == 2, "bad value 2");
 
             check(a3.isi32(), "bad value 3");
             check(a3.geti32() == 3, "bad value 3");
+            check(a3.get<i32>() == 3, "bad value 3");
 
             check(a4.isi64(), "bad value 4");
             check(a4.geti64() == 4, "bad value 4");
+            check(a4.get<i64>() == 4, "bad value 4");
 
             check(a5.isu8(), "bad value 5");
             check(a5.getu8() == 5, "bad value 5");
+            check(a5.get<u8>() == 5, "bad value 5");
 
             check(a6.isu16(), "bad value 6");
             check(a6.getu16() == 6, "bad value 6");
+            check(a6.get<u16>() == 6, "bad value 6");
 
             check(a7.isu32(), "bad value 7");
             check(a7.getu32() == 7, "bad value 7");
+            check(a7.get<u32>() == 7, "bad value 7");
 
             check(a8.isu64(), "bad value 8");
             check(a8.getu64() == 8, "bad value 8");
+            check(a8.get<u64>() == 8, "bad value 8");
 
             check(a9.isfloat(), "bad value 9");
             check(a9.getfloat() == 9.9, "bad value 9");
+            check(a9.get<f64>() == 9.9, "bad value 9");
+
             check(a10.isdouble(), "bad value 10");
             check(a10.getdouble() == new Float128(0xffffffffffffffff, 0xffffffffffffffff), "bad value 10");
+            check(a10.get<Float128>() == new Float128(0xffffffffffffffff, 0xffffffffffffffff), "bad value 10");
 
             check(a11.isstring(), "bad value 11");
             check(a11.getstring() == "hello", "bad value 11");
@@ -141,16 +152,26 @@ class MyContract extends Contract{
             check(a12.isINT8_VEC(), "bad value 12");
             let arr = a12.getINT8_VEC();
             check(arr[0] == 1 && arr[1] == 2 && arr[2] == 3, "bad value 12");
+            arr = a12.get<i8[]>();
+            check(arr[0] == 1 && arr[1] == 2 && arr[2] == 3, "bad value 12");
+
 
             check(a13.isINT16_VEC(), "bad value 13");
             {
                 let arr = a13.getINT16_VEC();
                 check(arr[0] == 1 && arr[1] == 2 && arr[2] == 3, "bad value 13");    
+
+                arr = a13.get<i16[]>();
+                check(arr[0] == 1 && arr[1] == 2 && arr[2] == 3, "bad value 13");    
+
             }
 
             check(a14.isINT32_VEC(), "bad value 14");
             {
                 let arr = a14.getINT32_VEC();
+                check(arr[0] == 1 && arr[1] == 2 && arr[2] == 3, "bad value 14");    
+
+                arr = a14.get<i32[]>();
                 check(arr[0] == 1 && arr[1] == 2 && arr[2] == 3, "bad value 14");    
             }
 
@@ -158,11 +179,17 @@ class MyContract extends Contract{
             {
                 let arr = a15.getINT64_VEC();
                 check(arr[0] == 1 && arr[1] == 2 && arr[2] == 3, "bad value 15");    
+
+                arr = a15.get<i64[]>();
+                check(arr[0] == 1 && arr[1] == 2 && arr[2] == 3, "bad value 15");
             }
 
             check(a16.isUINT8_VEC(), "bad value 16");
             {
                 let arr = a16.getUINT8_VEC();
+                check(arr[0] == 0xaa && arr[1] == 0xbb && arr[2] == 0xcc, "bad value 16");    
+
+                arr = a16.get<u8[]>();
                 check(arr[0] == 0xaa && arr[1] == 0xbb && arr[2] == 0xcc, "bad value 16");    
             }
 
@@ -170,16 +197,26 @@ class MyContract extends Contract{
             {
                 let arr = a17.getUINT16_VEC();
                 check(arr[0] == 1 && arr[1] == 2 && arr[2] == 3, "bad value 17");    
+
+                arr = a17.get<u16[]>();
+                check(arr[0] == 1 && arr[1] == 2 && arr[2] == 3, "bad value 17");    
             }
 
             check(a18.isUINT32_VEC(), "bad value 18");
             {
                 let arr = a18.getUINT32_VEC();
                 check(arr[0] == 1 && arr[1] == 2 && arr[2] == 3, "bad value 18");    
+
+                arr = a18.get<u32[]>();
+                check(arr[0] == 1 && arr[1] == 2 && arr[2] == 3, "bad value 18");    
             }
+
             check(a19.isUINT64_VEC(), "bad value 19");
             {
                 let arr = a19.getUINT64_VEC();
+                check(arr[0] == 1 && arr[1] == 2 && arr[2] == 3, "bad value 19");    
+
+                arr = a19.get<u64[]>();
                 check(arr[0] == 1 && arr[1] == 2 && arr[2] == 3, "bad value 19");    
             }
 
@@ -187,6 +224,9 @@ class MyContract extends Contract{
             {
                 let arr = a20.getFLOAT_VEC();
                 check(arr[0] == 1.1 && arr[1] == 2.2 && arr[2] == 3.3, "bad value 20");    
+
+                arr = a20.get<f64[]>();
+                check(arr[0] == 1.1 && arr[1] == 2.2 && arr[2] == 3.3, "bad value 20");
             }
 
             check(a21.isDOUBLE_VEC(), "bad value 21");
@@ -195,12 +235,18 @@ class MyContract extends Contract{
                 let a1 = new Float128(0xffffffffffffffaa, 0xfaffffffffffffff)
                 let a2 = new Float128(0xffffffffffffffff, 0xfbffffffffffffff)
                 check(arr[0] == a1 && arr[1] == a2, "bad value 21");
+
+                arr = a21.get<Float128[]>();
+                check(arr[0] == a1 && arr[1] == a2, "bad value 21");
             }
 
             check(a22.isSTRING_VEC(), "bad value 22");
             {
                 let arr = a22.getSTRING_VEC();
                 check(arr[0] == "hello" && arr[1] == "world", "bad value 22");    
+
+                arr = a22.get<string[]>();
+                check(arr[0] == "hello" && arr[1] == "world", "bad value 22");
             }
         }
 }
