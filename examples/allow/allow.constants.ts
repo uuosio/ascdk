@@ -14,7 +14,3 @@ export const allowactor = new ActionWrapper(Name.fromString("allowactor"))
 export const blockactor = new ActionWrapper(Name.fromString("blockactor"))
 export const allowtoken = new ActionWrapper(Name.fromString("allowtoken"))
 export const blocktoken = new ActionWrapper(Name.fromString("blocktoken"))
-
-// Include
-@packer
-class constants extends Table { constructor() { super(); } }
