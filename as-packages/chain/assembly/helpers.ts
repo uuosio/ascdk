@@ -19,6 +19,41 @@ export class ActionWrapperAct {
     }
 }
 
+export class Variant implements Packer {
+    _index: u8;
+    value: usize;
+
+    static new<T, U extends Packer>(value: T): U {
+        check(false, "not implemented");
+        return instantiate<U>()
+    }
+
+    getSize(): usize {
+        check(false, "not implemented");
+        return 0
+    }
+
+    get<T>(): T {
+        check(false, "not implemented");
+        return instantiate<T>()
+    }
+
+    is<T>(): bool {
+        check(false, "not implemented");
+        return false
+    }
+
+    pack(): u8[] {
+        check(false, "not implemented");
+        return []
+    }
+
+    unpack(data: u8[]): usize {
+        check(false, "not implemented");
+        return 0
+    }
+}
+
 export class ActionWrapper {
     constructor(
         public action: Name = new Name()
