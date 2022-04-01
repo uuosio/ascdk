@@ -30,7 +30,6 @@
     "test:eosio.token": "yarn build:eosio.token && run-ipyeos -m pytest -s -x test.py -k test_token",
     "test:escrow": "yarn build:escrow && run-ipyeos -m pytest -s -x test.py -k test_escrow",
     "test:balance": "yarn build:balance && yarn build:receiver && run-ipyeos -m pytest -s -x test.py -k test_balance",
-    "test:atomicassets": "yarn build:atomicassets && run-ipyeos -m pytest -s -x test.py -k test_atomicassets",
     "test:mixinproxy": "yarn build:mixinproxy && run-ipyeos -m pytest -s -x mixinproxy/tests/testmixinproxy.py",
 
     "build": "run-p build:* --max-parallel 3",
