@@ -1,5 +1,5 @@
 import Handlebars from "./handlebars";
-import { Range } from "assemblyscript";
+import { Range } from "assemblyscript/dist/assemblyscript";
 import { ContractProgram} from "../contract/contract";
 import { ActionFunctionDef } from "../contract/elementdef";
 

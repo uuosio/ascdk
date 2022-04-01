@@ -11,7 +11,7 @@ import {
     Range,
     DecoratorNode,
     FunctionDeclaration
-} from "assemblyscript";
+} from "assemblyscript/dist/assemblyscript";
 
 import { AstUtil, DecoratorUtil, ElementUtil, RangeUtil, EosioUtils } from "../utils/utils";
 import { ContractDecoratorKind } from "../enums/decorator";

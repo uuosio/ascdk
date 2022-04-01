@@ -26,11 +26,11 @@
     "test:ci": "asp 2> /dev/null"
   },
   "dependencies": {
-    "@assemblyscript/loader": "^0.19.22",
+    "@assemblyscript/loader": "^0.20.3",
     "as-bignum": "^0.2.18"
   },
   "devDependencies": {
-    "assemblyscript": "^0.19.22"
+    "assemblyscript": "^0.20.3"
   },
   "files": [
     "assembly/",

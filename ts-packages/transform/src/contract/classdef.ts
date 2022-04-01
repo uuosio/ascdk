@@ -8,7 +8,7 @@ import {
     CommonFlags,
     ClassDeclaration,
     OperatorKind
-} from "assemblyscript";
+} from "assemblyscript/dist/assemblyscript";
 
 import { AstUtil, ElementUtil, DecoratorUtil, EosioUtils } from "../utils/utils";
 

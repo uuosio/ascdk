@@ -2,7 +2,7 @@
   "compilerOptions": {
     "experimentalDecorators": true,
     "target": "es6",
-    "module": "commonjs",
+    "module": "ES6",
     "sourceMap": true,
     "outDir": "./build",
     "strict": true,

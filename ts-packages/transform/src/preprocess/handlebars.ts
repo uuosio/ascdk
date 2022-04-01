@@ -7,7 +7,7 @@ import { TypeHelper } from "../utils/typeutil";
 import { TableInterpreter, ClassInterpreter } from "../contract/classdef";
 import { RangeUtil } from "../utils/utils";
 import { NamedTypeNodeDef } from "../contract/typedef";
-import { Range } from "assemblyscript";
+import { Range } from "assemblyscript/dist/assemblyscript";
 import dedent from "ts-dedent"
 import process from "process"
 

@@ -1,4 +1,5 @@
-import { DecoratorKind, DecoratorNode, Expression, IdentifierExpression, NodeKind } from "assemblyscript";
+import { DecoratorKind, DecoratorNode, Expression, IdentifierExpression, NodeKind } from "assemblyscript/dist/assemblyscript";
+
 import { ContractDecoratorKind } from "../enums/decorator";
 import { LowerCaseCode } from "../utils/charutil";
 import { RangeUtil } from "../utils/utils";

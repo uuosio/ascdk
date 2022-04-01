@@ -1,7 +1,7 @@
 import {
     ClassPrototype,
     Program,
-} from "assemblyscript";
+} from "assemblyscript/dist/assemblyscript";
 
 import { ElementUtil } from "../utils/utils";
 

@@ -18,7 +18,7 @@ import {
     LiteralExpression,
     LiteralKind,
     StringLiteralExpression
-} from "assemblyscript";
+} from "assemblyscript/dist/assemblyscript";
 
 import { getCustomDecoratorKind } from "../contract/decorator";
 import { ContractDecoratorKind } from "../enums/decorator";

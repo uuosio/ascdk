@@ -6,7 +6,7 @@ import {
     ElementKind,
     TypeDefinition,
     ClassPrototype,
-} from "assemblyscript";
+} from "assemblyscript/dist/assemblyscript";
 
 import { RangeUtil } from "../utils/utils";
 
