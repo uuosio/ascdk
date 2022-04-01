@@ -240,6 +240,10 @@ exports.compileString = (sources, options) => {
 
 /** Runs the command line utility using the specified arguments array. */
 exports.main = function main(argv, options, callback) {
+    let transform_phase = argv.find(x => {
+        return x == "--transform";
+    });
+
     if (typeof options === "function") {
         callback = options;
         options = {};
@@ -860,12 +864,15 @@ exports.main = function main(argv, options, callback) {
             };
         }
     });
-    var numErrors = checkDiagnostics(program, stderr, options.reportDiagnostic, options.checkAll);
-    if (numErrors) {
-        if (module) module.dispose();
-        const err = Error(numErrors + " compile error(s)");
-        err.stack = err.message; // omit stack
-        return callback(err);
+
+    if (!transform_phase) {
+        var numErrors = checkDiagnostics(program, stderr, options.reportDiagnostic, options.checkAll);
+        if (numErrors) {
+            if (module) module.dispose();
+            const err = Error(numErrors + " compile error(s)");
+            err.stack = err.message; // omit stack
+            return callback(err);
+        }
     }
 
     // Call afterCompile transform hook

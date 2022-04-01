@@ -34,9 +34,9 @@ if (true) {
     asc.ready.then(() => {
         let args = process.argv.slice(2).concat(ARGS);
         process.exitCode = asc.main(args);
-        if (process.exitCode != 0) {
-            return process.exitCode;
-        }
+        // if (process.exitCode != 0) {
+        //     return process.exitCode;
+        // }
         asc.ready.then(()=> {
             args.pop(), args.pop();
             let sourcePath = process.argv[2];
