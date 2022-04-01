@@ -6,7 +6,7 @@ import {
     print,
     Utils,
     check,
-
+    Variant,
     Packer,
     VariantValue,
 } from "as-chain";
@@ -38,7 +38,7 @@ class ATOMIC_ATTRIBUTE {
 }
 
 @variant
-class MyVariant {
+class MyVariant extends Variant {
     a: u64;
     b: Asset;
 }
