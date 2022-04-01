@@ -56,11 +56,11 @@ export {
     getSecondaryValue_Float128,
 } from "./idxdb";
 
+export { TableStore } from "./store"
 export { MultiIndex, MultiIndexValue, SAME_PAYER } from "./mi";
 export { Singleton } from "./singleton";
 
-export {Contract, ActionWrapper, Table, InlineAction, Variant} from "./helpers"
-
+export { Contract, ActionWrapper, Table, InlineAction, Variant } from "./helpers"
 export {
     getSender,
     readActionData,

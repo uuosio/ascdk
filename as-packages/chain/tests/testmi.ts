@@ -38,8 +38,6 @@ class MyData extends Table {
     get bvalue(): u64 {
         return this.b;
     }
-
-    @secondary
     set bvalue(value: u64) {
         this.b = value;
     }
@@ -48,8 +46,6 @@ class MyData extends Table {
     get cvalue(): U128 {
         return this.c;
     }
-
-    @secondary
     set cvalue(value: U128) {
         this.c = value;
     }
@@ -58,8 +54,6 @@ class MyData extends Table {
     get dvalue(): f64 {
         return this.d;
     }
-
-    @secondary
     set dvalue(value: f64) {
         this.d = value;
     }
@@ -68,8 +62,6 @@ class MyData extends Table {
     get evalue(): U256 {
         return this.e;
     }
-
-    @secondary
     set evalue(value: U256) {
         this.e = value;
     }
@@ -78,8 +70,6 @@ class MyData extends Table {
     get fvalue(): Float128 {
         return this.f;
     }
-
-    @secondary
     set fvalue(value: Float128) {
         this.f = value;
     }
@@ -90,25 +80,19 @@ class MyContract extends Contract{
     @action("testmi")
     testmi(): void {
         let mi = MyData.new(this.receiver, this.receiver);
-        check(mi.availablePrimaryKey() == 0, `expected availablePrimaryKey 0, got ${mi.availablePrimaryKey()}`);
-
-        mi = MyData.new(this.receiver, this.receiver);
-
         let value = new MyData(1, 2, new U128(3), 3.3, new U256(11), new Float128(0xaa));
         mi.store(value, this.receiver);
-        check(mi.availablePrimaryKey() == 2, `expected availablePrimaryKey 2, got ${mi.availablePrimaryKey()}`);
 
         value = new MyData(4, 5, new U128(6), 6.6, new U256(44), new Float128(0xbb));
         mi.store(value, this.receiver);
-        check(mi.availablePrimaryKey() == 5, `expected availablePrimaryKey 5, got ${mi.availablePrimaryKey()}`);
 
         value = new MyData(7, 8, new U128(9), 9.9, new U256(77), new Float128(0xcc));
         mi.store(value, this.receiver);
-        check(mi.availablePrimaryKey() == 8, `expected availablePrimaryKey 8, got ${mi.availablePrimaryKey()}`);
 
         let it = mi.find(4);
         check(it.isOk(), "value not found!");
         printString(`+++++++++++it.i:${it.i}\n`);
+
         value = mi.get(it);
         printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}\n`);
         check(value.a == 4 && value.b == 5 && value.c == new U128(6) && value.d == 6.6, "bad value");
