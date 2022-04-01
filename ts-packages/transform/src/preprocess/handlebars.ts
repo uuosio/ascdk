@@ -341,19 +341,19 @@ Handlebars.registerHelper("variantNew", function (field: FieldDef) {
 Handlebars.registerHelper("variantGet", function (field: FieldDef) {
     let code: string[] = [];
     code.push(dedent`\n
-            is${field.name}(): bool {
-                    return this._index == ${field._index};
-            }
+        is${field.name}(): bool {
+            return this._index == ${field._index};
+        }
     \n`);
 
     let plainType = field.type.plainTypeNode;
     if (TypeHelper.isPrimitiveType(field.type.typeKind)) {
         code.push(dedent`\n
-                get${field.name}(): ${plainType} {
-                    _chain.check(this._index == ${field._index}, "wrong variant type");
-                    let value = changetype<_chain.VariantValue<${plainType}>>(this.value);
-                    return value.value;
-                }
+            get${field.name}(): ${plainType} {
+                _chain.check(this._index == ${field._index}, "wrong variant type");
+                let value = changetype<_chain.VariantValue<${plainType}>>(this.value);
+                return value.value;
+            }
         \n`);
     } else {
         code.push(dedent`\n
@@ -362,7 +362,7 @@ Handlebars.registerHelper("variantGet", function (field: FieldDef) {
                 let value = changetype<_chain.VariantValue<${plainType}>>(this.value);
                 return value.value;
             }
-    \n`);
+        \n`);
     }
     return code.join(EOL);
 });
@@ -373,6 +373,17 @@ Handlebars.registerHelper("variantGenericGet", function (field: FieldDef) {
     code.push(dedent`\n
             if (idof<_chain.VariantValue<T>>() == idof<_chain.VariantValue<${plainType}>>()) {
                 _chain.check(this._index == ${field._index}, "wrong variant type");
+            }
+    \n`);
+    return code.join(EOL);
+});
+
+Handlebars.registerHelper("variantGenericIs", function (field: FieldDef) {
+    let code: string[] = [];
+    let plainType = field.type.plainTypeNode;
+    code.push(dedent`\n
+            if (idof<_chain.VariantValue<T>>() == idof<_chain.VariantValue<${plainType}>>()) {
+                return this._index == ${field._index};
             }
     \n`);
     return code.join(EOL);

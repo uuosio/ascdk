@@ -203,3 +203,30 @@ export class SerializerInterpreter extends ClassInterpreter {
         this.resolveFunctionMembers();
     }
 }
+
+export class VariantInterpreter extends ClassInterpreter {
+    index = 0;
+    no_codegen: boolean = false;
+    no_abigen: boolean = false;
+    constructor(clzPrototype: ClassPrototype) {
+        super(clzPrototype);
+        this.resolveFieldMembers();
+        this.resolveFunctionMembers();
+
+        let decorator = AstUtil.getSpecifyDecorator(clzPrototype.declaration, ContractDecoratorKind.VARIANT)!;
+        if (!decorator.args) {
+            return;
+        }
+
+        for (let i=0; i<decorator.args!.length; i++) {
+            let arg = AstUtil.getIdentifier(decorator.args![1]);
+            if (arg == "nocodegen") {
+                this.no_codegen = true;
+            }
+
+            if (arg == "noabigen") {
+                this.no_abigen = true;
+            }
+        }
+    }
+}

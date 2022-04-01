@@ -54,6 +54,7 @@ export class TypeHelper {
         ["u16", "uint16"],
         ["i32", "int32"],
         ["u32", "uint32"],
+        ["usize", "uint32"],
         ["i64", "int64"],
         ["u64", "uint64"],
         

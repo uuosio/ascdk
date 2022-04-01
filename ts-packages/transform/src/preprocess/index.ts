@@ -112,9 +112,12 @@ export function getExtCodeInfo(contractInfo: ContractProgram): SourceModifier {
         sourceModifier.addModifyPoint(new ModifyPoint(s.range, ModifyType.REPLACE, code));
     });
 
-    contractInfo.variants.forEach(table => {
-        let code = Handlebars.compile(variantTpl)(table);
-        sourceModifier.addModifyPoint(new ModifyPoint(table.range, ModifyType.REPLACE, code));
+    contractInfo.variants.forEach(variant => {
+        if (variant.no_codegen) {
+            return;
+        }
+        let code = Handlebars.compile(variantTpl)(variant);
+        sourceModifier.addModifyPoint(new ModifyPoint(variant.range, ModifyType.REPLACE, code));
     });
 
     sourceModifier.addModifyPoint(new ModifyPoint(contractInfo.contract.range, ModifyType.APPEND, exportMain));

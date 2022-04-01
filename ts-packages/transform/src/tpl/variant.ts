@@ -55,5 +55,12 @@ export const variantTpl = `
         let value = changetype<_chain.VariantValue<T>>(this.value);
         return value.value;
     }
+
+    is<T>(): bool {
+        {{#each fields}}
+        {{{variantGenericIs .}}}
+        {{/each}}
+        return false;
+    }
 }`;
 
