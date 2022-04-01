@@ -9,6 +9,8 @@ import {
     Variant,
     Packer,
     VariantValue,
+    Encoder,
+    Decoder,
 } from "as-chain";
 
 @variant

@@ -23,7 +23,7 @@ export class Variant implements Packer {
     _index: u8;
     value: usize;
 
-    static new<T, U extends Packer>(value: T): U {
+    static new<T, U>(value: T): U {
         check(false, "not implemented");
         return instantiate<U>()
     }
