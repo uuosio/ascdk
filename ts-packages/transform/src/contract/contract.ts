@@ -9,7 +9,8 @@ import {
     ContractInterpreter,
     SerializerInterpreter,
     ClassInterpreter,
-    TableInterpreter
+    TableInterpreter,
+    VariantInterpreter,
 } from "./classdef";
 
 import { NamedTypeNodeDef } from "./typedef";
@@ -34,7 +35,7 @@ export class ContractProgram {
     serializers: ClassInterpreter[] = [];
     optionals: SerializerInterpreter[] = [];
     binaryExtensions: SerializerInterpreter[] = [];
-    variants: SerializerInterpreter[] = [];
+    variants: VariantInterpreter[] = [];
     customAbiTypes: SerializerInterpreter[] = [];
     allClasses: ClassInterpreter[] = [];
 
@@ -98,15 +99,15 @@ export class ContractProgram {
             }
 
             if (ElementUtil.isVariantClassPrototype(element)) {
-                let intercepter = new SerializerInterpreter(<ClassPrototype>element);
+                let intercepter = new VariantInterpreter(<ClassPrototype>element);
                 let fieldMap = new Map<string, boolean>();
                 intercepter.fields.forEach(x => {
                     let tp = x.type.plainTypeNode
                     if (fieldMap.has(tp)) {
-                        throw new Error(`Duplicated type in variant ${intercepter.className}! Trace ${RangeUtil.location(x.declaration.range)}`)
+                        throw new Error(`Duplicated type in variant ${intercepter.className}! Trace ${RangeUtil.location(x.declaration.range)}`);
                     }
                     fieldMap.set(tp, true);
-                })
+                });
                 this.variants.push(intercepter);
                 this.CheckClassFields(intercepter);
             }
@@ -319,6 +320,9 @@ export class ContractProgram {
         this.findAllAbiTypes();
 
         this.variants.forEach((variant, i) => {
+            if (variant.no_abigen) {
+                return;
+            }
             let def = new VariantDef();
             def.name = variant.className;
             variant.fields.forEach((field, i) => {
