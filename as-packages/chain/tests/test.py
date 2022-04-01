@@ -122,6 +122,19 @@ def test_mi():
     logger.info('++++++elapsed: %s', r['elapsed'])
 
 @chain_test
+def test_store():
+    (code, abi) = get_code_and_abi('teststore')
+    chain.deploy_contract('hello', code, abi, 0)
+
+    r = chain.push_action('hello', 'noop', b'', {'hello': 'active'})
+
+    args = dict(
+    )
+    r = chain.push_action('hello', 'teststore', args, {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])
+
+
+@chain_test
 def test_action():
     # info = chain.get_account('helloworld11')
     # logger.info(info)
