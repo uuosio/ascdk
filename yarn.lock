@@ -995,12 +995,12 @@ as-bignum@^0.2.18:
   integrity sha512-5LODrOr7wvS643oh7PHfyRtbBO9vCcU69vNNvrqh5yovrApM9nRHDeT5XcqnaSI8TqK9ZhN12qhZnq4rdIGcwQ==
 
 as-chain@./as-packages/chain:
-  version "0.0.17"
+  version "0.0.29"
   dependencies:
     "@assemblyscript/loader" "^0.19.22"
     as-bignum "^0.2.18"
 
-assemblyscript@0.18, assemblyscript@^0.18.3:
+assemblyscript@0.18:
   version "0.18.32"
   resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.18.32.tgz#cbb76076bd4d9702f4baae0a2910c9755c8e4ecd"
   integrity sha512-Py6zremwGhO3nSoI/VxyVUzTZfNhTjzNzFDaUdG4JhPJHeG+FzVlEoNCrw4bE5nPc7F+P2DJ8tZQCqIt15ceKw==
