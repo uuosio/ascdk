@@ -1,6 +1,6 @@
-import { APIOptions } from "assemblyscript/dist/asc";
-import { SourceModifier, ModifyPoint, ModifyType } from "./preprocess";
-import { EosioUtils } from "./utils/utils";
+import { APIOptions } from "assemblyscript/dist/asc.js";
+import { SourceModifier, ModifyPoint, ModifyType } from "./preprocess/index.js";
+import { EosioUtils } from "./utils/utils.js";
 import * as path from "path";
 import * as fs from "fs";
 import process from "process";

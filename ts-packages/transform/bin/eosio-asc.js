@@ -1,12 +1,12 @@
 #!/usr/bin/env ts-node-transpile-only
 
-const path = require("path")
-const child_process = require("child_process")
-try { require("source-map-support").install(); } catch (e) { }
+import path from "path"
+import child_process from "child_process"
+// try { import("source-map-support").then(({ default }) => default.install())  } catch (e) { }
 
-const asc = require("assemblyscript/dist/asc.js")
-const { APIOptionImpl } = require("eosio-asc/dist/ascoption.js")
-const { ContractTransform } = require("eosio-asc/dist/index.js")
+import asc from "assemblyscript/dist/asc.js"
+import { APIOptionImpl } from "../dist/ascoption.js"
+import { ContractTransform } from "../dist/index.js"
 
 const main = async () => {
     const tailArgs = process.argv.indexOf("--");

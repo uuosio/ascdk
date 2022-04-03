@@ -4,6 +4,7 @@
   "description": "Build tool for building AssemblyScript projects",
   "license": "MIT",
   "main": "index.ts",
+  "type": "module",
   "author": "yjhmelody <yjh465402634@gmail.com>",
   "scripts": {
     "checks": "tsc -p tsconfig.json --noEmit",

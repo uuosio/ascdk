@@ -8,16 +8,16 @@ import {
     CommonFlags,
     ClassDeclaration,
     OperatorKind
-} from "assemblyscript/dist/assemblyscript";
+} from "assemblyscript/dist/assemblyscript.js";
 
-import { AstUtil, ElementUtil, DecoratorUtil, EosioUtils } from "../utils/utils";
+import { AstUtil, ElementUtil, DecoratorUtil, EosioUtils } from "../utils/utils.js";
 
-import { Strings } from "../utils/primitiveutil";
-import { FieldDef, FunctionDef, ActionFunctionDef, DBIndexFunctionDef} from "./elementdef";
-import { NamedTypeNodeDef } from "./typedef";
-import { RangeUtil } from "../utils/utils";
+import { Strings } from "../utils/primitiveutil.js";
+import { FieldDef, FunctionDef, ActionFunctionDef, DBIndexFunctionDef} from "./elementdef.js";
+import { NamedTypeNodeDef } from "./typedef.js";
+import { RangeUtil } from "../utils/utils.js";
 
-import { ContractDecoratorKind } from "../enums/decorator";
+import { ContractDecoratorKind } from "../enums/decorator.js";
 
 
 export class ClassInterpreter {

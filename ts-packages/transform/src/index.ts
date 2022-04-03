@@ -2,8 +2,8 @@ import { Transform } from "assemblyscript/dist/transform.js";
 import { Program } from "assemblyscript/dist/assemblyscript.js";
 import * as path from "path";
 import process from "process"
-import * as preprocess from "./preprocess/index";
-import { getContractInfo } from "./contract/contract";
+import * as preprocess from "./preprocess/index.js";
+import { getContractInfo } from "./contract/contract.js";
 
 export class ContractTransform extends Transform {
     afterInitialize(program: Program): void {

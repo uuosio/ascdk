@@ -1,9 +1,9 @@
 import {
     ClassPrototype,
     Program,
-} from "assemblyscript/dist/assemblyscript";
+} from "assemblyscript/dist/assemblyscript.js";
 
-import { ElementUtil } from "../utils/utils";
+import { ElementUtil } from "../utils/utils.js";
 
 import {
     ContractInterpreter,
@@ -11,10 +11,10 @@ import {
     ClassInterpreter,
     TableInterpreter,
     VariantInterpreter,
-} from "./classdef";
+} from "./classdef.js";
 
-import { NamedTypeNodeDef } from "./typedef";
-import { RangeUtil } from "../utils/utils";
+import { NamedTypeNodeDef } from "./typedef.js";
+import { RangeUtil } from "../utils/utils.js";
 import {
     ABI,
     ABIAction,
@@ -22,11 +22,11 @@ import {
     ABIStructField,
     ABITable,
     VariantDef,
-} from "../abi/abi";
+} from "../abi/abi.js";
 
-import { ActionFunctionDef } from "../contract/elementdef";
-import { TypeKindEnum } from "../enums/customtype";
-import { TypeHelper } from "../utils/typeutil";
+import { ActionFunctionDef } from "../contract/elementdef.js";
+import { TypeKindEnum } from "../enums/customtype.js";
+import { TypeHelper } from "../utils/typeutil.js";
 
 export class ContractProgram {
     program: Program;

@@ -1,7 +1,7 @@
-import Handlebars from "./handlebars";
-import { Range } from "assemblyscript/dist/assemblyscript";
-import { ContractProgram} from "../contract/contract";
-import { ActionFunctionDef } from "../contract/elementdef";
+import Handlebars from "./handlebars.js";
+import { Range } from "assemblyscript/dist/assemblyscript.js";
+import { ContractProgram} from "../contract/contract.js";
+import { ActionFunctionDef } from "../contract/elementdef.js";
 
 import {
     mainTpl,
@@ -11,10 +11,10 @@ import {
     optionalTpl,
     binaryExtensionTpl,
     variantTpl,
-} from "../tpl";
+} from "../tpl/index.js";
 
-import { CONFIG } from "../config/compile";
-import { EosioUtils, RangeUtil } from "../utils/utils";
+import { CONFIG } from "../config/compile.js";
+import { EosioUtils, RangeUtil } from "../utils/utils.js";
 
 export class ModifyPoint {
     range: Range;

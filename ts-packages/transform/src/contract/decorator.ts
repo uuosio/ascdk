@@ -1,8 +1,8 @@
-import { DecoratorKind, DecoratorNode, Expression, IdentifierExpression, NodeKind } from "assemblyscript/dist/assemblyscript";
+import { DecoratorKind, DecoratorNode, Expression, IdentifierExpression, NodeKind } from "assemblyscript/dist/assemblyscript.js";
 
-import { ContractDecoratorKind } from "../enums/decorator";
-import { LowerCaseCode } from "../utils/charutil";
-import { RangeUtil } from "../utils/utils";
+import { ContractDecoratorKind } from "../enums/decorator.js";
+import { LowerCaseCode } from "../utils/charutil.js";
+import { RangeUtil } from "../utils/utils.js";
 
 function fromNode(nameNode: Expression): ContractDecoratorKind {
     if (nameNode.kind == NodeKind.IDENTIFIER) {
