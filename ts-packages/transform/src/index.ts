@@ -4,7 +4,7 @@ import * as path from "path";
 import process from "process"
 import * as preprocess from "./preprocess/index.js";
 import { getContractInfo } from "./contract/contract.js";
-
+import * as fs from "fs"
 export class ContractTransform extends Transform {
     afterInitialize(program: Program): void {
         let source = program.sources[0];
@@ -30,7 +30,8 @@ export class ContractTransform extends Transform {
         out.entryDir = baseDir;
         process.sourceModifier = out;
         const abiPath = path.join(internalFolder.map((_: any) => '..').join(path.sep), '..', baseDir, `${internalFile}.abi`);
-        console.log("++++++writeFile:", abiPath);
-        this.writeFile(abiPath, abi, baseDir);
+        console.log("++++++writeFile:", abiPath)
+        fs.writeFileSync(path.join(baseDir, abiPath), abi)
+        // this.writeFile(abiPath, abi, baseDir);
     }
 }

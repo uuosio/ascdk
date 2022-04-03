@@ -1,4 +1,4 @@
-import { ActionWrapper, Name, Table } from "as-chain"
+import { ActionWrapper, Name, Table } from "as-chain/assembly/index.ts"
 
 // Contract
 export const escrow = Name.fromString("escrow")

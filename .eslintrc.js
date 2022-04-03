@@ -51,6 +51,8 @@ module.exports = {
         // typically leading to huge diffs in follow-up PRs modifying affected code.
         "prefer-const": "off",
 
+        "@typescript-eslint/ban-ts-comment": "off",
+
         // It is perfectly fine to declare top-level variables with `var`, yet this
         // rule doesn't provide configuration options that would help.
         "no-var": "off",

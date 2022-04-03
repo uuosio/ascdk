@@ -1,4 +1,4 @@
-import { Name, Singleton, Contract, check, requireAuth, MultiIndex, SAME_PAYER } from 'as-chain'
+import { Name, Singleton, Contract, check, requireAuth, MultiIndex, SAME_PAYER } from 'as-chain/assembly/index.ts'
 import { allow, allowactor, blockactor, setpaused } from './allow.constants';
 import { AllowedActor, Paused } from './allow.tables';
 

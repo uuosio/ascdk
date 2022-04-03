@@ -1,4 +1,4 @@
-import { i128, u128, u256 } from "as-bignum";
+import { i128, u128, u256 } from "as-bignum/assembly/index.ts";
 import { Encoder, Decoder, Packer } from "./serializer";
 
 export class I128 extends i128 implements Packer {

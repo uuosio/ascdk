@@ -1,4 +1,4 @@
-import { Name, Table, PermissionLevel } from "as-chain"
+import { Name, Table, PermissionLevel } from "as-chain/assembly/index.ts"
 import { logescrow } from "./escrow.constants";
 import { Escrow } from "./escrow.tables";
 

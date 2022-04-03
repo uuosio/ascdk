@@ -1,6 +1,7 @@
 #!/usr/bin/env ts-node-transpile-only
 
 import path from "path"
+import fs from "fs"
 import child_process from "child_process"
 // try { import("source-map-support").then(({ default }) => default.install())  } catch (e) { }
 
@@ -21,6 +22,12 @@ const main = async () => {
         return;
     }
 
+    let sourcePath = process.argv[2];
+    if (!sourcePath) {
+        throw new Error("No source path")
+    }
+    const dirname = path.dirname(sourcePath);
+
     const ARGS = [
         "--initialMemory", "1",
         "--runtime", "stub",
@@ -30,7 +37,7 @@ const main = async () => {
         "--disable", "sign-extension",
         "--disable", "nontrapping-f2i",
         "--disable", "bulk-memory",
-        "--transform", "eosio-asc/index.ts"
+        "--transform", "eosio-asc/dist/index.js"
     ]
 
     const memoryStream = asc.createMemoryStream()
@@ -39,28 +46,28 @@ const main = async () => {
       stderr: memoryStream,
       listFiles: () => [],
       transforms: [new ContractTransform()],
+      writeFile: (filename, contents, baseDir) => fs.writeFileSync(path.join(baseDir, filename), contents)
     });
 
     const args = process.argv.slice(2).concat(ARGS);
     await asc.main(args);
+    // console.log(stdout.toString());
 
-    let sourcePath = process.argv[2];
-    if (sourcePath) {
-        console.log("Build progressing. Generating target files ······")
-        let dirname = path.dirname(sourcePath);
-        let targetName = sourcePath.split(path.sep).slice(-1)[0].replace(/.ts$/, '')
-        let wasmPath = path.join(dirname, "target", `${targetName}.wasm`);
-        let wastPath = path.join(dirname, "target", `${targetName}.wast`);
+    console.log("Build progressing. Generating target files ······")
+    let targetName = sourcePath.split(path.sep).slice(-1)[0].replace(/.ts$/, '')
+    let wasmPath = path.join(dirname, "target", `${targetName}.wasm`);
+    let wastPath = path.join(dirname, "target", `${targetName}.wast`);
 
-        // Remove Transforms
-        apiOptions.transforms = []
-        args.push("-b", wasmPath)
-        args.push("-t", wastPath)
+    // Remove Transforms
+    apiOptions.transforms = []
+    args.push("-b", wasmPath)
+    args.push("-t", wastPath)
 
-        await asc.main(args, apiOptions);
-        apiOptions.writeExtensionFile();
-        console.log(`Build Done. Targets generated. Target directory: ${path.join(dirname, "target")}.`);
-    }
+    const { stderr } = await asc.main(args, apiOptions);
+    console.log('EORA' + stderr.toString());
+
+    apiOptions.writeExtensionFile();
+    console.log(`Build Done. Targets generated. Target directory: ${path.join(dirname, "target")}.`);
 }
 
 main()

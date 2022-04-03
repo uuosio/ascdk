@@ -1,4 +1,4 @@
-import { Name, Table, MultiIndex, Singleton } from "as-chain";
+import { Name, Table, MultiIndex, Singleton } from "as-chain/assembly/index.ts";
 import { allowedactor, paused } from "./allow.constants";
 
 // scope: contract

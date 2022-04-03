@@ -1,4 +1,4 @@
-import { check, ExtendedAsset, Table } from "as-chain"
+import { check, ExtendedAsset, Table } from "as-chain/assembly/index.ts"
 import { Account } from "./balance.tables";
 
 /**
