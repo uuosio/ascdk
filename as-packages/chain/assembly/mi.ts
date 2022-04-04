@@ -52,7 +52,10 @@ export class MultiIndex<T extends MultiIndexValue> {
         let primary = value.getPrimaryValue();
         check(primary == it.primary, "primary key can't be changed during update!");
         //update value in iterator
-        it.value!.unpack(value.pack())
+        if (changetype<usize>(it.value) != changetype<usize>(value)) {
+            it.value!.unpack(value.pack());
+        }
+
         this.db.update(it, payer.N, value);
         for (let i=0; i<this.idxdbs.length; i++) {
             let ret = this.idxdbs[i].findPrimaryEx(primary);
