@@ -14,7 +14,7 @@ export interface MultiIndexValue extends PrimaryValue {
 }
 
 export class MultiIndex<T extends MultiIndexValue> {
-    db: DBI64;
+    db: DBI64<T>;
     idxdbs: Array<IDXDB>;
     nextPrimaryKey: u64 = unsetNextPrimaryKey;
 
@@ -23,7 +23,7 @@ export class MultiIndex<T extends MultiIndexValue> {
         this.idxdbs = indexes;
     }
 
-    set(value: T, payer: Name): PrimaryIterator {
+    set(value: T, payer: Name): PrimaryIterator<T> {
         let it = this.find(value.getPrimaryValue());
         if (it.isOk()) {
             this.update(it, value, payer);
@@ -33,8 +33,8 @@ export class MultiIndex<T extends MultiIndexValue> {
         return it
     }
 
-    store(value: T, payer: Name): PrimaryIterator {
-        const it = this.db.store(value.getPrimaryValue(), value.pack(), payer.N);
+    store(value: T, payer: Name): PrimaryIterator<T> {
+        const it = this.db.store(value.getPrimaryValue(), value, payer.N);
         for (let i=0; i<this.idxdbs.length; i++) {
             this.idxdbs[i].storeEx(value.getPrimaryValue(), value.getSecondaryValue(i), payer.N);
         }
@@ -47,7 +47,8 @@ export class MultiIndex<T extends MultiIndexValue> {
         return it;
     }
 
-    update(it: PrimaryIterator, value: T, payer: Name): void {
+    update(it: PrimaryIterator<T>, value: T, payer: Name): void {
+        check(it.isOk(), "update:bad iterator");
         let primary = value.getPrimaryValue();
         if (it.primary == UNKNOWN_PRIMARY_KEY) {
             let it2 = this.db.find(primary);
@@ -56,7 +57,8 @@ export class MultiIndex<T extends MultiIndexValue> {
         } else {
             check(primary == it.primary, "primary key can't be changed during update!");
         }
-
+        //update value in iterator
+        it.value!.unpack(value.pack())
         this.db.update(it, payer.N, value.pack());
         for (let i=0; i<this.idxdbs.length; i++) {
             let ret = this.idxdbs[i].findPrimaryEx(primary);
@@ -72,7 +74,7 @@ export class MultiIndex<T extends MultiIndexValue> {
         }
     }
 
-    remove(iterator: PrimaryIterator): void {
+    remove(iterator: PrimaryIterator<T>): void {
         let value = this.get(iterator);
         let primary = value.getPrimaryValue();
         this.removeEx(primary);
@@ -81,7 +83,7 @@ export class MultiIndex<T extends MultiIndexValue> {
     removeEx(primary: u64): void {
         let it = this.find(primary);
         check(it.isOk(), "primary value not found!");
-        this.db.remove(it.i);
+        this.db.remove(it);
         for (let i=0; i<this.idxdbs.length; i++) {
             let ret = this.idxdbs[i].findPrimaryEx(primary);
             if (ret.i.isOk()) {
@@ -90,10 +92,13 @@ export class MultiIndex<T extends MultiIndexValue> {
         }
     }
 
-    get(iterator: PrimaryIterator): T {
-        let data = this.db.get(iterator);
-        let ret = instantiate<T>();
-        ret.unpack(data);
+    get(iterator: PrimaryIterator<T>): T {
+        let ret = this.db.get(iterator);
+        if (ret) {
+            return ret;
+        }
+
+        ret = instantiate<T>();
         return ret;
     }
 
@@ -104,48 +109,46 @@ export class MultiIndex<T extends MultiIndexValue> {
         }
 
         let data = this.db.get(iterator);
-        let ret = instantiate<T>();
-        ret.unpack(data);
-        return ret;
+        return data;
     }
 
-    next(iterator: PrimaryIterator): PrimaryIterator {
-        return this.db.next(iterator.i);
+    next(iterator: PrimaryIterator<T>): PrimaryIterator<T> {
+        return this.db.next(iterator);
     }
 
-    previous(iterator: PrimaryIterator): PrimaryIterator {
-        return this.db.previous(iterator.i);
+    previous(iterator: PrimaryIterator<T>): PrimaryIterator<T> {
+        return this.db.previous(iterator);
     }
 
-    find(id: u64): PrimaryIterator {
+    find(id: u64): PrimaryIterator<T> {
         return this.db.find(id);
     }
 
-    requireFind(id: u64, findError: string = `Could not find item with id ${id}`): PrimaryIterator {
+    requireFind(id: u64, findError: string = `Could not find item with id ${id}`): PrimaryIterator<T> {
         let itr = this.find(id);
         check(itr.isOk(), findError);
         return itr;
     }
 
-    requireNotFind(id: u64, notFindError: string = `Item with id ${id} exists`): PrimaryIterator {
+    requireNotFind(id: u64, notFindError: string = `Item with id ${id} exists`): PrimaryIterator<T> {
         let itr = this.find(id);
         check(!itr.isOk(), notFindError);
         return itr;
     }
 
-    lowerBound(id: u64): PrimaryIterator {
+    lowerBound(id: u64): PrimaryIterator<T> {
         return this.db.lowerBound(id);
     }
 
-    upperBound(id: u64): PrimaryIterator {
+    upperBound(id: u64): PrimaryIterator<T> {
         return this.db.upperBound(id);
     }
 
-    begin(): PrimaryIterator {
+    begin(): PrimaryIterator<T> {
         return this.lowerBound(u64.MIN_VALUE)
     }
 
-    end(): PrimaryIterator {
+    end(): PrimaryIterator<T> {
         return this.db.end();
     }
 
