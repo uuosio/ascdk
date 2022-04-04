@@ -39,7 +39,7 @@ class MyContract extends Contract {
 
         if (it.isOk()) {
             let counter = mi.get(it);
-            counter.count += 1;
+            it.value!.count += 1;
             mi.update(it, counter, payer);
             count = counter.count;
         } else {

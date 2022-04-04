@@ -109,31 +109,31 @@ class MyContract extends Contract{
         let it = mi.find(4);
         check(it.isOk(), "value not found!");
         printString(`+++++++++++it.i:${it.i}\n`);
-        value = mi.get(it);
+        value = it.value!;
         printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}\n`);
-        check(value.a == 4 && value.b == 5 && value.c == new U128(6) && value.d == 6.6, "bad value");
+        check(value.a == 4 && value.b == 5 && value.c == new U128(6) && value.d == 6.6, "bad value 1");
 
         it = mi.previous(it);
         check(it.isOk(), "previous");
-        value = mi.get(it);
+        value = it.value!;
         printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}\n`);
-        check(value.a == 1 && value.b == 2 && value.c == new U128(3) && value.d == 3.3, "bad value");
+        check(value.a == 1 && value.b == 2 && value.c == new U128(3) && value.d == 3.3, "bad value 2");
 
         it = mi.lowerBound(1);
-        value = mi.get(it);
+        value = it.value!;
         printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}\n`);
-        check(value.a == 1 && value.b == 2 && value.c == new U128(3) && value.d == 3.3, "bad value");
+        check(value.a == 1 && value.b == 2 && value.c == new U128(3) && value.d == 3.3, "bad value 3");
 
         it = mi.upperBound(1);
-        value = mi.get(it);
+        value = it.value!;
         printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}\n`);
-        check(value.a == 4 && value.b == 5 && value.c == new U128(6) && value.d == 6.6, "bad value");
+        check(value.a == 4 && value.b == 5 && value.c == new U128(6) && value.d == 6.6, "bad value 4");
 
         it = mi.end();
         it = mi.previous(it);
-        value = mi.get(it);
+        value = it.value!;
         printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}\n`);
-        check(value.a == 7 && value.b == 8 && value.c == new U128(9) && value.d == 9.9, "bad value");
+        check(value.a == 7 && value.b == 8 && value.c == new U128(9) && value.d == 9.9, "bad value 5");
 
         print("++++++++++++++test IDX64++++++++++++++\n");
         {
@@ -145,7 +145,7 @@ class MyContract extends Contract{
                 // let idx64 = <IDX64>idx;
                 let idxIt = idx.find(5);
                 printString(`+++++++++idx64.find: ${idxIt.i}, ${idxIt.primary}\n`);
-                check(idxIt.primary == 4, "bad value");
+                check(idxIt.primary == 4, "bad value 6");
             }
     
             // 1 2 3
@@ -154,9 +154,9 @@ class MyContract extends Contract{
             {
                 let secondary = newSecondaryValue_u64(2);
                 let ret = idx.lowerBoundEx(secondary);
-                check(ret.value == 2, "bad value");
+                check(ret.value == 2, "bad value 7");
                 ret = idx.upperBoundEx(2);
-                check(ret.value == 5, "bad value");
+                check(ret.value == 5, "bad value 8");
     
                 let it = idx.previous(ret.i);
                 check(it.primary == 1, "bad primary value");
@@ -332,10 +332,10 @@ class MyContract extends Contract{
             let idx = mi.bvalueDB;
             let idxIt = idx.find(2);
             printString(`+++++++++idx.find(2): ${idxIt.i}, ${idxIt.primary}\n`);
-            check(idxIt.primary == 1, "bad value");
+            check(idxIt.primary == 1, "bad value 9");
             mi.updateBvalue(idxIt, 22, this.receiver);
             let ret = idx.find(22);
-            check(ret.isOk(), "bad scondary value");
+            check(ret.isOk(), "bad scondary value 10");
         }
 
         // 1 2 3 3.3 11
@@ -343,10 +343,10 @@ class MyContract extends Contract{
             let idx = mi.cvalueDB;
             let idxIt = idx.find(new U128(3));
             printString(`+++++++++idx.find(3): ${idxIt.i}, ${idxIt.primary}\n`);
-            check(idxIt.primary == 1, "bad value");
+            check(idxIt.primary == 1, "bad value 11");
             mi.updateCvalue(idxIt, new U128(33), this.receiver);
             let ret = idx.find(new U128(33));
-            check(ret.isOk(), "bad scondary value");
+            check(ret.isOk(), "bad scondary value 12");
         }
 
         // 1 22 33 3.3 11
@@ -354,7 +354,7 @@ class MyContract extends Contract{
             let idx = mi.dvalueDB;
             let idxIt = idx.find(3.3);
             printString(`+++++++++idx.find(3.3): ${idxIt.i}, ${idxIt.primary}\n`);
-            check(idxIt.primary == 1, "bad value");
+            check(idxIt.primary == 1, "bad value 13");
             mi.updateDvalue(idxIt, 3.33, this.receiver);
             let ret = idx.find(3.33);
             check(ret.isOk(), "bad scondary value");
@@ -365,7 +365,7 @@ class MyContract extends Contract{
             let idx = mi.evalueDB;
             let idxIt = idx.find(new U256(11));
             printString(`+++++++++idx.find(11): ${idxIt.i}, ${idxIt.primary}\n`);
-            check(idxIt.primary == 1, "bad value");
+            check(idxIt.primary == 1, "bad value 14");
             mi.updateEvalue(idxIt, new U256(111), this.receiver);
             let ret = idx.find(new U256(111));
             check(ret.isOk(), "bad scondary value");
@@ -373,8 +373,8 @@ class MyContract extends Contract{
 
         value = new MyData(7, 88, new U128(99), 9.99);
         mi.update(it, value, this.receiver);
-        value = mi.get(it);
-        check(value.a == 7 && value.b == 88 && value.c == new U128(99) && value.d == 9.99, "bad value");
+        value = it.value!;
+        check(value.a == 7 && value.b == 88 && value.c == new U128(99) && value.d == 9.99, "bad value 15");
 
         // 1 2 3 3.3 11
         {
