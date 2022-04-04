@@ -30,7 +30,7 @@ export class Singleton<T extends MultiIndexValue> {
     get(): T {
         let it = this.mi.find(this.key);
         if (it.isOk()) {
-            it.value;
+            return it.value!;
         }
         return instantiate<T>();
     }

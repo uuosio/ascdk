@@ -27,26 +27,27 @@ class MyContract extends Contract {
         {
             let db = Counter.new(this.receiver, this.receiver);
             let value = db.getOrNull();
-            check(value == null, "bad value");
+            check(value == null, "bad value 1");
         }
 
         {
             let db = Counter.new(this.receiver, this.receiver);
             let value = db.get();
-            check(value.count == 0, "bad value");
+            check(value.count == 0, "bad value 2");
             value.count += 1;
             db.set(value, payer);
-            print(`+++++++++${value.count}`);    
+            print(`+++++++++${value.count}\n`);    
         }
 
         {
             let db = Counter.new(this.receiver, this.receiver);
             let value = db.get()
-            check(value.count == 1, "bad value");
+            print(`++++++++value:${value.count}\n`)
+            check(value.count == 1, "bad value 3");
             
             db.remove()
             value = db.get()
-            check(value.count == 0, "bad value");
+            check(value.count == 0, "bad value 4");
         }
     }
 }

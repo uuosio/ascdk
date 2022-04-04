@@ -13,13 +13,34 @@ export interface PrimaryValue extends Packer {
 export const UNKNOWN_PRIMARY_KEY: u64 = 0xffffffffffffffff
 
 export class PrimaryIterator<T extends PrimaryValue> {
-    _value: T | null
+    db: DBI64<T>;
+    i: i32;
+
+    _value: T | null;
+    _primary: u64;
     constructor(
-        public db: DBI64<T>,
-        public i: i32,
-        public primary: u64,
+        db: DBI64<T>,
+        i: i32,
+        _primary: u64,
     ) {
+        this.db = db;
+        this.i = i;
         this._value = null;
+        this._primary = _primary;
+    }
+
+    get primary(): u64 {
+        if (!this.isOk()) {
+            return 0;
+        }
+
+        if (this._primary != UNKNOWN_PRIMARY_KEY) {
+            return this._primary;
+        }
+
+        let value = this.value;
+        this._primary = value!.getPrimaryValue();
+        return this._primary;
     }
 
     get value(): T | null {
@@ -30,7 +51,7 @@ export class PrimaryIterator<T extends PrimaryValue> {
         if (!this.isOk()) {
             return null;
         }
-        this._value = this.db.get(this)
+        this._value = this.db.getEx(this.i)
         return this._value;
     }
 
@@ -62,7 +83,8 @@ export class DBI64<T extends PrimaryValue> {
     }
 
     // export declare function db_update_i64(iterator: i32, payer: u64, data: usize, len: usize): void
-    update(iterator: PrimaryIterator<T>, payer: u64, data: u8[]): void {
+    update(iterator: PrimaryIterator<T>, payer: u64, value: T): void {
+        let data = value.pack();
         let data_ptr = data.dataStart;
         env.db_update_i64(iterator.i, payer, data_ptr, data.length);
     }
@@ -74,17 +96,17 @@ export class DBI64<T extends PrimaryValue> {
 
     // export declare function db_get_i64(iterator: i32, data: usize, len: usize): i32
     get(iterator: PrimaryIterator<T>): T | null {
-        if (!iterator.isOk) {
-            return null;
-        }
+        return iterator.value;
+    }
 
-        let size = env.db_get_i64(iterator.i, 0, 0);
+    getEx(iterator: i32): T | null {
+        let size = env.db_get_i64(iterator, 0, 0);
         if (size == 0) {
             return null;
         }
         let arr = new Array<u8>(size);
         let ptr = arr.dataStart;
-        env.db_get_i64(iterator.i, ptr, size);
+        env.db_get_i64(iterator, ptr, size);
         let ret = instantiate<T>();
         ret.unpack(arr);
         return ret;

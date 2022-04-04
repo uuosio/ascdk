@@ -50,16 +50,10 @@ export class MultiIndex<T extends MultiIndexValue> {
     update(it: PrimaryIterator<T>, value: T, payer: Name): void {
         check(it.isOk(), "update:bad iterator");
         let primary = value.getPrimaryValue();
-        if (it.primary == UNKNOWN_PRIMARY_KEY) {
-            let it2 = this.db.find(primary);
-            check(it2.i == it.i, "primary key can't be changed during update!");
-            it.primary = primary;
-        } else {
-            check(primary == it.primary, "primary key can't be changed during update!");
-        }
+        check(primary == it.primary, "primary key can't be changed during update!");
         //update value in iterator
         it.value!.unpack(value.pack())
-        this.db.update(it, payer.N, value.pack());
+        this.db.update(it, payer.N, value);
         for (let i=0; i<this.idxdbs.length; i++) {
             let ret = this.idxdbs[i].findPrimaryEx(primary);
             let newValue = value.getSecondaryValue(i);
@@ -163,7 +157,7 @@ export class MultiIndex<T extends MultiIndexValue> {
         let primaryIt = this.find(it.primary);
         let value = this.get(primaryIt);
         value.setSecondaryValue(it.dbIndex, idxValue);
-        this.db.update(primaryIt, payer.N, value.pack());
+        this.db.update(primaryIt, payer.N, value);
         this.idxdbs[it.dbIndex].updateEx(it, idxValue, payer.N);
     }
 
