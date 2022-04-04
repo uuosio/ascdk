@@ -55,10 +55,6 @@ export class PrimaryIterator<T extends PrimaryValue> {
         return this._value;
     }
 
-    set value(value: T | null) {
-        this._value = value;
-    }
-
     isOk(): bool {
         return this.i >= 0;
     }
