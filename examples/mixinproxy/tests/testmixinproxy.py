@@ -284,7 +284,7 @@ class Test(object):
 
         if isinstance(extra, str):
             extra = extra.encode()
-        print(process)
+        # print(process)
         process = uuid.UUID(process).bytes #test2 mixincross
         buf = io.BytesIO()
         buf.write(int.to_bytes(1, 2, 'big')) #Purpose
@@ -527,6 +527,7 @@ class Test(object):
         }
         r = self.chain.push_action('mixinwtokens', 'transfer', args, {'hello': 'active'})
         # logger.info(r)
+        found = False
         for trace in r['action_traces']:
             act = trace['act']
             account, name = act['account'], act['name']
@@ -536,6 +537,8 @@ class Test(object):
             if name == 'txrequest':
                 assert args['amount'] == '1900000'
                 assert args['extra'] == b'transfer to aaaaaaaaamvm'.hex()
+                found = True
+        assert found
 
     def test_on_event_with_origin_extra(self):
         process_id_str = 'e0148fc6-0e10-470e-8127-166e0829c839'
@@ -585,9 +588,6 @@ class Test(object):
         logger.info('%s', ret)
         assert len(ret['rows']) == 0
         assert self.get_balance('aaaaaaaaamvm') == 1.8
-
-    def test_debug(self):
-        r = self.chain.push_action('mixincrossss', 'testname', b'', {MTG_PUBLISHER: 'active'})
 
     def get_transfer_fee(self, asset_id) -> float:
         ret = self.chain.get_table_rows(True, "mixincrossss", "mixincrossss", "transferfees", "", "", 10)
