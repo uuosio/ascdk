@@ -1,6 +1,7 @@
 import * as env from "./env";
-import {printString} from "./debug";
-import {Packer} from "./serializer";
+import { printString } from "./debug";
+import { Packer } from "./serializer";
+import { check } from "./system";
 
 export function say_hello(): void {
     printString("hello,world from dbi64");
@@ -30,9 +31,7 @@ export class PrimaryIterator<T extends PrimaryValue> {
     }
 
     get primary(): u64 {
-        if (!this.isOk()) {
-            return 0;
-        }
+        check(this.isOk(), "get primary: invalid iterator")
 
         if (this._primary != UNKNOWN_PRIMARY_KEY) {
             return this._primary;
