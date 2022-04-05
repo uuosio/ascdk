@@ -229,6 +229,14 @@ export class ContractProgram {
             return;
         }
 
+        if (ElementUtil.isOptionalClassPrototype(cls.classPrototype)) {
+            return;
+        }
+
+        if (ElementUtil.isBinaryExtensionClassPrototype(cls.classPrototype)) {
+            return;
+        }
+
         this.customAbiTypes.push(cls);
 
         cls.fields.forEach(x => {

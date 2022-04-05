@@ -3,7 +3,7 @@ import { CONFIG } from "../config/compile";
 // let scope = CONFIG.scope;
 
 export const serializerTpl = `
-
+{{{generateDecorator decorator}}}
 {{export}}class {{className}} implements _chain.Packer {
     {{{ExtractClassBody range}}}
     pack(): u8[] {

@@ -98,16 +98,25 @@ export function getExtCodeInfo(contractInfo: ContractProgram): SourceModifier {
     });
 
     contractInfo.serializers.forEach(s => {
+        if (s.no_codegen) {
+            return;
+        }
         let code = Handlebars.compile(serializerTpl)(s);
         sourceModifier.addModifyPoint(new ModifyPoint(s.range, ModifyType.REPLACE, code));
     });
 
     contractInfo.optionals.forEach(s => {
+        if (s.no_codegen) {
+            return;
+        }
         let code = Handlebars.compile(optionalTpl)(s);
         sourceModifier.addModifyPoint(new ModifyPoint(s.range, ModifyType.REPLACE, code));
     });
 
     contractInfo.binaryExtensions.forEach(s => {
+        if (s.no_codegen) {
+            return;
+        }
         let code = Handlebars.compile(binaryExtensionTpl)(s);
         sourceModifier.addModifyPoint(new ModifyPoint(s.range, ModifyType.REPLACE, code));
     });

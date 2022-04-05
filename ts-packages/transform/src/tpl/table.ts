@@ -3,6 +3,7 @@ import { CONFIG } from "../config/compile";
 // let scope = CONFIG.scope;
 
 export const tableTpl = `
+{{{generateDecorator decorator}}}
 {{export}}class {{className}}DB extends _chain.MultiIndex<{{className}}> {
     {{#each secondaryFuncDefs}}
     {{{generateGetIdxDBFunction .}}}
