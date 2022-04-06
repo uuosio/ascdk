@@ -17,7 +17,6 @@ export class PrimaryIterator<T extends PrimaryValue> {
     db: DBI64<T>;
     i: i32;
 
-    _value: T | null;
     _primary: u64;
     constructor(
         db: DBI64<T>,
@@ -26,7 +25,6 @@ export class PrimaryIterator<T extends PrimaryValue> {
     ) {
         this.db = db;
         this.i = i;
-        this._value = null;
         this._primary = _primary;
     }
 
@@ -37,21 +35,16 @@ export class PrimaryIterator<T extends PrimaryValue> {
             return this._primary;
         }
 
-        let value = this.value;
+        let value = this.getValue();
         this._primary = value!.getPrimaryValue();
         return this._primary;
     }
 
-    get value(): T | null {
-        if (this._value) {
-            return this._value;
-        }
-
+    getValue(): T | null {
         if (!this.isOk()) {
             return null;
         }
-        this._value = this.db.getEx(this.i)
-        return this._value;
+        return this.db.getEx(this.i)
     }
 
     isOk(): bool {
@@ -91,7 +84,10 @@ export class DBI64<T extends PrimaryValue> {
 
     // export declare function db_get_i64(iterator: i32, data: usize, len: usize): i32
     get(iterator: PrimaryIterator<T>): T | null {
-        return iterator.value;
+        if (!iterator.isOk()) {
+            return null;
+        }
+        return this.getEx(iterator.i);
     }
 
     getEx(iterator: i32): T | null {
@@ -127,7 +123,7 @@ export class DBI64<T extends PrimaryValue> {
         if (i >= 0) {
             return new PrimaryIterator(this, i, id);
         }
-        return new PrimaryIterator(this, i, id);
+        return new PrimaryIterator(this, i, UNKNOWN_PRIMARY_KEY);
     }
 
     // export declare function db_lowerbound_i64(code: u64, scope: u64, table: u64, id: u64): i32
