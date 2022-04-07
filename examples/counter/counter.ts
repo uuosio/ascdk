@@ -1,19 +1,14 @@
 import {
     Name,
-    Table,
     Contract,
     print,
-    MultiIndex,
 } from "as-chain";
 
-const counter = Name.fromString("counter")
-
-@table(counter)
-class Counter extends Table {
+@table("counter")
+class Counter {
     public key: u64;
     public count: u64;
     constructor(count: u64=0) {
-        super();
         this.count = count;
         this.key = Name.fromString("counter").N;
     }
@@ -32,7 +27,7 @@ class MyContract extends Contract {
 
     @action("inc")
     inc(): void {
-        let mi = new MultiIndex<Counter>(this.receiver, this.receiver, counter);
+        let mi = Counter.new(this.receiver, this.receiver);
         let it = mi.find(Name.fromString("counter").N);
         let count: u64 = 0;
         let payer: Name = this.receiver;
