@@ -7,7 +7,7 @@ enum UpdateFields {
     IS_BLOCKED = 1,
 };
 
-@contract(allow)
+@contract
 export class AllowContract extends Contract {
     contract: Name = this.receiver
     parentContract: Name = this.firstReceiver

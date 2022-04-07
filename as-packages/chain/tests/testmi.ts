@@ -85,7 +85,7 @@ class MyData extends Table {
     }
 }
 
-@contract("hello")
+@contract
 class MyContract extends Contract{
     @action("testmi")
     testmi(): void {

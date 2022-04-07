@@ -2,7 +2,7 @@ import { Name, Asset, Symbol, check, requireAuth, hasAuth, isAccount, requireRec
 import { token, create, issue, retire, transfer, open, close } from './eosio.token.constants';
 import { Account, Stat } from './eosio.token.tables';
 
-@contract(token)
+@contract
 class TokenContract extends Contract {
     @action(create)
     create(issuer: Name, maximum_supply: Asset): void {

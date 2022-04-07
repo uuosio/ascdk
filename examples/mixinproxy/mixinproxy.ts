@@ -66,7 +66,7 @@ const MTG_WORK_EXPIRATION_SECONDS: u32 = 3 * 60;
 const KEY_NONCE: u64         = 1
 const KEY_TX_REQUEST_INDEX: u64 = 2;
 
-@contract("mixinproxy")
+@contract
 class MyContract extends Contract{
     process: U128
     constructor(

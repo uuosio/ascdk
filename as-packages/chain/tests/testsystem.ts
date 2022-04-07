@@ -6,7 +6,7 @@ import {
     Contract
 } from "as-chain";
 
-@contract("hello")
+@contract
 class MyContract extends Contract{
     @action("test")
     testSerializer(

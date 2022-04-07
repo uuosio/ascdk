@@ -1,6 +1,6 @@
 import { ExtendedAsset, Asset, Symbol, check, isValid, printString, Contract, Name } from "as-chain";
 
-@contract("hello")
+@contract
 class MyContract extends Contract{
     stringToU64(s: string): u64 {
         let value: u64 = 0;

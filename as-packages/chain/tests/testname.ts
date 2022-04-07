@@ -5,7 +5,7 @@ import {
     nameToSuffix,
 } from "as-chain";
 
-@contract("hello")
+@contract
 class MyContract extends Contract{
     @action("test")
     testName(): void {

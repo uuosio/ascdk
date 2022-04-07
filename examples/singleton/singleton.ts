@@ -14,7 +14,7 @@ class Counter extends Table {
     }
 }
 
-@contract("mycontract")
+@contract
 class MyContract extends Contract {
     constructor(receiver: Name, firstReceiver: Name, action: Name) {
         super(receiver, firstReceiver, action);

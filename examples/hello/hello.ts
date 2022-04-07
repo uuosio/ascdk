@@ -1,6 +1,6 @@
 import { print, Name } from "as-chain"
 
-@contract("hello")
+@contract
 class MyContract {
     constructor(
         public receiver: Name,

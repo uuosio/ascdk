@@ -4,7 +4,7 @@ import { startescrow, fillescrow, cancelescrow, logescrow, ESCROW_STATUS } from 
 import { sendLogEscrow } from './escrow.inline';
 import { Global, Escrow, escrow } from './escrow.tables';
 
-@contract(escrow)
+@contract
 class EscrowContract extends BalanceContract {
     escrowsTable: MultiIndex<Escrow> = Escrow.getTable(this.receiver)
 

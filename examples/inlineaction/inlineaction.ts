@@ -11,7 +11,7 @@ class SayGoodbye extends Table {
     }
 }
 
-@contract("inlineaction")
+@contract
 class InlineAction extends Contract {
     static sayGoodbyeAW: ActionWrapper = ActionWrapper.fromString("saygoodbye");
     static sayHelloAW: ActionWrapper = ActionWrapper.fromString("sayhello");

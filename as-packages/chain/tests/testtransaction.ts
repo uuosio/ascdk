@@ -23,7 +23,7 @@ class Transfer {
     ){}
 }
 
-@contract("hello")
+@contract
 class MyContract extends Contract{
 
     @action("sayhello")

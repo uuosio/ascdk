@@ -7,7 +7,7 @@ class MyData {
     ){}
 }
 
-@contract("hello")
+@contract
 class MyContract extends Contract {
     hexToBytes(hex: string): u8[] {
         let bytes = new Array<u8>();
