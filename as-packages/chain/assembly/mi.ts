@@ -1,5 +1,5 @@
 import { IDXDB, SecondaryValue, SecondaryIterator } from "./idxdb";
-import { DBI64, PrimaryIterator, PrimaryValue, UNKNOWN_PRIMARY_KEY } from "./dbi64";
+import { DBI64, PrimaryIterator, PrimaryValue } from "./dbi64";
 import { Name } from "./name";
 import { check } from "./system";
 

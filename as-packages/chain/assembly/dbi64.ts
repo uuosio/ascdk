@@ -11,32 +11,34 @@ export interface PrimaryValue extends Packer {
     getPrimaryValue(): u64;
 }
 
-export const UNKNOWN_PRIMARY_KEY: u64 = 0xffffffffffffffff
-
 export class PrimaryIterator<T extends PrimaryValue> {
     db: DBI64<T>;
     i: i32;
+    validPrimary: bool
 
     _primary: u64;
     constructor(
         db: DBI64<T>,
         i: i32,
-        _primary: u64,
+        primary: u64,
+        validPrimary: bool
     ) {
         this.db = db;
         this.i = i;
-        this._primary = _primary;
+        this._primary = primary;
+        this.validPrimary = validPrimary
     }
 
     get primary(): u64 {
         check(this.isOk(), "get primary: invalid iterator")
 
-        if (this._primary != UNKNOWN_PRIMARY_KEY) {
+        if (this.validPrimary) {
             return this._primary;
         }
 
         let value = this.getValue();
         this._primary = value!.getPrimaryValue();
+        this.validPrimary = true;
         return this._primary;
     }
 
@@ -67,7 +69,7 @@ export class DBI64<T extends PrimaryValue> {
         let data = value.pack();
         let data_ptr = data.dataStart;
         let i = env.db_store_i64(this.scope, this.table, payer, id, data_ptr, data.length );
-        return new PrimaryIterator<T>(this, i, id);
+        return new PrimaryIterator<T>(this, i, id, true);
     }
 
     // export declare function db_update_i64(iterator: i32, payer: u64, data: usize, len: usize): void
@@ -107,41 +109,41 @@ export class DBI64<T extends PrimaryValue> {
     next(iterator: PrimaryIterator<T>): PrimaryIterator<T> {
         let primary_ptr = __alloc(sizeof<u64>());
         let itNext = env.db_next_i64(iterator.i, primary_ptr);
-        return new PrimaryIterator(this, itNext, load<u64>(primary_ptr));
+        return new PrimaryIterator(this, itNext, load<u64>(primary_ptr), true);
     }
 
     // export declare function db_previous_i64(iterator: i32, primary_ptr: usize): i32
     previous(iterator: PrimaryIterator<T>): PrimaryIterator<T> {
         let primary_ptr = __alloc(sizeof<u64>());
         let itNext = env.db_previous_i64(iterator.i, primary_ptr);
-        return new PrimaryIterator(this, itNext, load<u64>(primary_ptr));
+        return new PrimaryIterator(this, itNext, load<u64>(primary_ptr), true);
     }
 
     // export declare function db_find_i64(code: u64, scope: u64, table: u64, id: u64): i32
     find(id: u64): PrimaryIterator<T> {
         let i = env.db_find_i64(this.code, this.scope, this.table, id);
         if (i >= 0) {
-            return new PrimaryIterator(this, i, id);
+            return new PrimaryIterator(this, i, id, true);
         }
-        return new PrimaryIterator(this, i, UNKNOWN_PRIMARY_KEY);
+        return new PrimaryIterator(this, i, 0, false);
     }
 
     // export declare function db_lowerbound_i64(code: u64, scope: u64, table: u64, id: u64): i32
     lowerBound(id: u64): PrimaryIterator<T> {
         let i = env.db_lowerbound_i64(this.code, this.scope, this.table, id);
-        return new PrimaryIterator(this, i, UNKNOWN_PRIMARY_KEY);
+        return new PrimaryIterator(this, i, 0, false);
     }
 
     // export declare function db_upperbound_i64(code: u64, scope: u64, table: u64, id: u64): i32
     upperBound(id: u64): PrimaryIterator<T> {
         let i = env.db_upperbound_i64(this.code, this.scope, this.table, id);
-        return new PrimaryIterator(this, i, UNKNOWN_PRIMARY_KEY);
+        return new PrimaryIterator(this, i, 0, false);
     }
 
     // export declare function db_end_i64(code: u64, scope: u64, table: u64): i32
     end(): PrimaryIterator<T> {
         let i = env.db_end_i64(this.code, this.scope, this.table);
-        return new PrimaryIterator(this, i, UNKNOWN_PRIMARY_KEY);
+        return new PrimaryIterator(this, i, 0, false);
     }
 }
 
