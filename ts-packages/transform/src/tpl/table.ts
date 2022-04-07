@@ -3,7 +3,6 @@ import { CONFIG } from "../config/compile";
 // let scope = CONFIG.scope;
 
 export const tableTpl = `
-{{{generateDecorator decorator}}}
 {{export}}class {{className}}DB extends _chain.MultiIndex<{{className}}> {
     {{#each secondaryFuncDefs}}
     {{{generateGetIdxDBFunction .}}}
@@ -14,6 +13,7 @@ export const tableTpl = `
     {{/each}}    
 }
 
+{{{generateDecorator decorator}}}
 {{export}}class {{className}} implements _chain.MultiIndexValue {
     {{{ExtractClassBody range}}}
 
