@@ -173,7 +173,7 @@ export class ContractInterpreter extends ClassInterpreter {
 
 export class TableInterpreter extends ClassInterpreter {
     // The first case is lower.
-    tableName: string;
+    tableName: string = "";
     singleton: boolean = false;
     version: string;
     primaryFuncDef: DBIndexFunctionDef | null = null;
