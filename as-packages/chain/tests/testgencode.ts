@@ -26,7 +26,7 @@ class MyTable {
     }
 }
 
-@contract("hello")
+@contract
 class MyContract extends Contract {
     @action("testgencode")
     testGenCode(

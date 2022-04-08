@@ -5,7 +5,7 @@ import { sendTransferTokens, sendTransferNfts, NftTransfer, TokenTransfer } from
 import { Account } from './balance.tables';
 import { addNfts, addTokens, OPERATION, substractNfts, substractTokens } from './balance.utils';
 
-@contract(balance)
+@contract
 export class BalanceContract extends AllowContract {
     accountsTable: MultiIndex<Account> = Account.getTable(this.receiver)
 

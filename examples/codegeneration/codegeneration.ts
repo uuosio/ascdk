@@ -56,7 +56,7 @@ class MyData {
     }
 }
 
-@contract("hello")
+@contract
 class MyContract {
     receiver: chain.Name;
     firstReceiver: chain.Name;

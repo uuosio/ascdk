@@ -1,5 +1,5 @@
 import { IDXDB, SecondaryValue, SecondaryIterator } from "./idxdb";
-import { DBI64, PrimaryIterator, PrimaryValue, UNKNOWN_PRIMARY_KEY } from "./dbi64";
+import { DBI64, PrimaryIterator, PrimaryValue } from "./dbi64";
 import { Name } from "./name";
 import { check } from "./system";
 
@@ -51,11 +51,6 @@ export class MultiIndex<T extends MultiIndexValue> {
         check(it.isOk(), "update:bad iterator");
         let primary = value.getPrimaryValue();
         check(primary == it.primary, "primary key can't be changed during update!");
-        //update value in iterator
-        if (changetype<usize>(it.value) != changetype<usize>(value)) {
-            it.value!.unpack(value.pack());
-        }
-
         this.db.update(it, payer.N, value);
         for (let i=0; i<this.idxdbs.length; i++) {
             let ret = this.idxdbs[i].findPrimaryEx(primary);

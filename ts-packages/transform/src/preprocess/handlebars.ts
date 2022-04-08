@@ -7,9 +7,12 @@ import { TypeHelper } from "../utils/typeutil";
 import { TableInterpreter, ClassInterpreter } from "../contract/classdef";
 import { RangeUtil } from "../utils/utils";
 import { NamedTypeNodeDef } from "../contract/typedef";
-import { Range } from "assemblyscript";
+import { Range, DecoratorNode } from "assemblyscript";
+
 import dedent from "ts-dedent"
 import process from "process"
+
+import { AstUtil } from "../utils/utils";
 
 const WIN = process.platform === "win32";
 const EOL = WIN ? "\r\n" : "\n";
@@ -500,6 +503,27 @@ Handlebars.registerHelper("ExtractClassBody", function (range: Range) {
     let start = src.indexOf('{');
     let end = src.lastIndexOf('}');
     return src.substring(start+1, end-1);
+});
+
+
+Handlebars.registerHelper("generateDecorator", function (decorator: DecoratorNode | null) {
+    if (!decorator) {
+        return "";
+    }
+
+    if (!decorator.args) {
+        return `${decorator.name.range.toString()}(nocodegen)`;
+    }
+
+    let found = decorator.args.find(x => {
+        return "nocodegen" == AstUtil.getIdentifier(x);
+    });
+
+    if (found) {
+        return decorator.range.toString();
+    }
+
+    return decorator.range.toString().replace(")", ", nocodegen)");
 });
 
 Handlebars.registerHelper("generategetPrimaryFunction", function (table: TableInterpreter) {

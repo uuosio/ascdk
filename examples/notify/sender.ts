@@ -5,7 +5,7 @@ import {
     Contract,
 } from "as-chain";
 
-@contract("hello")
+@contract
 class MyContract extends Contract {
     @action("sayhello")
     sayHello(name: string): void {

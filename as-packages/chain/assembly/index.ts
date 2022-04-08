@@ -3,7 +3,7 @@ export { Float128 } from "./float128"
 
 export { VarInt32, VarUint32, calcPackedVarUint32Length } from "./varint";
 
-export { DBI64, PrimaryIterator, UNKNOWN_PRIMARY_KEY } from "./dbi64";
+export { DBI64, PrimaryIterator } from "./dbi64";
 export { IDX64 } from "./idx64";
 export { IDXF64 } from "./idxf64";
 export { IDXF128 } from "./idxf128";

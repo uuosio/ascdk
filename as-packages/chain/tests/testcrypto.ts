@@ -33,7 +33,7 @@ class TestClass<T extends u32> {
     data!: Array<u8>;
 }
 
-@contract("hello")
+@contract
 class MyContract extends Contract {
     @action("test")
     Test(message: string, digest: Checksum256, sig: Signature, pub: PublicKey): void {

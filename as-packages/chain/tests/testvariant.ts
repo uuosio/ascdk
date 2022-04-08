@@ -151,7 +151,7 @@ class MyVariant2 implements Packer {
     }
 }
 
-@contract("hello")
+@contract
 class MyContract extends Contract{
     @action("test")
     testVariant(a: MyVariant, b: MyVariant): void {

@@ -7,7 +7,8 @@ import {
     Range,
     CommonFlags,
     ClassDeclaration,
-    OperatorKind
+    OperatorKind,
+    DecoratorNode,
 } from "assemblyscript";
 
 import { AstUtil, ElementUtil, DecoratorUtil, EosioUtils } from "../utils/utils";
@@ -33,6 +34,10 @@ export class ClassInterpreter {
     export = "";
     constructorFun: FunctionDef | null = null;
 
+    no_codegen: boolean = false;
+    no_abigen: boolean = false;
+    decorator: DecoratorNode | null = null;
+
     constructor(clzPrototype: ClassPrototype) {
         this.classPrototype = clzPrototype;
         this.declaration = <ClassDeclaration>this.classPrototype.declaration;
@@ -45,6 +50,40 @@ export class ClassInterpreter {
         this.instanceName = this.variousPrefix + this.className.toLowerCase();
         if (this.classPrototype.constructorPrototype != null) {
             this.constructorFun = new FunctionDef(this.classPrototype.constructorPrototype);
+        }
+
+        let classTypes = [
+            ContractDecoratorKind.TABLE,
+            ContractDecoratorKind.SERIALIZER,
+            ContractDecoratorKind.VARIANT,
+        ];
+
+        for (let i=0; i<classTypes.length; i++) {
+            let kind = classTypes[i];
+            this.decorator = AstUtil.getSpecifyDecorator(clzPrototype.declaration, kind);
+            if (this.decorator) {
+                break;
+            }
+        }
+    
+        if (!this.decorator) {
+            return;
+        }
+
+        if (!this.decorator.args) {
+            return;
+        }
+
+        for (let i=0; i<this.decorator.args!.length; i++) {
+            let arg = AstUtil.getIdentifier(this.decorator.args![i]);
+
+            if (arg == "nocodegen") {
+                this.no_codegen = true;
+            }
+
+            if (arg == "noabigen") {
+                this.no_abigen = true;
+            }
         }
     }
 
@@ -136,8 +175,6 @@ export class TableInterpreter extends ClassInterpreter {
     // The first case is lower.
     tableName: string;
     singleton: boolean = false;
-    no_codegen: boolean = false;
-    no_abigen: boolean = false;
     version: string;
     primaryFuncDef: DBIndexFunctionDef | null = null;
     secondaryFuncDefs: DBIndexFunctionDef[] = [];
@@ -147,24 +184,24 @@ export class TableInterpreter extends ClassInterpreter {
         this.version = "1.0";
         this.resolveFieldMembers();
         this.resolveContractClass();
-        let decorator = AstUtil.getSpecifyDecorator(clzPrototype.declaration, ContractDecoratorKind.TABLE)!;
-        this.tableName = AstUtil.getIdentifier(decorator.args![0]);
 
-        if (!EosioUtils.isValidName(this.tableName)) {
-            throw new Error(`Decorator: Invalid table name. Trace: ${RangeUtil.location(decorator.range)} `);
+        if (!this.decorator) {
+            return;
         }
-        for (let i=1; i<decorator.args!.length; i++) {
-            let arg = AstUtil.getIdentifier(decorator.args![1]);
+
+        if (!this.decorator.args) {
+            return;
+        }
+
+        this.tableName = AstUtil.getIdentifier(this.decorator.args[0]);
+        if (!EosioUtils.isValidName(this.tableName)) {
+            throw new Error(`Decorator: Invalid table name. Trace: ${RangeUtil.location(this.decorator.range)} `);
+        }
+
+        for (let i=1; i<this.decorator.args.length; i++) {
+            let arg = AstUtil.getIdentifier(this.decorator.args[i]);
             if (arg == "singleton") {
                 this.singleton = true;
-            }
-
-            if (arg == "nocodegen") {
-                this.no_codegen = true;
-            }
-
-            if (arg == "noabigen") {
-                this.no_abigen = true;
             }
         }
     }
@@ -206,27 +243,9 @@ export class SerializerInterpreter extends ClassInterpreter {
 
 export class VariantInterpreter extends ClassInterpreter {
     index = 0;
-    no_codegen: boolean = false;
-    no_abigen: boolean = false;
     constructor(clzPrototype: ClassPrototype) {
         super(clzPrototype);
         this.resolveFieldMembers();
         this.resolveFunctionMembers();
-
-        let decorator = AstUtil.getSpecifyDecorator(clzPrototype.declaration, ContractDecoratorKind.VARIANT)!;
-        if (!decorator.args) {
-            return;
-        }
-
-        for (let i=0; i<decorator.args!.length; i++) {
-            let arg = AstUtil.getIdentifier(decorator.args![1]);
-            if (arg == "nocodegen") {
-                this.no_codegen = true;
-            }
-
-            if (arg == "noabigen") {
-                this.no_abigen = true;
-            }
-        }
     }
 }

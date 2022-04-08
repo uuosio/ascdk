@@ -157,7 +157,7 @@ class MyTable2 implements MultiIndexValue {
     }
 }
 
-@contract("hello")
+@contract
 class MyContract extends Contract{
     @action("logescrow")
     logescrow(

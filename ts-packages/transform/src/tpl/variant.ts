@@ -3,7 +3,7 @@ import { CONFIG } from "../config/compile";
 // let scope = CONFIG.scope;
 
 export const variantTpl = `
-
+{{{generateDecorator decorator}}}
 {{export}}class {{className}} implements _chain.Packer {
     _index: u8;
     value: usize;

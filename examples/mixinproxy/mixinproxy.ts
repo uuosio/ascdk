@@ -15,9 +15,9 @@ import {
     Checksum256,
     Action,
     PermissionLevel,
-    isAccount,
     requireAuth,
     currentTimeSec,
+    currentTimeMs,
     assertSha256,
     Utils,
 } from "as-chain";
@@ -64,13 +64,9 @@ const MTG_XIN: Name       = Name.fromString("mtgxinmtgxin")
 const MTG_WORK_EXPIRATION_SECONDS: u32 = 3 * 60;
 
 const KEY_NONCE: u64         = 1
-const KEY_TX_OUT_INDEX: u64  = 2
-const KEY_TX_IN_INDEX: u64   = 3
-const KEY_ASSET_INDEX: u64   = 4
-const KEY_ACCOUNT_INDEX: u64 = 5
-const KEY_ACCOUNT_CACHE: u64 = 6
+const KEY_TX_REQUEST_INDEX: u64 = 2;
 
-@contract("mixinproxy")
+@contract
 class MyContract extends Contract{
     process: U128
     constructor(
@@ -118,59 +114,6 @@ class MyContract extends Contract{
         this.handleEvent(event, origin_extra);
     }
 
-    checkFee(event: TxEvent): bool {
-        let sym = this.getSymbol(event.asset);
-        if (sym.raw() == 0) {
-            return false;
-        }
-        let fee = this.getTransferFee(sym);
-        this.addFee(fee);
-        event.amount = U128.sub(event.amount, new U128(fee.amount));
-        return true;
-    }
-    
-    getTransferFee(sym: Symbol): Asset {
-        let db = TransferFee.new(this.receiver, this.receiver);
-        let fee = db.getByKey(sym.code());
-        if (fee) {
-            return fee.fee;
-        }
-        return new Asset(0, sym);
-    }
-
-    addFee(asset: Asset): void {
-        let db = TotalFee.new(this.receiver, this.receiver);
-        let it = db.find(asset.symbol.code())
-        if (it.isOk()) {
-            let record = db.get(it);
-            record.total += asset;
-            db.update(it, record, new Name());
-        } else {
-            db.store(new TotalFee(asset), this.receiver);
-        }
-    }
-
-    @action("setfee")
-    setTransferFee(fee: Asset): void {
-        requireAuth(this.receiver);
-        {
-            let db = MixinAsset.new(this.receiver, this.receiver);
-            let it = db.find(fee.symbol.code());
-            check(it.isOk(), "asset not found!");
-        }
-
-        {
-            let db = TransferFee.new(this.receiver, this.receiver);
-            let it = db.find(fee.symbol.code());
-            let record = new TransferFee(fee);
-            if (it.isOk()) {
-                db.update(it, record, new Name());
-            } else {
-                db.store(record, this.receiver);
-            }
-        }
-    }
-
     @action("onerrorevent", ignore)
     onErrorEvent(event: TxEvent | null, reason: string | null, origin_extra: u8[] | null): void {
         let data = readActionData();
@@ -203,6 +146,30 @@ class MyContract extends Contract{
         check(!it.isOk(), "error event already exists!");
         db.store(errorEvent, this.receiver);
     }
+
+    @action("setfee")
+    setTransferFee(fee: Asset): void {
+        requireAuth(this.receiver);
+        {
+            let db = MixinAsset.new(this.receiver, this.receiver);
+            let it = db.find(fee.symbol.code());
+            check(it.isOk(), "asset not found!");
+        }
+
+        {
+            let db = TransferFee.new(this.receiver, this.receiver);
+            let it = db.find(fee.symbol.code());
+            let record = new TransferFee(fee);
+            if (it.isOk()) {
+                db.update(it, record, new Name());
+            } else {
+                db.store(record, this.receiver);
+            }
+        }
+    }
+
+    @action("error")
+    onError(err: string): void {}
 
     storeNonce(eventNonce: u64): void {
         let db = SubmittedEvent.new(this.receiver, this.receiver);
@@ -285,6 +252,17 @@ class MyContract extends Contract{
         let db = MixinAccount.new(this.receiver, this.receiver);
         let itIdx = db.byClientIdDB.find(clientId);
         if (!itIdx.isOk()) {
+            let fee = CreateAccountFee.new(this.receiver, this.receiver).get();
+            let symbol = this.getSymbol(event.asset);
+
+            if (symbol != new Symbol("MEOS", 8)) {
+                return;
+            }
+
+            if (event.amount < new U128(u64(fee.fee.amount))) {
+                return;
+            }
+
             this.createNewAccount(clientId);
             return;
         }
@@ -344,9 +322,6 @@ class MyContract extends Contract{
             msg
         ).send();
     }
-
-    @action("error")
-    onError(err: string): void {}
 
     handleEventWithExtra(fromAccount: Name, event: TxEvent, origin_extra: u8[]): void {
         let symbol = this.getSymbol(event.asset)
@@ -441,112 +416,6 @@ class MyContract extends Contract{
         db.remove(it);
         this.handleEvent(record.event!, origin_extra);
     }
-//action execpending
-// func (c *Contract) ExecPendingEventByExtra(executor chain.Name, nonce uint64, origin_extra []byte) {
-// 	chain.RequireAuth(executor)
-// 	db := NewPendingEventDB(c.self, c.self)
-// 	it, item := db.Get(nonce)
-// 	check(it.IsOk(), "pending event not found")
-// 	db.Remove(it)
-// 	check(len(origin_extra) > 0, "origin_extra not not be empty")
-// 	c.HandleEvent(&item.event, origin_extra)
-// }
-
-    // func (c *Contract) HandleEventWithExtra(fromAccount chain.Name, event *TxEvent, originExtra []byte) {
-    //     symbol, ok := c.GetSymbol(event.asset)
-    //     if !ok {
-    //         return
-    //     }
-    //     quantity := chain.NewAsset(int64(event.amount.Uint64()), symbol)
-    
-    //     fee := c.GetTransferFee(quantity.Symbol)
-    //     if fee.Amount != 0 {
-    //         if quantity.Amount <= fee.Amount {
-    //             c.AddFee(quantity)
-    //             c.ShowError("transfer amount is less than fee")
-    //             return
-    //         }
-    
-    //         c.AddFee(fee)
-    //         quantity.Amount -= fee.Amount
-    //     }
-    
-    //     event.amount.Sub(&event.amount, chain.NewUint128(uint64(fee.Amount), 0))
-    
-    //     var action *chain.Action
-    //     if len(originExtra) == 0 {
-    //         if len(event.extra) == 0 {
-    //             //transfer to self
-    //             action = nil
-    //         } else {
-    //             check(event.extra[0] == EVENT_NORMAL, "bad extra type")
-    //             extra := event.extra[1:]
-    //             action = c.parseAction(extra)
-    //             if action == nil {
-    //                 c.Refund(event, "invalid action data, refund!")
-    //             }
-    //         }
-    //     } else {
-    //         check(event.extra[0] == EVENT_PENDING, "not an extended extra type")
-    //         originExtraHash := event.extra[1:33]
-    //         check(len(originExtraHash) >= 32, "bad extra")
-    //         checksum := chain.Checksum256{}
-    //         copy(checksum[:], originExtraHash)
-    //         chain.AssertSha256(originExtra, checksum) //check extra hash
-    //         op := DecodeOperation(originExtra)
-    //         check(op.Extra[0] == 0, "invalid extra type")
-    //         action = c.parseAction(op.Extra[1:])
-    //         if action == nil {
-    //             c.Refund(event, "invalid action data, refund!")
-    //         }
-    //     }
-    
-    //     ok = c.IssueAsset(fromAccount, quantity, event.timestamp)
-    //     if !ok {
-    //         return
-    //     }
-    
-    //     if action != nil {
-    //         c.SendAction(fromAccount, action)
-    //     }
-    // }
-
-    @action("test", ignore)
-    testEvent(event: TxEvent | null, origin_extra: u8[] | null): void {
-        let data = readActionData();
-        let dec = new Decoder(data);
-        event = new TxEvent();
-        let size = dec.unpack(event);
-        size = size - 1 - event.signatures.length * 66
-        
-        origin_extra = dec.unpackNumberArray<u8>();
-        let hash = sha256(origin_extra);
-        if (event.extra.length > 33) {
-            check(hash == new Checksum256(event.extra.slice(1, 33)), "bad value");
-        }
-
-        let db = TxEvent.new(this.receiver, this.receiver);
-        let payer = this.receiver;
-        db.store(event, payer);
-
-        check(GetAccountNameFromId(29) == Name.fromString("aaaaaaaa4mvm"), "bad value");
-        check(GetAccountNameFromId(32) == Name.fromString("aaaaaaabbmvm"), "bad value");
-
-        let ret = this.verifySignatures(data.slice(0, <i32>size), event);
-        print(`++++++verifySignatures: ${ret}\n`);
-
-        if (false) {
-            let newAccount = GetAccountNameFromId(event.nonce);
-            print(`++++newAccount:${newAccount}`);
-            if (!isAccount(newAccount)) {
-                createNewAccount(this.receiver, this.receiver, newAccount);
-            }    
-        }
-
-        for (let i=0; i<10; i++) {
-            this.getNextAvailableAccount();
-        }
-    }
 
     verifySignatures(data: u8[], event: TxEvent): bool {
         let digest = sha256(data);
@@ -567,16 +436,12 @@ class MyContract extends Contract{
             for (let i=0; i<signers.length; i++) {
                 if (signers[i].public_key == pubKey) {
                     validSignerCount += 1;
+                    if (validSignerCount >= threshold) {
+                        return true;
+                    }
                     break;
                 }
             }
-            if (validSignerCount >= threshold) {
-                break;
-            }
-        }
-
-        if (validSignerCount >= threshold) {
-            return true;
         }
         return false;
     }
@@ -595,15 +460,6 @@ class MyContract extends Contract{
         db.set(item, this.receiver);
         createNewAccount(this.receiver, this.receiver, item.account);
         return account;
-    }
-
-    getMixinAssetId(sym: Symbol): U128 {
-        let db = MixinAsset.new(this.receiver, this.receiver);
-        let item = db.getByKey(sym.code());
-        if (item) {
-            return item.asset_id;
-        }
-        return new U128();
     }
 
     @action("addasset")
@@ -634,12 +490,43 @@ class MyContract extends Contract{
     }
 
     @action("ontransfer")
-    onTransfer(from: Name, to: Name, quantity: Name, memo: string): void {
+    onTransfer(from: Name, to: Name, quantity: Asset, memo: string): void {
         requireAuth(MIXIN_WTOKENS);
         if (from == this.receiver) {
             return;
         }
         let db = MixinAccount.new(this.receiver, this.receiver);
+        let account = db.getByKey(to.N);
+        if (!account) {
+            return;
+        }
+
+        let assets = MixinAsset.new(this.receiver, this.receiver);
+        let asset = assets.getByKey(quantity.symbol.code());
+        if (!asset) {
+            return;
+        }
+
+        let extra = Utils.stringToU8Array(memo).slice(0, 128);
+        let nonce = this.getNextTxRequestNonce();
+        let request = new TxRequest(
+            nonce,
+            this.receiver,
+            this.process,
+            asset.asset_id,
+            [account.client_id],
+            1,
+            new U128(quantity.amount),
+            extra,
+            currentTimeMs()*3000
+        );
+
+        Action.new(
+            [new PermissionLevel(this.receiver, Name.fromString("active"))],
+            MTG_XIN,
+            Name.fromString("txrequest"),
+            request,
+        ).send();
     }
 
     createNewAccount(clientId: U128): Name {
@@ -703,7 +590,48 @@ class MyContract extends Contract{
         }
     }
 
+    getMixinAssetId(sym: Symbol): U128 {
+        let db = MixinAsset.new(this.receiver, this.receiver);
+        let item = db.getByKey(sym.code());
+        if (item) {
+            return item.asset_id;
+        }
+        return new U128();
+    }
+
+    checkFee(event: TxEvent): bool {
+        let sym = this.getSymbol(event.asset);
+        if (sym.raw() == 0) {
+            return false;
+        }
+        let fee = this.getTransferFee(sym);
+        this.addFee(fee);
+        event.amount = U128.sub(event.amount, new U128(fee.amount));
+        return true;
+    }
+    
+    getTransferFee(sym: Symbol): Asset {
+        let db = TransferFee.new(this.receiver, this.receiver);
+        let fee = db.getByKey(sym.code());
+        if (fee) {
+            return fee.fee;
+        }
+        return new Asset(0, sym);
+    }
+
+    addFee(asset: Asset): void {
+        let db = TotalFee.new(this.receiver, this.receiver);
+        let it = db.find(asset.symbol.code())
+        if (it.isOk()) {
+            let record = db.get(it);
+            record.total += asset;
+            db.update(it, record, new Name());
+        } else {
+            db.store(new TotalFee(asset), this.receiver);
+        }
+    }
+
     getNextTxRequestNonce(): u64 {
-        return this.getNextIndex(KEY_TX_OUT_INDEX, 1);
+        return this.getNextIndex(KEY_TX_REQUEST_INDEX, 1);
     }
 }

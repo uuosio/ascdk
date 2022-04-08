@@ -1,15 +1,15 @@
-import * as chain from "as-chain"
+import { print, Name } from "as-chain"
 
-@contract("hello")
+@contract
 class MyContract {
     constructor(
-        public receiver: chain.Name,
-        public firstReceiver: chain.Name,
-        public action: chain.Name) {
+        public receiver: Name,
+        public firstReceiver: Name,
+        public action: Name) {
     }
 
     @action("sayhello")
     sayHello():  void {
-        chain.printString("hello, world!");
+        print("hello, world!");
     }
 }

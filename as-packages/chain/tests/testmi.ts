@@ -85,7 +85,7 @@ class MyData extends Table {
     }
 }
 
-@contract("hello")
+@contract
 class MyContract extends Contract{
     @action("testmi")
     testmi(): void {
@@ -109,29 +109,29 @@ class MyContract extends Contract{
         let it = mi.find(4);
         check(it.isOk(), "value not found!");
         printString(`+++++++++++it.i:${it.i}\n`);
-        value = it.value!;
+        value = it.getValue()!;
         printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}\n`);
         check(value.a == 4 && value.b == 5 && value.c == new U128(6) && value.d == 6.6, "bad value 1");
 
         it = mi.previous(it);
         check(it.isOk(), "previous");
-        value = it.value!;
+        value = it.getValue()!;
         printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}\n`);
         check(value.a == 1 && value.b == 2 && value.c == new U128(3) && value.d == 3.3, "bad value 2");
 
         it = mi.lowerBound(1);
-        value = it.value!;
+        value = it.getValue()!;
         printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}\n`);
         check(value.a == 1 && value.b == 2 && value.c == new U128(3) && value.d == 3.3, "bad value 3");
 
         it = mi.upperBound(1);
-        value = it.value!;
+        value = it.getValue()!;
         printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}\n`);
         check(value.a == 4 && value.b == 5 && value.c == new U128(6) && value.d == 6.6, "bad value 4");
 
         it = mi.end();
         it = mi.previous(it);
-        value = it.value!;
+        value = it.getValue()!;
         printString(`+++++++++++it.i:${value.a}, ${value.b}, ${value.c}\n`);
         check(value.a == 7 && value.b == 8 && value.c == new U128(9) && value.d == 9.9, "bad value 5");
 
@@ -373,7 +373,7 @@ class MyContract extends Contract{
 
         value = new MyData(7, 88, new U128(99), 9.99);
         mi.update(it, value, this.receiver);
-        value = it.value!;
+        value = it.getValue()!;
         check(value.a == 7 && value.b == 88 && value.c == new U128(99) && value.d == 9.99, "bad value 15");
 
         // 1 2 3 3.3 11

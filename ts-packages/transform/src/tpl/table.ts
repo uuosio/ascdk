@@ -13,6 +13,7 @@ export const tableTpl = `
     {{/each}}    
 }
 
+{{{generateDecorator decorator}}}
 {{export}}class {{className}} implements _chain.MultiIndexValue {
     {{{ExtractClassBody range}}}
 

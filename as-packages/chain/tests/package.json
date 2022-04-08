@@ -35,7 +35,7 @@
     "build:variant": "npx eosio-asc testvariant.ts --target release",
     "build:gencode": "npx eosio-asc testgencode.ts --target release",
 
-    "test-all": "run-p test:* --max-parallel 3",
+    "test-all": "yarn build && run-ipyeos -m pytest -s -x test.py",
     "test:name": "yarn build:name && run-ipyeos -m pytest -s -x test.py -k test_name",
     "test:publickey": "yarn build:publickey && run-ipyeos -m pytest -s -x test.py -k test_publickey",
     "test:table": "yarn build:table && run-ipyeos -m pytest -s -x test.py -k test_table",
