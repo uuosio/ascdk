@@ -292,7 +292,7 @@ export class Asset implements Packer {
     }
 
     @inline @operator('!=')
-    static ne(a: Asset, b: Asset): bool {
+    static neq(a: Asset, b: Asset): bool {
         check(a.symbol.value == b.symbol.value, "symbol not the same");
         return a.amount != b.amount;
     }
@@ -392,7 +392,7 @@ export class ExtendedAsset implements Packer {
     }
 
     @inline @operator('!=')
-    static ne(a: ExtendedAsset, b: ExtendedAsset): bool {
+    static neq(a: ExtendedAsset, b: ExtendedAsset): bool {
         return !(a.quantity == b.quantity && a.contract == b.contract);
     }
   

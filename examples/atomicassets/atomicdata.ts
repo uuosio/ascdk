@@ -23,7 +23,7 @@ export class ATTRIBUTE_MAP_SINGLE {
     }
 
     @inline @operator('!=')
-    static ne(a: ATTRIBUTE_MAP_SINGLE, b: ATTRIBUTE_MAP_SINGLE): bool {
+    static neq(a: ATTRIBUTE_MAP_SINGLE, b: ATTRIBUTE_MAP_SINGLE): bool {
         return a.key != b.key;
     }
 }
