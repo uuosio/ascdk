@@ -33,7 +33,7 @@ export class Float128 implements Packer {
     }
 
     @inline @operator('!=')
-    static ne(a: Float128, b: Float128): bool {
+    static neq(a: Float128, b: Float128): bool {
         return !(a.data[0] == b.data[0] && a.data[1] == b.data[1]);
     }
 }
