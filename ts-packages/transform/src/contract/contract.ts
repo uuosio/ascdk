@@ -66,36 +66,26 @@ export class ContractProgram {
                 let intercepter = new TableInterpreter(<ClassPrototype>element);
                 this.tables.push(intercepter);
                 this.CheckClassFields(intercepter);
+                return;
             }
 
             if (ElementUtil.isSerializerClassPrototype(element)) {
                 let intercepter = new SerializerInterpreter(<ClassPrototype>element);
                 this.AddSerializer(intercepter);
                 this.CheckClassFields(intercepter);
+                return;
             }
 
-            if (ElementUtil.isOptionalClassPrototype(element)) {
+            if (element.name == "Optional") {
                 let intercepter = new SerializerInterpreter(<ClassPrototype>element);
-                if (intercepter.fields.length > 1) {
-                    throw Error(`optional class can only contain 1 member. Trace: ${RangeUtil.location(intercepter.range)}`);
-                }
-                let field = intercepter.fields[0];
-                if (!field.declaration.type?.isNullable) {
-                    throw Error(`optional member must be nullable! Trace: ${RangeUtil.location(intercepter.range)}`);
-                }
                 this.optionals.push(intercepter);
+                return;
             }
 
-            if (ElementUtil.isBinaryExtensionClassPrototype(element)) {
+            if (element.name == "BinaryExtension") {
                 let intercepter = new SerializerInterpreter(<ClassPrototype>element);
-                if (intercepter.fields.length > 1) {
-                    throw Error(`optional class can only contain 1 member. Trace: ${RangeUtil.location(intercepter.range)}`);
-                }
-                let field = intercepter.fields[0];
-                if (!field.declaration.type?.isNullable) {
-                    throw Error(`optional member must be nullable! Trace: ${RangeUtil.location(intercepter.range)}`);
-                }
                 this.binaryExtensions.push(intercepter);
+                return;
             }
 
             if (ElementUtil.isVariantClassPrototype(element)) {
@@ -110,6 +100,7 @@ export class ContractProgram {
                 });
                 this.variants.push(intercepter);
                 this.CheckClassFields(intercepter);
+                return;
             }
         });
 
@@ -119,9 +110,17 @@ export class ContractProgram {
 
         this.contract!.actionFuncDefs.forEach(func => {
             func.parameters.forEach(para => {
-                let cls = this.allClasses.find(cls => {
-                     return cls.className == para.type.plainTypeNode;
-                });
+                if ((para.type.plainType == "Optional" || para.type.plainType == "BinaryExtension") && para.type.typeArguments) {
+                    let typeName = para.type.typeArguments![0].plainType;
+                    let typeClass = this.findClass(typeName);
+                    if (typeClass) {
+                        this.AddSerializer(typeClass);
+                        this.CheckClassFields(typeClass);
+                    }
+                    return;
+                }
+
+                let cls = this.findClass(para.type.plainTypeNode);
                 if (cls) {
                     cls = new SerializerInterpreter(cls.classPrototype)
                     this.AddSerializer(cls);
@@ -135,6 +134,16 @@ export class ContractProgram {
 
     private CheckClassFields(cls: ClassInterpreter) {
         cls.fields.forEach(field => {
+            if ((field.type.plainType == "Optional" || field.type.plainType == "BinaryExtension") && field.type.typeArguments) {
+                let typeName = field.type.typeArguments![0].plainType;
+                let typeClass = this.findClass(typeName);
+                if (typeClass) {
+                    this.AddSerializer(typeClass);
+                    this.CheckClassFields(typeClass);
+                }
+                return;
+            }
+
             let cls2 = this.allClasses.find(cls2 => {
                 return cls2.className == field.type.plainTypeNode
             });
@@ -180,33 +189,53 @@ export class ContractProgram {
         }
     }
 
-    findType(plainType: string) {
+    findType(type: NamedTypeNodeDef) {
+        let plainType = type.plainTypeNode;
+        if (type.typeNode.isNullable) {
+            plainType = plainType.split('|')[0].trim();
+        }
+
+        if (type.typeKind == TypeKindEnum.ARRAY) {
+            plainType = plainType.replace('[]', '');
+            plainType = plainType.replace('Array<', '').replace('>', '');
+        }
+
+        if (plainType.indexOf('chain.') == 0) {
+            plainType = plainType.replace('chain.', '');
+        }
+
         let tp = TypeHelper.primitiveToAbiMap.get(plainType)!;
         if (tp) {
             return tp;
         }
 
         let cls = <ClassInterpreter>this.optionals.find(x => {
-            return x.className == plainType;
+            return x.className == type.plainType;
         });
 
         if (cls) {
-            plainType = cls.fields[0].type.plainTypeNode.replace("chain.", "");
-            let type = this.findType(plainType)!;
-            if (type) {
-                return type + "?";
+            if (cls.className == "Optional") {
+                let typeName = type.typeArguments![0].plainTypeNode;
+                let tp = TypeHelper.primitiveToAbiMap.get(typeName)!;
+                if (tp) {
+                    return tp + "?";
+                }
+                return typeName + "?";
             }
         }
 
         cls = <ClassInterpreter>this.binaryExtensions.find(x => {
-            return x.className == plainType;
+            return x.className == type.plainType;
         });
 
         if (cls) {
-            plainType = cls.fields[0].type.plainTypeNode.replace("chain.", "");
-            let type = this.findType(plainType)!;
-            if (type) {
-                return type + "$";
+            if (cls.className == "BinaryExtension") {
+                let typeName = type.typeArguments![0].plainTypeNode;
+                let tp = TypeHelper.primitiveToAbiMap.get(typeName)!;
+                if (tp) {
+                    return tp + "$";
+                }
+                return typeName + "$";
             }
         }
 
@@ -250,23 +279,10 @@ export class ContractProgram {
     parseField(name: string, type: NamedTypeNodeDef) {
         let abiField = new ABIStructField();
         abiField.name = name;
-        let plainType = type.plainTypeNode;
-        if (type.typeNode.isNullable) {
-            plainType = plainType.split('|')[0].trim();
-        }
 
-        if (type.typeKind == TypeKindEnum.ARRAY) {
-            plainType = plainType.replace('[]', '');
-            plainType = plainType.replace('Array<', '').replace('>', '');
-        }
-
-        if (plainType.indexOf('chain.') == 0) {
-            plainType = plainType.replace('chain.', '');
-        }
-
-        abiField.type = this.findType(plainType);
+        abiField.type = this.findType(type);
         if (!abiField.type) {
-            throw Error(`type of ${name} not found: ${plainType}`)
+            throw Error(`type of ${name} not found: ${type.plainTypeNode}`)
         }
     
         if (type.typeKind == TypeKindEnum.ARRAY) {
@@ -315,6 +331,15 @@ export class ContractProgram {
 
         this.contract.actionFuncDefs.forEach(func => {
             func.parameters.forEach(parameter => {
+                if ((parameter.type.plainType == "Optional" || parameter.type.plainType == "BinaryExtension") && parameter.type.typeArguments) {
+                    let typeName = parameter.type.typeArguments![0].plainType;
+                    let typeClass = this.findClass(typeName);
+                    if (typeClass) {
+                        this.addAbiClass(typeClass);
+                    }
+                    return;
+                }
+
                 let cls = this.findClass(parameter.type.plainTypeNode)
                 if (cls) {
                     this.addAbiClass(cls);

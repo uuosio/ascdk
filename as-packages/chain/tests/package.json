@@ -34,7 +34,8 @@
     "build:singleton": "npx eosio-asc testsingleton.ts --target release",
     "build:variant": "npx eosio-asc testvariant.ts --target release",
     "build:gencode": "npx eosio-asc testgencode.ts --target release",
-
+    "build:optional": "npx eosio-asc testoptional.ts --target release",
+    "build:extension": "npx eosio-asc testbinaryextension.ts --target release",
     "test-all": "yarn build && run-ipyeos -m pytest -s -x test.py",
     "test:name": "yarn build:name && run-ipyeos -m pytest -s -x test.py -k test_name",
     "test:publickey": "yarn build:publickey && run-ipyeos -m pytest -s -x test.py -k test_publickey",
@@ -49,7 +50,9 @@
     "test:transaction": "yarn build:transaction && run-ipyeos -m pytest -s -x test.py -k test_tx",
     "test:singleton": "yarn build:singleton && run-ipyeos -m pytest -s -x test.py -k test_singleton",
     "test:variant": "yarn build:variant && run-ipyeos -m pytest -s -x test.py -k test_variant",
-    "test:gencode": "yarn build:gencode && run-ipyeos -m pytest -s -x test.py -k test_gencode"
+    "test:gencode": "yarn build:gencode && run-ipyeos -m pytest -s -x test.py -k test_gencode",
+    "test:optional": "yarn build:optional && run-ipyeos -m pytest -s -x test.py -k test_optional",
+    "test:extension": "yarn build:extension && run-ipyeos -m pytest -s -x test.py -k test_binaryextension"
   },
   "dependencies": {
     "@assemblyscript/loader": "^0.19.22",

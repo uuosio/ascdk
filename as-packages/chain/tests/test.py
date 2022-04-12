@@ -296,3 +296,50 @@ def test_gencode():
     r = chain.push_action('hello', 'test', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
     chain.produce_block()
+
+@chain_test
+def test_optional():
+    code, abi = get_code_and_abi('testoptional')
+    chain.deploy_contract('hello', code, abi, 0)
+
+    args = {
+        'a1': None,
+        'a2': '1.0000 EOS',
+        'a3': {'a': 1234},
+        'a4': '4.0000 EOS',
+    }
+    r = chain.push_action('hello', 'testopt', args, {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])
+    chain.produce_block()
+
+    args = {
+        'a1': None,
+        'a2': '1.0000 EOS',
+        'a3': None,
+        'a4': '4.0000 EOS',
+    }
+    r = chain.push_action('hello', 'testopt2', args, {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])
+    chain.produce_block()
+
+@chain_test
+def test_binaryextension():
+    code, abi = get_code_and_abi('testbinaryextension')
+    chain.deploy_contract('hello', code, abi, 0)
+
+    args = {
+        'a1': None,
+        'a2': '1.0000 EOS',
+        'a3': {'a': 1234}
+    }
+    r = chain.push_action('hello', 'testext', args, {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])
+    chain.produce_block()
+
+    args = {
+        'a1': None,
+        'a2': '1.0000 EOS'
+    }
+    r = chain.push_action('hello', 'testext2', args, {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])
+    chain.produce_block()

@@ -5,6 +5,8 @@ import {
     Action,
     PermissionLevel,
     printString,
+    Optional,
+    BinaryExtension,
     check,
     getSender,
     Contract,
@@ -14,20 +16,6 @@ import {
 class MyData {
     constructor(
         public name: string = ""
-    ){}
-}
-
-@optional
-class MyOptional {
-    constructor(
-        public a: Asset | null = null
-    ){}
-}
-
-@binaryextension
-class MyExtension {
-    constructor(
-        public a: Asset | null = null
     ){}
 }
 
@@ -54,13 +42,13 @@ class MyContract extends Contract {
         a3: u64,
         a4: u64[],
         a5: Asset[],
-        a6: MyOptional,
+        a6: Optional<Asset>,
         a7: MyData,
-        a8: MyExtension,
+        a8: BinaryExtension<Asset>,
     ): void {
-        check(!a6.a, "bad value");
+        check(!a6.value, "bad value");
         check(a7.name == "alice", "bad value");
-        check(!a8.a, "bad value");
+        check(!a8.value, "bad value");
         printString(`+++test gen code
         ${a1},
         ${a2},
@@ -77,13 +65,13 @@ class MyContract extends Contract {
         a3: u64,
         a4: u64[],
         a5: Asset[],
-        a6: MyOptional,
+        a6: Optional<Asset>,
         a7: MyData,
-        a8: MyExtension,
+        a8: BinaryExtension<Asset>,
     ): void {
-        check(a6.a == new Asset(10000, new Symbol("EOS", 4)), "bad value");
+        check(a6.value == new Asset(10000, new Symbol("EOS", 4)), "bad value");
         check(a7.name == "alice", "bad value");
-        check(a8.a == new Asset(120000, new Symbol("EOS", 4)), "bad value");
+        check(a8.value == new Asset(120000, new Symbol("EOS", 4)), "bad value");
         printString(`+++test gen code
         ${a1},
         ${a2},
