@@ -41,9 +41,9 @@ class MyContract extends Contract{
 
             // From string
             check( Asset.eq(a, Asset.fromString("0.0010 EOS")), `${a} does not match ${Asset.fromString("0.0010 EOS")}`);
-            check( Asset.ne(a, Asset.fromString("0.0005 EOS")), `${a} matches ${Asset.fromString("0.0005 EOS")}`);
+            check( Asset.neq(a, Asset.fromString("0.0005 EOS")), `${a} matches ${Asset.fromString("0.0005 EOS")}`);
             check( Asset.eq(b, Asset.fromString("0.0005 EOS")), `${b} does not match ${Asset.fromString("0.0005 EOS")}`);
-            check( Asset.ne(b, Asset.fromString("0.0010 EOS")), `${b} matches ${Asset.fromString("0.0010 EOS")}`);
+            check( Asset.neq(b, Asset.fromString("0.0010 EOS")), `${b} matches ${Asset.fromString("0.0010 EOS")}`);
 
             // Operators
             check( a + b == new Asset(15, new Symbol("EOS", 4)), "bad value 5");
@@ -72,8 +72,8 @@ class MyContract extends Contract{
             check( Asset.div(a, b) == new Asset(2, new Symbol("EOS", 4)), "bad value 18");
             check( Asset.eq(a, new Asset(10, new Symbol("EOS", 4))), "bad value 19");
             check( !Asset.eq(a, b), "bad value 20");
-            check( Asset.ne(a, b), "bad value 21");
-            check( !Asset.ne(a, new Asset(10, new Symbol("EOS", 4))), "bad value 22");
+            check( Asset.neq(a, b), "bad value 21");
+            check( !Asset.neq(a, new Asset(10, new Symbol("EOS", 4))), "bad value 22");
             check( Asset.lt(b, a), "b < a");
             check( !Asset.lt(a, b), "b < a");
             check( Asset.gt(a, b), "a > b");
@@ -118,8 +118,8 @@ class MyContract extends Contract{
             check( ExtendedAsset.sub(a, b) == new ExtendedAsset(new Asset(5, new Symbol("EOS", 4)), Name.fromString('eosio.token')), "bad value 37");
             check( ExtendedAsset.eq(a, new ExtendedAsset(new Asset(10, new Symbol("EOS", 4)), Name.fromString('eosio.token'))), "bad value 38");
             check( !ExtendedAsset.eq(a, b), "bad value 39");
-            check( ExtendedAsset.ne(a, b), "bad value 40");
-            check( !ExtendedAsset.ne(a, new ExtendedAsset(new Asset(10, new Symbol("EOS", 4)), Name.fromString('eosio.token'))), "bad value 41");
+            check( ExtendedAsset.neq(a, b), "bad value 40");
+            check( !ExtendedAsset.neq(a, new ExtendedAsset(new Asset(10, new Symbol("EOS", 4)), Name.fromString('eosio.token'))), "bad value 41");
             check( ExtendedAsset.lt(b, a), "b < a");
             check( !ExtendedAsset.lt(a, b), "b < a");
             check( ExtendedAsset.gt(a, b), "a > b");
