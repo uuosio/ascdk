@@ -33,5 +33,10 @@ class MyContract extends Contract{
         check(nameToSuffix(Name.fromString("eosio")).toString() == "eosio", "bad value - suffix 1");
         check(nameToSuffix(Name.fromString("")).toString() == "", "bad value - suffix 2");
         check(nameToSuffix(Name.fromString("eosio.token")).toString() == "token", "bad value - suffix 3");
+
+        // Check suffix
+        check(Name.fromString("eosio").suffix().toString() == "eosio", "bad value - suffix 1");
+        check(Name.fromString("").suffix().toString() == "", "bad value - suffix 2");
+        check(Name.fromString("eosio.token").suffix().toString() == "token", "bad value - suffix 3");
     }
 }
