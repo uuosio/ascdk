@@ -1,35 +1,67 @@
-import { Name, Singleton, Contract, check, requireAuth, MultiIndex, SAME_PAYER } from 'as-chain'
-import { allow, allowactor, blockactor, setpaused } from './allow.constants';
-import { AllowedActor, Paused } from './allow.tables';
-
-enum UpdateFields {
-    IS_ALLOWED = 0,
-    IS_BLOCKED = 1,
-};
+import { Name, Singleton, Contract, check, requireAuth, ExtendedSymbol } from 'as-chain'
+import { TableStore } from './store';
+import { AllowedActor, AllowedToken, AllowGlobals } from './allow.tables';
+import { extendedSymbolToU128 } from './allow.utils';
 
 @contract
 export class AllowContract extends Contract {
     contract: Name = this.receiver
     parentContract: Name = this.firstReceiver
 
-    allowedActorTable: MultiIndex<AllowedActor> = AllowedActor.getTable(this.receiver)
-    pausedSingleton: Singleton<Paused> = Paused.getSingleton(this.receiver)
+    allowedActorTable: TableStore<AllowedActor> = AllowedActor.getTable(this.receiver)
+    allowedTokenTable: TableStore<AllowedToken> = AllowedToken.getTable(this.receiver)
+    allowGlobalsSingleton: Singleton<AllowGlobals> = AllowGlobals.getSingleton(this.receiver)
 
     /**
-     * Set the paused state of the contract
-     * @param {boolean} isPaused - boolean
+     * Set the global variables
+     * @param {boolean} isPaused - boolean,
+     * @param {boolean} isActorStrict - If true, then actors must be registered with the system.
+     * @param {boolean} isTokenStrict - boolean
      */
-    @action(setpaused)
-    setpaused(
-        isPaused: boolean
+    @action("setglobals")
+    setglobals(
+        isPaused: boolean,
+        isActorStrict: boolean,
+        isTokenStrict: boolean,
     ): void {
-        // Authenticate actor
+        // Authorization
         requireAuth(this.contract)
 
-        // Set singleton
-        const pausedObj = this.pausedSingleton.get()
-        pausedObj.isPaused = isPaused
-        this.pausedSingleton.set(pausedObj, this.contract);
+        // Logic
+        const globals = this.allowGlobalsSingleton.get()
+        globals.isPaused = isPaused
+        globals.isActorStrict = isActorStrict
+        globals.isTokenStrict = isTokenStrict
+        this.allowGlobalsSingleton.set(globals, this.contract);
+    }
+
+    /**
+     * It updates the isAllowed field of the token.
+     * @param {ExtendedSymbol} token - The token to be updated.
+     * @param {boolean} isBlocked - boolean
+     */
+    @action("settoken")
+    settoken(
+        token: ExtendedSymbol,
+        isAllowed: boolean,
+        isBlocked: boolean,
+    ): void {
+        // Authorization
+        requireAuth(this.contract)
+
+        // Validation
+        check(!(isAllowed && isBlocked), "a token cannot be both allowed and blocked at the same time")
+
+        // Logic
+        const existingAllowedToken = this.findAllowedToken(token)
+        const tokenPrimaryKey = existingAllowedToken ? existingAllowedToken.primary : this.allowedTokenTable.availablePrimaryKey
+        const allowedToken = new AllowedToken(tokenPrimaryKey, token, isAllowed, isBlocked)
+
+        if (isAllowed || isBlocked) {
+            this.allowedTokenTable.set(allowedToken, this.contract)
+        } else {
+            this.allowedTokenTable.remove(allowedToken)
+        }
     }
 
     /**
@@ -37,97 +69,74 @@ export class AllowContract extends Contract {
      * @param {Name} actor - Name
      * @param {boolean} isAllowed - boolean
      */
-    @action(allowactor)
-    allowactor(
+    @action("setactor")
+    setactor(
         actor: Name,
-        isAllowed: boolean
+        isAllowed: boolean,
+        isBlocked: boolean,
     ): void {
+        // Authorization
         requireAuth(this.contract)
-        this.updateAllowed(actor, UpdateFields.IS_ALLOWED, isAllowed)
-    }
 
-    /**
-     * It sets the isBlocked field of the actor to the given value.
-     * @param {Name} actor - Name
-     * @param {boolean} isBlocked - boolean
-     */
-    @action(blockactor)
-    blockactor(
-        actor: Name,
-        isBlocked: boolean
-    ): void {
-        requireAuth(this.contract)
-        this.updateAllowed(actor, UpdateFields.IS_BLOCKED, isBlocked)
-    }
+        // Validation
+        check(!(isAllowed && isBlocked), "an actor cannot be both allowed and blocked at the same time")
 
-    /**
-     * Update the allowed table to set the isAllowed or isBlocked field to the given value
-     * @param {Name} actor - Name
-     * @param {UpdateFields} fieldToUpdate - The field to update.
-     * @param {boolean} fieldValue - boolean
-     */
-    updateAllowed(actor: Name, fieldToUpdate: UpdateFields, fieldValue: boolean): void {
-        // Find or create allowed entry
-        let allowedActorItr = this.allowedActorTable.find(actor.N)
-        if (!allowedActorItr.isOk()) {
-            allowedActorItr = this.allowedActorTable.store(new AllowedActor(actor), this.contract)
-        }
-
-        // Get allowed entry
-        const allowedActor = this.allowedActorTable.get(allowedActorItr)
-
-        // Update allowed
-        if (fieldToUpdate == UpdateFields.IS_ALLOWED) {
-            allowedActor.isAllowed = fieldValue
-
-            if (allowedActor.isAllowed) {
-                allowedActor.isBlocked = false
-            }
-        } else if (fieldToUpdate == UpdateFields.IS_BLOCKED) {
-            allowedActor.isBlocked = fieldValue
-
-            if (allowedActor.isBlocked) {
-                allowedActor.isAllowed = false
-            }
-        }
-
-        // Save
-        if (!allowedActor.isAllowed && !allowedActor.isBlocked) {
-            this.allowedActorTable.remove(allowedActorItr)
+        // Logic
+        const allowedActor = new AllowedActor(actor, isAllowed, isBlocked)
+        if (isAllowed || isBlocked) {
+            this.allowedActorTable.set(allowedActor, this.contract)
         } else {
-            this.allowedActorTable.update(allowedActorItr, allowedActor, SAME_PAYER);
+            this.allowedActorTable.remove(allowedActor)
         }
     }
 
     /**
      * Helper functions
      */
-    isActorAllowed(actor: Name): boolean {
+    findAllowedToken(token: ExtendedSymbol): AllowedToken | null {
+        return this.allowedTokenTable.getBySecondaryIDX128(extendedSymbolToU128(token), 0)
+    }
+    isTokenAllowed(token: ExtendedSymbol): boolean {
+        // Check stricst
+        const isTokenStrict = this.allowGlobalsSingleton.get().isTokenStrict
+
         // Find entry
-        const allowedActorItr = this.allowedActorTable.find(actor.N)
+        const allowedToken = this.findAllowedToken(token)
 
         // If no entry found, account is allowed
-        if (!allowedActorItr.isOk()) {
-            return true
+        if (allowedToken == null) {
+            return !isTokenStrict
         }
 
-        // Get entry
-        const allowed = this.allowedActorTable.get(allowedActorItr)
-
-        // isAllowed = true
-        //     or
-        // isBlocked = false
-        return allowed.isAllowed || !allowed.isBlocked
+        // Check is blocked
+        return allowedToken.isAllowed || (!isTokenStrict && !allowedToken.isBlocked)
+    }
+    checkTokenIsAllowed(token: ExtendedSymbol): void {
+        check(this.isTokenAllowed(token), `Token ${token} is now allowed to use ${this.contract}`)
     }
 
+    isActorAllowed(actor: Name): boolean {
+        // Check stricst
+        const isActorStrict = this.allowGlobalsSingleton.get().isActorStrict
+
+        // Find entry
+        const allowedActor = this.allowedActorTable.get(actor.N)
+
+        // If no entry found, account is allowed
+        if (allowedActor == null) {
+            return !isActorStrict
+        }
+
+        // Check is blocked
+        return allowedActor.isAllowed || (!isActorStrict && !allowedActor.isBlocked)
+    }
     checkActorIsAllowed(actor: Name): void {
         check(this.isActorAllowed(actor), `Actor ${actor} is now allowed to use ${this.contract}`)
     }
 
     isContractPaused(): boolean {
-        return this.pausedSingleton.get().isPaused
+        return this.allowGlobalsSingleton.get().isPaused
     }
-
     checkContractIsNotPaused(): void {
         check(!this.isContractPaused(), `Contract ${this.contract} is paused`)
     }

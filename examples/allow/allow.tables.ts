@@ -1,24 +1,27 @@
-import { Name, Table, MultiIndex, Singleton } from "as-chain";
-import { allowedactor, paused } from "./allow.constants";
+import { Name, Table, Singleton, U128, ExtendedSymbol, IDXDB, IDX128 } from "as-chain";
+import { TableStore } from './store';
+import { extendedSymbolToU128, U128ToExtSym } from "./allow.utils";
 
 // scope: contract
-@table(paused, singleton)
-export class PausedSingleton extends Table {
+@table("allowglobals", singleton)
+export class AllowGlobalsSingleton extends Table {
     constructor (
-        public isPaused: boolean = true,
+        public isPaused: boolean = false,
+        public isActorStrict: boolean = false,
+        public isTokenStrict: boolean = false,
     ) {
         super();
     }
 
-    static getSingleton(code: Name): Singleton<Paused> {
-        return new Singleton<Paused>(code, code, paused);
+    static getSingleton(code: Name): Singleton<AllowGlobals> {
+        return new Singleton<AllowGlobals>(code, code, Name.fromString("allowglobals"));
     }
 }
 
-export class Paused extends PausedSingleton {}
+export class AllowGlobals extends AllowGlobalsSingleton {}
 
 // scope: contract
-@table(allowedactor)
+@table("allowedactor")
 export class AllowedActorTable extends Table {
     constructor (
         public actor: Name = new Name(),
@@ -33,32 +36,48 @@ export class AllowedActorTable extends Table {
         return this.actor.N;
     }
 
-    static getTable(code: Name): MultiIndex<AllowedActor> {
-        return new MultiIndex<AllowedActor>(code, code, allowedactor);
+    static getTable(code: Name): TableStore<AllowedActor> {
+        return new TableStore<AllowedActor>(code, code, Name.fromString("allowedactor"));
     }
 }
 
 export class AllowedActor extends AllowedActorTable {}
 
-// // scope: contract
-// @table(allowedtoken)
-// export class AllowedTable extends Table {
-//     constructor (
-//         public actor: Name = new Name(),
-//         public isAllowed: boolean = false,
-//         public isBlocked: boolean = false,
-//     ) {
-//         super();
-//     }
+// scope: contract
+@table("allowedtoken")
+export class AllowedTokenTable extends Table {
+    constructor (
+        public index: u64 = 0,
+        public token: ExtendedSymbol = new ExtendedSymbol(),
+        public isAllowed: boolean = false,
+        public isBlocked: boolean = false,
+    ) {
+        super();
+    }
 
-//     @primary
-//     get primary(): u64 {
-//         return this.actor.N;
-//     }
+    @primary
+    get primary(): u64 {
+        return this.index;
+    }
 
-//     static getTable(code: Name): MultiIndex<Allowed> {
-//         return new MultiIndex<Allowed>(code, code, allowed);
-//     }
-// }
+    @secondary
+    get byToken(): U128 {
+        return extendedSymbolToU128(this.token)
+    }
 
-// export class AllowedToke extends AllowedTable {}
+    set byToken(value: U128) {
+       this.token = U128ToExtSym(value)
+    }
+
+    static getTable(code: Name): TableStore<AllowedToken> {
+        const scope = code
+        const tableName = Name.fromString("allowedtoken")
+        const idxTableBase: u64 = (tableName.N & 0xfffffffffffffff0);
+        const indexes: IDXDB[] = [
+            new IDX128(code.N, scope.N, idxTableBase + 0, 0),
+        ];
+        return new TableStore<AllowedToken>(code, code, tableName, indexes);
+    }
+}
+
+export class AllowedToken extends AllowedTokenTable {}
