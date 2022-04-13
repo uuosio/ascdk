@@ -1,6 +1,6 @@
 {
   "name": "proton-asc",
-  "version": "0.2.78",
+  "version": "0.2.79",
   "description": "Build tool for building AssemblyScript projects",
   "license": "MIT",
   "main": "index.ts",
@@ -13,7 +13,7 @@
     "proton-asc": "bin/proton-asc.js"
   },
   "dependencies": {
-    "as-chain": "0.0.33",
+    "as-chain": "0.0.34",
     "assemblyscript": "0.18",
     "handlebars": "4.7.7",
     "ts-dedent": "^2.2.0"
