@@ -1,4 +1,4 @@
-export { U128, U256 } from "./bignum";
+export { U128, U256, I128 } from "./bignum";
 export { Float128 } from "./float128"
 
 export { VarInt32, VarUint32, calcPackedVarUint32Length } from "./varint";
