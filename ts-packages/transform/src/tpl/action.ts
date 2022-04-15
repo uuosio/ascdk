@@ -7,18 +7,11 @@ import { CONFIG } from "../config/compile";
 export const actionTpl = `
 
 class {{methodName}}Action implements _chain.Packer {
-    {{#each parameters}}
-    {{#generateActionMember .}}{{/generateActionMember}}
-    {{/each}}
-
     constructor (
         {{#each parameters}}
         {{#generateActionParam .}}{{/generateActionParam}}
         {{/each}}
     ) {
-        {{#each parameters}}
-        {{#generateActionConstructor .}}{{/generateActionConstructor}}
-        {{/each}}
     }
 
     pack(): u8[] {

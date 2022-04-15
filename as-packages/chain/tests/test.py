@@ -144,6 +144,22 @@ def test_action():
     r = chain.push_action('hello', 'testgencode', args, {'hello': 'active'})
 
 @chain_test
+def test_contract():
+    # info = chain.get_account('helloworld11')
+    # logger.info(info)
+    (code, abi) = get_code_and_abi('testcontract')
+    chain.deploy_contract('hello', code, abi, 0)
+
+    args = {
+        'data1': {'name': 'data1'},
+        'data2': {'name': 'data2'},
+        'data3': {'name': 'data3'},
+        'data4': '1.0000 EOS'
+    }
+    r = chain.push_action('hello', 'testmydata', args, {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])
+
+@chain_test
 def test_asset():
     (code, abi) = get_code_and_abi('testasset')
     chain.deploy_contract('hello', code, abi, 0)

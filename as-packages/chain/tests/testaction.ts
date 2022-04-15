@@ -66,9 +66,9 @@ class MyContract extends Contract {
     check(t.a1 == 'hello', "");
     check(t.a2 == new Asset(10000, new Symbol("EOS", 4)), "");
     check(t.a3 == 12345, "");
-    check(t.a4[0] == 1 && t.a4[1] == 2 && t.a4[2] == 3, "");
-    check(t.a5[0] == new Asset(10001, new Symbol("EOS", 4)) &&
-        t.a5[1] == new Asset(20002, new Symbol("EOS", 4)), "");
+    check(t.a4![0] == 1 && t.a4![1] == 2 && t.a4![2] == 3, "");
+    check(t.a5![0] == new Asset(10001, new Symbol("EOS", 4)) &&
+        t.a5![1] == new Asset(20002, new Symbol("EOS", 4)), "");
 }
     }
 
