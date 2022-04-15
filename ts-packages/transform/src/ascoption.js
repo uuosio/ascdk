@@ -86,6 +86,16 @@ var APIOptionImpl = /** @class */ (function () {
 
         var sourceModifier = process.sourceModifier ? process.sourceModifier : new preprocess_1.SourceModifier();
         let relativePath = path.relative(baseDir, name).split("\\").join("/");
+
+        // Transform library imports
+        if (relativePath.indexOf('/as-chain/') === -1 && !sourceModifier.fileExtMap.has(relativePath)) {
+            const alternativePath = relativePath.replace(/.*node_modules/, '~lib').replace('/assembly', '')
+            if (sourceModifier.fileExtMap.has(alternativePath)) {
+                relativePath = alternativePath
+            }
+        }
+        
+        // Look for path in source modifier
         if (sourceModifier.fileExtMap.has(relativePath)) {
             var extCodes = sourceModifier.fileExtMap.get(relativePath);
             extCodes.sort((a, b) => {
