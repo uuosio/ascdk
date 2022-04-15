@@ -50,17 +50,6 @@ function optimizeCode(code) {
 
     codeSegments.push(code.substring(segmentStart));
     code = codeSegments.join('');
-
-    // Add missing functions
-    const fullList = ["U128", "U256", "I128", "Float128", "VarInt32", "VarUint32", "calcPackedVarUint32Length", "DBI64", "PrimaryIterator", "IDX64", "IDXF64", "IDXF128", "IDX128", "IDX256", "VariantValue", "assert", "check", "currentTimePoint", "currentTime", "currentTimeMs", "currentTimeSec", "Microseconds", "TimePoint", "TimePointSec", "BlockTimestamp", "prints", "printui", "print", "printString", "printArray", "printHex", "printi", "printI128", "printU128", "printsf", "printdf", "printqf", "printn", "IDXDB", "SecondaryType", "SecondaryValue", "SecondaryIterator", "newSecondaryValue_u64", "newSecondaryValue_U128", "newSecondaryValue_U256", "newSecondaryValue_f64", "newSecondaryValue_Float128", "getSecondaryValue_u64", "getSecondaryValue_U128", "getSecondaryValue_U256", "getSecondaryValue_f64", "getSecondaryValue_Float128", "MultiIndex", "MultiIndexValue", "SAME_PAYER", "Singleton", "Contract", "ActionWrapper", "Table", "InlineAction", "Variant", "getSender", "readActionData", "unpackActionData", "actionDataSize", "requireRecipient", "requireAuth", "hasAuth", "requireAuth2", "isAccount", "publicationTime", "currentReceiver", "Name", "Action", "PermissionLevel", "Asset", "ExtendedAsset", "Symbol", "ExtendedSymbol", "isValid", "sendDeferred", "cancelDeferred", "readTransaction", "transactionSize", "    taposBlockNum", "taposBlockPrefix", "transactionExpiration", "getAction", "getContextFreeData", "TransactionExtension", "Transaction", "PublicKey", "Signature", "Checksum160", "Checksum256", "Checksum512", "recoverKey", "assertRecoverKey", "assertSha256", "assertSha1", "assertSha512", "assertRipemd160", "sha256", "sha1", "sha512", "ripemd160", "Packer", "Encoder", "Decoder", "Utils"]
-    const imports = code.match(/^(\s+)?import.*?.('|").*?('|")/gms)
-    const extractImports = (imp) => imp.split('{')[1].split('}')[0].split(',').map(_ => _.trim())
-    const allImports = imports.reduce((acc, imp) => ~imp.indexOf('{') ? acc.concat(extractImports(imp)) : acc, [])
-    const missingImports = fullList.filter(_ => !allImports.includes(_))
-    if (missingImports.length) {
-        code = `import { ${missingImports.join(', ')} } from "as-chain"\n` + code
-    }
-    
     return code;
 }
 
