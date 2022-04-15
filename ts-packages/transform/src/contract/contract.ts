@@ -27,6 +27,7 @@ import {
 import { ActionFunctionDef } from "../contract/elementdef";
 import { TypeKindEnum } from "../enums/customtype";
 import { TypeHelper } from "../utils/typeutil";
+import * as path from "path"
 
 export class ContractProgram {
     program: Program;
@@ -48,6 +49,14 @@ export class ContractProgram {
     
     private resolveContract(): void {
         let countContract = 0;
+
+        this.program.elementsByName.forEach((element, _) => {
+            if (ElementUtil.isTopContractClass(element)) {
+                let relativePath = path.dirname(element.internalName);
+                relativePath = path.dirname(relativePath);
+                process.relativePath = relativePath;
+            }
+        });
 
         this.program.elementsByName.forEach((element, _) => {
             if (ElementUtil.isClass(element)) {

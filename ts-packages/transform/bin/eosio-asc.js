@@ -50,8 +50,13 @@ if (true) {
                 args.push("-t", wastPath)
                 const ascOption = require("eosio-asc/src/ascoption.js");
                 let apiOption = new ascOption.APIOptionImpl();
-                process.exitCode = asc.main(args, apiOption);
-                apiOption.writeExtensionFile();
+                try {
+                    process.exitCode = asc.main(args, apiOption);
+                } catch(e) {
+                    throw e
+                } finally {
+                    apiOption.writeExtensionFile();
+                }
                 console.log(`Build Done. Targets generated. Target directory: ${path.join(dirname, "target")}.`);
             }
         });

@@ -25,6 +25,7 @@
     "build:table": "npx eosio-asc testtable.ts --target release",
     "build:asset": "npx eosio-asc testasset.ts --target release",
     "build:action": "npx eosio-asc testaction.ts --target release",
+    "build:contract": "npx eosio-asc ./testcontract/testcontract/testcontract.ts --target release",
     "build:mi": "npx eosio-asc testmi.ts --target release",
     "build:serializer": "npx eosio-asc testserializer.ts --target release",
     "build:crypto": "npx eosio-asc testcrypto.ts --target release",
@@ -52,7 +53,8 @@
     "test:variant": "yarn build:variant && run-ipyeos -m pytest -s -x test.py -k test_variant",
     "test:gencode": "yarn build:gencode && run-ipyeos -m pytest -s -x test.py -k test_gencode",
     "test:optional": "yarn build:optional && run-ipyeos -m pytest -s -x test.py -k test_optional",
-    "test:extension": "yarn build:extension && run-ipyeos -m pytest -s -x test.py -k test_binaryextension"
+    "test:extension": "yarn build:extension && run-ipyeos -m pytest -s -x test.py -k test_binaryextension",
+    "test:contract": "yarn build:contract && run-ipyeos -m pytest -s -x test.py -k test_contract"
   },
   "dependencies": {
     "@assemblyscript/loader": "^0.19.22",

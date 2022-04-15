@@ -95,6 +95,13 @@ var APIOptionImpl = /** @class */ (function () {
                 text_1 = modifySourceText(text_1, item);
             });
             let importLang = `import * as _chain from "as-chain";\n`;
+
+            // console.log("+++++++process.libPaths:", process.libPaths);
+            if (process.libPaths && text_1.indexOf("apply(") >= 0) {
+                process.libPaths.forEach((value, key) => {
+                    importLang += `import * as ${value} from '${key}';\n`
+                });    
+            }
             text_1 = importLang + text_1;
             text_1 = optimizeCode(text_1);
             sourceModifier.fileExtension.set(filename, text_1);
