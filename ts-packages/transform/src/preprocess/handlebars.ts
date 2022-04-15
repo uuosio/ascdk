@@ -61,7 +61,7 @@ function getClassInfoFromInnerName(name: string) {
     return info;
 }
 
-function parseTypeName(tp: NamedTypeNodeDef, isAction: boolean = false) {
+function parseTypeName(tp: NamedTypeNodeDef, isActionType: boolean = false) {
     let plainType = tp.plainTypeNode;
     if (!tp.current) {
         return "";
@@ -76,6 +76,10 @@ function parseTypeName(tp: NamedTypeNodeDef, isAction: boolean = false) {
     }
 
     if (!tp.current.isAny(CommonFlags.EXPORT)) {
+        return plainType;
+    }
+    
+    if (!isActionType) {
         return plainType;
     }
 
@@ -95,25 +99,23 @@ function parseTypeName(tp: NamedTypeNodeDef, isAction: boolean = false) {
             plainType = `${info.alias}.${info.name}`;
         }
     } else {
-        if (isAction) {
-            let info = getClassInfoFromInnerName(name);
-            nameSpaces.set(`./${info.path}`, info.alias);
-            plainType = `${info.alias}.${info.name}`;
-        }
+        let info = getClassInfoFromInnerName(name);
+        nameSpaces.set(`./${info.path}`, info.alias);
+        plainType = `${info.alias}.${info.name}`;
     }
 
     return plainType;
 }
 
-function generateTypeName(tp: NamedTypeNodeDef, isActionParam: boolean = false) {
+function generateTypeName(tp: NamedTypeNodeDef, isActionType: boolean = false) {
     if (tp.typeKind == TypeKindEnum.ARRAY) {
-        let typeArgName = parseTypeName(tp.typeArguments![0], isActionParam);
+        let typeArgName = parseTypeName(tp.typeArguments![0], isActionType);
         return `Array<${typeArgName}>`;
     } else {
         if (TypeHelper.isPrimitiveType(tp.typeKind)) {
             return tp.plainTypeNode;
         } else {
-            return parseTypeName(tp, isActionParam);
+            return parseTypeName(tp, isActionType);
         }
     }
 }
