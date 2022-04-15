@@ -147,7 +147,11 @@ def test_action():
 def test_contract():
     # info = chain.get_account('helloworld11')
     # logger.info(info)
-    (code, abi) = get_code_and_abi('testcontract')
+    with open('./testcontract/testcontract/target/testcontract.wasm', 'rb') as f:
+        code = f.read()
+    with open('./testcontract/testcontract/target/testcontract.abi', 'rb') as f:
+        abi = f.read()
+
     chain.deploy_contract('hello', code, abi, 0)
 
     args = {
