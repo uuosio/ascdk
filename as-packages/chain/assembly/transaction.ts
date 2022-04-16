@@ -41,11 +41,14 @@ export function transactionExpiration(): u32 {
     return env.expiration();
 }
 
-export function getAction(type: u32, index: u32): u8[] {
+export function getAction(type: u32, index: u32): Action {
     let size = env.get_action(type, index, 0, 0);
     let buff = new Array<u8>(size);
     env.get_action(type, index, buff.dataStart, buff.length);
-    return buff;
+
+    const action = new Action()
+    action.unpack(buff)
+    return action;
 }
 
 export function getContextFreeData(index: u32): u8[] {
