@@ -53,7 +53,7 @@ function getClassInfoFromInnerName(name: string) {
     info.name = path.parse(name).base
 
     info.path = path.dirname(name);
-    info.path = path.relative(process.relativePath, info.path);
+    info.path = path.relative(process.userEntryFilePath, info.path);
 
     info.alias = path.parse(info.path).base;
     info.alias = info.alias.replace('.', '_');

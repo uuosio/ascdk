@@ -50,13 +50,14 @@ export class ContractProgram {
     private resolveContract(): void {
         let countContract = 0;
 
-        this.program.elementsByName.forEach((element, _) => {
+        let values = this.program.elementsByName.values();
+        for (let it = values.next(); !it.done; it = values.next() ) {
+            let element = it.value;
             if (ElementUtil.isTopContractClass(element)) {
-                let relativePath = path.dirname(element.internalName);
-                relativePath = path.dirname(relativePath);
-                process.relativePath = relativePath;
+                process.userEntryFilePath = path.dirname(path.dirname(element.internalName));
+                break;
             }
-        });
+        }
 
         this.program.elementsByName.forEach((element, _) => {
             if (ElementUtil.isClass(element)) {
