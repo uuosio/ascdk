@@ -1,6 +1,6 @@
 {
   "name": "as-chain",
-  "version": "0.0.36",
+  "version": "0.0.37",
   "description": "chain module for assemblyscript",
   "main": "js/index.js",
   "types": "./types.d.ts",
