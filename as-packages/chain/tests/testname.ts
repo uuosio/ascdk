@@ -28,6 +28,9 @@ class MyContract extends Contract{
             check(!(a == b), "bad value"); 
         }
 
+        // Cases
+        check(Name.fromString(".") == new Name(), "Dot not equal");
+
         // Check suffix
         check(Name.fromString("eosio").suffix().toString() == "eosio", "bad value - suffix 1");
         check(Name.fromString("").suffix().toString() == "", "bad value - suffix 2");
@@ -36,6 +39,7 @@ class MyContract extends Contract{
         check(Name.fromString("a.b.c").suffix().toString() == "c", "bad value - suffix 5");
         check(Name.fromString("a.b.c.d").suffix().toString() == "d", "bad value - suffix 6");
         check(Name.fromString("a.b.c.d.e").suffix().toString() == "e", "bad value - suffix 7");
+        check(Name.fromString("..e").suffix().toString() == "e", "bad value - suffix 8");
 
         // Check prefix
         check(Name.fromString("eosio").prefix().toString() == "eosio", "bad value - prefix 1");
@@ -45,5 +49,6 @@ class MyContract extends Contract{
         check(Name.fromString("a.b.c").prefix().toString() == "a.b", "bad value - prefix 5");
         check(Name.fromString("a.b.c.d").prefix().toString() == "a.b.c", "bad value - prefix 6");
         check(Name.fromString("a.b.c.d.e").prefix().toString() == "a.b.c.d", "bad value - suffix 7");
+        check(Name.fromString("..e").prefix().toString() == "", "bad value - suffix 8");
     }
 }
