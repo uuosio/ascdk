@@ -1,5 +1,6 @@
 import { Decoder, Packer } from "./serializer";
 import { check } from "./system"
+
 const charToSymbol = (c: u16): u16 => {
     if (c >= 97 && c <= 122) {// c >= 'a' && c <= 'z'
         return (c - 97) + 6;
@@ -15,7 +16,7 @@ const charToSymbol = (c: u16): u16 => {
     return 0xffff;
 };
 
-export function S2N(s: string): u64 {
+function S2N(s: string): u64 {
     let value: u64 = 0;
     check(s.length <= 13, `Invalid name: ${s}`);
     for (let i=0; i<=12; i++) {
@@ -41,7 +42,7 @@ export function S2N(s: string): u64 {
 // ".12345abcdefghijklmnopqrstuvwxyz"
 const charmap: u8[] = [0x2e,0x31,0x32,0x33,0x34,0x35,0x61,0x62,0x63,0x64,0x65,0x66,0x67,0x68,0x69,0x6a,0x6b,0x6c,0x6d,0x6e,0x6f,0x70,0x71,0x72,0x73,0x74,0x75,0x76,0x77,0x78,0x79,0x7a];
 
-export function N2S(value: u64): string {
+function N2S(value: u64): string {
     // 13 dots
     let str = new Array<u8>(13);
     let tmp: u64 = value;
@@ -69,7 +70,7 @@ export function N2S(value: u64): string {
     return String.UTF8.decode(str.slice(0, i+1).buffer);
 }
 
-export function nameToSuffix(name: Name): Name {
+function nameToSuffix(name: Name): Name {
     let remainingBitsAfterLastActualDot: u32 = 0
     let tmp: u32 = 0
 
@@ -101,6 +102,38 @@ export function nameToSuffix(name: Name): Name {
     return new Name(nameValue)
 }
 
+
+function nameToPrefix(name: Name): Name {
+    const value = name.N
+
+    let result: u64 = value;
+    let not_dot_character_seen: boolean = false;
+    let mask: u64 = 0xF;
+
+    // Get characters one-by-one in name in order from right to left
+    for(let offset: i32 = 0; offset <= 59; ) {
+       const c = (value >> offset) & mask;
+
+       if( !c ) { // if this character is a dot
+          if(not_dot_character_seen) { // we found the rightmost dot character
+             result = (value >> offset) << offset;
+             break;
+          }
+       } else {
+          not_dot_character_seen = true;
+       }
+
+       if (offset == 0) {
+          offset += 4;
+          mask = <u64>(0x1F);
+       } else {
+          offset += 5;
+       }
+    }
+
+    return new Name(result);
+}
+
 export class Name implements Packer {
     N: u64;
 
@@ -122,6 +155,10 @@ export class Name implements Packer {
 
     suffix(): Name {
         return nameToSuffix(this)
+    }
+
+    prefix(): Name {
+        return nameToPrefix(this)
     }
 
     pack(): u8[] {
