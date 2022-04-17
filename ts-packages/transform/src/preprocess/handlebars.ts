@@ -15,7 +15,6 @@ import dedent from "ts-dedent"
 import process from "process"
 
 import { AstUtil } from "../utils/utils";
-import { type } from "os";
 import * as path from 'path'
 
 const WIN = process.platform === "win32";
