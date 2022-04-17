@@ -48,7 +48,7 @@ class MyContract extends Contract{
         check(Name.fromString("a.b").prefix().toString() == "a", "bad value - prefix 4");
         check(Name.fromString("a.b.c").prefix().toString() == "a.b", "bad value - prefix 5");
         check(Name.fromString("a.b.c.d").prefix().toString() == "a.b.c", "bad value - prefix 6");
-        check(Name.fromString("a.b.c.d.e").prefix().toString() == "a.b.c.d", "bad value - suffix 7");
-        check(Name.fromString("..e").prefix().toString() == "", "bad value - suffix 8");
+        check(Name.fromString("a.b.c.d.e").prefix().toString() == "a.b.c.d", "bad value - prefix 7");
+        check(Name.fromString("..e").prefix().toString() == "", "bad value - prefix 8");
     }
 }
