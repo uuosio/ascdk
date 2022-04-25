@@ -363,3 +363,15 @@ def test_binaryextension():
     r = chain.push_action('hello', 'testext2', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
     chain.produce_block()
+
+@chain_test
+def test_apply():
+    code, abi = get_code_and_abi('testapply')
+    chain.deploy_contract('hello', code, abi, 0)
+
+    args = {
+        'name': 'alice'
+    }
+    r = chain.push_action('hello', 'sayhello', args, {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])
+    chain.produce_block()

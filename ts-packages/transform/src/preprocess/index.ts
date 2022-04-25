@@ -129,7 +129,10 @@ export function getExtCodeInfo(contractInfo: ContractProgram): SourceModifier {
         sourceModifier.addModifyPoint(new ModifyPoint(variant.range, ModifyType.REPLACE, code));
     });
 
-    sourceModifier.addModifyPoint(new ModifyPoint(contractInfo.contract.range, ModifyType.APPEND, exportMain));
+    if (!contractInfo.hasApplyFunc) {
+        sourceModifier.addModifyPoint(new ModifyPoint(contractInfo.contract.range, ModifyType.APPEND, exportMain));
+    }
+
     sourceModifier.toModifyFileMap();
     return sourceModifier;
 }
