@@ -1,6 +1,8 @@
 import {
     ClassPrototype,
     Program,
+    ElementKind,
+    CommonFlags,
 } from "assemblyscript";
 
 import { ElementUtil } from "../utils/utils";
@@ -39,6 +41,7 @@ export class ContractProgram {
     variants: VariantInterpreter[] = [];
     customAbiTypes: SerializerInterpreter[] = [];
     allClasses: ClassInterpreter[] = [];
+    hasApplyFunc: boolean = false;
 
     public definedTypeMap: Map<string, NamedTypeNodeDef> = new Map<string, NamedTypeNodeDef>();
 
@@ -55,6 +58,17 @@ export class ContractProgram {
             let element = it.value;
             if (ElementUtil.isTopContractClass(element)) {
                 process.userEntryFilePath = path.dirname(path.dirname(element.internalName));
+                break;
+            }
+        }
+
+        values = this.program.elementsByName.values();
+        for (let it = values.next(); !it.done; it = values.next() ) {
+            let element = it.value;
+            if (element.name == "apply" && 
+                    element.kind == ElementKind.FUNCTION_PROTOTYPE &&
+                    (element.flags && CommonFlags.EXPORT) == CommonFlags.EXPORT) {
+                this.hasApplyFunc = true;
                 break;
             }
         }
