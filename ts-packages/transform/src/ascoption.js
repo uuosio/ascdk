@@ -131,6 +131,36 @@ var APIOptionImpl = /** @class */ (function () {
         }
     };
 
+    APIOptionImpl.prototype.writeGeneratedFile = function (outputDir) {
+        var sourceModifier = process.sourceModifier ? process.sourceModifier : new preprocess_1.SourceModifier();
+        for (let [filePath, extCodes] of sourceModifier.fileExtMap) {
+            if (filePath.startsWith("~lib")) {
+                continue;
+            }
+
+            let filename = path.basename(filePath);
+            let outputFile = path.join(outputDir, filename);
+
+            var text_1;
+            try {
+                text_1 = fs.readFileSync(filePath, "utf8");
+            } catch (e) {
+                // console.log(e);
+                return null;
+            }
+            extCodes.sort((a, b) => {
+                if (a.mode != b.mode) return a.mode - b.mode;
+                return (b.range.end - a.range.end); 
+            }).forEach(function (item) {
+                text_1 = modifySourceText(text_1, item);
+            });
+            let importLang = `import * as _chain from "as-chain";\n`;
+            text_1 = importLang + text_1;
+            text_1 = optimizeCode(text_1);
+            fs.writeFileSync(outputFile, text_1);
+        }
+    };
+
     return APIOptionImpl;
 }());
 exports.APIOptionImpl = APIOptionImpl;

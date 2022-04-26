@@ -128,6 +128,10 @@ export class ContractProgram {
             }
         });
 
+        if (!this.contract) {
+            return;
+        }
+
         if (countContract != 1) {
             throw new Error(`The entry file should contain only one '@contract', in fact it has ${countContract}`);
         }

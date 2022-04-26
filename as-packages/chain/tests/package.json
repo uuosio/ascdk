@@ -56,7 +56,8 @@
     "test:optional": "yarn build:optional && run-ipyeos -m pytest -s -x test.py -k test_optional",
     "test:extension": "yarn build:extension && run-ipyeos -m pytest -s -x test.py -k test_binaryextension",
     "test:contract": "yarn build:contract && run-ipyeos -m pytest -s -x test.py -k test_contract",
-    "test:apply": "yarn build:apply && run-ipyeos -m pytest -s -x test.py -k test_apply"
+    "test:apply": "yarn build:apply && run-ipyeos -m pytest -s -x test.py -k test_apply",
+    "test:transform": "npx eosio-asc gencode testtransform.ts -o ./target"
   },
   "dependencies": {
     "@assemblyscript/loader": "^0.19.22",
