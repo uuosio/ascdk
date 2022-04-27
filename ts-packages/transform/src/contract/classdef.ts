@@ -58,6 +58,17 @@ export class ClassInterpreter {
             ContractDecoratorKind.VARIANT,
         ];
 
+        if (this.classPrototype.interfacePrototypes) {
+            let hasPackerInterface = this.classPrototype.interfacePrototypes.find(x => {
+                return x.internalName == "~lib/as-chain/serializer/Packer" || 
+                    x.internalName == "~lib/as-chain/mi/MultiIndexValue";
+            });
+
+            if (hasPackerInterface) {
+                this.no_codegen = true;
+            }
+        }
+
         for (let i=0; i<classTypes.length; i++) {
             let kind = classTypes[i];
             this.decorator = AstUtil.getSpecifyDecorator(clzPrototype.declaration, kind);

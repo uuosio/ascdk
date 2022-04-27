@@ -105,8 +105,11 @@ var APIOptionImpl = /** @class */ (function () {
                 text_1 = modifySourceText(text_1, item);
             });
             let importLang = `import * as _chain from "as-chain";\n`;
+            if (text_1.indexOf(importLang) < 0) {
+                text_1 = importLang + text_1;
+            }
 
-            // console.log("+++++++process.libPaths:", process.libPaths);
+            importLang = "";
             if (process.libPaths && text_1.indexOf("apply(") >= 0) {
                 process.libPaths.forEach((value, key) => {
                     importLang += `import * as ${value} from '${key}';\n`
@@ -155,7 +158,9 @@ var APIOptionImpl = /** @class */ (function () {
                 text_1 = modifySourceText(text_1, item);
             });
             let importLang = `import * as _chain from "as-chain";\n`;
-            text_1 = importLang + text_1;
+            if (text_1.indexOf(importLang) < 0) {
+                text_1 = importLang + text_1;
+            }
             text_1 = optimizeCode(text_1);
             fs.writeFileSync(outputFile, text_1);
         }

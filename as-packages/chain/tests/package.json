@@ -38,6 +38,7 @@
     "build:optional": "npx eosio-asc testoptional.ts --target release",
     "build:extension": "npx eosio-asc testbinaryextension.ts --target release",
     "build:apply": "npx eosio-asc testapply.ts --target release",
+    "build:nocodegen": "npx eosio-asc testnocodegen.ts --target release",
     "test-all": "yarn build && run-ipyeos -m pytest -s -x test.py",
     "test:name": "yarn build:name && run-ipyeos -m pytest -s -x test.py -k test_name",
     "test:publickey": "yarn build:publickey && run-ipyeos -m pytest -s -x test.py -k test_publickey",
@@ -57,6 +58,7 @@
     "test:extension": "yarn build:extension && run-ipyeos -m pytest -s -x test.py -k test_binaryextension",
     "test:contract": "yarn build:contract && run-ipyeos -m pytest -s -x test.py -k test_contract",
     "test:apply": "yarn build:apply && run-ipyeos -m pytest -s -x test.py -k test_apply",
+    "test:nocodegen": "yarn build:nocodegen && run-ipyeos -m pytest -s -x test.py -k test_nocodegen",
     "test:transform": "npx eosio-asc gencode testtransform.ts -o ./target"
   },
   "dependencies": {

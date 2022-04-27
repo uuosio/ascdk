@@ -375,3 +375,16 @@ def test_apply():
     r = chain.push_action('hello', 'sayhello', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
     chain.produce_block()
+
+@chain_test
+def test_nocodegen():
+    code, abi = get_code_and_abi('testnocodegen')
+    chain.deploy_contract('hello', code, abi, 0)
+
+    args = {
+        "a1": {"a": 123},
+        "a2": {"aaa": 123, "bbb": 456},
+    }
+    r = chain.push_action('hello', 'testnogen', args, {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])
+    chain.produce_block()
