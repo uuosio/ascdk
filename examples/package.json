@@ -19,7 +19,7 @@
     "assemblyscript"
   ],
   "scripts": {
-    "test-all": "yarn build && run-ipyeos -m pytest -s -x test.py",
+    "test-all": "yarn build && yarn test:mixinproxy && yarn test:config && run-ipyeos -m pytest -s -x test.py",
     "test:allow": "yarn build:allow && run-ipyeos -m pytest -s -x test.py -k test_allow",
     "test:hello": "yarn build:hello && run-ipyeos -m pytest -s -x test.py -k test_hello",
     "test:inlineaction": "yarn build:inlineaction && run-ipyeos -m pytest -s -x test.py -k test_action",
@@ -43,7 +43,8 @@
     "build:escrow": "npx eosio-asc ./escrow/escrow.contract.ts",
     "build:allow": "npx eosio-asc ./allow/allow.contract.ts",
     "build:balance": "npx eosio-asc ./balance/balance.contract.ts",
-    "test:mixinproxy": "yarn --cwd ./mixinproxy test"
+    "test:mixinproxy": "yarn --cwd ./mixinproxy test",
+    "test:config": "yarn --cwd ./config test"
   },
   "dependencies": {
     "@assemblyscript/loader": "^0.19.22",
