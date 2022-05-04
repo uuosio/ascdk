@@ -989,16 +989,10 @@ array-unique@^0.3.2:
   resolved "https://registry.npmjs.org/array-unique/-/array-unique-0.3.2.tgz"
   integrity sha1-qJS3XUvE9s1nnvMkSp/Y9Gri1Cg=
 
-as-bignum@^0.2.18:
-  version "0.2.18"
-  resolved "https://registry.npmjs.org/as-bignum/-/as-bignum-0.2.18.tgz"
-  integrity sha512-5LODrOr7wvS643oh7PHfyRtbBO9vCcU69vNNvrqh5yovrApM9nRHDeT5XcqnaSI8TqK9ZhN12qhZnq4rdIGcwQ==
-
 as-chain@./as-packages/chain:
   version "0.0.2"
   dependencies:
     "@assemblyscript/loader" "^0.19.22"
-    as-bignum "^0.2.18"
 
 assemblyscript@0.18:
   version "0.18.32"
