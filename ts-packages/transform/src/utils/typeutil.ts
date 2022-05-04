@@ -10,7 +10,7 @@ export class TypeHelper {
 
     static nativeType = ["i8", "i16", "i32", "i64", "u8", "u16", "u32", "u64", "boolean"];
 
-    static bigNumType = ["u128", "i128"];
+    static bigNumType = ["U128", "I128", "U256"];
 
     static bigNumCodecType = ["UInt128", "Int128"];
 
