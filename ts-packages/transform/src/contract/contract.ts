@@ -237,37 +237,29 @@ export class ContractProgram {
             return tp;
         }
 
-        let cls = <ClassInterpreter>this.optionals.find(x => {
-            return x.className == type.plainType;
-        });
-
-        if (cls) {
-            if (cls.className == "Optional") {
-                let typeName = type.typeArguments![0].plainTypeNode;
-                let tp = TypeHelper.primitiveToAbiMap.get(typeName)!;
-                if (tp) {
-                    return tp + "?";
-                }
-                return typeName + "?";
+        if (type.plainType == "Optional" || type.plainType == "OptionalNumber") {
+            let typeName = type.typeArguments![0].plainTypeNode;
+            let tp = TypeHelper.primitiveToAbiMap.get(typeName)!;
+            if (tp) {
+                return tp + "?";
             }
+            return typeName + "?";
         }
 
-        cls = <ClassInterpreter>this.binaryExtensions.find(x => {
-            return x.className == type.plainType;
-        });
-
-        if (cls) {
-            if (cls.className == "BinaryExtension") {
-                let typeName = type.typeArguments![0].plainTypeNode;
-                let tp = TypeHelper.primitiveToAbiMap.get(typeName)!;
-                if (tp) {
-                    return tp + "$";
-                }
-                return typeName + "$";
-            }
+        if (type.plainType == "OptionalString") {
+            return "string?";
         }
 
-        cls = <ClassInterpreter>this.allClasses.find(x => {
+        if (type.plainType == "BinaryExtension") {
+            let typeName = type.typeArguments![0].plainTypeNode;
+            let tp = TypeHelper.primitiveToAbiMap.get(typeName)!;
+            if (tp) {
+                return tp + "$";
+            }
+            return typeName + "$";
+        }
+
+        let cls = <ClassInterpreter>this.allClasses.find(x => {
             return x.className == plainType;
         });
 

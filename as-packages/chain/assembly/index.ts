@@ -10,7 +10,7 @@ export { IDXF128 } from "./idxf128";
 export { IDX128 } from "./idx128";
 export { IDX256 } from "./idx256";
 export { VariantValue } from "./variant";
-export { Optional } from "./optional";
+export { Optional, OptionalNumber, OptionalString } from "./optional";
 export { BinaryExtension } from "./binaryextension";
 
 export {

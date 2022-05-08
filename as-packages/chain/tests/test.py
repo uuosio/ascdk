@@ -327,7 +327,11 @@ def test_optional():
         'a2': '1.0000 EOS',
         'a3': {'a': 1234},
         'a4': '4.0000 EOS',
+        'a5': {'a1': '5.0000 EOS', 'a2': 123, 'a3': 'hello'},
+        'a6': 123,
+        'a7': "hello",
     }
+
     r = chain.push_action('hello', 'testopt', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
     chain.produce_block()
