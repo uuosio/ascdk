@@ -2,6 +2,7 @@ import {
     Name,
     Asset,
     Symbol,
+    SymbolCode,
     Encoder,
     Decoder,
     VarUint32,
@@ -125,12 +126,12 @@ class MyContract extends Contract{
         a25: Checksum512,
         a26: PublicKey,
         a27: Signature,
-        // a28: Symbol,
-        // a29: SymbolCode,
+        a28: Symbol,
+        a29: SymbolCode,
         a30: Asset,
         a31: ExtendedAsset,
         a32: string[],
-    ): void {     
+    ): void {
         {
             let data = Utils.hexToBytes('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABB');
             let _a23 = new Checksum160();
@@ -167,6 +168,9 @@ class MyContract extends Contract{
 
         check(a13 == new VarUint32(0xfff), "bad a13 value.");
         check(a20 == Name.fromString("alice"), "bad a20 value");
+        check(a28 == new Symbol("EOS", 4), "bad value a28");
+        check(a29 == new SymbolCode("EOS"), "bad value a29");
+
         printString(`
         a1 = ${a1},
         a2 = ${a2},

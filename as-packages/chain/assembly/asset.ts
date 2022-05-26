@@ -31,6 +31,48 @@ export function isValid(sym: u64): bool {
     return true;
 }
 
+export class SymbolCode implements Packer {
+    public value: u64;
+
+    constructor(name: string="") {
+        check(name.length <= 7, "bad symbol name");
+        this.value = 0;
+        for (let i=0; i<name.length; i++) {
+            let v: u64 = <u64>name.charCodeAt(name.length-1-i);
+            check(v >= 65 && v <= 90, "Invalid character");
+            this.value <<= 8;
+            this.value |= v;
+        }
+    }
+
+    pack(): u8[] {
+        let enc = new Encoder(8);
+        enc.packNumber<u64>(this.value);
+        return enc.getBytes();
+    }
+
+    unpack(data: u8[]): usize {
+        let dec = new Decoder(data);
+        this.value = dec.unpackNumber<u64>();
+        check(isValid(this.value), "invalid symbol");
+        return dec.getPos();
+    }
+
+    getSize(): usize {
+        return 8;
+    }
+
+    @inline @operator('==')
+    static eq(a: SymbolCode, b: SymbolCode): bool {
+      return a.value == b.value;
+    }
+
+    @inline @operator('!=')
+    static neq(a: SymbolCode, b: SymbolCode): bool {
+      return a.value != b.value;
+    }
+}
+
 export class Symbol implements Packer {
     public value: u64;
 
