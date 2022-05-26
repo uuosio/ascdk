@@ -41,6 +41,8 @@ class MyContract extends Contract {
         a5: MyClass,
         a6: OptionalNumber<u64>,
         a7: OptionalString,
+        a8: OptionalNumber<u64>,
+        a9: OptionalString,
     ): void {
         check(!a1.value, "bad value 1");
         check(a2.value == new Asset(10000, new Symbol("EOS", 4)), "bad value 2");
@@ -51,6 +53,8 @@ class MyContract extends Contract {
         check(a5.a3.value == "hello", "bad value a5.a3");
         check(a6.value == 123, "bad value 6");
         check(a7.value == "hello", "bad value ");
+        check(!a8.hasValue, "bad value ");
+        check(!a9.hasValue, "bad value ");
         {
             let a5 = new Optional<Asset>(new Asset(10000, new Symbol("EOS", 4)));
             let data = a5.pack();
