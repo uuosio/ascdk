@@ -1,5 +1,4 @@
-import { Name, Table, PermissionLevel } from "as-chain"
-import { logescrow } from "./escrow.constants";
+import { Name, Table, PermissionLevel, InlineAction } from "as-chain"
 import { Escrow } from "./escrow.tables";
 
 /* LogEscrow is a table that contains a single escrow and its status */
@@ -12,6 +11,8 @@ export class LogEscrow extends Table {
         super();
     }
 }
+
+export const logescrow = new InlineAction<LogEscrow>("logescrow");
 
 /**
  * Send a logescrow action to the blockchain

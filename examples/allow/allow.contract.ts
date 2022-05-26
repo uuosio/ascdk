@@ -1,5 +1,4 @@
 import { Name, Singleton, Contract, check, requireAuth, MultiIndex, SAME_PAYER } from 'as-chain'
-import { allow, allowactor, blockactor, setpaused } from './allow.constants';
 import { AllowedActor, Paused } from './allow.tables';
 
 enum UpdateFields {
@@ -19,7 +18,7 @@ export class AllowContract extends Contract {
      * Set the paused state of the contract
      * @param {boolean} isPaused - boolean
      */
-    @action(setpaused)
+    @action("setpaused")
     setpaused(
         isPaused: boolean
     ): void {
@@ -37,7 +36,7 @@ export class AllowContract extends Contract {
      * @param {Name} actor - Name
      * @param {boolean} isAllowed - boolean
      */
-    @action(allowactor)
+    @action("allowactor")
     allowactor(
         actor: Name,
         isAllowed: boolean
@@ -51,7 +50,7 @@ export class AllowContract extends Contract {
      * @param {Name} actor - Name
      * @param {boolean} isBlocked - boolean
      */
-    @action(blockactor)
+    @action("blockactor")
     blockactor(
         actor: Name,
         isBlocked: boolean

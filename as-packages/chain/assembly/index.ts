@@ -61,7 +61,7 @@ export {
 export { MultiIndex, MultiIndexValue, SAME_PAYER } from "./mi";
 export { Singleton } from "./singleton";
 
-export {Contract, ActionWrapper, Table, InlineAction, Variant} from "./helpers"
+export {Contract, Table, InlineAction, ActionData, Variant} from "./helpers"
 
 export {
     getSender,

@@ -1,6 +1,6 @@
 import { ExtendedAsset, unpackActionData, Name, check, requireAuth, MultiIndex, SAME_PAYER } from 'as-chain'
+import { atomicassets } from '../atomicassets/atomicassets.constants';
 import { AllowContract } from '../allow';
-import { transfer, atomicassets, withdraw, balance } from './balance.constants';
 import { sendTransferTokens, sendTransferNfts, NftTransfer, TokenTransfer } from './balance.inline';
 import { Account } from './balance.tables';
 import { addNfts, addTokens, OPERATION, substractNfts, substractTokens } from './balance.utils';
@@ -15,7 +15,7 @@ export class BalanceContract extends AllowContract {
      * - Else, the action data is a token transfer
      * @returns Nothing.
      */
-    @action(transfer, notify)
+    @action("transfer", notify)
     transfer(): void {
         // Pre-conditions
         this.checkContractIsNotPaused()
@@ -67,7 +67,7 @@ export class BalanceContract extends AllowContract {
      * @param {ExtendedAsset[]} tokens - An array of `ExtendedAsset` objects.
      * @param {u64[]} nfts - u64[]
      */
-    @action(withdraw)
+    @action("withdraw")
     withdraw(
         actor: Name,
         tokens: ExtendedAsset[],

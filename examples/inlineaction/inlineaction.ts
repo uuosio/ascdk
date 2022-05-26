@@ -1,4 +1,4 @@
-import { Contract, PermissionLevel, printString, ActionWrapper, Asset, Symbol, Table } from "as-chain"
+import { Contract, PermissionLevel, printString, InlineAction, Asset, Symbol, Table } from "as-chain"
 
 @packer
 class SayGoodbye extends Table {
@@ -10,11 +10,9 @@ class SayGoodbye extends Table {
         super()
     }
 }
-
 @contract
-class InlineAction extends Contract {
-    static sayGoodbyeAW: ActionWrapper = ActionWrapper.fromString("saygoodbye");
-    static sayHelloAW: ActionWrapper = ActionWrapper.fromString("sayhello");
+class InlineActionContract extends Contract {
+    static sayGoodbyeIA: InlineAction<SayGoodbye> = new InlineAction<SayGoodbye>("saygoodbye");
     
     @action("saygoodbye")
     sayGoodbye(name: string, asset: Asset, num: u64): void {
@@ -23,7 +21,7 @@ class InlineAction extends Contract {
     
     @action("sayhello")
     sayHello(name: string): void {
-        const action = InlineAction.sayGoodbyeAW.act(this.receiver, new PermissionLevel(this.receiver))
+        const action = InlineActionContract.sayGoodbyeIA.act(this.receiver, new PermissionLevel(this.receiver))
         const actionParams = new SayGoodbye('alice', new Asset(0, new Symbol("EOS", 4)), 4)
         action.send(actionParams)
         printString(`hello, ${name}\n`)
