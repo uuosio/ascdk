@@ -12,7 +12,7 @@ export class LogEscrow extends Table {
     }
 }
 
-export const logescrow = InlineAction.fromString<LogEscrow>("logescrow");
+export const logescrow = new InlineAction<LogEscrow>("logescrow");
 
 /**
  * Send a logescrow action to the blockchain

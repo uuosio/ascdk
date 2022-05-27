@@ -27,8 +27,8 @@ export class NftTransfer extends Table {
     }
 }
 
-export const tokenTransfer = InlineAction.fromString<TokenTransfer>("transfer")
-export const nftTransfer = InlineAction.fromString<NftTransfer>("transfer")
+export const tokenTransfer = new InlineAction<TokenTransfer>("transfer")
+export const nftTransfer = new InlineAction<NftTransfer>("transfer")
 
 /**
  * Send tokens from one account to another
