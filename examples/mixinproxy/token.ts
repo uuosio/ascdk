@@ -3,14 +3,14 @@ import {
     Asset,
     Action,
     PermissionLevel,
-    InlineAction
+    ActionData
 } from "as-chain"
 
 export const MIXIN_WTOKENS: Name = Name.fromString("mixinwtokens");
 export const MAX_SUPPLY: i64 = 100000000000000;
 
 @packer
-export class Create extends InlineAction {
+export class Create extends ActionData {
     constructor(
         public issuer: Name = new Name(),
         public maximum_supply: Asset = new Asset(),
@@ -28,7 +28,7 @@ export class Create extends InlineAction {
 }
 
 @packer
-export class Issue extends InlineAction {
+export class Issue extends ActionData {
     constructor(
         public to: Name = new Name(),
         public quantity: Asset = new Asset(),
@@ -48,7 +48,7 @@ export class Issue extends InlineAction {
 }
 
 @packer
-export class Retire extends InlineAction {
+export class Retire extends ActionData {
     constructor(
         public quantity: Asset = new Asset(),
         public memo: string = "",
@@ -66,7 +66,7 @@ export class Retire extends InlineAction {
 }
 
 @packer
-export class Transfer extends InlineAction {
+export class Transfer extends ActionData {
     constructor(
         public from: Name = new Name(),
         public to: Name = new Name(),

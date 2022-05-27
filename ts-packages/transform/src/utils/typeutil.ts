@@ -10,7 +10,7 @@ export class TypeHelper {
 
     static nativeType = ["i8", "i16", "i32", "i64", "u8", "u16", "u32", "u64", "boolean"];
 
-    static bigNumType = ["u128", "i128"];
+    static bigNumType = ["u128", "i128", "u256"];
 
     static bigNumCodecType = ["UInt128", "Int128"];
 
@@ -146,7 +146,6 @@ export class TypeHelper {
      */
     static isPrimitiveType(type: TypeKindEnum): boolean {
         return type == TypeKindEnum.NUMBER
-            || type == TypeKindEnum.BIG_NUM
             || type == TypeKindEnum.STRING;
     }
 
@@ -176,9 +175,6 @@ export class TypeHelper {
         }
         if (TypeHelper.nativeType.includes(typeName)) {
             return TypeKindEnum.NUMBER;
-        }
-        if (TypeHelper.bigNumType.includes(typeName)) {
-            return TypeKindEnum.BIG_NUM;
         }
         return null;
     }

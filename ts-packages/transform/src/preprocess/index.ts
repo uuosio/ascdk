@@ -61,33 +61,39 @@ export class SourceModifier {
 // Write text (also fallback)
 export function getExtCodeInfo(contractInfo: ContractProgram): SourceModifier {
     let sourceModifier = new SourceModifier();
-    if (!contractInfo.contract) {
-        throw Error("Not found annotation @contract that indicate contract!");
+    // if (!contractInfo.contract) {
+    //     throw Error("Not found annotation @contract that indicate contract!");
+    // }
+    if (contractInfo.contract) {
+        const render = Handlebars.compile(mainTpl);
+        const exportMain = render(contractInfo);
+
+        contractInfo.contract.actionFuncDefs.forEach(item => {
+            let msgFun = <ActionFunctionDef>item;
+            if (msgFun.messageDecorator.mutates == "false") {
+                let body = msgFun.bodyRange.toString();
+                body = body.replace(/{/i, `{\n  ${CONFIG.scope}Storage.mode = ${CONFIG.scope}StoreMode.R;`);
+                sourceModifier.addModifyPoint(new ModifyPoint(msgFun.bodyRange, ModifyType.REPLACE, body));
+            }
+        });
+
+        contractInfo.contract.actionFuncDefs.forEach(message => {
+            let code = Handlebars.compile(actionTpl)(message);
+            sourceModifier.addModifyPoint(new ModifyPoint(contractInfo.contract.range, ModifyType.APPEND, code));
+        });
+
+        contractInfo.contract.actionFuncDefs.forEach(message => {
+            let _message = <ActionFunctionDef>message;
+            let actionName = _message.messageDecorator.actionName;
+            if (!EosioUtils.isValidName(actionName)) {
+                throw new Error(`Invalid action name: ${actionName}. Trace: ${RangeUtil.location(message.declaration.range)}`);
+            }
+        });
+
+        if (!contractInfo.hasApplyFunc) {
+            sourceModifier.addModifyPoint(new ModifyPoint(contractInfo.contract.range, ModifyType.APPEND, exportMain));
+        }
     }
-    const render = Handlebars.compile(mainTpl);
-    const exportMain = render(contractInfo);
-
-    contractInfo.contract.actionFuncDefs.forEach(item => {
-        let msgFun = <ActionFunctionDef>item;
-        if (msgFun.messageDecorator.mutates == "false") {
-            let body = msgFun.bodyRange.toString();
-            body = body.replace(/{/i, `{\n  ${CONFIG.scope}Storage.mode = ${CONFIG.scope}StoreMode.R;`);
-            sourceModifier.addModifyPoint(new ModifyPoint(msgFun.bodyRange, ModifyType.REPLACE, body));
-        }
-    });
-
-    contractInfo.contract.actionFuncDefs.forEach(message => {
-        let code = Handlebars.compile(actionTpl)(message);
-        sourceModifier.addModifyPoint(new ModifyPoint(contractInfo.contract.range, ModifyType.APPEND, code));
-    });
-
-    contractInfo.contract.actionFuncDefs.forEach(message => {
-        let _message = <ActionFunctionDef>message;
-        let actionName = _message.messageDecorator.actionName;
-        if (!EosioUtils.isValidName(actionName)) {
-            throw new Error(`Invalid action name: ${actionName}. Trace: ${RangeUtil.location(message.declaration.range)}`);
-        }
-    });
 
     contractInfo.tables.forEach(table => {
         if (table.no_codegen) {
@@ -128,10 +134,6 @@ export function getExtCodeInfo(contractInfo: ContractProgram): SourceModifier {
         let code = Handlebars.compile(variantTpl)(variant);
         sourceModifier.addModifyPoint(new ModifyPoint(variant.range, ModifyType.REPLACE, code));
     });
-
-    if (!contractInfo.hasApplyFunc) {
-        sourceModifier.addModifyPoint(new ModifyPoint(contractInfo.contract.range, ModifyType.APPEND, exportMain));
-    }
 
     sourceModifier.toModifyFileMap();
     return sourceModifier;

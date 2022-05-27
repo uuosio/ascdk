@@ -19,7 +19,7 @@
     "assemblyscript"
   ],
   "scripts": {
-    "test-all": "yarn build && run-ipyeos -m pytest -s -x test.py",
+    "test-all": "yarn build && yarn test:mixinproxy && yarn test:config && run-ipyeos -m pytest -s -x test.py",
     "test:allow": "yarn build:allow && run-ipyeos -m pytest -s -x test.py -k test_allow",
     "test:hello": "yarn build:hello && run-ipyeos -m pytest -s -x test.py -k test_hello",
     "test:inlineaction": "yarn build:inlineaction && run-ipyeos -m pytest -s -x test.py -k test_action",
@@ -30,10 +30,10 @@
     "test:eosio.token": "yarn build:eosio.token && run-ipyeos -m pytest -s -x test.py -k test_token",
     "test:escrow": "yarn build:escrow && run-ipyeos -m pytest -s -x test.py -k test_escrow",
     "test:balance": "yarn build:balance && yarn build:receiver && run-ipyeos -m pytest -s -x test.py -k test_balance",
-    "test:mixinproxy": "yarn build:mixinproxy && run-ipyeos -m pytest -s -x mixinproxy/tests/testmixinproxy.py",
+    "test:mixinproxy": "yarn --cwd ./mixinproxy test",
+    "test:config": "yarn --cwd ./config test",
 
     "build": "run-p build:* --max-parallel 3",
-    "build:mixinproxy": "npx eosio-asc ./mixinproxy/mixinproxy.ts",
     "build:hello": "npx eosio-asc ./hello/hello.ts",
     "build:inlineaction": "npx eosio-asc ./inlineaction/inlineaction.ts",
     "build:counter": "npx eosio-asc ./counter/counter.ts",
@@ -48,7 +48,6 @@
   },
   "dependencies": {
     "@assemblyscript/loader": "^0.19.22",
-    "as-bignum": "^0.2.18",
     "as-chain": "./as-packages/chain"
   },
   "devDependencies": {

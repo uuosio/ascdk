@@ -42,7 +42,7 @@ import {
     ErrorTxEvent,
     TotalFee,
     TransferFee,    
-} from "./tables"
+} from "./generated/tables"
 
 import {
     Create,
@@ -57,7 +57,7 @@ import {
 import {
     TxRequest,
     ErrorMessage
-} from "./structs";
+} from "./generated/structs";
 
 const MTG_XIN: Name       = Name.fromString("mtgxinmtgxin")
 

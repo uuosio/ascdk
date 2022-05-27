@@ -1,5 +1,5 @@
-import { Name, Asset, Table, ExtendedAsset, PermissionLevel } from "as-chain"
-import { atomicassets, transfer } from "./balance.constants";
+import { Name, Asset, Table, InlineAction, ExtendedAsset, PermissionLevel } from "as-chain"
+import { atomicassets } from "./balance.constants";
 
 /* This is a class that represents a transfer of token */
 @packer
@@ -27,6 +27,9 @@ export class NftTransfer extends Table {
     }
 }
 
+export const tokenTransfer = new InlineAction<TokenTransfer>("transfer")
+export const nftTransfer = new InlineAction<NftTransfer>("transfer")
+
 /**
  * Send tokens from one account to another
  * @param {Name} from - Name of the account to transfer tokens from.
@@ -36,7 +39,7 @@ export class NftTransfer extends Table {
  */
 export function sendTransferTokens(from: Name, to: Name, tokens: ExtendedAsset[], memo: string): void {
     for (let i = 0; i < tokens.length; i++) {
-        const action = transfer.act(tokens[i].contract, new PermissionLevel(from))
+        const action = tokenTransfer.act(tokens[i].contract, new PermissionLevel(from))
         const actionParams = new TokenTransfer(from, to, tokens[i].quantity, memo)
         action.send(actionParams)
     }
@@ -51,7 +54,7 @@ export function sendTransferTokens(from: Name, to: Name, tokens: ExtendedAsset[]
  */
 export function sendTransferNfts(from: Name, to: Name, nfts: u64[], memo: string): void {
     if (nfts.length > 0) {
-        const action = transfer.act(atomicassets, new PermissionLevel(from))
+        const action = nftTransfer.act(atomicassets, new PermissionLevel(from))
         const actionParams = new NftTransfer(from, to, nfts, memo)
         action.send(actionParams)
     }

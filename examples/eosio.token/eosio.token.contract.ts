@@ -1,10 +1,9 @@
 import { Name, Asset, Symbol, check, requireAuth, hasAuth, isAccount, requireRecipient, SAME_PAYER, Contract } from 'as-chain'
-import { token, create, issue, retire, transfer, open, close } from './eosio.token.constants';
 import { Account, Stat } from './eosio.token.tables';
 
 @contract
 class TokenContract extends Contract {
-    @action(create)
+    @action("create")
     create(issuer: Name, maximum_supply: Asset): void {
         requireAuth(this.receiver);
 
@@ -20,7 +19,7 @@ class TokenContract extends Contract {
         statstable.store(value, this.receiver);
     }
 
-    @action(issue)
+    @action("issue")
     issue(to: Name, quantity: Asset, memo: string): void {
         const sym = quantity.symbol;
         check(sym.isValid(), "invalid symbol name");
@@ -44,7 +43,7 @@ class TokenContract extends Contract {
         this.addBalance(st.issuer, quantity, st.issuer);
     }
 
-    @action(retire)
+    @action("retire")
     retire(quantity: Asset, memo: string): void {
         const sym = quantity.symbol;
         check(sym.isValid(), "invalid symbol name");
@@ -66,7 +65,7 @@ class TokenContract extends Contract {
         this.subBalance(st.issuer, quantity);
     }
 
-    @action(transfer)
+    @action("transfer")
     transfer(from: Name, to: Name, quantity: Asset, memo: string): void {
         check(from != to, "cannot transfer to self");
         requireAuth(from);
@@ -115,7 +114,7 @@ class TokenContract extends Contract {
         }
     }
 
-    @action(open)
+    @action("open")
     open(owner: Name, symbol: Symbol, ram_payer: Name): void {
         requireAuth(ram_payer);
 
@@ -134,7 +133,7 @@ class TokenContract extends Contract {
         }
     }
 
-    @action(close)
+    @action("close")
     close(owner: Name, symbol: Symbol): void {
         requireAuth(owner);
         const acnts = Account.getTable(this.receiver, owner)

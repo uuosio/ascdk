@@ -16,6 +16,7 @@
     "as-chain": "0.0.40",
     "assemblyscript": "0.18",
     "handlebars": "4.7.7",
-    "ts-dedent": "^2.2.0"
+    "ts-dedent": "^2.2.0",
+    "yargs": "^17.4.1"
   }
 }

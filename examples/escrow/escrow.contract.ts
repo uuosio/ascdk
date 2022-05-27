@@ -1,6 +1,6 @@
 import { currentTimePoint, ExtendedAsset, Name, check, requireAuth, isAccount, hasAuth, requireRecipient, SAME_PAYER, MultiIndex } from 'as-chain'
 import { BalanceContract, OPERATION, sendTransferNfts, sendTransferTokens } from '../balance';
-import { startescrow, fillescrow, cancelescrow, logescrow, ESCROW_STATUS } from './escrow.constants';
+import { ESCROW_STATUS } from './escrow.constants';
 import { sendLogEscrow } from './escrow.inline';
 import { Global, Escrow, escrow } from './escrow.tables';
 
@@ -8,7 +8,7 @@ import { Global, Escrow, escrow } from './escrow.tables';
 class EscrowContract extends BalanceContract {
     escrowsTable: MultiIndex<Escrow> = Escrow.getTable(this.receiver)
 
-    @action(startescrow)
+    @action("startescrow")
     startescrow(
         from: Name,
         to: Name,
@@ -53,7 +53,7 @@ class EscrowContract extends BalanceContract {
         sendLogEscrow(this.receiver, newEscrow, ESCROW_STATUS.START);
     }
 
-    @action(fillescrow)
+    @action("fillescrow")
     fillescrow(
         fulfiller: Name,
         id: u64
@@ -83,7 +83,7 @@ class EscrowContract extends BalanceContract {
         this.escrowsTable.remove(escrowItr);
     }
 
-    @action(cancelescrow)
+    @action("cancelescrow")
     cancelescrow(
         id: u64
     ): void {
@@ -103,7 +103,7 @@ class EscrowContract extends BalanceContract {
         this.escrowsTable.remove(escrowItr);
     }
 
-    @action(logescrow)
+    @action("logescrow")
     logescrow(
         escrow: escrow,
         status: string

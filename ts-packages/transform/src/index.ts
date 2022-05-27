@@ -22,14 +22,18 @@ export class ContractTransform extends Transform {
             }
         }
         const info = getContractInfo(program);
+        const out = preprocess.getExtCodeInfo(info);
+        process.sourceModifier = out;
+        if (!info.contract) {
+            return;
+        }
+
         const internalPath = info.contract.classPrototype.internalName.split('/')
         const internalFolder = internalPath.slice(0, internalPath.length - 2)
         const internalFile = internalPath[internalPath.length - 2]
         const abi = preprocess.getAbiInfo(info);
-        const out = preprocess.getExtCodeInfo(info);
         const baseDir = path.join(...internalFolder, "target");
         out.entryDir = baseDir;
-        process.sourceModifier = out;
         const abiPath = path.join(internalFolder.map(_ => '..').join(path.sep), '..', baseDir, `${internalFile}.abi`);
         console.log("++++++writeFile:", abiPath);
         this.writeFile(abiPath, abi, baseDir);

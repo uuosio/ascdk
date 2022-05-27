@@ -10,7 +10,7 @@ export { IDXF128 } from "./idxf128";
 export { IDX128 } from "./idx128";
 export { IDX256 } from "./idx256";
 export { VariantValue } from "./variant";
-export { Optional } from "./optional";
+export { Optional, OptionalNumber, OptionalString } from "./optional";
 export { BinaryExtension } from "./binaryextension";
 
 export {
@@ -61,7 +61,7 @@ export {
 export { MultiIndex, MultiIndexValue, SAME_PAYER } from "./mi";
 export { Singleton } from "./singleton";
 
-export {Contract, ActionWrapper, Table, InlineAction, Variant} from "./helpers"
+export {Contract, Table, InlineAction, ActionData, Variant} from "./helpers"
 
 export {
     getSender,
@@ -79,7 +79,7 @@ export {
 
 export { Name } from "./name";
 export { Action, PermissionLevel } from "./action";
-export { Asset, ExtendedAsset, Symbol, ExtendedSymbol, isValid } from "./asset";
+export { Asset, ExtendedAsset, Symbol, SymbolCode, ExtendedSymbol, isValid } from "./asset";
 
 export {
     sendDeferred,

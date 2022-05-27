@@ -13,7 +13,7 @@ import {
     Authority,
     PermissionLevelWeight,
     BuyRamBytes,
-} from "./structs"
+} from "./generated/structs"
 
 const RAM_BYTES = u32(3 * 1024)
 

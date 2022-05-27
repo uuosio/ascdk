@@ -97,8 +97,8 @@ def test_1serializer():
         a25 = 'aa'*63 + 'bb', #: Checksum512,
         a26 = 'PUB_K1_11DsZ6Lyr1aXpm9aBqqgV4iFJpNbSw5eE9LLTwNAxqjJgXSdB8', #PublicKey,
         a27 = 'SIG_K1_KXdabr1z4G6e2o2xmi7jPhzxH3Lj5igjR5v3q9LY7KbLWyXBZyES748bPzfM2MhQQVsLrouJzXT9YFfw1CywzMVCcNVMGH', #chain.Signature,
-        # a28: chain.Symbol,
-        # a29: chain.SymbolCode,
+        a28 = '4,EOS', #Symbol
+        a29 = 'EOS', #SymbolCode,
         a30 = '0.1000 EOS',
         a31 = ['0.1000 EOS', 'eosio.token'],
         a32 = ['helloo', 'worldd'],
@@ -327,7 +327,13 @@ def test_optional():
         'a2': '1.0000 EOS',
         'a3': {'a': 1234},
         'a4': '4.0000 EOS',
+        'a5': {'a1': '5.0000 EOS', 'a2': 123, 'a3': 'hello'},
+        'a6': 123,
+        'a7': "hello",
+        'a8': None,
+        'a9': None,
     }
+
     r = chain.push_action('hello', 'testopt', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
     chain.produce_block()
@@ -373,5 +379,18 @@ def test_apply():
         'name': 'alice'
     }
     r = chain.push_action('hello', 'sayhello', args, {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])
+    chain.produce_block()
+
+@chain_test
+def test_nocodegen():
+    code, abi = get_code_and_abi('testnocodegen')
+    chain.deploy_contract('hello', code, abi, 0)
+
+    args = {
+        "a1": {"a": 123},
+        "a2": {"aaa": 123, "bbb": 456},
+    }
+    r = chain.push_action('hello', 'testnogen', args, {'hello': 'active'})
     logger.info('++++++elapsed: %s', r['elapsed'])
     chain.produce_block()

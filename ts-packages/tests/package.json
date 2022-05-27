@@ -25,8 +25,7 @@
     "test:inspect": "npx eosio-asc testinspection.ts --target release && run-ipyeos -m pytest -s -x test.py -k test_inspect"
   },
   "dependencies": {
-    "@assemblyscript/loader": "^0.19.22",
-    "as-bignum": "^0.2.18"
+    "@assemblyscript/loader": "^0.19.22"
   },
   "devDependencies": {
     "assemblyscript": "^0.19.22"

@@ -32,7 +32,19 @@ const ARGS = [
 if (true) {
     console.log("Build Starting ······")
     asc.ready.then(() => {
-        let args = process.argv.slice(2).concat(ARGS);
+        let args = require('yargs').argv;
+        if (args['_'] && args['_'][0] == "gencode") {
+            let inputFile = args['_'][1];
+            let outputDir = args['o'];
+            args = args['_'].slice(1).concat(ARGS);
+            process.exitCode = asc.main(args);
+            const ascOption = require("eosio-asc/src/ascoption.js");
+            let apiOption = new ascOption.APIOptionImpl();
+            apiOption.writeGeneratedFile(outputDir);
+            return;
+        }
+
+        args = process.argv.slice(2).concat(ARGS);
         process.exitCode = asc.main(args);
         // if (process.exitCode != 0) {
         //     return process.exitCode;

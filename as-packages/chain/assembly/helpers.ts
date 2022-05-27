@@ -5,20 +5,6 @@ import { Name } from "./name"
 import { Packer } from "./serializer"
 import { check } from "./system"
 
-export class ActionWrapperAct {
-    constructor(
-        public action: Name,
-        public contract: Name,
-        public permissionLevel: PermissionLevel
-    ){}
-
-    send <T extends Packer>(data: T): void {
-        const permissions = [this.permissionLevel]
-        const action = new Action(permissions, this.contract, this.action, data.pack())
-        action.send()
-    }
-}
-
 export class Variant implements Packer {
     _index: u8;
     value: usize;
@@ -49,13 +35,29 @@ export class Variant implements Packer {
     }
 }
 
-export class ActionWrapper {
+export class InlineActionAct <T extends Packer> {
     constructor(
-        public action: Name = new Name()
+        public action: Name,
+        public contract: Name,
+        public permissionLevel: PermissionLevel
     ){}
 
-    static fromString(s: string): ActionWrapper {
-        return new ActionWrapper(Name.fromString(s))
+    send(data: T): void {
+        const permissions = [this.permissionLevel]
+        const action = new Action(permissions, this.contract, this.action, data.pack())
+        action.send()
+    }
+}
+
+export class InlineAction <T extends Packer> {
+    public action: Name
+
+    constructor(action: string){
+        this.action = Name.fromString(action)
+    }
+
+    static fromName<T extends Packer>(name: Name): InlineAction<T> {
+        return new InlineAction<T>(name.toString())
     }
 
     /**
@@ -65,11 +67,11 @@ export class ActionWrapper {
      * @param {string} permission - The permission that the actor must have to execute the contract.
      * @returns An instance of the Act class.
      */
-    act (
+    act(
         contract: Name,
         permissionLevel: PermissionLevel
-    ): ActionWrapperAct {
-        return new ActionWrapperAct(this.action, contract, permissionLevel)
+    ): InlineActionAct<T> {
+        return new InlineActionAct(this.action, contract, permissionLevel)
     }
 }
 
@@ -119,4 +121,4 @@ export class MockPacker implements MultiIndexValue {
 }
 
 export class Table extends MockPacker {}
-export class InlineAction extends Table {}
+export class ActionData extends MockPacker {}
