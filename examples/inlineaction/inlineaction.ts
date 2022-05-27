@@ -12,7 +12,7 @@ class SayGoodbye extends Table {
 }
 @contract
 class InlineActionContract extends Contract {
-    static sayGoodbyeIA: InlineAction<SayGoodbye> = new InlineAction<SayGoodbye>("saygoodbye");
+    static sayGoodbyeIA: InlineAction<SayGoodbye> = InlineAction.fromString<SayGoodbye>("saygoodbye");
     
     @action("saygoodbye")
     sayGoodbye(name: string, asset: Asset, num: u64): void {

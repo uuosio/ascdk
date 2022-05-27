@@ -50,14 +50,12 @@ export class InlineActionAct <T extends Packer> {
 }
 
 export class InlineAction <T extends Packer> {
-    public action: Name
+    constructor(
+        public action: Name
+    ){}
 
-    constructor(action: string){
-        this.action = Name.fromString(action)
-    }
-
-    static fromName<T extends Packer>(name: Name): InlineAction<T> {
-        return new InlineAction<T>(name.toString())
+    static fromString<T extends Packer>(s: string): InlineAction<T> {
+        return new InlineAction<T>(Name.fromString(s))
     }
 
     /**
