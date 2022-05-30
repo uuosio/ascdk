@@ -11,34 +11,49 @@ from ipyeos import chaintester
 chaintester.chain_config['contracts_console'] = False
 logger = log.get_logger(__name__)
 
+
+def init_chain():
+    chain = chaintester.ChainTester()
+    test_account1 = 'hello'
+    a = {
+        "account": test_account1,
+        "permission": "active",
+        "parent": "owner",
+        "auth": {
+            "threshold": 1,
+            "keys": [
+                {
+                    "key": 'EOS6AjF6hvF7GSuSd4sCgfPKq5uWaXvGM2aQtEUCwmEHygQaqxBSV',
+                    "weight": 1
+                }
+            ],
+            "accounts": [{"permission":{"actor":test_account1,"permission": 'eosio.code'}, "weight":1}],
+            "waits": []
+        }
+    }
+    chain.push_action('eosio', 'updateauth', a, {test_account1:'active'})
+    return chain
+
 chain = None
 def chain_test(fn):
     def call(*args, **vargs):
         global chain
-        chain = chaintester.ChainTester()
-
-        test_account1 = 'hello'
-        a = {
-            "account": test_account1,
-            "permission": "active",
-            "parent": "owner",
-            "auth": {
-                "threshold": 1,
-                "keys": [
-                    {
-                        "key": 'EOS6AjF6hvF7GSuSd4sCgfPKq5uWaXvGM2aQtEUCwmEHygQaqxBSV',
-                        "weight": 1
-                    }
-                ],
-                "accounts": [{"permission":{"actor":test_account1,"permission": 'eosio.code'}, "weight":1}],
-                "waits": []
-            }
-        }
-        chain.push_action('eosio', 'updateauth', a, {test_account1:'active'})
+        chain = init_chain()
         ret = fn(*args, **vargs)
         chain.free()
         return ret
     return call
+
+class NewChain():
+    def __init__(self):
+        self.chain = None
+
+    def __enter__(self):
+        self.chain = init_chain()
+        return self.chain
+
+    def __exit__(self, type, value, traceback):
+        self.chain.free()
 
 def get_code_and_abi(entryName):
     with open('./target/' + entryName + '.wasm', 'rb') as f:
@@ -107,19 +122,60 @@ def test_1serializer():
     logger.info('++++++elapsed: %s', r['elapsed'])
     chain.produce_block()
 
-@chain_test
 def test_mi():
     # info = chain.get_account('helloworld11')
     # logger.info(info)
     (code, abi) = get_code_and_abi('testmi')
-    chain.deploy_contract('hello', code, abi, 0)
 
-    r = chain.push_action('hello', 'noop', b'', {'hello': 'active'})
+    with NewChain() as chain:
+        chain.deploy_contract('hello', code, abi, 0)
+        args = dict(
+        )
+        r = chain.push_action('hello', 'testmi1', args, {'hello': 'active'})
 
-    args = dict(
-    )
-    r = chain.push_action('hello', 'testmi', args, {'hello': 'active'})
-    logger.info('++++++elapsed: %s', r['elapsed'])
+        def check_ret(row):
+            assert  row['a'] == 1 and \
+                    row['b'] == 2 and \
+                    row['c'] == '3' and \
+                    abs(float(row['d']) - 3.3) < 0.000000001 and \
+                    row['e'] ==  '0b00000000000000000000000000000000000000000000000000000000000000' and \
+                    row['f'] == '0xaa000000000000000000000000000000'
+        ret = chain.get_table_rows(True, 'hello', 'hello', 'mydata', '', '', 1)
+        # logger.error(ret)
+        row = ret['rows'][0]
+        check_ret(row)
+        '''
+        {
+            'a': 1, 
+            'b': 2, 
+            'c': '3', 
+            'd': '3.29999999999999982', 
+            'e': '0b00000000000000000000000000000000000000000000000000000000000000', 
+            'f': '0xaa000000000000000000000000000000'
+        }
+        '''
+
+        for key_type, index_position, value in [
+                ('i64',     2, 2),
+                ('i128',    3, '3'),
+                ('float64', 4, '3.29999999999999982'),
+                ('sha256',  5, '000000000000000000000000000000000000000000000000000000000000000b'),
+                ('float128', 6, 0.0),
+            ]:
+            # logger.error('+++++++%s', key_type)
+            ret = chain.get_table_rows(True, 'hello', 'hello', 'mydata', value, '', 10, key_type, index_position)
+            logger.error('++++++%s', ret)
+            # check_ret(ret['rows'][0])
+
+    with NewChain() as chain:
+        chain.deploy_contract('hello', code, abi, 0)
+        r = chain.push_action('hello', 'noop', b'', {'hello': 'active'})
+
+        args = dict(
+        )
+        r = chain.push_action('hello', 'testmi2', args, {'hello': 'active'})
+        logger.info('++++++elapsed: %s', r['elapsed'])
+
 
 @chain_test
 def test_action():

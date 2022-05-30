@@ -87,8 +87,17 @@ class MyData extends Table {
 
 @contract
 class MyContract extends Contract{
-    @action("testmi")
-    testmi(): void {
+    @action("testmi1")
+    testmi1(): void {
+        let mi = MyData.new(this.receiver, this.receiver);
+        mi = MyData.new(this.receiver, this.receiver);
+
+        let value = new MyData(1, 2, new U128(3), 3.3, new U256(11), new Float128(0xaa));
+        mi.store(value, this.receiver);
+    }
+
+    @action("testmi2")
+    testmi2(): void {
         let mi = MyData.new(this.receiver, this.receiver);
         check(mi.availablePrimaryKey() == 0, `expected availablePrimaryKey 0, got ${mi.availablePrimaryKey()}`);
 
