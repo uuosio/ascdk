@@ -5,7 +5,7 @@ class MyContract extends Contract{
     stringToU64(s: string): u64 {
         let value: u64 = 0;
         for (let i=0; i<s.length; i++) {
-            let c = <u64>s.charCodeAt(i);
+            let c = <u64>s.charCodeAt(s.length - i -1);
             value <<= 8;
             value |= c;
         }
@@ -25,14 +25,32 @@ class MyContract extends Contract{
             ret = isValid(value);
             check(ret, "bad value 1");
 
+            value = this.stringToU64('EOSEOSE');
+            check(isValid(value), "bad value 2");
+
+            value = this.stringToU64('EOSEOS\x00');
+            check(isValid(value), "bad value 3");
+
             value = this.stringToU64('EOS ');
-            check(!isValid(value), "bad value 2");
+            check(!isValid(value), "bad value 4");
 
             value = this.stringToU64('EOS E');
-            check(!isValid(value), "bad value 3");
+            check(!isValid(value), "bad value 5");
 
             value = this.stringToU64('EEEEEE ');
-            check(!isValid(value), "bad value 4");
+            check(!isValid(value), "bad value 6");
+
+            value = this.stringToU64('EEEEEE9');
+            check(!isValid(value), "bad value 7");
+
+            value = this.stringToU64('EOSEOSEO');
+            check(!isValid(value), "bad value 8");
+
+            value = this.stringToU64('');
+            check(!isValid(value), "bad value 9");
+
+            value = this.stringToU64('EOSEO\x00EO');
+            check(!isValid(value), "bad value 10");
         }
 
         {

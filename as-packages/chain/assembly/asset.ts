@@ -7,7 +7,18 @@ const MAX_AMOUNT: i64 = (1 << 62) - 1;
 
 export function isValid(sym: u64): bool {
     let i = 0;
-    for (; i<7; i++) {
+    let j = 0;
+
+    if (sym == 0) {
+        return false;
+    }
+
+    if ((sym & 0xFF00000000000000) != 0) {
+        return false
+    }
+
+    for (; i<=6; i++) {
+        j = i;
         let c = <u8>(sym & 0xFF);
         // ('A' <= c && c <= 'Z')
         if (c >= <u8>65 && c <= <u8>90) {
@@ -21,8 +32,8 @@ export function isValid(sym: u64): bool {
         }
     }
 
-    i += 1;
-    for (; i<7; i++) {
+    j += 1;
+    for (; j<=6; j++) {
         sym >>= 8;
         if ((sym & 0xFF) != 0) {
             return false;
