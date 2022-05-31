@@ -1,3 +1,20 @@
+# content of conftest.py
+import pytest
+
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--test-name", action="store", default="", help="test name"
+    )
+
+
+@pytest.fixture
+def test_name(request):
+    return request.config.getoption("--test-name")
+
+
+
+
 import os
 import sys
 import json
@@ -11,12 +28,9 @@ from ipyeos import chaintester
 chaintester.chain_config['contracts_console'] = False
 logger = log.get_logger(__name__)
 
-
-def init_chain():
-    chain = chaintester.ChainTester()
-    test_account1 = 'hello'
+def update_auth(chain, account):
     a = {
-        "account": test_account1,
+        "account": account,
         "permission": "active",
         "parent": "owner",
         "auth": {
@@ -27,11 +41,16 @@ def init_chain():
                     "weight": 1
                 }
             ],
-            "accounts": [{"permission":{"actor":test_account1,"permission": 'eosio.code'}, "weight":1}],
+            "accounts": [{"permission":{"actor":account,"permission": 'eosio.code'}, "weight":1}],
             "waits": []
         }
     }
-    chain.push_action('eosio', 'updateauth', a, {test_account1:'active'})
+    chain.push_action('eosio', 'updateauth', a, {account:'active'})
+
+def init_chain():
+    chain = chaintester.ChainTester()
+    update_auth(chain, 'hello')
+    update_auth(chain, 'alice')
     return chain
 
 chain = None
@@ -62,110 +81,269 @@ def get_code_and_abi(entryName):
         abi = f.read()
     return (code, abi)
 
+
+test_cases = [
+    #test basic
+    {
+        'test_name': 'testname',
+        'action': {
+            'account': 'hello',
+            'name': 'test',
+            'args': {},
+            'permissions': None,
+        },
+        'err_msg': None,
+    },
+    #test serializer
+    {
+        'test_name': 'testserializer',
+        'action': {
+            'account': 'hello',
+            'name': 'test1',
+            'args': {},
+            'permissions': None,
+        },
+        'err_msg': None,
+    },
+    #test serializer
+    {
+        'test_name': 'testserializer',
+        'action': {
+            'account': 'hello',
+            'name': 'test2',
+            'args': dict(
+                a1 = True,
+                a2 = 2,
+                a3 = 3,
+                a4 = 0xff01,
+                a5 = 0xff02,
+                a6 = 0xffffff00,
+                a7 = 0xffffff01,
+                a8 = 0xffffffff00000001, #i64
+                a9 = 0xffffffff00000002,
+                # a10: i128,
+                # a11: u128,
+                # a12: VarInt32,
+                a13 = 0xfff, #VarUint32,
+                a14 = 0xffffff01,
+                a15 = 0xfffffffffffffff0,
+                # a16: f128,
+                a17 = '2021-09-03T04:13:21', # chain.TimePoint,
+                a18 = '2021-09-03T04:13:21', # chain.TimePointSec,
+                # a19: BlockTimestampType,
+
+                a20 = 'alice',
+                # a21: u8[],
+                a22 = 'hello,world',
+                a23 = 'aa'*19 + 'bb', # Checksum160,
+                a24 = 'aa'*31 + 'bb', #Checksum256,
+                a25 = 'aa'*63 + 'bb', #: Checksum512,
+                a26 = 'PUB_K1_11DsZ6Lyr1aXpm9aBqqgV4iFJpNbSw5eE9LLTwNAxqjJgXSdB8', #PublicKey,
+                a27 = 'SIG_K1_KXdabr1z4G6e2o2xmi7jPhzxH3Lj5igjR5v3q9LY7KbLWyXBZyES748bPzfM2MhQQVsLrouJzXT9YFfw1CywzMVCcNVMGH', #chain.Signature,
+                a28 = '4,EOS', #Symbol
+                a29 = 'EOS', #SymbolCode,
+                a30 = '0.1000 EOS',
+                a31 = ['0.1000 EOS', 'eosio.token'],
+                a32 = ['helloo', 'worldd'],
+            ),
+            'permissions': None,
+        },
+        'err_msg': None,
+    },
+    #test MultiIndex
+    {
+        'test_name': 'testmi',
+        'action': {
+            'account': 'hello',
+            'name': 'testmi',
+            'args': {},
+            'permissions': None,
+        },
+        'err_msg': None,
+    },
+    #test Action
+    {
+        'test_name': 'testaction',
+        'action': {
+            'account': 'hello',
+            'name': 'sayhello',
+            'args': {"name": 'bob'},
+            'permissions': None,
+        },
+        'err_msg': None,
+    },
+    #test Action
+    {
+        'test_name': 'testaction',
+        'action': {
+            'account': 'hello',
+            'name': 'testgencode',
+            'args': dict(
+                    a1 = 'hello',
+                    a2 = '1.0000 EOS',
+                    a3 = 12345,
+                    a4 = [1, 2, 3],
+                    a5 = ['1.0001 EOS', '2.0002 EOS'],
+                ),
+            'permissions': None,
+        },
+        'err_msg': None,
+    },
+    #test Asset
+    {
+        'test_name': 'testasset',
+        'action': {
+            'account': 'hello',
+            'name': 'test1',
+            'args': {},
+            'permissions': None,
+        },
+        'err_msg': None,
+    },
+    #test PublicKey
+    {
+        'test_name': 'testpublickey',
+        'action': {
+            'account': 'hello',
+            'name': 'testpub',
+            'args': dict(
+                k1='PUB_K1_11DsZ6Lyr1aXpm9aBqqgV4iFJpNbSw5eE9LLTwNAxqjJgXSdB8',
+                r1='PUB_R1_6FPFZqw5ahYrR9jD96yDbbDNTdKtNqRbze6oTDLntrsANgQKZu',
+                webAuthN='PUB_WA_8PPYTWYNkRqrveNAoX7PJWDtSqDUp3c29QGBfr6MD9EaLocaPBmsk5QAHWq4vEQt2',
+            ),
+            'permissions': None,
+        },
+        'err_msg': None,
+    },
+    #test crypto
+    {
+        'test_name': 'testcrypto',
+        'action': {
+            'account': 'hello',
+            'name': 'test',
+            'args': {
+                'message': 'hello,world',
+                'digest': '77df263f49123356d28a4a8715d25bf5b980beeeb503cab46ea61ac9f3320eda',
+                'sig': 'SIG_K1_KXdabr1z4G6e2o2xmi7jPhzxH3Lj5igjR5v3q9LY7KbLWyXBZyES748bPzfM2MhQQVsLrouJzXT9YFfw1CywzMVCcNVMGH',
+                'pub': 'EOS87J9kj21dvniKhqd7A7QPXRz498ek3H3doXoQVPf4VnHHNtt1M',
+            },
+            'permissions': None,
+        },
+        'err_msg': None,
+    },
+    #test system
+    {
+        'test_name': 'testsystem',
+        'action': {
+            'account': 'hello',
+            'name': 'test',
+            'args': dict(
+                a1 = '2021-09-03T04:13:21', # chain.TimePoint,
+                a2 = '2021-09-03T04:13:21', # chain.TimePointSec,
+            ),
+            'permissions': None,
+        },
+        'err_msg': None,
+    },
+    #test print
+    {
+        'test_name': 'testprint',
+        'action': {
+            'account': 'hello',
+            'name': 'test',
+            'args': dict(
+                a1 = '0x7fffffffffffffffffffffffffffffff',
+            ),
+            'permissions': None,
+        },
+        'err_msg': None,
+    },
+    #test Transaction
+    {
+        'test_name': 'testtransaction',
+        'action': {
+            'account': 'hello',
+            'name': 'testtx',
+            'args': {},
+            'permissions': None,
+        },
+        'err_msg': None,
+    },
+    #test Singleton
+    {
+        'test_name': 'testsingleton',
+        'action': {
+            'account': 'hello',
+            'name': 'test',
+            'args': {},
+            'permissions': None,
+        },
+        'err_msg': None,
+    },
+    #test NoCodeGen
+    {
+        'test_name': 'testnocodegen',
+        'action': {
+            'account': 'hello',
+            'name': 'testnogen',
+            'args': {
+                "a1": {"a": 123},
+                "a2": {"aaa": 123, "bbb": 456},
+            },
+            'permissions': None,
+        },
+        'err_msg': None,
+    },
+]
+
+'''
+    #test MultiIndex
+    {
+        'test_name': 'testmi',
+        'action': {
+            'account': 'hello',
+            'name': 'test',
+            'args': {},
+            'permissions': None,
+        },
+        'err_msg': None,
+    },
+'''
+
 @chain_test
-def test_name():
-    (code, abi) = get_code_and_abi('testname')
+def run_test(test_name, action, err_msg=None):
+    (code, abi) = get_code_and_abi(test_name)
     chain.deploy_contract('hello', code, abi, 0)
 
-    args = dict()
-    r = chain.push_action('hello', 'test', args, {'hello': 'active'})
-    logger.info('++++++elapsed: %s', r['elapsed'])
+    if not action['permissions']:
+        permissions = {action['account']: 'active'}
+    else:
+        permissions = action['permissions']
+
+    r = chain.push_action(action['account'], action['name'], action['args'], permissions)
+    chain.produce_block()
+
+def test_run_testcase(test_name):
+    if test_name:
+        for test in test_cases:
+            if test['test_name'] == test_name:
+                run_test(**test)
+    else:
+        for test in test_cases:
+            run_test(**test)
+
+@chain_test
+def test_name():
+    test_run_testcase('testname')
 
 @chain_test
 def test_1serializer():
-    # info = chain.get_account('helloworld11')
-    # logger.info(info)
-
-    (code, abi) = get_code_and_abi('testserializer')
-    chain.deploy_contract('hello', code, abi, 0)
-
-    r = chain.push_action('hello', 'test1', b'', {'hello': 'active'})
-    logger.info('++++++elapsed: %s', r['elapsed'])
-    chain.produce_block()
-
-    args = dict(
-        a1 = True,
-        a2 = 2,
-        a3 = 3,
-        a4 = 0xff01,
-        a5 = 0xff02,
-        a6 = 0xffffff00,
-        a7 = 0xffffff01,
-        a8 = 0xffffffff00000001, #i64
-        a9 = 0xffffffff00000002,
-        # a10: i128,
-        # a11: u128,
-        # a12: VarInt32,
-        a13 = 0xfff, #VarUint32,
-        a14 = 0xffffff01,
-        a15 = 0xfffffffffffffff0,
-        # a16: f128,
-        a17 = '2021-09-03T04:13:21', # chain.TimePoint,
-        a18 = '2021-09-03T04:13:21', # chain.TimePointSec,
-        # a19: BlockTimestampType,
-
-        a20 = 'alice',
-        # a21: u8[],
-        a22 = 'hello,world',
-        a23 = 'aa'*19 + 'bb', # Checksum160,
-        a24 = 'aa'*31 + 'bb', #Checksum256,
-        a25 = 'aa'*63 + 'bb', #: Checksum512,
-        a26 = 'PUB_K1_11DsZ6Lyr1aXpm9aBqqgV4iFJpNbSw5eE9LLTwNAxqjJgXSdB8', #PublicKey,
-        a27 = 'SIG_K1_KXdabr1z4G6e2o2xmi7jPhzxH3Lj5igjR5v3q9LY7KbLWyXBZyES748bPzfM2MhQQVsLrouJzXT9YFfw1CywzMVCcNVMGH', #chain.Signature,
-        a28 = '4,EOS', #Symbol
-        a29 = 'EOS', #SymbolCode,
-        a30 = '0.1000 EOS',
-        a31 = ['0.1000 EOS', 'eosio.token'],
-        a32 = ['helloo', 'worldd'],
-    )
-    r = chain.push_action('hello', 'test2', args, {'hello': 'active'})
-    logger.info('++++++elapsed: %s', r['elapsed'])
-    chain.produce_block()
+    test_run_testcase('testserializer')
 
 def test_mi():
     # info = chain.get_account('helloworld11')
     # logger.info(info)
     (code, abi) = get_code_and_abi('testmi')
-
-    with NewChain() as chain:
-        chain.deploy_contract('hello', code, abi, 0)
-        args = dict(
-        )
-        r = chain.push_action('hello', 'testmi1', args, {'hello': 'active'})
-
-        def check_ret(row):
-            assert  row['a'] == 1 and \
-                    row['b'] == 2 and \
-                    row['c'] == '3' and \
-                    abs(float(row['d']) - 3.3) < 0.000000001 and \
-                    row['e'] ==  '0b00000000000000000000000000000000000000000000000000000000000000' and \
-                    row['f'] == '0xaa000000000000000000000000000000'
-        ret = chain.get_table_rows(True, 'hello', 'hello', 'mydata', '', '', 1)
-        # logger.error(ret)
-        row = ret['rows'][0]
-        check_ret(row)
-        '''
-        {
-            'a': 1, 
-            'b': 2, 
-            'c': '3', 
-            'd': '3.29999999999999982', 
-            'e': '0b00000000000000000000000000000000000000000000000000000000000000', 
-            'f': '0xaa000000000000000000000000000000'
-        }
-        '''
-
-        for key_type, index_position, value in [
-                ('i64',     2, 2),
-                ('i128',    3, '3'),
-                ('float64', 4, '3.29999999999999982'),
-                ('sha256',  5, '000000000000000000000000000000000000000000000000000000000000000b'),
-                ('float128', 6, 0.0),
-            ]:
-            # logger.error('+++++++%s', key_type)
-            ret = chain.get_table_rows(True, 'hello', 'hello', 'mydata', value, '', 10, key_type, index_position)
-            logger.error('++++++%s', ret)
-            # check_ret(ret['rows'][0])
 
     with NewChain() as chain:
         chain.deploy_contract('hello', code, abi, 0)
@@ -179,25 +357,7 @@ def test_mi():
 
 @chain_test
 def test_action():
-    # info = chain.get_account('helloworld11')
-    # logger.info(info)
-    (code, abi) = get_code_and_abi('testaction')
-    chain.deploy_contract('hello', code, abi, 0)
-
-    args = dict(
-        name = 'bob'
-    )
-    r = chain.push_action('hello', 'sayhello', args, {'hello': 'active'})
-    logger.info('++++++elapsed: %s', r['elapsed'])
-
-    args = dict(
-        a1 = 'hello',
-        a2 = '1.0000 EOS',
-        a3 = 12345,
-        a4 = [1, 2, 3],
-        a5 = ['1.0001 EOS', '2.0002 EOS'],
-    )
-    r = chain.push_action('hello', 'testgencode', args, {'hello': 'active'})
+    test_run_testcase('testaction')
 
 @chain_test
 def test_contract():
@@ -221,101 +381,41 @@ def test_contract():
 
 @chain_test
 def test_asset():
-    (code, abi) = get_code_and_abi('testasset')
-    chain.deploy_contract('hello', code, abi, 0)
+    test_run_testcase('testasset')
 
-    r = chain.push_action('hello', 'test1', b'', {'hello': 'active'})
-    logger.info('++++++elapsed: %s', r['elapsed'])
-    logger.info('test_asset done!')
 
 @chain_test
 def test_table():
-    (code, abi) = get_code_and_abi('testtable')
-    chain.deploy_contract('hello', code, abi, 0)
-
-    r = chain.push_action('hello', 'testtable', b'', {'hello': 'active'})
-    logger.info('++++++elapsed: %s', r['elapsed'])
-    logger.info('test_asset done!')
-    ret = chain.get_table_rows(True, 'hello', 'hello', 'mytable', '', '', 10)
-    logger.info(ret)
-    assert ret['rows'][0]['a'] == 1 and ret['rows'][0]['b'] == 2, "bad value"
+    test_run_testcase('testtable')
 
 @chain_test
 def test_publickey():
-    (code, abi) = get_code_and_abi('testpublickey')
-    chain.deploy_contract('hello', code, abi, 0)
-    args = dict(
-        k1='PUB_K1_11DsZ6Lyr1aXpm9aBqqgV4iFJpNbSw5eE9LLTwNAxqjJgXSdB8',
-        r1='PUB_R1_6FPFZqw5ahYrR9jD96yDbbDNTdKtNqRbze6oTDLntrsANgQKZu',
-        webAuthN='PUB_WA_8PPYTWYNkRqrveNAoX7PJWDtSqDUp3c29QGBfr6MD9EaLocaPBmsk5QAHWq4vEQt2',
-    )
-    raw_args = chain.pack_args('hello', 'testpub', args)
-    logger.info(raw_args.hex())
-    r = chain.push_action('hello', 'testpub', args, {'hello': 'active'})
-    logger.info('++++++elapsed: %s', r['elapsed'])
+    test_run_testcase('testpublickey')
 
 @chain_test
 def test_crypto():
-    (code, abi) = get_code_and_abi('testcrypto')
-    chain.deploy_contract('hello', code, abi, 0)
-    args = {
-        'message': 'hello,world',
-        'digest': '77df263f49123356d28a4a8715d25bf5b980beeeb503cab46ea61ac9f3320eda',
-        'sig': 'SIG_K1_KXdabr1z4G6e2o2xmi7jPhzxH3Lj5igjR5v3q9LY7KbLWyXBZyES748bPzfM2MhQQVsLrouJzXT9YFfw1CywzMVCcNVMGH',
-        'pub': 'EOS87J9kj21dvniKhqd7A7QPXRz498ek3H3doXoQVPf4VnHHNtt1M',
-    }
-    r = chain.push_action('hello', 'test', args, {'hello': 'active'})
-    logger.info('++++++elapsed: %s', r['elapsed'])
+    test_run_testcase('testcrypto')
+
 
 @chain_test
 def test_system():
-    (code, abi) = get_code_and_abi('testsystem')
-    chain.deploy_contract('hello', code, abi, 0)
+    test_run_testcase('testsystem')
 
-    args = dict(
-        a1 = '2021-09-03T04:13:21', # chain.TimePoint,
-        a2 = '2021-09-03T04:13:21', # chain.TimePointSec,
-    )
-    r = chain.push_action('hello', 'test', args, {'hello': 'active'})
-    logger.info('++++++elapsed: %s', r['elapsed'])
-    chain.produce_block()
 
 @chain_test
 def test_print():
-    (code, abi) = get_code_and_abi('testprint')
-    chain.deploy_contract('hello', code, abi, 0)
+    test_run_testcase('testprint')
 
-    args = dict(
-        a1 = '0x7fffffffffffffffffffffffffffffff',
-    )
-
-    r = chain.push_action('hello', 'test', args, {'hello': 'active'})
-    logger.info('++++++elapsed: %s', r['elapsed'])
-    chain.produce_block()
 
 @chain_test
 def test_tx():
-    code, abi = get_code_and_abi('testtransaction')
-    chain.deploy_contract('hello', code, abi, 0)
+    test_run_testcase('testtransaction')
 
-    args = dict(
-    )
-
-    r = chain.push_action('hello', 'testtx', args, {'hello': 'active'})
-    logger.info('++++++elapsed: %s', r['elapsed'])
-    chain.produce_block()
 
 @chain_test
 def test_singleton():
-    code, abi = get_code_and_abi('testsingleton')
-    chain.deploy_contract('hello', code, abi, 0)
+    test_run_testcase('testsingleton')
 
-    args = dict(
-    )
-
-    r = chain.push_action('hello', 'test', args, {'hello': 'active'})
-    logger.info('++++++elapsed: %s', r['elapsed'])
-    chain.produce_block()
 
 @chain_test
 def test_variant():
@@ -365,13 +465,8 @@ def test_variant():
 
 @chain_test
 def test_gencode():
-    code, abi = get_code_and_abi('testgencode')
-    chain.deploy_contract('hello', code, abi, 0)
+    test_run_testcase('testgencode')
 
-    args = b''
-    r = chain.push_action('hello', 'test', args, {'hello': 'active'})
-    logger.info('++++++elapsed: %s', r['elapsed'])
-    chain.produce_block()
 
 @chain_test
 def test_optional():
@@ -440,13 +535,5 @@ def test_apply():
 
 @chain_test
 def test_nocodegen():
-    code, abi = get_code_and_abi('testnocodegen')
-    chain.deploy_contract('hello', code, abi, 0)
+    test_run_testcase('testnocodegen')
 
-    args = {
-        "a1": {"a": 123},
-        "a2": {"aaa": 123, "bbb": 456},
-    }
-    r = chain.push_action('hello', 'testnogen', args, {'hello': 'active'})
-    logger.info('++++++elapsed: %s', r['elapsed'])
-    chain.produce_block()
