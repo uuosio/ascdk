@@ -41,6 +41,10 @@ export const tableTpl = `
         return size;
     }
 
+    get tableName(): _chain.Name {
+        return _chain.Name.fromString("{{tableName}}");
+    }
+
     {{{generategetPrimaryFunction this}}}
 
     getSecondaryValue(i: i32): _chain.SecondaryValue {
