@@ -3,6 +3,7 @@ import { CONFIG } from "../config/compile";
 // let scope = CONFIG.scope;
 
 export const tableTpl = `
+
 {{export}}class {{className}}DB extends _chain.MultiIndex<{{className}}> {
     {{#each secondaryFuncDefs}}
     {{{generateGetIdxDBFunction .}}}
@@ -14,6 +15,7 @@ export const tableTpl = `
 }
 
 {{{generateDecorator decorator}}}
+
 {{export}}class {{className}} implements _chain.MultiIndexValue {
     {{{ExtractClassBody range}}}
 
@@ -47,6 +49,7 @@ export const tableTpl = `
 
     {{{generategetPrimaryFunction this}}}
 
+    {{#if hasSecondaryIndexes}}
     getSecondaryValue(i: i32): _chain.SecondaryValue {
         switch (i) {
             {{#each secondaryFuncDefs}}
@@ -67,6 +70,17 @@ export const tableTpl = `
                 _chain.assert(false, "bad db index!");
         }
     }
+    {{else}}
+    getSecondaryValue(i: i32): _chain.SecondaryValue {
+        _chain.check(false, "no secondary value!");
+        return new _chain.SecondaryValue(_chain.SecondaryType.U64, new Array<u64>(0));
+    }
+    
+    setSecondaryValue(i: i32, value: _chain.SecondaryValue): void {
+        _chain.check(false, "no secondary value!");
+    }
+    {{/if}}
+
 
     {{#if singleton}}
     static new(code: _chain.Name, scope: _chain.Name): _chain.Singleton<{{className}}> {

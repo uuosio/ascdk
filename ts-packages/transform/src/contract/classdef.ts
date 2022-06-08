@@ -184,11 +184,12 @@ export class ContractInterpreter extends ClassInterpreter {
 
 export class TableInterpreter extends ClassInterpreter {
     // The first case is lower.
-    tableName: string;
+    tableName: string = "";
     singleton: boolean = false;
     version: string;
     primaryFuncDef: DBIndexFunctionDef | null = null;
     secondaryFuncDefs: DBIndexFunctionDef[] = [];
+    hasSecondaryIndexes: boolean = false;
 
     constructor(clzPrototype: ClassPrototype) {
         super(clzPrototype);
@@ -214,6 +215,10 @@ export class TableInterpreter extends ClassInterpreter {
             if (arg == "singleton") {
                 this.singleton = true;
             }
+        }
+
+        if (this.secondaryFuncDefs.length > 0) {
+            this.hasSecondaryIndexes = true;
         }
     }
 
