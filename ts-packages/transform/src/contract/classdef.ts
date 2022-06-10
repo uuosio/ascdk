@@ -189,6 +189,7 @@ export class TableInterpreter extends ClassInterpreter {
     version: string;
     primaryFuncDef: DBIndexFunctionDef | null = null;
     secondaryFuncDefs: DBIndexFunctionDef[] = [];
+    hasSecondaryIndexes: boolean = false;
 
     constructor(clzPrototype: ClassPrototype) {
         super(clzPrototype);
@@ -214,6 +215,10 @@ export class TableInterpreter extends ClassInterpreter {
             if (arg == "singleton") {
                 this.singleton = true;
             }
+        }
+
+        if (this.secondaryFuncDefs.length > 0) {
+            this.hasSecondaryIndexes = true;
         }
     }
 
