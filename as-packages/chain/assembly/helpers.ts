@@ -113,6 +113,14 @@ export class MockPacker implements MultiIndexValue {
         check(false, "not implemented");
     };
 
+    static new(_: Name, __: Name): MultiIndex<Table> {
+        check(false, "not implemented");
+        // @ts-ignore
+        return new MultiIndex<Table>(_, __, new Name(), []);
+    }
+}
+
+export class Table extends MockPacker {
     static get tableName(): Name {
         check(false, "not implemented");
         return Name.fromU64(0);
@@ -123,12 +131,13 @@ export class MockPacker implements MultiIndexValue {
         return [];
     }
 
-    static new(_: Name, __: Name): MultiIndex<Table> {
-        check(false, "not implemented");
-        // @ts-ignore
-        return new MultiIndex<Table>(_, __, new Name(), []);
+    getTableName(): Name {
+        return Table.tableName;
+    }
+
+    getTableIndexes(_: Name, __: Name): IDXDB[] {
+        return Table.tableIndexes(_, __)
     }
 }
 
-export class Table extends MockPacker {}
 export class ActionData extends MockPacker {}

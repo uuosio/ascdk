@@ -48,13 +48,21 @@ export const tableTpl = `
     }
 
     static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
-        const idxTableBase: u64 = ({{className}}.tableName.N & 0xfffffffffffffff0);
+        const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0);
         const indexes: _chain.IDXDB[] = [
             {{#each secondaryFuncDefs}}
             {{{newSecondaryDB .}}}
             {{/each}}
         ];
         return indexes;
+    }
+
+    getTableName(): _chain.Name {
+        return {{className}}.tableName;
+    }
+
+    getTableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        return {{className}}.tableIndexes(code, scope);
     }
 
     {{{generategetPrimaryFunction this}}}
@@ -94,11 +102,11 @@ export const tableTpl = `
 
     {{#if singleton}}
     static new(code: _chain.Name, scope: _chain.Name): _chain.Singleton<{{className}}> {
-        return new _chain.Singleton<{{className}}>(code, scope, {{className}}.tableName);
+        return new _chain.Singleton<{{className}}>(code, scope, this.tableName);
     }
     {{else}}
     static new(code: _chain.Name, scope: _chain.Name): {{className}}DB {
-        return new {{className}}DB(code, scope, {{className}}.tableName, {{className}}.tableIndexes(code, scope));
+        return new {{className}}DB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
     {{/if}}
 }`;
