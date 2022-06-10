@@ -48,7 +48,7 @@ export const tableTpl = `
     }
 
     static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
-        const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0);
+        const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
         const indexes: _chain.IDXDB[] = [
             {{#each secondaryFuncDefs}}
             {{{newSecondaryDB .}}}
