@@ -1,5 +1,5 @@
 import { PermissionLevel, Action } from "./action"
-import { SecondaryValue, newSecondaryValue_u64 } from "./idxdb"
+import { SecondaryValue, newSecondaryValue_u64, IDXDB } from "./idxdb"
 import { MultiIndex, MultiIndexValue } from "./mi"
 import { Name } from "./name"
 import { Packer } from "./serializer"
@@ -112,6 +112,16 @@ export class MockPacker implements MultiIndexValue {
     setSecondaryValue(_: usize, __: SecondaryValue): void {
         check(false, "not implemented");
     };
+
+    static get tableName(): Name {
+        check(false, "not implemented");
+        return Name.fromU64(0);
+    }
+
+    static tableIndexes(_: Name, __: Name): IDXDB[] {
+        check(false, "not implemented");
+        return [];
+    }
 
     static new(_: Name, __: Name): MultiIndex<Table> {
         check(false, "not implemented");

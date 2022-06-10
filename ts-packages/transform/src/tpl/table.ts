@@ -43,8 +43,18 @@ export const tableTpl = `
         return size;
     }
 
-    get tableName(): _chain.Name {
+    static get tableName(): _chain.Name {
         return _chain.Name.fromString("{{tableName}}");
+    }
+
+    static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        const idxTableBase: u64 = ({{className}}.tableName.N & 0xfffffffffffffff0);
+        const indexes: _chain.IDXDB[] = [
+            {{#each secondaryFuncDefs}}
+            {{{newSecondaryDB .}}}
+            {{/each}}
+        ];
+        return indexes;
     }
 
     {{{generategetPrimaryFunction this}}}
@@ -84,20 +94,11 @@ export const tableTpl = `
 
     {{#if singleton}}
     static new(code: _chain.Name, scope: _chain.Name): _chain.Singleton<{{className}}> {
-        let tableName = _chain.Name.fromString("{{tableName}}");
-        return new _chain.Singleton<{{className}}>(code, scope, tableName);
+        return new _chain.Singleton<{{className}}>(code, scope, {{className}}.tableName);
     }
     {{else}}
     static new(code: _chain.Name, scope: _chain.Name): {{className}}DB {
-        let tableName = _chain.Name.fromString("{{tableName}}"); //{{tableName}}
-        let idxTableBase: u64 = (tableName.N & 0xfffffffffffffff0);
-
-        let indexes: _chain.IDXDB[] = [
-            {{#each secondaryFuncDefs}}
-            {{{newSecondaryDB .}}}
-            {{/each}}
-        ];
-        return new {{className}}DB(code, scope, tableName, indexes);
+        return new {{className}}DB(code, scope, {{className}}.tableName, {{className}}.tableIndexes(code, scope));
     }
     {{/if}}
 }`;
