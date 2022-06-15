@@ -83,7 +83,7 @@ export class Contract {
     ) {}
 }
 
-export class MockPacker implements MultiIndexValue {
+export class MockPacker implements Packer {
     pack(): u8[] {
         check(false, "not implemented");
         return [];
@@ -97,6 +97,26 @@ export class MockPacker implements MultiIndexValue {
     getSize(): usize {
         check(false, "not implemented");
         return 0;
+    }
+}
+
+export class Table extends MockPacker implements MultiIndexValue  {
+    static get tableName(): Name {
+        check(false, "not implemented");
+        return Name.fromU64(0);
+    }
+
+    static tableIndexes(_: Name, __: Name): IDXDB[] {
+        check(false, "not implemented");
+        return [];
+    }
+
+    getTableName(): Name {
+        return Table.tableName;
+    }
+
+    getTableIndexes(_: Name, __: Name): IDXDB[] {
+        return Table.tableIndexes(_, __)
     }
 
     getPrimaryValue(): u64 {
@@ -117,26 +137,6 @@ export class MockPacker implements MultiIndexValue {
         check(false, "not implemented");
         // @ts-ignore
         return new MultiIndex<Table>(_, __, new Name(), []);
-    }
-}
-
-export class Table extends MockPacker {
-    static get tableName(): Name {
-        check(false, "not implemented");
-        return Name.fromU64(0);
-    }
-
-    static tableIndexes(_: Name, __: Name): IDXDB[] {
-        check(false, "not implemented");
-        return [];
-    }
-
-    getTableName(): Name {
-        return Table.tableName;
-    }
-
-    getTableIndexes(_: Name, __: Name): IDXDB[] {
-        return Table.tableIndexes(_, __)
     }
 }
 
