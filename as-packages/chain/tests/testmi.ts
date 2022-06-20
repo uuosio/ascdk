@@ -9,6 +9,7 @@ import {
     newSecondaryValue_U256,
     getSecondaryValue_Float128,
     printString,
+    printHex,
     check,
     Float128,
     Contract,
@@ -85,15 +86,71 @@ class MyData extends Table {
     }
 }
 
+@table("mydata1")
+class MyData1 extends Table {
+    constructor(
+        public a: u64=0,
+        public b: u64=0,
+    ) {
+        super();
+    }
+
+    @primary
+    get getPrimary(): u64 {
+        return this.a;
+    }
+
+    @secondary
+    get bvalue(): u64 {
+        return this.b;
+    }
+
+    @secondary
+    set bvalue(value: u64) {
+        this.b = value;
+    }
+}
+
+@table("mydata2")
+class MyData2 extends Table {
+    constructor(
+        public a: u64=0,
+        public b: u64=0,
+    ) {
+        super();
+    }
+
+    @primary
+    get getPrimary(): u64 {
+        return this.a;
+    }
+
+    @secondary
+    get bvalue(): u64 {
+        return this.b;
+    }
+
+    @secondary
+    set bvalue(value: u64) {
+        this.b = value;
+    }
+}
+
 @contract
 class MyContract extends Contract{
     @action("testmi1")
     testmi1(): void {
         let mi = MyData.new(this.receiver, this.receiver);
-        mi = MyData.new(this.receiver, this.receiver);
-
-        let value = new MyData(1, 2, new U128(3), 3.3, new U256(11), new Float128(0xaa));
+        let value = new MyData(
+                            1,
+                            2,
+                            new U128(3),
+                            3.3,
+                            new U256(11),
+                            new Float128(0x5000000000000000, 0x4012e847ffffeb07)//999999.99999
+                        );
         mi.store(value, this.receiver);
+        printHex(new U256(11).pack());
     }
 
     @action("testmi2")
@@ -391,6 +448,38 @@ class MyContract extends Contract{
             mi.remove(it);
             it = mi.find(1);
             check(!it.isOk(), "bad iterator!");
+        }
+    }
+
+    @action("testend")
+    testend(): void {
+        let mi1 = MyData1.new(this.receiver, this.receiver);
+        let mi2 = MyData2.new(this.receiver, this.receiver);
+        let it1 = mi1.find(1);
+        let it2 = mi2.find(1);
+        if (!it1.isOk()) {
+            mi1.store(new MyData1(1), this.receiver);
+        } else {
+            let itEnd = mi1.end();
+            printString(`++++itEnd.i:${itEnd.i}\n`);
+            check(itEnd.isEnd(), "bad end 1");
+
+            let idx = mi1.bvalueDB;
+            let itIdxEnd = idx.end();
+            printString(`++++itIdxEnd.i:${itIdxEnd.i}\n`);
+            check(itIdxEnd.isEnd(), "bad idx end 1");
+        }
+
+        if (!it2.isOk()) {
+            mi2.store(new MyData2(1), this.receiver);
+        } else {
+            let itEnd = mi2.end();
+            printString(`it.End.i:${itEnd.i}\n`);
+
+            let idx = mi2.bvalueDB;
+            let itIdxEnd = idx.end();
+            printString(`++++itIdxEnd.i:${itIdxEnd.i}\n`);
+            check(itIdxEnd.isEnd(), "bad idx end 2");
         }
     }
 }

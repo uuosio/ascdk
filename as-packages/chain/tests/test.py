@@ -346,14 +346,21 @@ def test_mi():
     (code, abi) = get_code_and_abi('testmi')
 
     with NewChain() as chain:
-        chain.deploy_contract('hello', code, abi, 0)
-        r = chain.push_action('hello', 'noop', b'', {'hello': 'active'})
-
-        args = dict(
-        )
+        chain.deploy_contract('hello', code, abi)
+        args = dict()
         r = chain.push_action('hello', 'testmi2', args, {'hello': 'active'})
         logger.info('++++++elapsed: %s', r['elapsed'])
 
+    with NewChain() as chain:
+        chain.deploy_contract('hello', code, abi)
+        args = dict()
+        r = chain.push_action('hello', 'testend', args, {'hello': 'active'})
+        logger.info('++++++elapsed: %s', r['elapsed'])
+        chain.produce_block()
+
+        r = chain.push_action('hello', 'testend', args, {'hello': 'active'})
+        logger.info('++++++elapsed: %s', r['elapsed'])
+        chain.produce_block()
 
 @chain_test
 def test_action():

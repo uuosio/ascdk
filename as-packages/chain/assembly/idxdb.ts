@@ -14,7 +14,7 @@ export class SecondaryIterator {
     }
 
     isEnd(): bool {
-        return this.i == -2;
+        return this.i <= -2;
     }
 }
 
