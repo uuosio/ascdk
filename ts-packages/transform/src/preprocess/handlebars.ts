@@ -701,13 +701,12 @@ Handlebars.registerHelper("generateSetIdxDBValueFunction", function (fn: DBIndex
     let valueName = getter.charAt(0).toUpperCase();
     valueName += getter.slice(1);
 
-    code.push(dedent`
-        update${valueName}(idxIt: _chain.SecondaryIterator, value: ${plainType}, payer: Name): _chain.${dbClass} {
+    code.push(dedent`\n
+        update${valueName}(idxIt: _chain.SecondaryIterator, value: ${plainType}, payer: Name): void {
             let secValue = _chain.newSecondaryValue_${plainType}(value);
             this.idxUpdate(idxIt, secValue, payer);
-            return <_chain.${dbClass}>this.idxdbs[${fn._index}];
         }
-    `);
+    \n`);
     return code.join(EOL);
 });
 
