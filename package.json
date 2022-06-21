@@ -1,14 +1,13 @@
 {
   "name": "ascdk",
   "version": "0.1.0",
-  "description": "compile assemblyscript to substrate wasm contract",
+  "description": "compile assemblyscript to eosio wasm contract",
   "keywords": [
     "assemblyscript",
     "eosio",
     "asc",
     "wasm",
-    "smart-contract",
-    "substrate"
+    "smart-contract"
   ],
   "workspaces": [
     "as-packages/*",

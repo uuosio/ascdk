@@ -37,7 +37,7 @@ class MyContract extends Contract {
         let payer: Name = this.receiver;
 
         if (it.isOk()) {
-            let counter = mi.get(it)
+            let counter = mi.get(it);
             counter.count += 1;
             mi.update(it, counter, payer);
             count = counter.count;
