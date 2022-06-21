@@ -153,7 +153,8 @@ export class MultiIndex<T extends MultiIndexValue> {
 
     idxUpdate(it: SecondaryIterator, idxValue: SecondaryValue, payer: Name): void {
         let primaryIt = this.find(it.primary);
-        let value = this.get(primaryIt);
+        check(primaryIt.isOk(), "idxUpdate: value by primary not found");
+        let value = this.get(primaryIt)!;
         value.setSecondaryValue(it.dbIndex, idxValue);
         this.db.update(primaryIt, payer.N, value);
         this.idxdbs[it.dbIndex].updateEx(it, idxValue, payer.N);
