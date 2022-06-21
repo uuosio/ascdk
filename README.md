@@ -1,3 +1,5 @@
+![build](https://github.com/uuosio/ascdk/actions/workflows/pr-any.yml/badge.svg?event=push)
+
 # AssemblyScript Smart Contracts Development Kit
 
 ## Contract Example
