@@ -449,6 +449,34 @@ export class ContractProgram {
             });
             abi.structs.push(abiStruct);
         });
+
+        let cmp = (a, b) => {
+            if (a == b) {
+                return 0;
+            }
+            if (a < b) {
+                return -1;
+            } else {
+                return 1;
+            }
+        }
+
+        abi.structs.sort((a, b) => {
+            return cmp(a.name, b.name);
+        });
+
+        abi.actions.sort((a, b) => {
+            return cmp(a.name, b.name);
+        });
+
+        abi.tables.sort((a, b) => {
+            return cmp(a.name, b.name);
+        });
+
+        abi.variants.sort((a, b) => {
+            return cmp(a.name, b.name);
+        });
+
         return JSON.stringify(abi, null, 2);
     }
 }
