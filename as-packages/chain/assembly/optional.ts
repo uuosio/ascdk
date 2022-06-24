@@ -1,3 +1,4 @@
+import { printString } from "./debug";
 import { Packer, Encoder, Decoder } from "./serializer"
 import { Utils } from "./utils"
 
@@ -74,6 +75,7 @@ export class OptionalNumber<T> implements Packer {
             this.value = 0;
             return 1;
         }
+        this.hasValue = true;
         this.value = dec.unpackNumber<T>();
         return dec.getPos();
     }
