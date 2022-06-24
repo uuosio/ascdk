@@ -11,11 +11,13 @@ import {
 } from "as-chain"
 
 
+
 export class SignerDB extends _chain.MultiIndex<Signer> {
 
 }
 
 @table("signers", nocodegen)
+
 export class Signer implements _chain.MultiIndexValue {
     
     account: u64;
@@ -52,34 +54,44 @@ export class Signer implements _chain.MultiIndexValue {
         return size;
     }
 
+    static get tableName(): _chain.Name {
+        return _chain.Name.fromU64(0xC399355F00000000);
+    }
+
+    static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
+        const indexes: _chain.IDXDB[] = [
+        ];
+        return indexes;
+    }
+
+    getTableName(): _chain.Name {
+        return Signer.tableName;
+    }
+
+    getTableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        return Signer.tableIndexes(code, scope);
+    }
+
     getPrimaryValue(): u64 {
         return this.getPrimary
     }
 
     getSecondaryValue(i: i32): _chain.SecondaryValue {
-        switch (i) {
-            default:
-                _chain.assert(false, "bad db index!");
-                return new _chain.SecondaryValue(_chain.SecondaryType.U64, new Array<u64>(0));
-        }
+        _chain.check(false, "no secondary value!");
+        return new _chain.SecondaryValue(_chain.SecondaryType.U64, new Array<u64>(0));
+    }
+    
+    setSecondaryValue(i: i32, value: _chain.SecondaryValue): void {
+        _chain.check(false, "no secondary value!");
     }
 
-    setSecondaryValue(i: i32, value: _chain.SecondaryValue): void {
-        switch (i) {
-            default:
-                _chain.assert(false, "bad db index!");
-        }
-    }
 
     static new(code: _chain.Name, scope: _chain.Name): SignerDB {
-        let tableName = _chain.Name.fromU64(0xC399355F00000000); //signers
-        let idxTableBase: u64 = (tableName.N & 0xfffffffffffffff0);
-
-        let indexes: _chain.IDXDB[] = [
-        ];
-        return new SignerDB(code, scope, tableName, indexes);
+        return new SignerDB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
 }
+
 
 
 export class globalDB extends _chain.MultiIndex<global> {
@@ -87,6 +99,7 @@ export class globalDB extends _chain.MultiIndex<global> {
 }
 
 @table("global", singleton, nocodegen)
+
 export class global implements _chain.MultiIndexValue {
     
     constructor (
@@ -112,30 +125,44 @@ export class global implements _chain.MultiIndexValue {
         return size;
     }
 
+    static get tableName(): _chain.Name {
+        return _chain.Name.fromU64(0x6468734400000000);
+    }
+
+    static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
+        const indexes: _chain.IDXDB[] = [
+        ];
+        return indexes;
+    }
+
+    getTableName(): _chain.Name {
+        return global.tableName;
+    }
+
+    getTableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        return global.tableIndexes(code, scope);
+    }
+
     getPrimaryValue(): u64 {
         return _chain.Name.fromU64(0x6468734400000000).N;
     }
 
     getSecondaryValue(i: i32): _chain.SecondaryValue {
-        switch (i) {
-            default:
-                _chain.assert(false, "bad db index!");
-                return new _chain.SecondaryValue(_chain.SecondaryType.U64, new Array<u64>(0));
-        }
+        _chain.check(false, "no secondary value!");
+        return new _chain.SecondaryValue(_chain.SecondaryType.U64, new Array<u64>(0));
+    }
+    
+    setSecondaryValue(i: i32, value: _chain.SecondaryValue): void {
+        _chain.check(false, "no secondary value!");
     }
 
-    setSecondaryValue(i: i32, value: _chain.SecondaryValue): void {
-        switch (i) {
-            default:
-                _chain.assert(false, "bad db index!");
-        }
-    }
 
     static new(code: _chain.Name, scope: _chain.Name): _chain.Singleton<global> {
-        let tableName = _chain.Name.fromU64(0x6468734400000000);
-        return new _chain.Singleton<global>(code, scope, tableName);
+        return new _chain.Singleton<global>(code, scope, this.tableName);
     }
 }
+
 
 
 export class TxEventDB extends _chain.MultiIndex<TxEvent> {
@@ -143,6 +170,7 @@ export class TxEventDB extends _chain.MultiIndex<TxEvent> {
 }
 
 @table("txevents", nocodegen)
+
 export class TxEvent implements _chain.MultiIndexValue {
     
 	nonce:       u64; //primary : t.nonce
@@ -245,34 +273,44 @@ export class TxEvent implements _chain.MultiIndexValue {
         return size;
     }
 
+    static get tableName(): _chain.Name {
+        return _chain.Name.fromU64(0xCF55B54F38000000);
+    }
+
+    static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
+        const indexes: _chain.IDXDB[] = [
+        ];
+        return indexes;
+    }
+
+    getTableName(): _chain.Name {
+        return TxEvent.tableName;
+    }
+
+    getTableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        return TxEvent.tableIndexes(code, scope);
+    }
+
     getPrimaryValue(): u64 {
         return this.getPrimary
     }
 
     getSecondaryValue(i: i32): _chain.SecondaryValue {
-        switch (i) {
-            default:
-                _chain.assert(false, "bad db index!");
-                return new _chain.SecondaryValue(_chain.SecondaryType.U64, new Array<u64>(0));
-        }
+        _chain.check(false, "no secondary value!");
+        return new _chain.SecondaryValue(_chain.SecondaryType.U64, new Array<u64>(0));
+    }
+    
+    setSecondaryValue(i: i32, value: _chain.SecondaryValue): void {
+        _chain.check(false, "no secondary value!");
     }
 
-    setSecondaryValue(i: i32, value: _chain.SecondaryValue): void {
-        switch (i) {
-            default:
-                _chain.assert(false, "bad db index!");
-        }
-    }
 
     static new(code: _chain.Name, scope: _chain.Name): TxEventDB {
-        let tableName = _chain.Name.fromU64(0xCF55B54F38000000); //txevents
-        let idxTableBase: u64 = (tableName.N & 0xfffffffffffffff0);
-
-        let indexes: _chain.IDXDB[] = [
-        ];
-        return new TxEventDB(code, scope, tableName, indexes);
+        return new TxEventDB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
 }
+
 
 
 export class AccountCacheDB extends _chain.MultiIndex<AccountCache> {
@@ -280,6 +318,7 @@ export class AccountCacheDB extends _chain.MultiIndex<AccountCache> {
 }
 
 @table("accountcache", singleton, nocodegen)
+
 export class AccountCache implements _chain.MultiIndexValue {
     
     constructor(
@@ -320,28 +359,41 @@ export class AccountCache implements _chain.MultiIndexValue {
         return size;
     }
 
+    static get tableName(): _chain.Name {
+        return _chain.Name.fromU64(0x32114D4F28321AA0);
+    }
+
+    static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
+        const indexes: _chain.IDXDB[] = [
+        ];
+        return indexes;
+    }
+
+    getTableName(): _chain.Name {
+        return AccountCache.tableName;
+    }
+
+    getTableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        return AccountCache.tableIndexes(code, scope);
+    }
+
     getPrimaryValue(): u64 {
         return _chain.Name.fromU64(0x32114D4F28321AA0).N;
     }
 
     getSecondaryValue(i: i32): _chain.SecondaryValue {
-        switch (i) {
-            default:
-                _chain.assert(false, "bad db index!");
-                return new _chain.SecondaryValue(_chain.SecondaryType.U64, new Array<u64>(0));
-        }
+        _chain.check(false, "no secondary value!");
+        return new _chain.SecondaryValue(_chain.SecondaryType.U64, new Array<u64>(0));
+    }
+    
+    setSecondaryValue(i: i32, value: _chain.SecondaryValue): void {
+        _chain.check(false, "no secondary value!");
     }
 
-    setSecondaryValue(i: i32, value: _chain.SecondaryValue): void {
-        switch (i) {
-            default:
-                _chain.assert(false, "bad db index!");
-        }
-    }
 
     static new(code: _chain.Name, scope: _chain.Name): _chain.Singleton<AccountCache> {
-        let tableName = _chain.Name.fromU64(0x32114D4F28321AA0);
-        return new _chain.Singleton<AccountCache>(code, scope, tableName);
+        return new _chain.Singleton<AccountCache>(code, scope, this.tableName);
     }
 }
 
@@ -351,6 +403,7 @@ export class AccountCache implements _chain.MultiIndexValue {
 // 	symbol   chain.Symbol  //primary : t.symbol.Code()
 // 	asset_id chain.Uint128 //IDX128: ByAssetId : t.asset_id : t.asset_id
 // }
+
 
 
 export class MixinAssetDB extends _chain.MultiIndex<MixinAsset> {
@@ -366,6 +419,7 @@ export class MixinAssetDB extends _chain.MultiIndex<MixinAsset> {
 }
 
 @table("mixinassets", nocodegen)
+
 export class MixinAsset implements _chain.MultiIndexValue {
     
 
@@ -421,6 +475,26 @@ export class MixinAsset implements _chain.MultiIndexValue {
         return size;
     }
 
+    static get tableName(): _chain.Name {
+        return _chain.Name.fromU64(0x93BAE99B18567000);
+    }
+
+    static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
+        const indexes: _chain.IDXDB[] = [
+            new _chain.IDX128(code.N, scope.N, idxTableBase + 0, 0),
+        ];
+        return indexes;
+    }
+
+    getTableName(): _chain.Name {
+        return MixinAsset.tableName;
+    }
+
+    getTableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        return MixinAsset.tableIndexes(code, scope);
+    }
+
     getPrimaryValue(): u64 {
         return this.getPrimary
     }
@@ -449,14 +523,9 @@ export class MixinAsset implements _chain.MultiIndexValue {
         }
     }
 
-    static new(code: _chain.Name, scope: _chain.Name): MixinAssetDB {
-        let tableName = _chain.Name.fromU64(0x93BAE99B18567000); //mixinassets
-        let idxTableBase: u64 = (tableName.N & 0xfffffffffffffff0);
 
-        let indexes: _chain.IDXDB[] = [
-            new _chain.IDX128(code.N, scope.N, idxTableBase + 0, 0),
-        ];
-        return new MixinAssetDB(code, scope, tableName, indexes);
+    static new(code: _chain.Name, scope: _chain.Name): MixinAssetDB {
+        return new MixinAssetDB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
 }
 
@@ -466,11 +535,13 @@ export class MixinAsset implements _chain.MultiIndexValue {
 // }
 
 
+
 export class CreateAccountFeeDB extends _chain.MultiIndex<CreateAccountFee> {
 
 }
 
 @table("createaccfee", singleton, nocodegen)
+
 export class CreateAccountFee implements _chain.MultiIndexValue {
     
     constructor(
@@ -500,30 +571,44 @@ export class CreateAccountFee implements _chain.MultiIndexValue {
         return size;
     }
 
+    static get tableName(): _chain.Name {
+        return _chain.Name.fromU64(0x45D46CA8C842D4A0);
+    }
+
+    static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
+        const indexes: _chain.IDXDB[] = [
+        ];
+        return indexes;
+    }
+
+    getTableName(): _chain.Name {
+        return CreateAccountFee.tableName;
+    }
+
+    getTableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        return CreateAccountFee.tableIndexes(code, scope);
+    }
+
     getPrimaryValue(): u64 {
         return _chain.Name.fromU64(0x45D46CA8C842D4A0).N;
     }
 
     getSecondaryValue(i: i32): _chain.SecondaryValue {
-        switch (i) {
-            default:
-                _chain.assert(false, "bad db index!");
-                return new _chain.SecondaryValue(_chain.SecondaryType.U64, new Array<u64>(0));
-        }
+        _chain.check(false, "no secondary value!");
+        return new _chain.SecondaryValue(_chain.SecondaryType.U64, new Array<u64>(0));
+    }
+    
+    setSecondaryValue(i: i32, value: _chain.SecondaryValue): void {
+        _chain.check(false, "no secondary value!");
     }
 
-    setSecondaryValue(i: i32, value: _chain.SecondaryValue): void {
-        switch (i) {
-            default:
-                _chain.assert(false, "bad db index!");
-        }
-    }
 
     static new(code: _chain.Name, scope: _chain.Name): _chain.Singleton<CreateAccountFee> {
-        let tableName = _chain.Name.fromU64(0x45D46CA8C842D4A0);
-        return new _chain.Singleton<CreateAccountFee>(code, scope, tableName);
+        return new _chain.Singleton<CreateAccountFee>(code, scope, this.tableName);
     }
 }
+
 
 
 export class MixinAccountDB extends _chain.MultiIndex<MixinAccount> {
@@ -539,6 +624,7 @@ export class MixinAccountDB extends _chain.MultiIndex<MixinAccount> {
 }
 
 @table("bindaccounts", nocodegen)
+
 export class MixinAccount implements _chain.MultiIndexValue {
     
     constructor(
@@ -591,6 +677,26 @@ export class MixinAccount implements _chain.MultiIndexValue {
         return size;
     }
 
+    static get tableName(): _chain.Name {
+        return _chain.Name.fromU64(0x3BA6932114D4F380);
+    }
+
+    static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
+        const indexes: _chain.IDXDB[] = [
+            new _chain.IDX128(code.N, scope.N, idxTableBase + 0, 0),
+        ];
+        return indexes;
+    }
+
+    getTableName(): _chain.Name {
+        return MixinAccount.tableName;
+    }
+
+    getTableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        return MixinAccount.tableIndexes(code, scope);
+    }
+
     getPrimaryValue(): u64 {
         return this.getPrimary
     }
@@ -619,14 +725,9 @@ export class MixinAccount implements _chain.MultiIndexValue {
         }
     }
 
-    static new(code: _chain.Name, scope: _chain.Name): MixinAccountDB {
-        let tableName = _chain.Name.fromU64(0x3BA6932114D4F380); //bindaccounts
-        let idxTableBase: u64 = (tableName.N & 0xfffffffffffffff0);
 
-        let indexes: _chain.IDXDB[] = [
-            new _chain.IDX128(code.N, scope.N, idxTableBase + 0, 0),
-        ];
-        return new MixinAccountDB(code, scope, tableName, indexes);
+    static new(code: _chain.Name, scope: _chain.Name): MixinAccountDB {
+        return new MixinAccountDB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
 }
 
@@ -636,11 +737,13 @@ export class MixinAccount implements _chain.MultiIndexValue {
 // 	count uint64
 // }
 
+
 export class CounterDB extends _chain.MultiIndex<Counter> {
 
 }
 
 @table("counters", nocodegen)
+
 export class Counter implements _chain.MultiIndexValue {
     
     constructor(
@@ -674,34 +777,44 @@ export class Counter implements _chain.MultiIndexValue {
         return size;
     }
 
+    static get tableName(): _chain.Name {
+        return _chain.Name.fromU64(0x45353CAAF8000000);
+    }
+
+    static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
+        const indexes: _chain.IDXDB[] = [
+        ];
+        return indexes;
+    }
+
+    getTableName(): _chain.Name {
+        return Counter.tableName;
+    }
+
+    getTableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        return Counter.tableIndexes(code, scope);
+    }
+
     getPrimaryValue(): u64 {
         return this.primary
     }
 
     getSecondaryValue(i: i32): _chain.SecondaryValue {
-        switch (i) {
-            default:
-                _chain.assert(false, "bad db index!");
-                return new _chain.SecondaryValue(_chain.SecondaryType.U64, new Array<u64>(0));
-        }
+        _chain.check(false, "no secondary value!");
+        return new _chain.SecondaryValue(_chain.SecondaryType.U64, new Array<u64>(0));
+    }
+    
+    setSecondaryValue(i: i32, value: _chain.SecondaryValue): void {
+        _chain.check(false, "no secondary value!");
     }
 
-    setSecondaryValue(i: i32, value: _chain.SecondaryValue): void {
-        switch (i) {
-            default:
-                _chain.assert(false, "bad db index!");
-        }
-    }
 
     static new(code: _chain.Name, scope: _chain.Name): CounterDB {
-        let tableName = _chain.Name.fromU64(0x45353CAAF8000000); //counters
-        let idxTableBase: u64 = (tableName.N & 0xfffffffffffffff0);
-
-        let indexes: _chain.IDXDB[] = [
-        ];
-        return new CounterDB(code, scope, tableName, indexes);
+        return new CounterDB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
 }
+
 
 
 export class ProcessDB extends _chain.MultiIndex<Process> {
@@ -709,6 +822,7 @@ export class ProcessDB extends _chain.MultiIndex<Process> {
 }
 
 @table("processes", noabigen, nocodegen)
+
 export class Process implements _chain.MultiIndexValue {
     
     constructor(
@@ -752,34 +866,44 @@ export class Process implements _chain.MultiIndexValue {
         return size;
     }
 
+    static get tableName(): _chain.Name {
+        return _chain.Name.fromU64(0xADE885630AC00000);
+    }
+
+    static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
+        const indexes: _chain.IDXDB[] = [
+        ];
+        return indexes;
+    }
+
+    getTableName(): _chain.Name {
+        return Process.tableName;
+    }
+
+    getTableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        return Process.tableIndexes(code, scope);
+    }
+
     getPrimaryValue(): u64 {
         return this.primary
     }
 
     getSecondaryValue(i: i32): _chain.SecondaryValue {
-        switch (i) {
-            default:
-                _chain.assert(false, "bad db index!");
-                return new _chain.SecondaryValue(_chain.SecondaryType.U64, new Array<u64>(0));
-        }
+        _chain.check(false, "no secondary value!");
+        return new _chain.SecondaryValue(_chain.SecondaryType.U64, new Array<u64>(0));
+    }
+    
+    setSecondaryValue(i: i32, value: _chain.SecondaryValue): void {
+        _chain.check(false, "no secondary value!");
     }
 
-    setSecondaryValue(i: i32, value: _chain.SecondaryValue): void {
-        switch (i) {
-            default:
-                _chain.assert(false, "bad db index!");
-        }
-    }
 
     static new(code: _chain.Name, scope: _chain.Name): ProcessDB {
-        let tableName = _chain.Name.fromU64(0xADE885630AC00000); //processes
-        let idxTableBase: u64 = (tableName.N & 0xfffffffffffffff0);
-
-        let indexes: _chain.IDXDB[] = [
-        ];
-        return new ProcessDB(code, scope, tableName, indexes);
+        return new ProcessDB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
 }
+
 
 
 export class PendingEventDB extends _chain.MultiIndex<PendingEvent> {
@@ -803,6 +927,7 @@ export class PendingEventDB extends _chain.MultiIndex<PendingEvent> {
 }
 
 @table("pendingevts", nocodegen)
+
 export class PendingEvent implements _chain.MultiIndexValue {
     
     constructor(
@@ -883,6 +1008,27 @@ export class PendingEvent implements _chain.MultiIndexValue {
         return size;
     }
 
+    static get tableName(): _chain.Name {
+        return _chain.Name.fromU64(0xAAA6974D8ADE7000);
+    }
+
+    static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
+        const indexes: _chain.IDXDB[] = [
+            new _chain.IDX64(code.N, scope.N, idxTableBase + 0, 0),
+            new _chain.IDX256(code.N, scope.N, idxTableBase + 1, 1),
+        ];
+        return indexes;
+    }
+
+    getTableName(): _chain.Name {
+        return PendingEvent.tableName;
+    }
+
+    getTableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        return PendingEvent.tableIndexes(code, scope);
+    }
+
     getPrimaryValue(): u64 {
         return this.primary
     }
@@ -920,15 +1066,9 @@ export class PendingEvent implements _chain.MultiIndexValue {
         }
     }
 
-    static new(code: _chain.Name, scope: _chain.Name): PendingEventDB {
-        let tableName = _chain.Name.fromU64(0xAAA6974D8ADE7000); //pendingevts
-        let idxTableBase: u64 = (tableName.N & 0xfffffffffffffff0);
 
-        let indexes: _chain.IDXDB[] = [
-            new _chain.IDX64(code.N, scope.N, idxTableBase + 0, 0),
-            new _chain.IDX256(code.N, scope.N, idxTableBase + 1, 1),
-        ];
-        return new PendingEventDB(code, scope, tableName, indexes);
+    static new(code: _chain.Name, scope: _chain.Name): PendingEventDB {
+        return new PendingEventDB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
 }
 
@@ -939,11 +1079,13 @@ export class PendingEvent implements _chain.MultiIndexValue {
 // }
 
 
+
 export class SubmittedEventDB extends _chain.MultiIndex<SubmittedEvent> {
 
 }
 
 @table("submittedevs", nocodegen)
+
 export class SubmittedEvent implements _chain.MultiIndexValue {
     
     constructor(
@@ -973,32 +1115,41 @@ export class SubmittedEvent implements _chain.MultiIndexValue {
         return size;
     }
 
+    static get tableName(): _chain.Name {
+        return _chain.Name.fromU64(0xC68F27672A4AB780);
+    }
+
+    static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
+        const indexes: _chain.IDXDB[] = [
+        ];
+        return indexes;
+    }
+
+    getTableName(): _chain.Name {
+        return SubmittedEvent.tableName;
+    }
+
+    getTableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        return SubmittedEvent.tableIndexes(code, scope);
+    }
+
     getPrimaryValue(): u64 {
         return this.primary
     }
 
     getSecondaryValue(i: i32): _chain.SecondaryValue {
-        switch (i) {
-            default:
-                _chain.assert(false, "bad db index!");
-                return new _chain.SecondaryValue(_chain.SecondaryType.U64, new Array<u64>(0));
-        }
+        _chain.check(false, "no secondary value!");
+        return new _chain.SecondaryValue(_chain.SecondaryType.U64, new Array<u64>(0));
+    }
+    
+    setSecondaryValue(i: i32, value: _chain.SecondaryValue): void {
+        _chain.check(false, "no secondary value!");
     }
 
-    setSecondaryValue(i: i32, value: _chain.SecondaryValue): void {
-        switch (i) {
-            default:
-                _chain.assert(false, "bad db index!");
-        }
-    }
 
     static new(code: _chain.Name, scope: _chain.Name): SubmittedEventDB {
-        let tableName = _chain.Name.fromU64(0xC68F27672A4AB780); //submittedevs
-        let idxTableBase: u64 = (tableName.N & 0xfffffffffffffff0);
-
-        let indexes: _chain.IDXDB[] = [
-        ];
-        return new SubmittedEventDB(code, scope, tableName, indexes);
+        return new SubmittedEventDB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
 }
 
@@ -1010,11 +1161,13 @@ export class SubmittedEvent implements _chain.MultiIndexValue {
 // }
 
 
+
 export class ErrorTxEventDB extends _chain.MultiIndex<ErrorTxEvent> {
 
 }
 
 @table("errorevents", nocodegen)
+
 export class ErrorTxEvent implements _chain.MultiIndexValue {
     
     constructor(
@@ -1057,34 +1210,44 @@ export class ErrorTxEvent implements _chain.MultiIndexValue {
         return size;
     }
 
+    static get tableName(): _chain.Name {
+        return _chain.Name.fromU64(0x55EF4BAB6A9E7000);
+    }
+
+    static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
+        const indexes: _chain.IDXDB[] = [
+        ];
+        return indexes;
+    }
+
+    getTableName(): _chain.Name {
+        return ErrorTxEvent.tableName;
+    }
+
+    getTableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        return ErrorTxEvent.tableIndexes(code, scope);
+    }
+
     getPrimaryValue(): u64 {
         return this.primary
     }
 
     getSecondaryValue(i: i32): _chain.SecondaryValue {
-        switch (i) {
-            default:
-                _chain.assert(false, "bad db index!");
-                return new _chain.SecondaryValue(_chain.SecondaryType.U64, new Array<u64>(0));
-        }
+        _chain.check(false, "no secondary value!");
+        return new _chain.SecondaryValue(_chain.SecondaryType.U64, new Array<u64>(0));
+    }
+    
+    setSecondaryValue(i: i32, value: _chain.SecondaryValue): void {
+        _chain.check(false, "no secondary value!");
     }
 
-    setSecondaryValue(i: i32, value: _chain.SecondaryValue): void {
-        switch (i) {
-            default:
-                _chain.assert(false, "bad db index!");
-        }
-    }
 
     static new(code: _chain.Name, scope: _chain.Name): ErrorTxEventDB {
-        let tableName = _chain.Name.fromU64(0x55EF4BAB6A9E7000); //errorevents
-        let idxTableBase: u64 = (tableName.N & 0xfffffffffffffff0);
-
-        let indexes: _chain.IDXDB[] = [
-        ];
-        return new ErrorTxEventDB(code, scope, tableName, indexes);
+        return new ErrorTxEventDB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
 }
+
 
 
 export class TransferFeeDB extends _chain.MultiIndex<TransferFee> {
@@ -1092,6 +1255,7 @@ export class TransferFeeDB extends _chain.MultiIndex<TransferFee> {
 }
 
 @table("transferfees", nocodegen)
+
 export class TransferFee implements _chain.MultiIndexValue {
     
     constructor(
@@ -1126,34 +1290,44 @@ export class TransferFee implements _chain.MultiIndexValue {
         return size;
     }
 
+    static get tableName(): _chain.Name {
+        return _chain.Name.fromU64(0xCDCD3C2D575A9580);
+    }
+
+    static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
+        const indexes: _chain.IDXDB[] = [
+        ];
+        return indexes;
+    }
+
+    getTableName(): _chain.Name {
+        return TransferFee.tableName;
+    }
+
+    getTableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        return TransferFee.tableIndexes(code, scope);
+    }
+
     getPrimaryValue(): u64 {
         return this.primary
     }
 
     getSecondaryValue(i: i32): _chain.SecondaryValue {
-        switch (i) {
-            default:
-                _chain.assert(false, "bad db index!");
-                return new _chain.SecondaryValue(_chain.SecondaryType.U64, new Array<u64>(0));
-        }
+        _chain.check(false, "no secondary value!");
+        return new _chain.SecondaryValue(_chain.SecondaryType.U64, new Array<u64>(0));
+    }
+    
+    setSecondaryValue(i: i32, value: _chain.SecondaryValue): void {
+        _chain.check(false, "no secondary value!");
     }
 
-    setSecondaryValue(i: i32, value: _chain.SecondaryValue): void {
-        switch (i) {
-            default:
-                _chain.assert(false, "bad db index!");
-        }
-    }
 
     static new(code: _chain.Name, scope: _chain.Name): TransferFeeDB {
-        let tableName = _chain.Name.fromU64(0xCDCD3C2D575A9580); //transferfees
-        let idxTableBase: u64 = (tableName.N & 0xfffffffffffffff0);
-
-        let indexes: _chain.IDXDB[] = [
-        ];
-        return new TransferFeeDB(code, scope, tableName, indexes);
+        return new TransferFeeDB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
 }
+
 
 
 export class TotalFeeDB extends _chain.MultiIndex<TotalFee> {
@@ -1161,6 +1335,7 @@ export class TotalFeeDB extends _chain.MultiIndex<TotalFee> {
 }
 
 @table("totalfees", nocodegen)
+
 export class TotalFee implements _chain.MultiIndexValue {
     
     constructor(
@@ -1195,31 +1370,40 @@ export class TotalFee implements _chain.MultiIndexValue {
         return size;
     }
 
+    static get tableName(): _chain.Name {
+        return _chain.Name.fromU64(0xCD3268AD4AC00000);
+    }
+
+    static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
+        const indexes: _chain.IDXDB[] = [
+        ];
+        return indexes;
+    }
+
+    getTableName(): _chain.Name {
+        return TotalFee.tableName;
+    }
+
+    getTableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
+        return TotalFee.tableIndexes(code, scope);
+    }
+
     getPrimaryValue(): u64 {
         return this.primary
     }
 
     getSecondaryValue(i: i32): _chain.SecondaryValue {
-        switch (i) {
-            default:
-                _chain.assert(false, "bad db index!");
-                return new _chain.SecondaryValue(_chain.SecondaryType.U64, new Array<u64>(0));
-        }
+        _chain.check(false, "no secondary value!");
+        return new _chain.SecondaryValue(_chain.SecondaryType.U64, new Array<u64>(0));
+    }
+    
+    setSecondaryValue(i: i32, value: _chain.SecondaryValue): void {
+        _chain.check(false, "no secondary value!");
     }
 
-    setSecondaryValue(i: i32, value: _chain.SecondaryValue): void {
-        switch (i) {
-            default:
-                _chain.assert(false, "bad db index!");
-        }
-    }
 
     static new(code: _chain.Name, scope: _chain.Name): TotalFeeDB {
-        let tableName = _chain.Name.fromU64(0xCD3268AD4AC00000); //totalfees
-        let idxTableBase: u64 = (tableName.N & 0xfffffffffffffff0);
-
-        let indexes: _chain.IDXDB[] = [
-        ];
-        return new TotalFeeDB(code, scope, tableName, indexes);
+        return new TotalFeeDB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
 }
