@@ -25,7 +25,7 @@ sys.path.append(os.path.join(test_dir, '..'))
 
 from ipyeos import log
 from ipyeos import chaintester
-chaintester.chain_config['contracts_console'] = False
+chaintester.chain_config['contracts_console'] = True
 logger = log.get_logger(__name__)
 
 def update_auth(chain, account):
@@ -121,8 +121,8 @@ test_cases = [
                 a7 = 0xffffff01,
                 a8 = 0xffffffff00000001, #i64
                 a9 = 0xffffffff00000002,
-                # a10: i128,
-                # a11: u128,
+                a10 = -1, #i128,
+                a11 = "0xffffffffffffffffffffffffffffffff", #u128,
                 # a12: VarInt32,
                 a13 = 0xfff, #VarUint32,
                 a14 = 0xffffff01,

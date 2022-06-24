@@ -137,7 +137,8 @@ function nameToPrefix(name: Name): Name {
 export class Name implements Packer {
     N: u64;
 
-    @inline constructor(n: u64=0) {
+    @inline
+    constructor(n: u64=0) {
         this.N = n;
     }
 
@@ -147,6 +148,10 @@ export class Name implements Packer {
 
     @inline static fromU64(n: u64): Name {
         return new Name(n);
+    }
+
+    get value(): u64 {
+        return this.N;
     }
 
     toString(): string {
