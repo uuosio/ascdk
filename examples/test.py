@@ -8,7 +8,7 @@ sys.path.append(os.path.join(test_dir, '..'))
 
 from ipyeos import log
 from ipyeos import chaintester
-chaintester.chain_config['contracts_console'] = False
+chaintester.chain_config['contracts_console'] = True
 
 logger = log.get_logger(__name__)
 
@@ -134,3 +134,12 @@ def test_escrow():
 def test_balance():
     (code, abi) = get_code_and_abi('balance', 'balance.contract')
     chain.deploy_contract('hello', code, abi, 0)
+
+@chain_test
+def test_finalizer():
+    (code, abi) = get_code_and_abi('finalizer')
+    chain.deploy_contract('hello', code, abi, 0)
+
+    args = {}
+    r = chain.push_action('hello', 'sayhello', args, {'hello': 'active'})
+    logger.info('++++++elapsed: %s', r['elapsed'])

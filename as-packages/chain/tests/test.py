@@ -294,6 +294,17 @@ test_cases = [
         },
         'err_msg': None,
     },
+    #test finalize
+    {
+        'test_name': 'testfinalize',
+        'action': {
+            'account': 'hello',
+            'name': 'test',
+            'args': {},
+            'permissions': None,
+        },
+        'err_msg': None,
+    },
 ]
 
 '''
@@ -544,3 +555,6 @@ def test_apply():
 def test_nocodegen():
     test_run_testcase('testnocodegen')
 
+@chain_test
+def test_finalize():
+    test_run_testcase('testfinalize')
