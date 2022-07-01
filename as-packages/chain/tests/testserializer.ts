@@ -18,6 +18,8 @@ import {
     TimePointSec,
     Contract,
     ExtendedAsset,
+    I128,
+    U128,
 } from "as-chain";
 
 @packer
@@ -108,8 +110,8 @@ class MyContract extends Contract{
         a7: u32,
         a8: i64,
         a9: u64,
-        // a10: i128,
-        // a11: u128,
+        a10: I128,
+        a11: U128,
         // a12: VarInt32,
         a13: VarUint32,
         a14: f32,
@@ -132,6 +134,19 @@ class MyContract extends Contract{
         a31: ExtendedAsset,
         a32: string[],
     ): void {
+        check(a10 == I128.fromI64(-1), "bad a10 value");
+        check(a11 == new U128(0xffffffffffffffff, 0xffffffffffffffff), "bad a11 value");
+
+
+        check(a13 == new VarUint32(0xfff), "bad a13 value.");
+
+        check(a17 == new TimePoint(1630642401*1000000), "bad a17");
+        check(a18 == new TimePointSec(1630642401), "bad a18");
+
+        check(a20 == Name.fromString("alice"), "bad a20 value");
+        check(a28 == new Symbol("EOS", 4), "bad value a28");
+        check(a29 == new SymbolCode("EOS"), "bad value a29");
+
         {
             let data = Utils.hexToBytes('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABB');
             let _a23 = new Checksum160();
@@ -162,14 +177,6 @@ class MyContract extends Contract{
             sig.unpack(data);
             check(a27 == sig, "a27 == sig");
         }
-        
-        check(a17 == new TimePoint(1630642401*1000000), "bad a17");
-        check(a18 == new TimePointSec(1630642401), "bad a18");
-
-        check(a13 == new VarUint32(0xfff), "bad a13 value.");
-        check(a20 == Name.fromString("alice"), "bad a20 value");
-        check(a28 == new Symbol("EOS", 4), "bad value a28");
-        check(a29 == new SymbolCode("EOS"), "bad value a29");
 
         printString(`
         a1 = ${a1},

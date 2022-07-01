@@ -1,3 +1,5 @@
+![build](https://github.com/uuosio/ascdk/actions/workflows/pr-any.yml/badge.svg?event=push)
+
 # AssemblyScript Smart Contracts Development Kit
 
 ## Contract Example
@@ -37,7 +39,7 @@ class MyContract extends Contract {
         let payer: Name = this.receiver;
 
         if (it.isOk()) {
-            let counter = mi.get(it)
+            let counter = mi.get(it);
             counter.count += 1;
             mi.update(it, counter, payer);
             count = counter.count;

@@ -30,7 +30,7 @@ export class PrimaryIterator<T extends PrimaryValue> {
     }
 
     get primary(): u64 {
-        check(this.isOk(), "get primary: invalid iterator")
+        check(this.isOk(), "get primary: invalid iterator");
 
         if (this.validPrimary) {
             return this._primary;
@@ -54,7 +54,7 @@ export class PrimaryIterator<T extends PrimaryValue> {
     }
 
     isEnd(): bool {
-        return this.i == -2;
+        return this.i <= -2;
     }
 }
 

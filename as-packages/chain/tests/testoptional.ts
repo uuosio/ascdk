@@ -62,6 +62,14 @@ class MyContract extends Contract {
             a6.unpack(data);
             check(a5.value! == a6.value!, "bad value 5");    
         }
+
+        {
+            let a = new OptionalNumber<u8>(0, false);
+            check(!a.hasValue, "bad value a 1");
+            //unpack, this time hasValue should return `true`
+            a.unpack([1, 0]);
+            check(a.hasValue, "bad value a 2");
+        }
     }
 
     @action("testopt2")

@@ -21,6 +21,9 @@ export function apply(receiver: u64, firstReceiver: u64, action: u64): void {
 	if (receiver != firstReceiver) {
 		{{#each contract.actionFuncDefs}}{{{handleNotifyAction .}}}{{/each}}
 	}
+    {{#if contract.hasFinalizeFunc}}
+	mycontract.finalize();
+    {{/if}}
 	return;
 }
 `;

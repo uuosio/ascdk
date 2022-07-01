@@ -141,6 +141,7 @@ export class ClassInterpreter {
 export class ContractInterpreter extends ClassInterpreter {
     // The first case is lower.
     version: string;
+    hasFinalizeFunc: boolean = false;
     actionFuncDefs: FunctionDef[] = [];
 
     constructor(clzPrototype: ClassPrototype) {
@@ -148,6 +149,22 @@ export class ContractInterpreter extends ClassInterpreter {
         this.version = "1.0";
         this.resolveFieldMembers();
         this.resolveContractClass();
+        this.hasFinalizeFunc = this.hasFinalizeFunction();
+    }
+
+    public hasFinalizeFunction(): boolean {
+        if (!this.classPrototype.instanceMembers) {
+            return false;
+        }
+        let member = this.classPrototype.instanceMembers.get("finalize");
+        if (!member) {
+            return false;
+        }
+        if (member.kind == ElementKind.FUNCTION_PROTOTYPE) {
+            let funcType = <FunctionPrototype>member;
+            return funcType.name == "finalize"
+        }
+        return false;
     }
 
     private resolveContractClass(): void {

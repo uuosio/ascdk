@@ -86,20 +86,14 @@ export class TransactionExtension implements Packer {
 }
 
 export class Transaction implements Packer {
-    // time_point_sec  expiration;
-    // uint16_t        ref_block_num;
-    // uint32_t        ref_block_prefix;
-    // unsigned_int    max_net_usage_words = 0UL; /// number of 8 byte words this transaction can serialize into after compressions
-    // uint8_t         max_cpu_usage_ms = 0UL; /// number of CPU usage units to bill transaction for
-    // unsigned_int    delay_sec = 0UL; /// number of seconds to delay transaction, default: 0
     expiration:        TimePointSec;
     refBlockNum:        u16;
     refBlockPrefix:     u32;
     //[VLQ or Base-128 encoding](https://en.wikipedia.org/wiki/Variable-length_quantity)
     //unsigned_int vaint (eosio.cdt/libraries/eosiolib/core/eosio/varint.hpp)
-    maxNetUsageWords:   VarUint32;
-    maxCpuUsageMs:       u8;
-    delaySec:           VarUint32; //unsigned_int
+    maxNetUsageWords:   VarUint32; /// number of 8 byte words this transaction can serialize into after compressions
+    maxCpuUsageMs:       u8; /// number of CPU usage units to bill transaction for
+    delaySec:           VarUint32; /// number of seconds to delay transaction, default: 0
     contextFreeActions: Action[];
     actions:            Action[];
     extention:          TransactionExtension[];

@@ -25,7 +25,7 @@ sys.path.append(os.path.join(test_dir, '..'))
 
 from ipyeos import log
 from ipyeos import chaintester
-chaintester.chain_config['contracts_console'] = False
+chaintester.chain_config['contracts_console'] = True
 logger = log.get_logger(__name__)
 
 def update_auth(chain, account):
@@ -121,8 +121,8 @@ test_cases = [
                 a7 = 0xffffff01,
                 a8 = 0xffffffff00000001, #i64
                 a9 = 0xffffffff00000002,
-                # a10: i128,
-                # a11: u128,
+                a10 = -1, #i128,
+                a11 = "0xffffffffffffffffffffffffffffffff", #u128,
                 # a12: VarInt32,
                 a13 = 0xfff, #VarUint32,
                 a14 = 0xffffff01,
@@ -294,6 +294,17 @@ test_cases = [
         },
         'err_msg': None,
     },
+    #test finalize
+    {
+        'test_name': 'testfinalize',
+        'action': {
+            'account': 'hello',
+            'name': 'test',
+            'args': {},
+            'permissions': None,
+        },
+        'err_msg': None,
+    },
 ]
 
 '''
@@ -346,14 +357,21 @@ def test_mi():
     (code, abi) = get_code_and_abi('testmi')
 
     with NewChain() as chain:
-        chain.deploy_contract('hello', code, abi, 0)
-        r = chain.push_action('hello', 'noop', b'', {'hello': 'active'})
-
-        args = dict(
-        )
+        chain.deploy_contract('hello', code, abi)
+        args = dict()
         r = chain.push_action('hello', 'testmi2', args, {'hello': 'active'})
         logger.info('++++++elapsed: %s', r['elapsed'])
 
+    with NewChain() as chain:
+        chain.deploy_contract('hello', code, abi)
+        args = dict()
+        r = chain.push_action('hello', 'testend', args, {'hello': 'active'})
+        logger.info('++++++elapsed: %s', r['elapsed'])
+        chain.produce_block()
+
+        r = chain.push_action('hello', 'testend', args, {'hello': 'active'})
+        logger.info('++++++elapsed: %s', r['elapsed'])
+        chain.produce_block()
 
 @chain_test
 def test_action():
@@ -537,3 +555,6 @@ def test_apply():
 def test_nocodegen():
     test_run_testcase('testnocodegen')
 
+@chain_test
+def test_finalize():
+    test_run_testcase('testfinalize')

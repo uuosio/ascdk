@@ -32,6 +32,7 @@
     "test:balance": "yarn build:balance && yarn build:receiver && run-ipyeos -m pytest -s -x test.py -k test_balance",
     "test:mixinproxy": "yarn --cwd ./mixinproxy test",
     "test:config": "yarn --cwd ./config test",
+    "test:finalizer": "yarn build:finalizer && run-ipyeos -m pytest -s -x test.py -k test_finalizer",
 
     "build": "run-p build:* --max-parallel 3",
     "build:hello": "npx eosio-asc ./hello/hello.ts",
@@ -44,7 +45,8 @@
     "build:eosio.token": "npx eosio-asc ./eosio.token/eosio.token.contract.ts",
     "build:escrow": "npx eosio-asc ./escrow/escrow.contract.ts",
     "build:allow": "npx eosio-asc ./allow/allow.contract.ts",
-    "build:balance": "npx eosio-asc ./balance/balance.contract.ts"
+    "build:balance": "npx eosio-asc ./balance/balance.contract.ts",
+    "build:finalizer": "npx eosio-asc ./finalizer/finalizer.ts"
   },
   "dependencies": {
     "@assemblyscript/loader": "^0.19.22",
