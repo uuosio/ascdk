@@ -101,11 +101,11 @@ export const tableTpl = `
 
 
     {{#if singleton}}
-    static new(code: _chain.Name, scope: _chain.Name): _chain.Singleton<{{className}}> {
+    static new(code: _chain.Name, scope: _chain.Name = _chain.EMPTY_NAME): _chain.Singleton<{{className}}> {
         return new _chain.Singleton<{{className}}>(code, scope, this.tableName);
     }
     {{else}}
-    static new(code: _chain.Name, scope: _chain.Name): {{className}}DB {
+    static new(code: _chain.Name, scope: _chain.Name  = _chain.EMPTY_NAME): {{className}}DB {
         return new {{className}}DB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
     {{/if}}

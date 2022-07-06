@@ -25,13 +25,13 @@ class MyContract extends Contract {
     test(): void {
         let payer = this.receiver;
         {
-            let db = Counter.new(this.receiver, this.receiver);
+            let db = Counter.new(this.receiver);
             let value = db.getOrNull();
             check(value == null, "bad value 1");
         }
 
         {
-            let db = Counter.new(this.receiver, this.receiver);
+            let db = Counter.new(this.receiver);
             let value = db.get();
             check(value.count == 0, "bad value 2");
             value.count += 1;
@@ -40,7 +40,7 @@ class MyContract extends Contract {
         }
 
         {
-            let db = Counter.new(this.receiver, this.receiver);
+            let db = Counter.new(this.receiver);
             let value = db.get()
             print(`++++++++value:${value.count}\n`)
             check(value.count == 1, "bad value 3");

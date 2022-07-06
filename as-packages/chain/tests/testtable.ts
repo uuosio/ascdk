@@ -171,7 +171,7 @@ class MyContract extends Contract{
     testTable(): void {
         let a: u8[] = [1, 2, 3];
         let b = changetype<usize>(a);
-        let mi = MyTable.new(this.receiver, this.receiver);
+        let mi = MyTable.new(this.receiver);
         let value = new MyTable(1, 2);
         mi.store(value, this.receiver);
     }

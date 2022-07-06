@@ -212,3 +212,5 @@ export class Name implements Packer {
         return a.N >= b.N;
     }
 }
+
+export const EMPTY_NAME = new Name();
