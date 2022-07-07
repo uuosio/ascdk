@@ -151,9 +151,9 @@ class MyTable2 implements MultiIndexValue {
         let tableName = Name.fromU64(0x97B263C542000000);
         let idxTableBase: u64 = (tableName.N & 0xfffffffffffffff0);
 
-        let indexes: IDXDB[] = [
+        let indices: IDXDB[] = [
         ];
-        return new MyTable2DB(code, scope, tableName, indexes);
+        return new MyTable2DB(code, scope, tableName, indices);
     }
 }
 
