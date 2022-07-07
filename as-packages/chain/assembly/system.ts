@@ -2,12 +2,12 @@ import * as env from "./env";
 import { TimePoint } from "./time";
 
 export function assert(test: bool, msg: string): void {
-    if (!test) {
+    if (test) {
         return;
     }
     let s1 = String.UTF8.encode(msg, true);
     let dv = new DataView(s1);
-    env.eosio_assert(1, dv.dataStart);
+    env.eosio_assert(0, dv.dataStart);
 }
 
 export function check(test: bool, msg: string): void {
