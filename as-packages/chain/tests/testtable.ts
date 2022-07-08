@@ -151,9 +151,9 @@ class MyTable2 implements MultiIndexValue {
         let tableName = Name.fromU64(0x97B263C542000000);
         let idxTableBase: u64 = (tableName.N & 0xfffffffffffffff0);
 
-        let indexes: IDXDB[] = [
+        let indices: IDXDB[] = [
         ];
-        return new MyTable2DB(code, scope, tableName, indexes);
+        return new MyTable2DB(code, scope, tableName, indices);
     }
 }
 
@@ -171,7 +171,7 @@ class MyContract extends Contract{
     testTable(): void {
         let a: u8[] = [1, 2, 3];
         let b = changetype<usize>(a);
-        let mi = MyTable.new(this.receiver, this.receiver);
+        let mi = MyTable.new(this.receiver);
         let value = new MyTable(1, 2);
         mi.store(value, this.receiver);
     }

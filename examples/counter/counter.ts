@@ -27,7 +27,7 @@ class MyContract extends Contract {
 
     @action("inc")
     inc(): void {
-        let mi = Counter.new(this.receiver, this.receiver);
+        let mi = Counter.new(this.receiver);
         let it = mi.find(Name.fromString("counter").N);
         let count: u64 = 0;
         let payer: Name = this.receiver;

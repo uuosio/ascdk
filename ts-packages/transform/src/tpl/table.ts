@@ -49,12 +49,12 @@ export const tableTpl = `
 
     static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
         const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
-        const indexes: _chain.IDXDB[] = [
+        const indices: _chain.IDXDB[] = [
             {{#each secondaryFuncDefs}}
             {{{newSecondaryDB .}}}
             {{/each}}
         ];
-        return indexes;
+        return indices;
     }
 
     getTableName(): _chain.Name {
@@ -101,11 +101,11 @@ export const tableTpl = `
 
 
     {{#if singleton}}
-    static new(code: _chain.Name, scope: _chain.Name): _chain.Singleton<{{className}}> {
+    static new(code: _chain.Name, scope: _chain.Name = _chain.EMPTY_NAME): _chain.Singleton<{{className}}> {
         return new _chain.Singleton<{{className}}>(code, scope, this.tableName);
     }
     {{else}}
-    static new(code: _chain.Name, scope: _chain.Name): {{className}}DB {
+    static new(code: _chain.Name, scope: _chain.Name  = _chain.EMPTY_NAME): {{className}}DB {
         return new {{className}}DB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
     {{/if}}

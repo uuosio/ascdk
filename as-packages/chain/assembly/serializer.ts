@@ -33,12 +33,16 @@ export class Encoder {
     }
 
     checkPos(n: usize): void {
-        check(this.pos + n <= <u32>this.buf.length, `checkPos: buffer overflow`);
+        if (this.pos + n > <u32>this.buf.length) {
+            check(false, `checkPos: buffer overflow`);
+        }
     }
     
     incPos(n: usize): void {
         this.pos += n;
-        check(this.pos <= <u32>this.buf.length, `incPos: buffer overflow`);
+        if (this.pos > <u32>this.buf.length) {
+            check(false, `incPos: buffer overflow`);
+        }
     }
 
     pack(ser: Packer): usize {
@@ -151,7 +155,9 @@ export class Decoder {
 
     incPos(n: u32): void {
         this.pos += n;
-        check(this.pos <= <u32>this.buf.length, "Decoder.incPos: buffer overflow");
+        if (this.pos > <u32>this.buf.length) {
+            check(false, "Decoder.incPos: buffer overflow");
+        }
     }
 
     getPos(): u32 {

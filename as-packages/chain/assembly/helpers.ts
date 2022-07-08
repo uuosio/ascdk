@@ -1,7 +1,7 @@
 import { PermissionLevel, Action } from "./action"
 import { SecondaryValue, newSecondaryValue_u64, IDXDB } from "./idxdb"
 import { MultiIndex, MultiIndexValue } from "./mi"
-import { Name } from "./name"
+import { Name, EMPTY_NAME } from "./name"
 import { Packer } from "./serializer"
 import { check } from "./system"
 
@@ -133,7 +133,7 @@ export class Table extends MockPacker implements MultiIndexValue  {
         check(false, "not implemented");
     };
 
-    static new(_: Name, __: Name): MultiIndex<Table> {
+    static new(_: Name, __: Name = EMPTY_NAME): MultiIndex<Table> {
         check(false, "not implemented");
         // @ts-ignore
         return new MultiIndex<Table>(_, __, new Name(), []);

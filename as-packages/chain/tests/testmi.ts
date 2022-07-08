@@ -140,7 +140,7 @@ class MyData2 extends Table {
 class MyContract extends Contract{
     @action("testmi1")
     testmi1(): void {
-        let mi = MyData.new(this.receiver, this.receiver);
+        let mi = MyData.new(this.receiver);
         let value = new MyData(
                             1,
                             2,
@@ -155,7 +155,7 @@ class MyContract extends Contract{
 
     @action("testmi2")
     testmi2(): void {
-        let mi = MyData.new(this.receiver, this.receiver);
+        let mi = MyData.new(this.receiver);
         check(mi.availablePrimaryKey() == 0, `expected availablePrimaryKey 0, got ${mi.availablePrimaryKey()}`);
 
         mi = MyData.new(this.receiver, this.receiver);
@@ -453,8 +453,8 @@ class MyContract extends Contract{
 
     @action("testend")
     testend(): void {
-        let mi1 = MyData1.new(this.receiver, this.receiver);
-        let mi2 = MyData2.new(this.receiver, this.receiver);
+        let mi1 = MyData1.new(this.receiver);
+        let mi2 = MyData2.new(this.receiver);
         let it1 = mi1.find(1);
         let it2 = mi2.find(1);
         if (!it1.isOk()) {

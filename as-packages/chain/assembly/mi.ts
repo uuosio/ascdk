@@ -18,9 +18,9 @@ export class MultiIndex<T extends MultiIndexValue> {
     idxdbs: Array<IDXDB>;
     nextPrimaryKey: u64 = unsetNextPrimaryKey;
 
-    constructor(code: Name, scope: Name, table: Name, indexes: Array<IDXDB> = []) {
+    constructor(code: Name, scope: Name, table: Name, indices: Array<IDXDB> = []) {
         this.db = new DBI64(code.N, scope.N, table.N);
-        this.idxdbs = indexes;
+        this.idxdbs = indices;
     }
 
     set(value: T, payer: Name): PrimaryIterator<T> {
