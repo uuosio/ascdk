@@ -113,7 +113,6 @@ export declare function sha1(data_ptr: usize, length: u32, hash_ptr: usize): voi
 export declare function sha512(data_ptr: usize, length: u32, hash_ptr: usize): void;
 export declare function sha3(data_ptr: usize, length: u32, hash_ptr: usize, hashlen: u32, keccak: i32): void;
 export declare function ripemd160(data_ptr: usize, length: u32, hash_ptr: usize): void;
-export declare function ripemd160(data_ptr: usize, length: u32, hash_ptr: usize): void;
 export declare function blake2_f(rounds: u32, state_ptr: usize, statelen: u32, msg_ptr: usize, msglen: u32, t0_offset_ptr: usize, t0len: u32, t1_offset_ptr: usize, t1len: u32, final: i32, result_ptr: usize, resultlen: u32): i32;
 
 export declare function recover_key(digest_ptr: usize, sig_ptr: usize, siglen: u32, pub_ptr: usize, publen: u32): i32
