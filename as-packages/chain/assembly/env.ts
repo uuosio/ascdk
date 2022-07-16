@@ -111,19 +111,10 @@ export declare function assert_ripemd160(data_ptr: usize, length: u32, hash_ptr:
 export declare function sha256(data_ptr: usize, length: u32, hash_ptr: usize): void;
 export declare function sha1(data_ptr: usize, length: u32, hash_ptr: usize): void;
 export declare function sha512(data_ptr: usize, length: u32, hash_ptr: usize): void;
-export declare function sha3(data_ptr: usize, length: u32, hash_ptr: usize, hashlen: u32, keccak: i32): void;
 export declare function ripemd160(data_ptr: usize, length: u32, hash_ptr: usize): void;
-export declare function ripemd160(data_ptr: usize, length: u32, hash_ptr: usize): void;
-export declare function blake2_f(rounds: u32, state_ptr: usize, statelen: u32, msg_ptr: usize, msglen: u32, t0_offset_ptr: usize, t0len: u32, t1_offset_ptr: usize, t1len: u32, final: i32, result_ptr: usize, resultlen: u32): i32;
 
 export declare function recover_key(digest_ptr: usize, sig_ptr: usize, siglen: u32, pub_ptr: usize, publen: u32): i32
 export declare function assert_recover_key(digest_ptr: usize, sig_ptr: usize, siglen: u32, pub_ptr: usize, publen: u32): void
-export declare function k1_recover(sig_ptr: usize, siglen: u32, dig_ptr: usize, diglen: u32, pub_ptr: usize, publen: u32): i32
-
-export declare function alt_bn128_add(op1_ptr: usize, op1len: u32, op2_ptr: usize, op2len: u32, result_ptr: usize, resultlen: u32): i32
-export declare function alt_bn128_mul(g1_ptr: usize, g1len: u32, scalar_ptr: usize, scalarlen: u32, result_ptr: usize, resultlen: u32): i32
-export declare function alt_bn128_pair(pairs_ptr: usize, pairslen: u32): i32
-export declare function mod_exp(base_ptr: usize, baselen: u32, exp_ptr: usize, explen: u32, mod_ptr: usize, modlen: u32, result_ptr: usize, resultlen: u32): i32
 
 //transaction
 export declare function send_deferred(sender_id_u128_ptr: usize, payer: u64, serialized_transaction_ptr: usize, size: u32, replace_existing: u32): void;
