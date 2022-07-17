@@ -143,52 +143,6 @@ export class Checksum512 implements Packer {
     }
 }
 
-export class Checksum1024 implements Packer {
-    data: u8[];
-    constructor(
-        data: u8[] | null = null
-    ){
-        this.data = new Array<u8>(128);
-        if (data) {
-            check(this.data.length == 128, "bad checksum length");
-            this.assign(data);
-        }
-    }
-
-    assign(value: u8[]): void {
-        check(value.length == 128, "bad assign length");
-        env.memcpy(this.data.dataStart, value.dataStart, 128);
-    }
-
-    pack(): u8[] {
-        return this.data.slice(0);
-    }
-
-    unpack(data: u8[]): usize {
-        let dec = new Decoder(data);
-        this.data = dec.unpackBytes(128);
-        return dec.getPos();
-    }
-
-    getSize(): usize {
-        return 128;
-    }
-
-    toString(): string {
-        return Utils.bytesToHex(this.data);
-    }
-
-    @inline @operator('==')
-    static eq(a: Checksum1024, b: Checksum1024): bool {
-        return Utils.bytesCmp(a.data, b.data) == 0;
-    }
-
-    @inline @operator('!=')
-    static neq(a: Checksum1024, b: Checksum1024): bool {
-        return Utils.bytesCmp(a.data, b.data) != 0;
-    }
-}
-
 export class ECCPublicKey implements Packer {
     data: Array<u8> | null;
 
@@ -547,18 +501,20 @@ export function sha3(data: u8[]): Checksum256 {
     return sha3Helper(data, false);
 }
 
-export function blake2(rounds: u32, state: Checksum512, msg: Checksum1024, t0_offset: u8[], t1_offset: u8[], final: boolean): Checksum1024 | null {
+export function blake2(rounds: u32, state: u8[], msg: u8[], t0_offset: u8[], t1_offset: u8[], final: boolean): Checksum512 | null {
+    // Validation
+    check(state.length == 8, "Blake2 state must be 64 bytes");
+    check(msg.length == 8, "Blake2 msg must be 128 bytes");
     check(t0_offset.length == 8, "Blake2 t0_offset must be 8 bytes");
     check(t1_offset.length == 8, "Blake2 t1_offset must be 8 bytes");
 
-    let hash = new Checksum1024();
-    let rawHash = new Array<u8>(1024);
-    
-    const ret = env.blake2_f(rounds, state.data.dataStart, state.data.length, msg.data.dataStart, msg.data.length, t0_offset.dataStart, t0_offset.length, t1_offset.dataStart, t1_offset.length, +final, rawHash.dataStart, rawHash.length);
+    // hash
+    let hash = new Checksum512();
+    let rawHash = new Array<u8>(512);
+    const ret = env.blake2_f(rounds, state.dataStart, state.length, msg.dataStart, msg.length, t0_offset.dataStart, t0_offset.length, t1_offset.dataStart, t1_offset.length, +final, rawHash.dataStart, rawHash.length);
     if (ret == -1) {
         return null
     }
-
     hash.data = rawHash;
     return hash;
 }
