@@ -9,7 +9,7 @@ export class Checksum160 implements Packer {
     data!: u8[];
 
     pack(): u8[] {
-        return this.data;
+        return this.data.slice(0);
     }
 
     unpack(data: u8[]): usize {
@@ -55,7 +55,7 @@ export class Checksum256 implements Packer {
     }
 
     pack(): u8[] {
-        return this.data;
+        return this.data.slice(0);
     }
 
     unpack(data: u8[]): usize {
@@ -87,7 +87,7 @@ export class Checksum512 implements Packer {
     data!: u8[];
 
     pack(): u8[] {
-        return this.data;
+        return this.data.slice(0);
     }
 
     unpack(data: u8[]): usize {
@@ -119,7 +119,7 @@ export class Checksum1024 implements Packer {
     data!: u8[];
 
     pack(): u8[] {
-        return this.data;
+        return this.data.slice(0);
     }
 
     unpack(data: u8[]): usize {
@@ -386,10 +386,10 @@ export class PublicKey implements Packer {
 }
 
 export class Signature implements Packer {
-    data!: u8[];
+    data: u8[];
 
     pack(): u8[] {
-        return this.data;
+        return this.data.slice(0);
     }
 
     unpack(data: u8[]): usize {
