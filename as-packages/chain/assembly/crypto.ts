@@ -6,7 +6,21 @@ import * as env from "./env";
 import { U256 } from "./bignum";
 
 export class Checksum160 implements Packer {
-    data!: u8[];
+    data: u8[];
+    constructor(
+        data: u8[] | null = null
+    ){
+        this.data = new Array<u8>(20);
+        if (data) {
+            check(this.data.length == 20, "bad checksum length");
+            this.assign(data);
+        }
+    }
+
+    assign(value: u8[]): void {
+        check(value.length == 20, "bad assign length");
+        env.memcpy(this.data.dataStart, value.dataStart, 20);
+    }
 
     pack(): u8[] {
         return this.data.slice(0);
@@ -84,7 +98,21 @@ export class Checksum256 implements Packer {
 }
 
 export class Checksum512 implements Packer {
-    data!: u8[];
+    data: u8[];
+    constructor(
+        data: u8[] | null = null
+    ){
+        this.data = new Array<u8>(64);
+        if (data) {
+            check(this.data.length == 64, "bad checksum length");
+            this.assign(data);
+        }
+    }
+
+    assign(value: u8[]): void {
+        check(value.length == 64, "bad assign length");
+        env.memcpy(this.data.dataStart, value.dataStart, 64);
+    }
 
     pack(): u8[] {
         return this.data.slice(0);
@@ -116,7 +144,21 @@ export class Checksum512 implements Packer {
 }
 
 export class Checksum1024 implements Packer {
-    data!: u8[];
+    data: u8[];
+    constructor(
+        data: u8[] | null = null
+    ){
+        this.data = new Array<u8>(128);
+        if (data) {
+            check(this.data.length == 128, "bad checksum length");
+            this.assign(data);
+        }
+    }
+
+    assign(value: u8[]): void {
+        check(value.length == 128, "bad assign length");
+        env.memcpy(this.data.dataStart, value.dataStart, 128);
+    }
 
     pack(): u8[] {
         return this.data.slice(0);
