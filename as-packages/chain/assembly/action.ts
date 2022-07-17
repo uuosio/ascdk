@@ -1,8 +1,8 @@
 import * as env from "./env";
 import { Encoder, Decoder, Packer } from "./serializer";
 import { Name } from "./name";
-import { calcPackedVarUint32Length } from "./varint";
-
+import { calcPackedVarUint32Length, VarUint32 } from "./varint";
+import { Checksum256 } from "./crypto";
 
 export function getSender(): Name {
     return new Name(env.get_sender());
@@ -140,4 +140,54 @@ export class Action implements Packer{
         size += this.data.length;        
         return size;
     }
+}
+
+export class GetCodeHashResult implements Packer {
+    constructor(
+        public structVersion: VarUint32 = new VarUint32(0),
+        public codeSequence: u64 = 0,
+        public codeHash: Checksum256 = new Checksum256(),
+        public vmType: u8 = 0,
+        public vmVersion: u8 = 0
+    ) {}
+
+    pack(): u8[] {
+        let enc = new Encoder(this.getSize());
+        enc.pack(this.structVersion);
+        enc.packNumber<u64>(this.codeSequence);
+        enc.pack(this.codeHash);
+        enc.packNumber<u8>(this.vmType);
+        enc.packNumber<u8>(this.vmVersion);
+        return enc.getBytes();
+    }
+    
+    unpack(data: u8[]): usize {
+        let dec = new Decoder(data);
+        this.structVersion = new VarUint32();
+        dec.unpack(this.structVersion);
+        this.codeSequence = dec.unpackNumber<u64>();
+        this.codeHash = new Checksum256();
+        dec.unpack(this.codeHash);
+        this.vmType = dec.unpackNumber<u8>();
+        this.vmVersion = dec.unpackNumber<u8>();
+        return dec.getPos();
+    }
+
+    getSize(): usize {
+        let size: usize = 0;
+        size += this.structVersion.getSize();
+        size += sizeof<u64>();
+        size += this.codeHash.getSize();
+        size += sizeof<u8>();
+        size += sizeof<u8>();   
+        return size;
+    }
+}
+
+export function getCodeHash(account: Name): GetCodeHashResult {
+    const result = new GetCodeHashResult();
+    const rawResult = new Array<u8>(result.getSize());
+    env.get_code_hash(account.N, 0, rawResult.dataStart);
+    result.unpack(rawResult);
+    return result;
 }

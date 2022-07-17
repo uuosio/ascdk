@@ -16,10 +16,12 @@ export { BinaryExtension } from "./binaryextension";
 export {
     assert,
     check,
+    currentBlockNum,
     currentTimePoint,
     currentTime,
     currentTimeMs,
     currentTimeSec,
+    isFeatureActivated
 } from "./system";
 
 export {
@@ -74,7 +76,9 @@ export {
     requireAuth2,
     isAccount,
     publicationTime,
-    currentReceiver
+    currentReceiver,
+    getCodeHash,
+    GetCodeHashResult
 } from "./action";
 
 export { Name, EMPTY_NAME } from "./name";
