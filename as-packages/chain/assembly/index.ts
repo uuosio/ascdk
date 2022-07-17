@@ -124,7 +124,14 @@ export {
     assertSha256,
     assertSha512,
     assertSha3,
-    assertKeccak
+    assertKeccak,
+
+    AltBn128G1,
+    AltBn128G2,
+    bn128Add,
+    bn128Mul,
+    bn128Pair,
+    modExp
 } from "./crypto";
 
 export * from "./serializer";
