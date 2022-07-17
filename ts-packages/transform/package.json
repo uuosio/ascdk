@@ -1,6 +1,6 @@
 {
   "name": "proton-asc",
-  "version": "0.2.124",
+  "version": "0.2.125",
   "description": "Build tool for building AssemblyScript projects",
   "license": "MIT",
   "main": "index.ts",
