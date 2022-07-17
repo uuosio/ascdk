@@ -73,9 +73,9 @@ export class Checksum512 extends Checksum {
 }
 
 export class ECCPublicKey implements Packer {
-    data: Array<u8> | null;
-
-    constructor(data: u8[] | null = null) {
+    constructor(
+        public data: u8[] | null = null
+    ) {
         if (data) {
             check(data.length == 33, "bad data size");
         }
@@ -117,6 +117,55 @@ export class ECCPublicKey implements Packer {
 
     @inline @operator('<')
     static lt(a: ECCPublicKey, b: ECCPublicKey): bool {
+        return Utils.bytesCmp(a.data!, b.data!) < 0;
+    }
+}
+
+export class ECCUncompressedPublicKey implements Packer {
+    constructor(
+        public data: u8[] | null = null
+    ) {
+        if (data) {
+            check(data.length == 65, "bad data size");
+        }
+        this.data = data;
+    }
+
+    pack(): u8[] {
+        return this.data!;
+    }
+
+    unpack(data: u8[]): usize {
+        let dec = new Decoder(data);
+        this.data = dec.unpackBytes(65);
+        return 65;
+    }
+
+    getSize(): usize {
+        return 65;
+    }
+
+    toString(): string {
+        return Utils.bytesToHex(this.data!);
+    }
+
+    @inline @operator('==')
+    static eq(a: ECCUncompressedPublicKey, b: ECCUncompressedPublicKey): bool {
+        return Utils.bytesCmp(a.data!, b.data!) == 0;
+    }
+
+    @inline @operator('!=')
+    static neq(a: ECCUncompressedPublicKey, b: ECCUncompressedPublicKey): bool {
+        return Utils.bytesCmp(a.data!, b.data!) != 0;
+    }
+
+    @inline @operator('>')
+    static gt(a: ECCUncompressedPublicKey, b: ECCUncompressedPublicKey): bool {
+        return Utils.bytesCmp(a.data!, b.data!) > 0;
+    }
+
+    @inline @operator('<')
+    static lt(a: ECCUncompressedPublicKey, b: ECCUncompressedPublicKey): bool {
         return Utils.bytesCmp(a.data!, b.data!) < 0;
     }
 }
@@ -366,15 +415,15 @@ export function assertRecoverKey(digest: Checksum256, sig: Signature, pub: Publi
     env.assert_recover_key(rawDigest.dataStart, rawSig.dataStart, rawSig.length, rawPub.dataStart, rawPub.length);
 }
 
-export function k1Recover(sig: Signature, digest: Checksum256): PublicKey | null {
+export function k1Recover(sig: Signature, digest: Checksum256): ECCPublicKey | null {
     let rawSig = sig.pack();
     let rawDigest = digest.pack();
-    let rawPub = new Array<u8>(34);
+    let rawPub = new Array<u8>(65);
     let ret = env.recover_key(rawSig.dataStart, rawDigest.dataStart, rawDigest.length, rawPub.dataStart, rawPub.length);
     if (ret == -1) {
         return null
     }
-    let pub = new PublicKey();
+    let pub = new ECCUncompressedPublicKey();
     pub.unpack(rawPub);
     return pub;
 }
