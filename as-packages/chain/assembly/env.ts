@@ -17,6 +17,8 @@ export declare function printn(name: u64): void;
 // system
 export declare function get_sender(): u64;
 export declare function current_time(): u64;
+export declare function get_block_num(): u32;
+export declare function is_feature_activated(feature_digest_ptr: usize): boolean;
 
 export declare function read_action_data(ptr: usize, len: u32): usize
 export declare function action_data_size(): u32
@@ -29,6 +31,7 @@ export declare function send_inline(serialized_action: usize, size: u32): void;
 export declare function send_context_free_inline(serialized_action: usize, size: u32): void;
 export declare function publication_time(): u64
 export declare function current_receiver(): u64
+export declare function get_code_hash(account: u64, struct_version: u32, packed_result_ptr: usize): usize
 
 // void  eosio_assert_message( uint32_t test, const char* msg, uint32_t msg_len );
 export declare function eosio_assert(test: u32, msg_ptr: usize): void;

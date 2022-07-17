@@ -1,3 +1,4 @@
+import { Checksum256 } from "./crypto";
 import * as env from "./env";
 import { TimePoint } from "./time";
 
@@ -14,6 +15,10 @@ export function check(test: bool, msg: string): void {
     assert(test, msg);
 }
 
+export function currentBlockNum(): u32 {
+    return env.get_block_num();
+}
+
 export function currentTimePoint(): TimePoint {
     return new TimePoint(env.current_time());
 }
@@ -28,4 +33,8 @@ export function currentTimeMs(): u64 {
 
 export function currentTimeSec(): u32 {
     return currentTimePoint().secSinceEpoch()
+}
+
+export function isFeatureActivated(feature: Checksum256): boolean {
+    return env.is_feature_activated(feature.data.dataStart)
 }
