@@ -657,10 +657,11 @@ export function bn128Mul(g1: AltBn128G1, scalar: U256): AltBn128G1 {
     return result;
 }
 
-export function bn128Pair(g1: AltBn128G1, g2: AltBn128G2): boolean {
-    const rawG1 = g1.pack();
-    const rawG2 = g2.pack();
-    const input = rawG1.concat(rawG2)
+export function bn128Pair(pairs: [AltBn128G1, AltBn128G2][]): boolean {
+    let input: u8[] = []
+    for (let i=0; i<pairs.length; i++) {
+        input = input.concat(pairs[i][0].pack()).concat(pairs[i][1].pack())
+    }
     const ret = env.alt_bn128_pair(input.dataStart, input.length)
     check(ret != -1, "bn128Pair error");
     return ret == 0;
