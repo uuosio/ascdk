@@ -99,7 +99,6 @@ export {
     Checksum160,
     Checksum256,
     Checksum512,
-    Checksum1024,
 
     ECCPublicKey,
     UserPresence,
