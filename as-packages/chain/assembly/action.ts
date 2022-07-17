@@ -57,7 +57,7 @@ export function currentReceiver(): Name {
 }
 
 export function setActionReturnValue<T extends Packer>(returnValue: T): void {
-    env.set_action_return_value(returnValue.pack().dataStart, returnValue.getSize());;
+    env.set_action_return_value(returnValue.pack().dataStart, returnValue.getSize());
 }
 
 export class PermissionLevel implements Packer {
