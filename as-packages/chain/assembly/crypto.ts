@@ -559,7 +559,7 @@ export class AltBn128G1 implements Packer {
 
     pack(): u8[] {
         const rawX = this.x.pack();
-        const rawY = this.x.pack();
+        const rawY = this.y.pack();
         return rawX.concat(rawY);
     }
 
@@ -600,8 +600,8 @@ export class AltBn128G2 implements Packer {
     pack(): u8[] {
         const rawX1 = this.x1.pack();
         const rawX2 = this.x2.pack();
-        const rawY1 = this.x1.pack();
-        const rawY2 = this.x2.pack();
+        const rawY1 = this.y1.pack();
+        const rawY2 = this.y2.pack();
         return rawX1.concat(rawX2).concat(rawY1).concat(rawY2);
     }
 
