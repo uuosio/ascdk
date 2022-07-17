@@ -5,21 +5,24 @@ import { Utils } from "./utils";
 import * as env from "./env";
 import { U256 } from "./bignum";
 
-export class Checksum160 implements Packer {
-    data: u8[];
+class Checksum implements Packer {
+    data: u8[] = new Array<u8>(<i32>this.getSize());
     constructor(
         data: u8[] | null = null
     ){
-        this.data = new Array<u8>(20);
         if (data) {
-            check(this.data.length == 20, "bad checksum length");
+            check(this.data.length == <i32>this.getSize(), "bad checksum length");
             this.assign(data);
         }
     }
 
+    static fromString(str: string): Checksum {
+        return new Checksum(Utils.hexToBytes(str))
+    }
+
     assign(value: u8[]): void {
-        check(value.length == 20, "bad assign length");
-        env.memcpy(this.data.dataStart, value.dataStart, 20);
+        check(value.length == <i32>this.getSize(), "bad assign length");
+        env.memcpy(this.data.dataStart, value.dataStart, this.getSize());
     }
 
     pack(): u8[] {
@@ -28,118 +31,44 @@ export class Checksum160 implements Packer {
 
     unpack(data: u8[]): usize {
         let dec = new Decoder(data);
-        this.data = dec.unpackBytes(20);
+        this.data = dec.unpackBytes(this.getSize());
         return dec.getPos();
     }
 
+    getSize(): usize {
+        return 0;
+    }
+
+    toString(): string {
+        return Utils.bytesToHex(this.data);
+    }
+
+    @inline @operator('==')
+    static eq(a: Checksum, b: Checksum): bool {
+        return Utils.bytesCmp(a.data, b.data) == 0;
+    }
+
+    @inline @operator('!=')
+    static neq(a: Checksum, b: Checksum): bool {
+        return Utils.bytesCmp(a.data, b.data) != 0;
+    }
+}
+
+export class Checksum160 extends Checksum {
     getSize(): usize {
         return 20;
     }
-
-    toString(): string {
-        return Utils.bytesToHex(this.data);
-    }
-
-    @inline @operator('==')
-    static eq(a: Checksum160, b: Checksum160): bool {
-        return Utils.bytesCmp(a.data, b.data) == 0;
-    }
-
-    @inline @operator('!=')
-    static neq(a: Checksum160, b: Checksum160): bool {
-        return Utils.bytesCmp(a.data, b.data) != 0;
-    }
 }
 
-export class Checksum256 implements Packer {
-    data: u8[];
-    constructor(
-        data: u8[] | null = null
-    ){
-        this.data = new Array<u8>(32);
-        if (data) {
-            check(this.data.length == 32, "bad checksum length");
-            this.assign(data);
-        }
-    }
-
-    assign(value: u8[]): void {
-        check(value.length == 32, "bad assign length");
-        env.memcpy(this.data.dataStart, value.dataStart, 32);
-    }
-
-    pack(): u8[] {
-        return this.data.slice(0);
-    }
-
-    unpack(data: u8[]): usize {
-        let dec = new Decoder(data);
-        this.data = dec.unpackBytes(32);
-        return dec.getPos();
-    }
-
+export class Checksum256 extends Checksum {
     getSize(): usize {
         return 32;
     }
-
-    toString(): string {
-        return Utils.bytesToHex(this.data);
-    }
-
-    @inline @operator('==')
-    static eq(a: Checksum256, b: Checksum256): bool {
-        return Utils.bytesCmp(a.data, b.data) == 0;
-    }
-
-    @inline @operator('!=')
-    static neq(a: Checksum256, b: Checksum256): bool {
-        return Utils.bytesCmp(a.data, b.data) != 0;
-    }
 }
 
-export class Checksum512 implements Packer {
-    data: u8[];
-    constructor(
-        data: u8[] | null = null
-    ){
-        this.data = new Array<u8>(64);
-        if (data) {
-            check(this.data.length == 64, "bad checksum length");
-            this.assign(data);
-        }
-    }
-
-    assign(value: u8[]): void {
-        check(value.length == 64, "bad assign length");
-        env.memcpy(this.data.dataStart, value.dataStart, 64);
-    }
-
-    pack(): u8[] {
-        return this.data.slice(0);
-    }
-
-    unpack(data: u8[]): usize {
-        let dec = new Decoder(data);
-        this.data = dec.unpackBytes(64);
-        return dec.getPos();
-    }
-
+export class Checksum512 extends Checksum {
     getSize(): usize {
         return 64;
-    }
-
-    toString(): string {
-        return Utils.bytesToHex(this.data);
-    }
-
-    @inline @operator('==')
-    static eq(a: Checksum512, b: Checksum512): bool {
-        return Utils.bytesCmp(a.data, b.data) == 0;
-    }
-
-    @inline @operator('!=')
-    static neq(a: Checksum512, b: Checksum512): bool {
-        return Utils.bytesCmp(a.data, b.data) != 0;
     }
 }
 
