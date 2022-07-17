@@ -692,9 +692,9 @@ export function bn128Pair(pairs: AltBn128Pair[]): boolean {
 }
 
 export function modExp(base: U256, exp: U256, mod: U256): U256 {
-    const rawBase = base.pack();
-    const rawExp = exp.pack();
-    const rawMod = mod.pack();
+    const rawBase = Utils.hexToBytes(base.toString(16));
+    const rawExp = Utils.hexToBytes(exp.toString(16));
+    const rawMod = Utils.hexToBytes(mod.toString(16));
     const rawResult = new Array<u8>(32);
     const ret = env.mod_exp(rawBase.dataStart, rawBase.length, rawExp.dataStart, rawExp.length, rawMod.dataStart, rawMod.length, rawResult.dataStart, rawResult.length)
     check(ret == 0, "modExp error");
