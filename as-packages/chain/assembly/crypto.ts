@@ -386,7 +386,7 @@ export class PublicKey implements Packer {
 }
 
 export class Signature implements Packer {
-    data: u8[];
+    data!: u8[];
 
     pack(): u8[] {
         return this.data.slice(0);
