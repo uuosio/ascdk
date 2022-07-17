@@ -638,7 +638,7 @@ export class AltBn128G2 implements Packer {
 export function bn128Add(op1: AltBn128G1, op2: AltBn128G1): AltBn128G1 {
     const rawOp1 = op1.pack();
     const rawOp2 = op2.pack();
-    const rawResult = new Array<u8>(32);
+    const rawResult = new Array<u8>(64);
     const ret = env.alt_bn128_add(rawOp1.dataStart, rawOp1.length, rawOp2.dataStart, rawOp2.length, rawResult.dataStart, rawResult.length)
     check(ret == 0, "bn128Add error");
     const result = new AltBn128G1();
@@ -649,7 +649,7 @@ export function bn128Add(op1: AltBn128G1, op2: AltBn128G1): AltBn128G1 {
 export function bn128Mul(g1: AltBn128G1, scalar: U256): AltBn128G1 {
     const rawG1 = g1.pack();
     const rawScalar = scalar.pack();
-    const rawResult = new Array<u8>(32);
+    const rawResult = new Array<u8>(64);
     const ret = env.alt_bn128_mul(rawG1.dataStart, rawG1.length, rawScalar.dataStart, rawScalar.length, rawResult.dataStart, rawResult.length)
     check(ret == 0, "bn128Mul error");
     const result = new AltBn128G1();
