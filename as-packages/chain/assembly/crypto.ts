@@ -415,7 +415,7 @@ export function assertRecoverKey(digest: Checksum256, sig: Signature, pub: Publi
     env.assert_recover_key(rawDigest.dataStart, rawSig.dataStart, rawSig.length, rawPub.dataStart, rawPub.length);
 }
 
-export function k1Recover(sig: Signature, digest: Checksum256): ECCPublicKey | null {
+export function k1Recover(sig: Signature, digest: Checksum256): ECCUncompressedPublicKey | null {
     let rawSig = sig.pack();
     let rawDigest = digest.pack();
     let rawPub = new Array<u8>(65);
