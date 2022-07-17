@@ -575,7 +575,7 @@ export class AltBn128G1 implements Packer {
     }
 
     toString(): string {
-        return `${this.x}${this.y}`;
+        return Utils.bytesToHex(this.pack())
     }
 
     @inline @operator('==')
@@ -619,7 +619,7 @@ export class AltBn128G2 implements Packer {
     }
 
     toString(): string {
-        return `${this.x1}${this.x2}${this.y1}${this.y2}`;
+        return Utils.bytesToHex(this.pack())
     }
 
     @inline @operator('==')
