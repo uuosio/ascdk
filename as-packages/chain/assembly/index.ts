@@ -128,6 +128,7 @@ export {
 
     AltBn128G1,
     AltBn128G2,
+    AltBn128Pair,
     bn128Add,
     bn128Mul,
     bn128Pair,

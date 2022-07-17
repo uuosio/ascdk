@@ -635,6 +635,30 @@ export class AltBn128G2 implements Packer {
     }
 }
 
+export class AltBn128Pair implements Packer {
+    constructor(
+        public g1: AltBn128G1 = new AltBn128G1(),
+        public g2: AltBn128G2 = new AltBn128G2(),
+    ) {}
+
+    pack(): u8[] {
+        const rawG1 = this.g1.pack();
+        const rawG2 = this.g2.pack();
+        return rawG1.concat(rawG2);
+    }
+
+    unpack(data: u8[]): usize {
+        let dec = new Decoder(data);
+        this.g1.unpack(dec.unpackBytes(64))
+        this.g2.unpack(dec.unpackBytes(128))
+        return dec.getPos();
+    }
+
+    getSize(): usize {
+        return 192;
+    }
+}
+
 export function bn128Add(op1: AltBn128G1, op2: AltBn128G1): AltBn128G1 {
     const rawOp1 = op1.pack();
     const rawOp2 = op2.pack();
@@ -657,10 +681,10 @@ export function bn128Mul(g1: AltBn128G1, scalar: U256): AltBn128G1 {
     return result;
 }
 
-export function bn128Pair(pairs: [AltBn128G1, AltBn128G2][]): boolean {
+export function bn128Pair(pairs: AltBn128Pair[]): boolean {
     let input: u8[] = []
     for (let i=0; i<pairs.length; i++) {
-        input = input.concat(pairs[i][0].pack()).concat(pairs[i][1].pack())
+        input = input.concat(pairs[i].pack())
     }
     const ret = env.alt_bn128_pair(input.dataStart, input.length)
     check(ret != -1, "bn128Pair error");
