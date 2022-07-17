@@ -503,8 +503,8 @@ export function sha3(data: u8[]): Checksum256 {
 
 export function blake2(rounds: u32, state: u8[], msg: u8[], t0_offset: u8[], t1_offset: u8[], final: boolean): Checksum512 | null {
     // Validation
-    check(state.length == 8, "Blake2 state must be 64 bytes");
-    check(msg.length == 8, "Blake2 msg must be 128 bytes");
+    check(state.length == 64, "Blake2 state must be 64 bytes");
+    check(msg.length == 128, "Blake2 msg must be 128 bytes");
     check(t0_offset.length == 8, "Blake2 t0_offset must be 8 bytes");
     check(t1_offset.length == 8, "Blake2 t1_offset must be 8 bytes");
 
