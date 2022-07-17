@@ -510,7 +510,7 @@ export function blake2(rounds: u32, state: u8[], msg: u8[], t0_offset: u8[], t1_
 
     // hash
     let hash = new Checksum512();
-    let rawHash = new Array<u8>(512);
+    let rawHash = new Array<u8>(64);
     const ret = env.blake2_f(rounds, state.dataStart, state.length, msg.dataStart, msg.length, t0_offset.dataStart, t0_offset.length, t1_offset.dataStart, t1_offset.length, +final, rawHash.dataStart, rawHash.length);
     if (ret == -1) {
         return null
