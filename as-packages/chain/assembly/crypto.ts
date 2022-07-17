@@ -491,7 +491,7 @@ export function sha512(data: u8[]): Checksum512 {
 
 function sha3Helper(data: u8[], keccak: boolean): Checksum256 {
     let hash = new Checksum256();
-    let rawHash = new Array<u8>(64);
+    let rawHash = new Array<u8>(32);
     env.sha3(data.dataStart, data.length, rawHash.dataStart, rawHash.length, +keccak);
     hash.data = rawHash;
     return hash;
