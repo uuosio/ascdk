@@ -120,6 +120,7 @@ export {
     keccak,
     blake2,
 
+    assertRipemd160,
     assertSha1,
     assertSha256,
     assertSha512,
