@@ -31,6 +31,7 @@ export declare function send_inline(serialized_action: usize, size: u32): void;
 export declare function send_context_free_inline(serialized_action: usize, size: u32): void;
 export declare function publication_time(): u64
 export declare function current_receiver(): u64
+export declare function set_action_return_value(return_value: usize, size: u32): void;
 export declare function get_code_hash(account: u64, struct_version: u32, packed_result_ptr: usize): usize
 
 // void  eosio_assert_message( uint32_t test, const char* msg, uint32_t msg_len );
