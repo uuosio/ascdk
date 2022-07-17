@@ -186,7 +186,7 @@ export class GetCodeHashResult implements Packer {
 
 export function getCodeHash(account: Name): GetCodeHashResult {
     const result = new GetCodeHashResult();
-    const rawResult = new Array<u8>(result.getSize());
+    const rawResult = new Array<u8>(<i32>(result.getSize()));
     env.get_code_hash(account.N, 0, rawResult.dataStart);
     result.unpack(rawResult);
     return result;
