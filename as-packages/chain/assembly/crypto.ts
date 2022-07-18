@@ -419,7 +419,7 @@ export function k1Recover(sig: Signature, digest: Checksum256): ECCUncompressedP
     let rawSig = sig.pack();
     let rawDigest = digest.pack();
     let rawPub = new Array<u8>(65);
-    let ret = env.recover_key(rawSig.dataStart, rawDigest.dataStart, rawDigest.length, rawPub.dataStart, rawPub.length);
+    let ret = env.recover_key(rawSig.dataStart + 1, rawDigest.dataStart, rawDigest.length, rawPub.dataStart, rawPub.length);
     if (ret == -1) {
         return null
     }
