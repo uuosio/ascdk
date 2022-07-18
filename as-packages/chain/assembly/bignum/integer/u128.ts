@@ -19,7 +19,7 @@ import {
   __divmod_rem_hi,
 } from '../globals';
 
-import { atou128, u128toa10 } from '../utils';
+import { atou128, u128toDecimalString } from '../utils';
 import { Encoder, Decoder, Packer } from "../../serializer";
 
 @lazy const HEX_CHARS = '0123456789abcdef';
@@ -850,13 +850,13 @@ export class u128 implements Packer {
   }
 
   /**
-   * Convert to generic type T. Useful inside other generics methods
-   * @param  T  is <bool | i8 | u8 | i16 | u16 | i32 | u32 | i64 | u64 | f32 | f64 | u128 | u256 | u8[] | Uint8Array | String>
-   * @returns   type of T
+   * Convert to generic type `T`. Useful inside other generics methods
+   * @param  T  is <bool | i8 | u8 | i16 | u16 | i32 | u32 | i64 | u64 | f32 | f64 | i128 | u128 | u256 | u8[] | Uint8Array | `StaticArray<u8>` | string>
+   * @returns   type of `T`
    */
   @inline
   as<T>(): T {
-    var dummy: T;
+    var dummy!: T;
          if (dummy instanceof bool)       return <T>this.toBool();
     else if (dummy instanceof i8)         return <T>this.toI64();
     else if (dummy instanceof u8)         return <T>this.toU64();
@@ -957,6 +957,6 @@ export class u128 implements Packer {
       }
       return result;
     }
-    return u128toa10(this);
+    return u128toDecimalString(this);
   }
 }
