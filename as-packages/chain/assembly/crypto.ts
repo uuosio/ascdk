@@ -676,7 +676,5 @@ export function modExp(base: U256, exp: U256, mod: U256): U256 {
     const rawResult = new Array<u8>(32);
     const ret = env.mod_exp(rawBase.dataStart, rawBase.length, rawExp.dataStart, rawExp.length, rawMod.dataStart, rawMod.length, rawResult.dataStart, rawResult.length)
     check(ret == 0, "modExp error");
-    const result = new U256();
-    result.unpack(rawResult);
-    return result
+    return U256.fromBytesBE(rawResult)
 }
