@@ -519,11 +519,20 @@ function handleAction(action: ActionFunctionDef): string {
     let actionName = action.messageDecorator.actionName;
     let actionNameHex = EosioUtils.nameToHexString(actionName);
 
+    const actionCall = action.isReturnable
+        ? dedent`const ret_value = mycontract.${action.methodName}(${parameters.join(',')});
+           let size = 0;
+           ${fieldGetSize("ret_value", action.returnType!, false, "")}
+           const enc = new _chain.Encoder(size);
+           ${fieldSerialize("ret_value", action.returnType!, false, "")}
+           _chain.setActionReturnValue(enc.getBytes());`
+        : `mycontract.${action.methodName}(${parameters.join(',')};`
+
     return dedent`
         if (action == ${actionNameHex}) {//${actionName}
-                    let args = new ${action.methodName}Action();
+                    const args = new ${action.methodName}Action();
                     ${unpackCode}
-                    mycontract.${action.methodName}(${parameters.join(',')})
+                    ${actionCall}
                 }
     `;
 }
