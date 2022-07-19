@@ -526,7 +526,7 @@ function handleAction(action: ActionFunctionDef): string {
            const enc = new _chain.Encoder(size);
            ${fieldSerialize("ret_value", action.returnType!, false, "")}
            _chain.setActionReturnValue(enc.getBytes());`
-        : `mycontract.${action.methodName}(${parameters.join(',')};`
+        : `mycontract.${action.methodName}(${parameters.join(',')});`
 
     return dedent`
         if (action == ${actionNameHex}) {//${actionName}
