@@ -80,7 +80,7 @@ export class ABI {
 	tables: ABITable[] = [];
 	ricardian_clauses: string[] = [];
 	variants: VariantDef[] = [];
-	action_results: ActionResult[] = [];
+	action_results: ABIActionResult[] = [];
 	abi_extensions: string[] = [];
 	error_messages: string[] = [];
 }
