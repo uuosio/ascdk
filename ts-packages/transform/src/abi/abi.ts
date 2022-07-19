@@ -20,15 +20,11 @@ export class ABITable {
 // 	RicardianContract string `json:"ricardian_contract"`
 // }
 export class ABIAction {
-	name = "";
-	type = "";
-	ricardian_contract = "";
-
-	constructor(name: string, type: string, ricardian_contract = "") {
-		this.name = name;
-		this.type = type;
-		this.ricardian_contract = ricardian_contract;
-	}
+	constructor(
+		public name: string = "",
+		public type: string = "",
+		public ricardian_contract = ""
+	) {}
 }
 
 // type ABIStructField struct {
@@ -69,14 +65,22 @@ export class VariantDef {
 	types: string[] = [];
 }
 
+export class ABIActionResult {
+	constructor(
+		public name: string = "",
+		public result_type: string = ""
+	) {}
+}
+
 export class ABI {
-	version = "eosio::abi/1.1";
+	version = "eosio::abi/1.2";
 	structs: ABIStruct[] = [];
 	types: string[] = [];
 	actions: ABIAction[] = [];
 	tables: ABITable[] = [];
 	ricardian_clauses: string[] = [];
 	variants: VariantDef[] = [];
+	action_results: ActionResult[] = [];
 	abi_extensions: string[] = [];
 	error_messages: string[] = [];
 }

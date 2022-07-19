@@ -23,6 +23,7 @@ import {
     ABIStruct,
     ABIStructField,
     ABITable,
+    ABIActionResult,
     VariantDef,
 } from "../abi/abi";
 
@@ -429,6 +430,11 @@ export class ContractProgram {
                 abiStruct.fields.push(ret);
             });
             abi.structs.push(abiStruct);
+
+            if (func.isReturnable) {
+                const abiActionResult = new ABIActionResult(actionName, func.returnType!.abiType)
+                abi.action_results.push(abiActionResult)
+            }
         });
 
         this.customAbiTypes.forEach(cls => {
