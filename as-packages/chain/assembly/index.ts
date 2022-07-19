@@ -78,7 +78,8 @@ export {
     publicationTime,
     currentReceiver,
     getCodeHash,
-    GetCodeHashResult
+    GetCodeHashResult,
+    setActionReturnValue
 } from "./action";
 
 export { Name, EMPTY_NAME } from "./name";

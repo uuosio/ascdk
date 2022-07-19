@@ -1,16 +1,14 @@
 import { CONFIG } from "../config/compile";
 
-// let scope = CONFIG.scope;
-
 export const mainTpl = `
 
 export function apply(receiver: u64, firstReceiver: u64, action: u64): void {
-	let _receiver = new _chain.Name(receiver);
-	let _firstReceiver = new _chain.Name(firstReceiver);
-	let _action = new _chain.Name(action);
+	const _receiver = new _chain.Name(receiver);
+	const _firstReceiver = new _chain.Name(firstReceiver);
+	const _action = new _chain.Name(action);
 
-	let mycontract = new {{contract.className}}(_receiver, _firstReceiver, _action);
-	let actionData = _chain.readActionData();
+	const mycontract = new {{contract.className}}(_receiver, _firstReceiver, _action);
+	const actionData = _chain.readActionData();
 
 	if (receiver == firstReceiver) {
 		{{#each contract.actionFuncDefs}}
