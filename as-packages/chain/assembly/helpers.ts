@@ -44,7 +44,7 @@ export class InlineActionAct <T extends Packer> {
 
     send(data: T): void {
         const permissions = [this.permissionLevel]
-        const action = new Action(permissions, this.contract, this.action, data.pack())
+        const action = new Action(this.contract, this.action, permissions, data.pack())
         action.send()
     }
 }

@@ -92,9 +92,9 @@ class MyContract extends Contract {
         check(getSender() == new Name(), "sender should be empty");
         let hello = new MyData('alice');
         let a = new Action(
-            [new PermissionLevel(this.receiver, Name.fromString("active"))],
             this.receiver,
             Name.fromString("saygoodbye"),
+            [new PermissionLevel(this.receiver, Name.fromString("active"))],
             hello.pack(),
         );
         let raw1 = a.pack();
