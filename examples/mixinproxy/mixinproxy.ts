@@ -378,7 +378,7 @@ class MyContract extends Contract{
         account.N = load<u64>(extra.dataStart);
         let name = new Name();
         name.N = load<u64>(extra.slice(8, 16).dataStart);
-        return new Action([], account, name, extra.slice(16));
+        return new Action(account, name, [], extra.slice(16));
     }
 
     @action("exec")
