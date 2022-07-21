@@ -19,7 +19,7 @@
     "assemblyscript"
   ],
   "scripts": {
-    "test": "yarn gencode && yarn build && run-ipyeos -m pytest -s -x tests/testmixinproxy.py",
+    "test": "yarn gencode && yarn build && ipyeos -m pytest -s -x tests/testmixinproxy.py",
     "gencode": "npx eosio-asc gencode ./tables.ts -o generated && npx eosio-asc gencode ./structs.ts -o generated",
     "build": "npx eosio-asc ./mixinproxy.ts"
   },

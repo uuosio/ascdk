@@ -73,7 +73,6 @@ source ~/env/bin/activate
 ```
 python3 -m pip install --upgrade pip
 python3 -m pip install ipyeos
-run-ipyeos -m pip install pytest
 ```
 
 ## Run HelloWorld example test
