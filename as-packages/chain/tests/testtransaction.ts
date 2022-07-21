@@ -42,9 +42,9 @@ class MyContract extends Contract{
 
         let t = new Transaction(1);
         let action = Action.new(
-            [new PermissionLevel(this.receiver)],
             Name.fromString("eosio.token"),
             Name.fromString("transfer"),
+            [new PermissionLevel(this.receiver)],
             transfer,
         );
         t.addAction(action);

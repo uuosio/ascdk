@@ -23,7 +23,7 @@ export class Create extends ActionData {
         let permission = new PermissionLevel(actor, perm);
         let account = MIXIN_WTOKENS;
         let name = Name.fromString("create");
-        Action.new([permission], account, name, this).send();
+        Action.new(account, name, [permission], this).send();
     }
 }
 
@@ -42,7 +42,7 @@ export class Issue extends ActionData {
         let permission = new PermissionLevel(actor, perm);
         let account = MIXIN_WTOKENS;
         let name = Name.fromString("issue");
-        Action.new([permission], account, name, this).send();
+        Action.new(account, name, [permission], this).send();
     }
 
 }
@@ -61,7 +61,7 @@ export class Retire extends ActionData {
         let permission = new PermissionLevel(actor, perm);
         let account = MIXIN_WTOKENS;
         let name = Name.fromString("retire");
-        Action.new([permission], account, name, this).send();
+        Action.new(account, name, [permission], this).send();
     }
 }
 
@@ -81,7 +81,7 @@ export class Transfer extends ActionData {
         let permission = new PermissionLevel(actor, perm);
         let account = MIXIN_WTOKENS;
         let name = Name.fromString("transfer");
-        Action.new([permission], account, name, this).send();
+        Action.new(account, name, [permission], this).send();
     }
 }
 

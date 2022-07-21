@@ -87,19 +87,18 @@ export class PermissionLevel implements Packer {
 
 export class Action implements Packer{
     constructor(
-        public authorization: PermissionLevel[] = [],
         public account: Name = new Name(),
         public name: Name = new Name(),
+        public authorization: PermissionLevel[] = [],
         public data: u8[] = [],
-        ) {
-    }
+    ) {}
 
     static new(
-        authorization: PermissionLevel[],
         account: Name,
         name: Name,
+        authorization: PermissionLevel[],
         packer: Packer): Action {
-        return new Action(authorization, account, name, packer.pack());
+        return new Action(account, name, authorization, packer.pack());
     }
 
     send(): void {
