@@ -10,6 +10,8 @@ import {
     printn,
     Float128,
     Contract,
+
+    U256,
 } from "as-chain";
 
 @contract
@@ -18,6 +20,8 @@ class MyContract extends Contract{
     testPrint(
         a1: Float128
     ): void {
+        print(U256.fromU64(90001).toString(10))
+        print((90).toString(16))
         printqf(a1);
     }
 }

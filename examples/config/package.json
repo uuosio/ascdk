@@ -19,7 +19,7 @@
     "assemblyscript"
   ],
   "scripts": {
-    "test": "yarn build:debug && run-ipyeos -m pytest -s -x test.py",
+    "test": "yarn build:debug && ipyeos -m pytest -s -x test.py",
     "build:debug": "yarn exec cp .env-debug.ts .env.ts && npx eosio-asc ./testconfig.ts",
     "build:release": "yarn exec cp .env-release.ts .env.ts && npx eosio-asc ./testconfig.ts"
   },
