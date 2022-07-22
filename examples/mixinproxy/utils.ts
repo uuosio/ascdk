@@ -73,10 +73,10 @@ export function createNewAccount(creatorName: Name, ownerAccountName: Name, newA
     Action.new(
         Name.fromString("eosio"),
         Name.fromString("buyrambytes"),
-        new BuyRamBytes(creatorName, newAccountName, RAM_BYTES),
         [
             new PermissionLevel(creatorName, Name.fromString("active"))
         ],
+        new BuyRamBytes(creatorName, newAccountName, RAM_BYTES),
     ).send()
 }
 
