@@ -21,7 +21,7 @@ const ARGS = [
     "--initialMemory", "1",
     "--runtime", "stub",
     "--use", "abort= ",
-    "-O2",
+    "-O2z",
     "--disable", "mutable-globals",
     "--disable", "sign-extension",
     "--disable", "nontrapping-f2i",
