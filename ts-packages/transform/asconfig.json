@@ -16,7 +16,7 @@
         "transform": ["eosio-transform"],
         "importMemory": true,
         "initialMemory": 2,
-        "maximumMemory": 16,
+        "maximumMemory": 32,
         "noExportMemory": false,
         "runtime": "stub",
         "use": "abort="
