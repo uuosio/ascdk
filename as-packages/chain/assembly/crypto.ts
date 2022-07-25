@@ -536,15 +536,15 @@ export class AltBn128G1 implements Packer {
     ) {}
 
     pack(): u8[] {
-        const rawX = this.x.pack();
-        const rawY = this.y.pack();
+        const rawX = Utils.hexToBytes(this.x.toString(16).padStart(32, '0'));
+        const rawY = Utils.hexToBytes(this.y.toString(16).padStart(32, '0'));
         return rawX.concat(rawY);
     }
 
     unpack(data: u8[]): usize {
         let dec = new Decoder(data);
-        this.x.unpack(dec.unpackBytes(32))
-        this.y.unpack(dec.unpackBytes(32))
+        this.x = U256.fromBytesBE(dec.unpackBytes(32))
+        this.y = U256.fromBytesBE(dec.unpackBytes(32))
         return dec.getPos();
     }
 
@@ -576,19 +576,19 @@ export class AltBn128G2 implements Packer {
     ) {}
 
     pack(): u8[] {
-        const rawX1 = this.x1.pack();
-        const rawX2 = this.x2.pack();
-        const rawY1 = this.y1.pack();
-        const rawY2 = this.y2.pack();
+        const rawX1 = Utils.hexToBytes(this.x1.toString(16).padStart(32, '0'));
+        const rawX2 = Utils.hexToBytes(this.x2.toString(16).padStart(32, '0'));
+        const rawY1 = Utils.hexToBytes(this.y1.toString(16).padStart(32, '0'));
+        const rawY2 = Utils.hexToBytes(this.y2.toString(16).padStart(32, '0'));
         return rawX1.concat(rawX2).concat(rawY1).concat(rawY2);
     }
 
     unpack(data: u8[]): usize {
         let dec = new Decoder(data);
-        this.x1.unpack(dec.unpackBytes(32))
-        this.x2.unpack(dec.unpackBytes(32))
-        this.y1.unpack(dec.unpackBytes(32))
-        this.y2.unpack(dec.unpackBytes(32))
+        this.x1 = U256.fromBytesBE(dec.unpackBytes(32))
+        this.x2 = U256.fromBytesBE(dec.unpackBytes(32))
+        this.y1 = U256.fromBytesBE(dec.unpackBytes(32))
+        this.y2 = U256.fromBytesBE(dec.unpackBytes(32))
         return dec.getPos();
     }
 
@@ -650,7 +650,7 @@ export function bn128Add(op1: AltBn128G1, op2: AltBn128G1): AltBn128G1 {
 
 export function bn128Mul(g1: AltBn128G1, scalar: U256): AltBn128G1 {
     const rawG1 = g1.pack();
-    const rawScalar = scalar.pack();
+    const rawScalar = Utils.hexToBytes(scalar.toString(16).padStart(32, '0'));
     const rawResult = new Array<u8>(64);
     const ret = env.alt_bn128_mul(rawG1.dataStart, rawG1.length, rawScalar.dataStart, rawScalar.length, rawResult.dataStart, rawResult.length)
     check(ret == 0, "bn128Mul error");
