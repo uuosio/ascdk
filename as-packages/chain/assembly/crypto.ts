@@ -536,8 +536,14 @@ export class AltBn128G1 implements Packer {
     ) {}
 
     pack(): u8[] {
-        const rawX = Utils.hexToBytes(this.x.toString(16).padStart(32, '0'));
-        const rawY = Utils.hexToBytes(this.y.toString(16).padStart(32, '0'));
+        const rawX = this.x.toBytes(true);
+        const rawY = this.y.toBytes(true)
+        return rawX.concat(rawY);
+    }
+
+    packLE(): u8[] {
+        const rawX = this.x.toBytes();
+        const rawY = this.y.toBytes()
         return rawX.concat(rawY);
     }
 
@@ -545,6 +551,13 @@ export class AltBn128G1 implements Packer {
         let dec = new Decoder(data);
         this.x = U256.fromBytesBE(dec.unpackBytes(32))
         this.y = U256.fromBytesBE(dec.unpackBytes(32))
+        return dec.getPos();
+    }
+
+    unpackLE(data: u8[]): usize {
+        let dec = new Decoder(data);
+        this.x = U256.fromBytesLE(dec.unpackBytes(32))
+        this.y = U256.fromBytesLE(dec.unpackBytes(32))
         return dec.getPos();
     }
 
@@ -576,10 +589,18 @@ export class AltBn128G2 implements Packer {
     ) {}
 
     pack(): u8[] {
-        const rawX1 = Utils.hexToBytes(this.x1.toString(16).padStart(32, '0'));
-        const rawX2 = Utils.hexToBytes(this.x2.toString(16).padStart(32, '0'));
-        const rawY1 = Utils.hexToBytes(this.y1.toString(16).padStart(32, '0'));
-        const rawY2 = Utils.hexToBytes(this.y2.toString(16).padStart(32, '0'));
+        const rawX1 = this.x1.toBytes(true);
+        const rawX2 = this.x2.toBytes(true);
+        const rawY1 = this.y1.toBytes(true);
+        const rawY2 = this.y2.toBytes(true);
+        return rawX1.concat(rawX2).concat(rawY1).concat(rawY2);
+    }
+
+    packLE(): u8[] {
+        const rawX1 = this.x1.toBytes();
+        const rawX2 = this.x2.toBytes();
+        const rawY1 = this.y1.toBytes();
+        const rawY2 = this.y2.toBytes();
         return rawX1.concat(rawX2).concat(rawY1).concat(rawY2);
     }
 
@@ -589,6 +610,15 @@ export class AltBn128G2 implements Packer {
         this.x2 = U256.fromBytesBE(dec.unpackBytes(32))
         this.y1 = U256.fromBytesBE(dec.unpackBytes(32))
         this.y2 = U256.fromBytesBE(dec.unpackBytes(32))
+        return dec.getPos();
+    }
+
+    unpackLE(data: u8[]): usize {
+        let dec = new Decoder(data);
+        this.x1 = U256.fromBytesLE(dec.unpackBytes(32))
+        this.x2 = U256.fromBytesLE(dec.unpackBytes(32))
+        this.y1 = U256.fromBytesLE(dec.unpackBytes(32))
+        this.y2 = U256.fromBytesLE(dec.unpackBytes(32))
         return dec.getPos();
     }
 
@@ -625,10 +655,23 @@ export class AltBn128Pair implements Packer {
         return rawG1.concat(rawG2);
     }
 
+    packLE(): u8[] {
+        const rawG1 = this.g1.packLE();
+        const rawG2 = this.g2.packLE();
+        return rawG1.concat(rawG2);
+    }
+
     unpack(data: u8[]): usize {
         let dec = new Decoder(data);
         this.g1.unpack(dec.unpackBytes(64))
         this.g2.unpack(dec.unpackBytes(128))
+        return dec.getPos();
+    }
+
+    unpackLE(data: u8[]): usize {
+        let dec = new Decoder(data);
+        this.g1.unpackLE(dec.unpackBytes(64))
+        this.g2.unpackLE(dec.unpackBytes(128))
         return dec.getPos();
     }
 
@@ -650,7 +693,7 @@ export function bn128Add(op1: AltBn128G1, op2: AltBn128G1): AltBn128G1 {
 
 export function bn128Mul(g1: AltBn128G1, scalar: U256): AltBn128G1 {
     const rawG1 = g1.pack();
-    const rawScalar = Utils.hexToBytes(scalar.toString(16).padStart(32, '0'));
+    const rawScalar = scalar.toBytes(true);
     const rawResult = new Array<u8>(64);
     const ret = env.alt_bn128_mul(rawG1.dataStart, rawG1.length, rawScalar.dataStart, rawScalar.length, rawResult.dataStart, rawResult.length)
     check(ret == 0, "bn128Mul error");
