@@ -50,6 +50,7 @@ class MyContract extends Contract {
         check(k1 == _k1, "bad k1 key");
         check(r1 == _r1, "bad r1 key");
         check(webAuthN == _webAuthN, "bad webauthn key");
+        check(this.bytesEqual(webAuthN.pack(), rawWebauthn), "bad raw webauthn key");
 
         check(!(k1 != _k1), "bad k1 key");
         check(!(r1 != _r1), "bad r1 key");
