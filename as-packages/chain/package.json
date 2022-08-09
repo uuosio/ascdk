@@ -1,6 +1,6 @@
 {
   "name": "as-chain",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "chain module for assemblyscript",
   "main": "js/index.js",
   "types": "./types.d.ts",
@@ -8,10 +8,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/uuosio/as-chain.git"
+    "url": "https://github.com/uuosio/ascdk.git"
   },
   "bugs": {
-    "url": "https://github.com/uuosio/as-chain/issues"
+    "url": "https://github.com/uuosio/ascdk/issues"
   },
   "keywords": [
     "wasm",
