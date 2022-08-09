@@ -183,6 +183,9 @@ export class WebAuthNPublicKey implements Packer {
 
     pack(): u8[] {
         let enc = new Encoder(this.getSize());
+        enc.pack(this.key!);
+        enc.packNumber<u8>(<u8>this.userPresence);
+        enc.packString(this.rpid);
         return enc.getBytes();
     }
 
@@ -269,8 +272,10 @@ export class PublicKey implements Packer {
             enc.pack(this.k1!);
         } else if (this.keyType == PublicKeyType.R1) {
             enc.pack(this.r1!);
-        } else {// WebAuthN
+        } else if (this.keyType == PublicKeyType.WebAuthN) {
             enc.pack(this.webAuthN!);
+        } else {
+            check(false, "invalid Public Key type");
         }
         return enc.getBytes();
     }
