@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
-      "types": ["reflect-metadata", "jest", "node"],
+      "outDir": "dist",
+      "types": ["jest", "node"],
       "typeRoots": ["./types", "./node_modules/@types"],
       "esModuleInterop": true,
     },

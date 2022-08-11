@@ -1,8 +1,8 @@
 {
   "name": "chaintester",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "chain tester for AssemblyScript Smart Contract",
-  "main": "index.ts",
+  "main": "dist/index.js",
   "author": "learnforpractice <learnforpractice@gmail.com>",
   "license": "MIT",
   "repository": {
