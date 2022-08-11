@@ -20,7 +20,7 @@ it('test serializer', async () => {
     try {
         let ret = await tester.deployContract("hello", "target/testserializer.wasm", "target/testserializer.abi");
         ret = await tester.pushAction("hello", "test1", {}, {"hello": "active"});
-        expect(ret).not.toContain("except");
+        expect(ret.except).toBeUndefined();
 
         let args = {
             a1: true,
@@ -36,7 +36,7 @@ it('test serializer', async () => {
             a11: "0xffffffffffffffffffffffffffffffff",
             a13: 0xfff, //VarUint32,
             a14: 0xffffff01,
-            a15: "0xfffffffffffffff0",
+            a15: new BigNumber("11.2233"), //"0xfffffffffffffff0", //double
             // a16: f128,
             a17: '2021-09-03T04:13:21', // chain.TimePoint,
             a18: '2021-09-03T04:13:21', // chain.TimePointSec,
@@ -57,8 +57,7 @@ it('test serializer', async () => {
         }
 
         ret = await tester.pushAction("hello", "test2", args, {"hello": "active"});
-        expect(ret).not.toContain("except");
-
+        expect(ret.except).toBeUndefined();
     } finally {
         await tester.free();
     }

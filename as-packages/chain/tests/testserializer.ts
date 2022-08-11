@@ -140,6 +140,7 @@ class MyContract extends Contract{
 
 
         check(a13 == new VarUint32(0xfff), "bad a13 value.");
+        check(a15 == 11.2233, "bad a15 value.");
 
         check(a17 == new TimePoint(1630642401*1000000), "bad a17");
         check(a18 == new TimePointSec(1630642401), "bad a18");
