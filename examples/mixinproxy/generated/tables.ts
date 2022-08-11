@@ -60,9 +60,9 @@ export class Signer implements _chain.MultiIndexValue {
 
     static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
         const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
-        const indexes: _chain.IDXDB[] = [
+        const indices: _chain.IDXDB[] = [
         ];
-        return indexes;
+        return indices;
     }
 
     getTableName(): _chain.Name {
@@ -87,7 +87,7 @@ export class Signer implements _chain.MultiIndexValue {
     }
 
 
-    static new(code: _chain.Name, scope: _chain.Name): SignerDB {
+    static new(code: _chain.Name, scope: _chain.Name  = _chain.EMPTY_NAME): SignerDB {
         return new SignerDB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
 }
@@ -131,9 +131,9 @@ export class global implements _chain.MultiIndexValue {
 
     static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
         const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
-        const indexes: _chain.IDXDB[] = [
+        const indices: _chain.IDXDB[] = [
         ];
-        return indexes;
+        return indices;
     }
 
     getTableName(): _chain.Name {
@@ -158,7 +158,7 @@ export class global implements _chain.MultiIndexValue {
     }
 
 
-    static new(code: _chain.Name, scope: _chain.Name): _chain.Singleton<global> {
+    static new(code: _chain.Name, scope: _chain.Name = _chain.EMPTY_NAME): _chain.Singleton<global> {
         return new _chain.Singleton<global>(code, scope, this.tableName);
     }
 }
@@ -279,9 +279,9 @@ export class TxEvent implements _chain.MultiIndexValue {
 
     static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
         const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
-        const indexes: _chain.IDXDB[] = [
+        const indices: _chain.IDXDB[] = [
         ];
-        return indexes;
+        return indices;
     }
 
     getTableName(): _chain.Name {
@@ -306,7 +306,7 @@ export class TxEvent implements _chain.MultiIndexValue {
     }
 
 
-    static new(code: _chain.Name, scope: _chain.Name): TxEventDB {
+    static new(code: _chain.Name, scope: _chain.Name  = _chain.EMPTY_NAME): TxEventDB {
         return new TxEventDB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
 }
@@ -365,9 +365,9 @@ export class AccountCache implements _chain.MultiIndexValue {
 
     static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
         const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
-        const indexes: _chain.IDXDB[] = [
+        const indices: _chain.IDXDB[] = [
         ];
-        return indexes;
+        return indices;
     }
 
     getTableName(): _chain.Name {
@@ -392,7 +392,7 @@ export class AccountCache implements _chain.MultiIndexValue {
     }
 
 
-    static new(code: _chain.Name, scope: _chain.Name): _chain.Singleton<AccountCache> {
+    static new(code: _chain.Name, scope: _chain.Name = _chain.EMPTY_NAME): _chain.Singleton<AccountCache> {
         return new _chain.Singleton<AccountCache>(code, scope, this.tableName);
     }
 }
@@ -411,11 +411,12 @@ export class MixinAssetDB extends _chain.MultiIndex<MixinAsset> {
         return <_chain.IDX128>this.idxdbs[0];
     }
 
-    updateByAssetId(idxIt: _chain.SecondaryIterator, value: U128, payer: Name): _chain.IDX128 {
-    let secValue = _chain.newSecondaryValue_U128(value);
-    this.idxUpdate(idxIt, secValue, payer);
-    return <_chain.IDX128>this.idxdbs[0];
-}
+    
+    updateByAssetId(idxIt: _chain.SecondaryIterator, value: U128, payer: Name): void {
+        let secValue = _chain.newSecondaryValue_U128(value);
+        this.idxUpdate(idxIt, secValue, payer);
+    }
+
 }
 
 @table("mixinassets", nocodegen)
@@ -481,10 +482,10 @@ export class MixinAsset implements _chain.MultiIndexValue {
 
     static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
         const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
-        const indexes: _chain.IDXDB[] = [
+        const indices: _chain.IDXDB[] = [
             new _chain.IDX128(code.N, scope.N, idxTableBase + 0, 0),
         ];
-        return indexes;
+        return indices;
     }
 
     getTableName(): _chain.Name {
@@ -524,7 +525,7 @@ export class MixinAsset implements _chain.MultiIndexValue {
     }
 
 
-    static new(code: _chain.Name, scope: _chain.Name): MixinAssetDB {
+    static new(code: _chain.Name, scope: _chain.Name  = _chain.EMPTY_NAME): MixinAssetDB {
         return new MixinAssetDB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
 }
@@ -577,9 +578,9 @@ export class CreateAccountFee implements _chain.MultiIndexValue {
 
     static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
         const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
-        const indexes: _chain.IDXDB[] = [
+        const indices: _chain.IDXDB[] = [
         ];
-        return indexes;
+        return indices;
     }
 
     getTableName(): _chain.Name {
@@ -604,7 +605,7 @@ export class CreateAccountFee implements _chain.MultiIndexValue {
     }
 
 
-    static new(code: _chain.Name, scope: _chain.Name): _chain.Singleton<CreateAccountFee> {
+    static new(code: _chain.Name, scope: _chain.Name = _chain.EMPTY_NAME): _chain.Singleton<CreateAccountFee> {
         return new _chain.Singleton<CreateAccountFee>(code, scope, this.tableName);
     }
 }
@@ -616,11 +617,12 @@ export class MixinAccountDB extends _chain.MultiIndex<MixinAccount> {
         return <_chain.IDX128>this.idxdbs[0];
     }
 
-    updateByClientId(idxIt: _chain.SecondaryIterator, value: U128, payer: Name): _chain.IDX128 {
-    let secValue = _chain.newSecondaryValue_U128(value);
-    this.idxUpdate(idxIt, secValue, payer);
-    return <_chain.IDX128>this.idxdbs[0];
-}
+    
+    updateByClientId(idxIt: _chain.SecondaryIterator, value: U128, payer: Name): void {
+        let secValue = _chain.newSecondaryValue_U128(value);
+        this.idxUpdate(idxIt, secValue, payer);
+    }
+
 }
 
 @table("bindaccounts", nocodegen)
@@ -683,10 +685,10 @@ export class MixinAccount implements _chain.MultiIndexValue {
 
     static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
         const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
-        const indexes: _chain.IDXDB[] = [
+        const indices: _chain.IDXDB[] = [
             new _chain.IDX128(code.N, scope.N, idxTableBase + 0, 0),
         ];
-        return indexes;
+        return indices;
     }
 
     getTableName(): _chain.Name {
@@ -726,7 +728,7 @@ export class MixinAccount implements _chain.MultiIndexValue {
     }
 
 
-    static new(code: _chain.Name, scope: _chain.Name): MixinAccountDB {
+    static new(code: _chain.Name, scope: _chain.Name  = _chain.EMPTY_NAME): MixinAccountDB {
         return new MixinAccountDB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
 }
@@ -783,9 +785,9 @@ export class Counter implements _chain.MultiIndexValue {
 
     static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
         const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
-        const indexes: _chain.IDXDB[] = [
+        const indices: _chain.IDXDB[] = [
         ];
-        return indexes;
+        return indices;
     }
 
     getTableName(): _chain.Name {
@@ -810,7 +812,7 @@ export class Counter implements _chain.MultiIndexValue {
     }
 
 
-    static new(code: _chain.Name, scope: _chain.Name): CounterDB {
+    static new(code: _chain.Name, scope: _chain.Name  = _chain.EMPTY_NAME): CounterDB {
         return new CounterDB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
 }
@@ -872,9 +874,9 @@ export class Process implements _chain.MultiIndexValue {
 
     static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
         const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
-        const indexes: _chain.IDXDB[] = [
+        const indices: _chain.IDXDB[] = [
         ];
-        return indexes;
+        return indices;
     }
 
     getTableName(): _chain.Name {
@@ -899,7 +901,7 @@ export class Process implements _chain.MultiIndexValue {
     }
 
 
-    static new(code: _chain.Name, scope: _chain.Name): ProcessDB {
+    static new(code: _chain.Name, scope: _chain.Name  = _chain.EMPTY_NAME): ProcessDB {
         return new ProcessDB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
 }
@@ -914,16 +916,18 @@ export class PendingEventDB extends _chain.MultiIndex<PendingEvent> {
         return <_chain.IDX256>this.idxdbs[1];
     }
 
-    updateByAccount(idxIt: _chain.SecondaryIterator, value: u64, payer: Name): _chain.IDX64 {
-    let secValue = _chain.newSecondaryValue_u64(value);
-    this.idxUpdate(idxIt, secValue, payer);
-    return <_chain.IDX64>this.idxdbs[0];
-}
-    updateByHash(idxIt: _chain.SecondaryIterator, value: U256, payer: Name): _chain.IDX256 {
-    let secValue = _chain.newSecondaryValue_U256(value);
-    this.idxUpdate(idxIt, secValue, payer);
-    return <_chain.IDX256>this.idxdbs[1];
-}
+    
+    updateByAccount(idxIt: _chain.SecondaryIterator, value: u64, payer: Name): void {
+        let secValue = _chain.newSecondaryValue_u64(value);
+        this.idxUpdate(idxIt, secValue, payer);
+    }
+
+    
+    updateByHash(idxIt: _chain.SecondaryIterator, value: U256, payer: Name): void {
+        let secValue = _chain.newSecondaryValue_U256(value);
+        this.idxUpdate(idxIt, secValue, payer);
+    }
+
 }
 
 @table("pendingevts", nocodegen)
@@ -1014,11 +1018,11 @@ export class PendingEvent implements _chain.MultiIndexValue {
 
     static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
         const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
-        const indexes: _chain.IDXDB[] = [
+        const indices: _chain.IDXDB[] = [
             new _chain.IDX64(code.N, scope.N, idxTableBase + 0, 0),
             new _chain.IDX256(code.N, scope.N, idxTableBase + 1, 1),
         ];
-        return indexes;
+        return indices;
     }
 
     getTableName(): _chain.Name {
@@ -1067,7 +1071,7 @@ export class PendingEvent implements _chain.MultiIndexValue {
     }
 
 
-    static new(code: _chain.Name, scope: _chain.Name): PendingEventDB {
+    static new(code: _chain.Name, scope: _chain.Name  = _chain.EMPTY_NAME): PendingEventDB {
         return new PendingEventDB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
 }
@@ -1121,9 +1125,9 @@ export class SubmittedEvent implements _chain.MultiIndexValue {
 
     static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
         const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
-        const indexes: _chain.IDXDB[] = [
+        const indices: _chain.IDXDB[] = [
         ];
-        return indexes;
+        return indices;
     }
 
     getTableName(): _chain.Name {
@@ -1148,7 +1152,7 @@ export class SubmittedEvent implements _chain.MultiIndexValue {
     }
 
 
-    static new(code: _chain.Name, scope: _chain.Name): SubmittedEventDB {
+    static new(code: _chain.Name, scope: _chain.Name  = _chain.EMPTY_NAME): SubmittedEventDB {
         return new SubmittedEventDB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
 }
@@ -1216,9 +1220,9 @@ export class ErrorTxEvent implements _chain.MultiIndexValue {
 
     static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
         const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
-        const indexes: _chain.IDXDB[] = [
+        const indices: _chain.IDXDB[] = [
         ];
-        return indexes;
+        return indices;
     }
 
     getTableName(): _chain.Name {
@@ -1243,7 +1247,7 @@ export class ErrorTxEvent implements _chain.MultiIndexValue {
     }
 
 
-    static new(code: _chain.Name, scope: _chain.Name): ErrorTxEventDB {
+    static new(code: _chain.Name, scope: _chain.Name  = _chain.EMPTY_NAME): ErrorTxEventDB {
         return new ErrorTxEventDB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
 }
@@ -1296,9 +1300,9 @@ export class TransferFee implements _chain.MultiIndexValue {
 
     static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
         const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
-        const indexes: _chain.IDXDB[] = [
+        const indices: _chain.IDXDB[] = [
         ];
-        return indexes;
+        return indices;
     }
 
     getTableName(): _chain.Name {
@@ -1323,7 +1327,7 @@ export class TransferFee implements _chain.MultiIndexValue {
     }
 
 
-    static new(code: _chain.Name, scope: _chain.Name): TransferFeeDB {
+    static new(code: _chain.Name, scope: _chain.Name  = _chain.EMPTY_NAME): TransferFeeDB {
         return new TransferFeeDB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
 }
@@ -1376,9 +1380,9 @@ export class TotalFee implements _chain.MultiIndexValue {
 
     static tableIndexes(code: _chain.Name, scope: _chain.Name): _chain.IDXDB[] {
         const idxTableBase: u64 = this.tableName.N & 0xfffffffffffffff0;
-        const indexes: _chain.IDXDB[] = [
+        const indices: _chain.IDXDB[] = [
         ];
-        return indexes;
+        return indices;
     }
 
     getTableName(): _chain.Name {
@@ -1403,7 +1407,7 @@ export class TotalFee implements _chain.MultiIndexValue {
     }
 
 
-    static new(code: _chain.Name, scope: _chain.Name): TotalFeeDB {
+    static new(code: _chain.Name, scope: _chain.Name  = _chain.EMPTY_NAME): TotalFeeDB {
         return new TotalFeeDB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
 }

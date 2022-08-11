@@ -23,7 +23,8 @@
     "test:codegen": "yarn --cwd ./ts-packages/tests test",
     "test:chain": "yarn --cwd ./as-packages/chain/tests && yarn --cwd ./as-packages/chain/tests test-all",
     "test:examples": "yarn --cwd ./examples test-all",
-    "test": "yarn test:chain && yarn test:examples && yarn test:codegen"
+    "test:chaintester": "yarn --cwd ./ts-packages/chaintester && yarn --cwd ./ts-packages/chaintester build && yarn --cwd ./ts-packages/chaintester test",
+    "test": "yarn test:chaintester && yarn test:chain && yarn test:examples && yarn test:codegen"
   },
   "private": true,
   "devDependencies": {
