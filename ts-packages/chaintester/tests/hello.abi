@@ -1,0 +1,43 @@
+{
+  "version": "eosio::abi/1.1",
+  "structs": [
+    {
+      "name": "action1",
+      "base": "",
+      "fields": []
+    },
+    {
+      "name": "action2",
+      "base": "",
+      "fields": []
+    },
+    {
+      "name": "sayhello",
+      "base": "",
+      "fields": []
+    }
+  ],
+  "types": [],
+  "actions": [
+    {
+      "name": "action1",
+      "type": "action1",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "action2",
+      "type": "action2",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "sayhello",
+      "type": "sayhello",
+      "ricardian_contract": ""
+    }
+  ],
+  "tables": [],
+  "ricardian_clauses": [],
+  "variants": [],
+  "abi_extensions": [],
+  "error_messages": []
+}
