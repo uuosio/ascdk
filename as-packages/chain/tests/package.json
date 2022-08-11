@@ -20,7 +20,7 @@
   ],
   "scripts": {
     "build": "run-p build:* --max-parallel 3",
-    "build:name": "npx eosio-asc src/testname.ts --target release",
+    "build:name": "npx eosio-asc testname.ts --target release",
     "build:publickey": "npx eosio-asc testpublickey.ts --target release",
     "build:table": "npx eosio-asc testtable.ts --target release",
     "build:asset": "npx eosio-asc testasset.ts --target release",
@@ -40,7 +40,7 @@
     "build:apply": "npx eosio-asc testapply.ts --target release",
     "build:nocodegen": "npx eosio-asc testnocodegen.ts --target release",
     "build:finalize": "npx eosio-asc testfinalize.ts --target release",
-    "test-all": "yarn build && ipyeos -m pytest -s -x test.py",
+    "test-all": "yarn build && yarn test",
     "test:name": "yarn build:name && ipyeos -m pytest -s -x test.py -k test_name",
     "test:publickey": "yarn build:publickey && ipyeos -m pytest -s -x test.py -k test_publickey",
     "test:table": "yarn build:table && ipyeos -m pytest -s -x test.py -k test_table",
