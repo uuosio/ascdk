@@ -175,7 +175,7 @@ class Test(object):
             'signatures': [],
         }
 
-        packed_add_process = cls.chain.pack_args(MTG_XIN_CONTRACT, 'addprocess', args)
+        packed_add_process = cls.chain.pack_action_args(MTG_XIN_CONTRACT, 'addprocess', args)
         packed_add_process = packed_add_process[:-1]
         digest = hashlib.sha256(packed_add_process).hexdigest()
         signatures = []
@@ -266,7 +266,7 @@ class Test(object):
     def sign_event(self, tx_event):
         origin_extra = tx_event['origin_extra']
         tx_event['origin_extra'] = ''
-        packed_tx_event = self.chain.pack_args('mixincrossss', 'onevent', tx_event)
+        packed_tx_event = self.chain.pack_action_args('mixincrossss', 'onevent', tx_event)
         packed_tx_event = packed_tx_event[:-2]
         tx_event['origin_extra'] = origin_extra
         digest = hashlib.sha256(packed_tx_event).hexdigest()
@@ -363,7 +363,7 @@ class Test(object):
             'quantity': '0.10000000 MEOS',
             'memo': 'hello'
         }
-        args = self.chain.pack_args('mixinwtokens', 'transfer', args)
+        args = self.chain.pack_action_args('mixinwtokens', 'transfer', args)
         extra = b'\x00' + int.to_bytes(self.chain.s2n('mixinwtokens'), 8, 'little') + \
             int.to_bytes(self.chain.s2n('transfer'), 8, 'little') + args
         logger.info("+++++++++extra %s\n", extra.hex())
@@ -418,7 +418,7 @@ class Test(object):
             'quantity': '0.10000000 MEOS',
             'memo': 'hello'
         }
-        args = self.chain.pack_args('mixinwtokens', 'transfer', args)
+        args = self.chain.pack_action_args('mixinwtokens', 'transfer', args)
         extra = b'\x00' + int.to_bytes(self.chain.s2n('mixinwtokens'), 8, 'little') + \
             int.to_bytes(self.chain.s2n('transfer'), 8, 'little') + args
         # extra = self.build_extra(process_id_str, 'mixincrossss', extra)
@@ -473,7 +473,7 @@ class Test(object):
             'quantity': '0.10000000 MEOS',
             'memo': 'hello'
         }
-        args = self.chain.pack_args('mixinwtokens', 'transfer', args)
+        args = self.chain.pack_action_args('mixinwtokens', 'transfer', args)
         extra = b'\x00' + int.to_bytes(self.chain.s2n('mixinwtokens'), 8, 'little') + \
             int.to_bytes(self.chain.s2n('transfer'), 8, 'little') + args
         originExtra = self.build_extra(process_id_str, 'mixincrossss', extra)
@@ -507,7 +507,7 @@ class Test(object):
             'quantity': '0.10000000 MEOS',
             'memo': 'hello'
         }
-        args = self.chain.pack_args('mixinwtokens', 'transfer', args)
+        args = self.chain.pack_action_args('mixinwtokens', 'transfer', args)
         extra = b'\x00' + int.to_bytes(self.chain.s2n('mixinwtokens'), 8, 'little') + \
             int.to_bytes(self.chain.s2n('transfer'), 8, 'little') + args
 
@@ -532,7 +532,7 @@ class Test(object):
             act = trace['act']
             account, name = act['account'], act['name']
             data = act['data']
-            args = self.chain.unpack_args(account, name, bytes.fromhex(data))
+            args = self.chain.unpack_action_args(account, name, bytes.fromhex(data))
             logger.info("+++%s %s %s", account, name, args)
             if name == 'txrequest':
                 assert args['amount'] == '1900000'
@@ -556,7 +556,7 @@ class Test(object):
             'quantity': '0.10000000 MEOS',
             'memo': 'hello'
         }
-        args = self.chain.pack_args('mixinwtokens', 'transfer', args)
+        args = self.chain.pack_action_args('mixinwtokens', 'transfer', args)
         extra = b'\x00' + int.to_bytes(self.chain.s2n('mixinwtokens'), 8, 'little') + \
             int.to_bytes(self.chain.s2n('transfer'), 8, 'little') + args
         originExtra = self.build_extra(process_id_str, 'mixincrossss', extra)
