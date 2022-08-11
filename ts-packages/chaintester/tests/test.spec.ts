@@ -1,6 +1,6 @@
 import {ChainTester} from "../src/index"
 
-test('test hello', async () => {
+it('test hello', async () => {
     let tester = new ChainTester();
     await tester.init();
 
@@ -11,9 +11,8 @@ test('test hello', async () => {
         console.log(ret.elapsed);
         // ret = await tester.getAccount(1, "hello");
         // console.log(ret);
-        expect("Welcome to ts-jest!!!").toMatchInlineSnapshot(`"Welcome to ts-jest!!!"`)
+        expect(ret).not.toContain("except");
     } finally {
         tester.free();
     }
-
 })

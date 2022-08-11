@@ -35,6 +35,10 @@ export class ChainTester {
         return this.callMethod('free_chain', {id: this.id});
     }
 
+    async produceBlock() {
+        return this.callMethod('produce_block', {id: this.id});
+    }
+
     async getInfo(id: number) {
         return this.callMethod('get_info', {id: this.id})
     }
@@ -63,5 +67,25 @@ export class ChainTester {
             arguments: JSON.stringify(args),
             permissions: JSON.stringify(permissions)
         });
+    }
+
+    async packActionArgs(contract: string, action: string, action_args: object) {
+        let ret = await this.callMethod('pack_action_args', {
+            id: this.id,
+            contract: contract,
+            action: action,
+            action_args: JSON.stringify(action_args),
+        });
+
+        if (ret.data) {
+            console.log(ret);
+            return new Promise((resolve, reject) => {
+                  resolve(ret.data);
+            });    
+        } else {
+            return new Promise((resolve, reject) => {
+                reject(JSON.parse(ret.error));
+          });
+        }
     }
 }
