@@ -449,6 +449,7 @@ class MyContract extends Contract{
             it = mi.find(1);
             check(!it.isOk(), "bad iterator!");
         }
+        printString("testmi2 end!");
     }
 
     @action("testend")

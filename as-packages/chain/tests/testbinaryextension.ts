@@ -5,7 +5,8 @@ import {
     BinaryExtension,
 
     Contract,
-    check
+    check,
+    printString
 } from "as-chain";
 
 @packer
@@ -32,6 +33,7 @@ class MyContract extends Contract {
         let a6 = new BinaryExtension<Asset>();
         a6.unpack(data);
         check(a5.value! == a6.value!, "bad value 4");
+        printString("testext done!");
     }
 
     @action("testext2")
@@ -43,5 +45,6 @@ class MyContract extends Contract {
         check(!a1.value, "bad value 1");
         check(a2.value == new Asset(10000, new Symbol("EOS", 4)), "bad value 2");
         check(!a3.value, "bad value 3");
+        printString("testext2 done!");
     }
 }

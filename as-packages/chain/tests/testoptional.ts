@@ -7,7 +7,8 @@ import {
     OptionalString,
 
     Contract,
-    check
+    check,
+    printString,
 } from "as-chain";
 
 class MyClass {
@@ -70,6 +71,7 @@ class MyContract extends Contract {
             a.unpack([1, 0]);
             check(a.hasValue, "bad value a 2");
         }
+        printString("testopt done!");
     }
 
     @action("testopt2")
@@ -83,5 +85,6 @@ class MyContract extends Contract {
         check(a2.value == new Asset(10000, new Symbol("EOS", 4)), "bad value 2");
         check(!a3.value, "bad value 3");
         check(a4.value == new Asset(40000, new Symbol("EOS", 4)), "bad value 4");
+        printString("testopt done2!");
     }
 }

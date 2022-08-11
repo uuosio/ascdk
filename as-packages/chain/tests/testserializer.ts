@@ -97,6 +97,7 @@ class MyContract extends Contract{
         let dec = new Decoder(enc.getBytes());
         let length = dec.unpackLength();
         check(length == 0xfffff, "bad value");
+        printString("testEncodeDecode done!")
     }
 
     @action("test2")
@@ -198,5 +199,6 @@ class MyContract extends Contract{
         a31 = ${a31},
         a32 = ${a32},
         `);
+        printString("testSerializer done!");
     }
 }

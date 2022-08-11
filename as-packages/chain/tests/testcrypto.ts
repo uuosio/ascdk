@@ -44,7 +44,6 @@ class MyContract extends Contract {
         assertRecoverKey(digest, sig, pub);
         let _pub = recoverKey(digest, sig);
         check(pub == _pub, "invalid public key");
-        print(`Done!`);
 
         let data: u8[] = [1, 2, 3, 4, 5, 6];
         {
@@ -66,5 +65,6 @@ class MyContract extends Contract {
             let hash = ripemd160(data);     
             assertRipemd160(data, hash);
         }
+        print(`Done!`);
     }
 }

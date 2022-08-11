@@ -11,6 +11,7 @@ import {
     VariantValue,
     Encoder,
     Decoder,
+    printString,
 } from "as-chain";
 
 @variant
@@ -383,5 +384,6 @@ class MyContract extends Contract{
                 arr = a22.get<string[]>();
                 check(arr[0] == "hello" && arr[1] == "world", "bad value 22");
             }
+            printString("test3 done!");
         }
 }
