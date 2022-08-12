@@ -71,7 +71,7 @@ class MyContract {
     }
 
     @action("count")
-    count(n: u64, m: u64): void {
+    count(a1: u64, a2: u64, a3: u8[]): void {
         let mystruct = new MyStruct();
         let data = chain.readActionData();
         mystruct.unpack(data);
