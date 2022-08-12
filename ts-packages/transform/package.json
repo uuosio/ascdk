@@ -1,6 +1,6 @@
 {
   "name": "eosio-asc",
-  "version": "0.2.3",
+  "version": "0.2.74",
   "description": "Build tool for building AssemblyScript projects",
   "main": "index.ts",
   "author": "learnforpractice <learnforpractice@gmail.com>",
@@ -20,7 +20,6 @@
     "eosio-asc": "bin/eosio-asc.js"
   },
   "dependencies": {
-    "as-chain": "./as-packages/chain",
     "assemblyscript": "0.18",
     "handlebars": "4.7.7",
     "ts-dedent": "^2.2.0",

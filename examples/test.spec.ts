@@ -29,7 +29,7 @@ it('test singleton', async () => {
         for (var i=0; i<5; i++) {
             ret = await tester.pushAction("hello", "test", {}, {"hello": "active"});
             expect(ret.except).toBeUndefined();
-            tester.produceBlock();    
+            await tester.produceBlock();    
         }
     } finally {
         await tester.free();
@@ -70,7 +70,7 @@ it('test notify', async () => {
 
         ret = await tester.pushAction("hello", "sayhello", {name: 'alice'}, {"hello": "active"});
         expect(ret.except).toBeUndefined();
-        tester.produceBlock();    
+        await tester.produceBlock();    
     } finally {
         await tester.free();
     }
@@ -85,7 +85,7 @@ it('test codegeneration', async () => {
 
         ret = await tester.pushAction("hello", "count", {a1: 1, a2: 2, a3: 'aabb'}, {"hello": "active"});
         expect(ret.except).toBeUndefined();
-        tester.produceBlock();    
+        await tester.produceBlock();    
     } finally {
         await tester.free();
     }
@@ -101,7 +101,7 @@ it('test counter', async () => {
         for (var i=0; i<10; i++) {
             ret = await tester.pushAction("hello", "inc", {}, {"hello": "active"});
             expect(ret.except).toBeUndefined();
-            tester.produceBlock();    
+            await tester.produceBlock();    
         }
     } finally {
         await tester.free();
@@ -139,7 +139,7 @@ it('test action', async () => {
         for (var i=0; i<10; i++) {
             ret = await tester.pushAction("hello", "sayhello", {name: 'bob'}, {"hello": "active"});
             expect(ret.except).toBeUndefined();
-            tester.produceBlock();    
+            await tester.produceBlock();    
         }
     } finally {
         await tester.free();
@@ -155,7 +155,7 @@ it('test hello', async () => {
 
         ret = await tester.pushAction("hello", "sayhello", {}, {"hello": "active"});
         expect(ret.except).toBeUndefined();
-        tester.produceBlock();    
+        await tester.produceBlock();    
     } finally {
         await tester.free();
     }

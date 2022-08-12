@@ -53,6 +53,12 @@ class MyContract extends Contract {
 }
 ```
 
+## AssemblyScript Smart Contracts Template
+
+There is a smart contracts template for quick starting your smart contracts project:
+
+[as-template](https://github.com/uuosio/as-template)
+
 ## Boilerplate
 Boilerplate to build your own contract + testing: https://github.com/ProtonProtocol/typescript-smart-contracts
 

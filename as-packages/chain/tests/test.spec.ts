@@ -125,7 +125,7 @@ it('test multi-index', async () => {
         let ret = await tester.deployContract("hello", "target/testmi.wasm", "target/testmi.abi");
         ret = await tester.pushAction("hello", "testend", {}, {"hello": "active"});
         expect(ret.except).toBeUndefined();
-        tester.produceBlock();
+        await tester.produceBlock();
 
         ret = await tester.pushAction("hello", "testend", {}, {"hello": "active"});
         expect(ret.except).toBeUndefined();
