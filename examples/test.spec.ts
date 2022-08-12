@@ -1,3 +1,4 @@
+import 'jest';
 import { ChainTester } from "chaintester"
 
 async function deployContract(tester: ChainTester, testName: string) {
