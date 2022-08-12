@@ -55,7 +55,7 @@ if (true) {
             if (sourcePath) {
                 console.log("Build progressing. Generating target files ······")
                 let dirname = path.dirname(sourcePath);
-                let targetName = sourcePath.split(path.sep).slice(-1)[0].replace(/.ts$/, '')
+                let targetName = sourcePath.split("/").slice(-1)[0].replace(/.ts$/, '')
                 let wasmPath = path.join(dirname, "target", `${targetName}.wasm`);
                 let wastPath = path.join(dirname, "target", `${targetName}.wast`);
                 args.push("-b", wasmPath)
