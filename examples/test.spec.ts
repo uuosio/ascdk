@@ -36,28 +36,6 @@ it('test singleton', async () => {
     }
 })
 
-
-// @chain_test
-// def test_notify():
-//     with open('./notify/target/sender.wasm', 'rb') as f:
-//         code = f.read()
-//     with open('./notify/target/sender.abi', 'rb') as f:
-//         abi = f.read()
-//     chain.deploy_contract('hello', code, abi, 0)
-
-
-//     with open('./notify/target/receiver.wasm', 'rb') as f:
-//         code = f.read()
-//     with open('./notify/target/receiver.abi', 'rb') as f:
-//         abi = f.read()
-//     chain.deploy_contract('helloworld11', code, abi, 0)
-
-//     args = {
-//         'name': 'alice'
-//     }
-//     r = chain.push_action('hello', 'sayhello', args, {'hello': 'active'})
-
-
 it('test notify', async () => {
     let tester = new ChainTester();
     await tester.init();
