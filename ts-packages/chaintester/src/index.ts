@@ -1,6 +1,18 @@
 import fetch from 'cross-fetch';
 import { readFileSync } from 'fs';
 
+function parse_ret(ret) {
+    if (ret.data) {
+        return new Promise((resolve, reject) => {
+              resolve(ret.data);
+        });
+    } else {
+        return new Promise((resolve, reject) => {
+            reject(JSON.parse(ret.error));
+      });
+    }
+}
+
 export class ChainTester {
     id: number
     constructor() {
@@ -51,6 +63,11 @@ export class ChainTester {
         return this.callMethod('create_key', {key_type: "K1"});
     }
 
+    async getPublicKey(priv: string) {
+        let ret = await this.callMethod('get_public_key', {priv_key: priv});
+        return parse_ret(ret)
+    }
+
     async createAccount(creator: string, account: string, owner_key: string, active_key: string, ram_bytes: number = 5 * 1024 * 1024, stake_net: number = 0.0, stake_cpu: number = 0.0) {
         return this.callMethod('create_account', {
                 id: this.id,
@@ -94,16 +111,6 @@ export class ChainTester {
             action: action,
             action_args: JSON.stringify(action_args),
         });
-
-        if (ret.data) {
-            console.log(ret);
-            return new Promise((resolve, reject) => {
-                  resolve(ret.data);
-            });    
-        } else {
-            return new Promise((resolve, reject) => {
-                reject(JSON.parse(ret.error));
-          });
-        }
+        return parse_ret(ret);
     }
 }

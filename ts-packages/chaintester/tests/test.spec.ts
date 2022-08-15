@@ -9,6 +9,7 @@ it('test hello', async () => {
         let key = await tester.createKey();
         console.log(key);
 
+        console.log(await tester.getPublicKey(key.private));
         let ret = await tester.createAccount("hello", "helloworld33", key["public"], key["public"]);
         expect(ret.except).toBeUndefined();
 
