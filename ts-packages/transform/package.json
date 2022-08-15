@@ -1,6 +1,6 @@
 {
   "name": "eosio-asc",
-  "version": "0.2.74",
+  "version": "0.2.75",
   "description": "Build tool for building AssemblyScript projects",
   "main": "index.ts",
   "author": "learnforpractice <learnforpractice@gmail.com>",
