@@ -6,12 +6,20 @@ it('test hello', async () => {
 
     try {    
         tester.sayHello();
-        let ret = await tester.deployContract("hello", "tests/hello.wasm", "tests/hello.abi");
+        let key = await tester.createKey();
+        console.log(key);
+
+        let ret = await tester.createAccount("hello", "helloworld33", key["public"], key["public"]);
+        expect(ret.except).toBeUndefined();
+
+        ret = await tester.deployContract("hello", "tests/hello.wasm", "tests/hello.abi");
+        expect(ret.except).toBeUndefined();
+
         ret = await tester.pushAction("hello", "sayhello", {}, {"hello": "active"});
+        expect(ret.except).toBeUndefined();
         console.log(ret.elapsed);
-        // ret = await tester.getAccount(1, "hello");
+        // ret = await tester.getAccount("hello");
         // console.log(ret);
-        expect(ret).not.toContain("except");
     } finally {
         tester.free();
     }

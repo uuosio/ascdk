@@ -43,8 +43,26 @@ export class ChainTester {
         return this.callMethod('get_info', {id: this.id})
     }
 
-    async getAccount(id: number, account: string) {
-        return this.callMethod('get_account', {id: this.id, account: account})
+    async getAccount(account: string) {
+        return this.callMethod('get_account', {id: this.id, account: account});
+    }
+
+    async createKey() {
+        return this.callMethod('create_key', {key_type: "K1"});
+    }
+
+    async createAccount(creator: string, account: string, owner_key: string, active_key: string, ram_bytes: number = 5 * 1024 * 1024, stake_net: number = 0.0, stake_cpu: number = 0.0) {
+        return this.callMethod('create_account', {
+                id: this.id,
+                creator,
+                account,
+                owner_key,
+                active_key,
+                ram_bytes,
+                stake_net,
+                stake_cpu
+            }
+        );
     }
 
     async deployContract(account: string, wasm_file: string, abi_file: string) {
