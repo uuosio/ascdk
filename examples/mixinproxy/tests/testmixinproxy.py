@@ -11,7 +11,7 @@ from inspect import currentframe, getframeinfo
 test_dir = os.path.dirname(__file__)
 sys.path.append(os.path.join(test_dir, '..'))
 
-from ipyeos import log
+from ipyeos import log, eos
 from ipyeos.chaintester import ChainTester
 
 from pyeoskit import eosapi
@@ -79,7 +79,9 @@ class Test(object):
     def init(cls):
         cls.test_keys = []
         for i in range(4):
-            key = eosapi.create_key()
+            key = eos.create_key()
+            if not isinstance(key, dict):
+                key = json.loads(key)
             cls.test_keys.append(key)
 
         cls.chain = ChainTester()
