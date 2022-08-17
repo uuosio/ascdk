@@ -10,7 +10,8 @@
     "smart-contract"
   ],
   "workspaces": [
-    "as-packages/*",
+    "as-packages/chain",
+    "as-packages/chain/tests",
     "ts-packages/*",
     "examples"
   ],

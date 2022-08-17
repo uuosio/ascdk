@@ -1,5 +1,5 @@
 {
-  "name": "as-chain-tests",
+  "name": "ts-chain-tests",
   "version": "0.0.1",
   "description": "chain module for assemblyscript",
   "main": "js/index.js",

@@ -4,8 +4,16 @@ it('test hello', async () => {
     let tester = new ChainTester();
     await tester.init();
 
-    try {    
-        tester.sayHello();
+    try {
+        let info = await tester.getInfo();
+        console.log(info.head_block_time);
+
+        await tester.produceBlock(10);
+        await tester.produceBlock();
+
+        info = await tester.getInfo();
+        console.log(info.head_block_time);
+
         let key = await tester.createKey();
         console.log(key);
 

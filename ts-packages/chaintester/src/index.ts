@@ -47,11 +47,14 @@ export class ChainTester {
         return this.callMethod('free_chain', {id: this.id});
     }
 
-    async produceBlock() {
-        return this.callMethod('produce_block', {id: this.id});
+    async produceBlock(nextBlockSkipSeconds: number=0) {
+        return this.callMethod('produce_block', {
+            id: this.id,
+            next_block_skip_seconds: nextBlockSkipSeconds
+        });
     }
 
-    async getInfo(id: number) {
+    async getInfo() {
         return this.callMethod('get_info', {id: this.id})
     }
 

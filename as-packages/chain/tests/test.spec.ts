@@ -430,28 +430,6 @@ it('test variant', async () => {
     }
 })
 
-
-
-// @chain_test
-// def test_contract():
-//     # info = chain.get_account('helloworld11')
-//     # logger.info(info)
-//     with open('./testcontract/testcontract/target/testcontract.wasm', 'rb') as f:
-//         code = f.read()
-//     with open('./testcontract/testcontract/target/testcontract.abi', 'rb') as f:
-//         abi = f.read()
-
-//     chain.deploy_contract('hello', code, abi, 0)
-
-//     args = {
-//         'data1': {'name': 'data1'},
-//         'data2': {'name': 'data2'},
-//         'data3': {'name': 'data3'},
-//         'data4': '1.0000 EOS'
-//     }
-//     r = chain.push_action('hello', 'testmydata', args, {'hello': 'active'})
-//     logger.info('++++++elapsed: %s', r['elapsed'])
-
 it('test contract', async () => {
     let tester = new ChainTester();
     await tester.init();
@@ -465,6 +443,23 @@ it('test contract', async () => {
         }
         ret = await tester.pushAction("hello", "testmydata", args, {"hello": "active"});
         expect(ret.except).toBeUndefined();
+    } finally {
+        await tester.free();
+    }
+})
+
+it('test block time', async () => {
+    let tester = new ChainTester();
+    await tester.init();
+    try {
+        let ret = await tester.deployContract("hello", "target/testtime.wasm", "target/testtime.abi");
+        let args = {}
+        ret = await tester.pushAction("hello", "test", args, {"hello": "active"});
+        expect(ret.except).toBeUndefined();
+
+        tester.produceBlock(10);
+        ret = await tester.pushAction("hello", "test", args, {"hello": "active"});
+        expect(ret.except).toBeUndefined();           
     } finally {
         await tester.free();
     }
