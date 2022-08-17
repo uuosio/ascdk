@@ -26,10 +26,7 @@ jobs:
       - name: Install dependencies
         run: |
           python3 -m pip install -U pip setuptools
-          python3 -m pip install wheel
           python3 -m pip install pytest
-          python3 -m pip install mpy-cross
-          python3 -m pip install pyeoskit
       - name: Install EOS test framework
         if: ${{ matrix.os != 'windows-latest' }}
         run: |
