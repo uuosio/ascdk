@@ -71,7 +71,7 @@ export class ChainTester {
         return parse_ret(ret)
     }
 
-    async createAccount(creator: string, account: string, owner_key: string, active_key: string, ram_bytes: number = 5 * 1024 * 1024, stake_net: number = 0.0, stake_cpu: number = 0.0) {
+    async createAccount(creator: string, account: string, owner_key: string, active_key: string, ram_bytes: number = 5 * 1024 * 1024, stake_net: number = 0, stake_cpu: number = 0) {
         return this.callMethod('create_account', {
                 id: this.id,
                 creator,
