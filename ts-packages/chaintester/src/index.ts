@@ -116,4 +116,27 @@ export class ChainTester {
         });
         return parse_ret(ret);
     }
+
+    async getTableRows(_json: boolean, code: string, scope: string, table: string, lower_bound: string, upper_bound: string, limit: number, key_type: string="", index_position: string="", reverse: boolean=false, show_payer: boolean=true) {
+        return await this.callMethod('get_table_rows', {
+            id: this.id,
+            _json, code, scope, table, lower_bound, upper_bound, limit, key_type, index_position, reverse, show_payer
+        });
+    }
+
+    async getBalance(account: string, token_account: string="eosio.token", symbol: string="EOS"): Promise<number> {
+        let ret = await this.getTableRows(false, token_account, account, "accounts", "EOS", "", 1);
+        if (ret['rows'].length == 0) {
+            return new Promise((resolve, reject) => {
+                  resolve(0);
+            });
+        } else {
+            let data = ret['rows'][0]['data'];
+            console.log("++++++++++=data:", data);
+            let balance = parseInt("0x" + data.slice(0, 16).match(/../g).reverse().join(''));
+            return new Promise((resolve, reject) => {
+                resolve(balance);
+          });
+        }        
+    }
 }

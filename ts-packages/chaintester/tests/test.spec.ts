@@ -33,3 +33,27 @@ it('test hello', async () => {
         tester.free();
     }
 })
+
+
+it('test get_table_rows', async () => {
+    let tester = new ChainTester();
+    await tester.init();
+
+    try {
+        let rows = await tester.getTableRows(true, "eosio.token", "hello", "accounts", "EOS", "", 1);
+        console.log("++++++++=rows:", rows);
+        let oldBalance = await tester.getBalance("hello");
+        let args = {
+            "from": "hello",
+            "to": "eosio",
+            "quantity": "1.0000 EOS",
+            "memo": "hello"
+        }
+        await tester.pushAction("eosio.token", "transfer", args, {"hello": "active"});
+        let newBalance = await tester.getBalance("hello");
+        tester.produceBlock();
+        expect(oldBalance - newBalance == 10000).toEqual(true);
+    } finally {
+        tester.free();
+    }
+})
