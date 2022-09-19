@@ -464,3 +464,33 @@ it('test block time', async () => {
         await tester.free();
     }
 })
+
+it('test new intrinsics', async () => {
+    let tester = new ChainTester();
+    await tester.init();
+    try {
+        let ret = await tester.deployContract("hello", "target/testnewintrinsics.wasm", "target/testnewintrinsics.abi");
+
+        let info = await tester.getInfo();
+        let args = {
+            num: info.head_block_num + 1
+        }
+        ret = await tester.pushAction("hello", "test", args, {"hello": "active"});
+        expect(ret.except).toBeUndefined();
+    } finally {
+        await tester.free();
+    }
+})
+
+it('test table', async () => {
+    let tester = new ChainTester();
+    await tester.init();
+    try {
+        let ret = await tester.deployContract("hello", "target/testtable.wasm", "target/testtable.abi");
+
+        ret = await tester.pushAction("hello", "testtable", {}, {"hello": "active"});
+        expect(ret.except).toBeUndefined();
+    } finally {
+        await tester.free();
+    }
+})
