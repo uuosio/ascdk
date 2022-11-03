@@ -18,30 +18,30 @@ import {
     LiteralExpression,
     LiteralKind,
     StringLiteralExpression
-} from "assemblyscript";
+} from "assemblyscript/dist/assemblyscript.js";
 
 import { getCustomDecoratorKind } from "../contract/decorator";
 import { ContractDecoratorKind } from "../enums/decorator";
 import { Strings } from "./primitiveutil";
 export class ElementUtil {
     static isClass(element: Element): boolean {
-        if (element.kind == ElementKind.CLASS_PROTOTYPE) {
+        if (element.kind == ElementKind.ClassPrototype) {
             return true
         }
         return false;
     }
 
     static isTopContractClass(element: Element): boolean {
-        if (element.kind == ElementKind.CLASS_PROTOTYPE) {
+        if (element.kind == ElementKind.ClassPrototype) {
             let clzPrototype = <ClassPrototype>element;
-            return clzPrototype.declaration.range.source.sourceKind == SourceKind.USER_ENTRY &&
+            return clzPrototype.declaration.range.source.sourceKind == SourceKind.UserEntry &&
                 AstUtil.hasSpecifyDecorator(clzPrototype.declaration, ContractDecoratorKind.CONTRACT);
         }
         return false;
     }
 
     static isTableClassPrototype(element: Element): boolean {
-        if (element.kind == ElementKind.CLASS_PROTOTYPE) {
+        if (element.kind == ElementKind.ClassPrototype) {
             let clzPrototype = <ClassPrototype>element;
             return AstUtil.hasSpecifyDecorator(clzPrototype.declaration, ContractDecoratorKind.TABLE);
         }
@@ -49,7 +49,7 @@ export class ElementUtil {
     }
 
     static isSerializerClassPrototype(element: Element): boolean {
-        if (element.kind == ElementKind.CLASS_PROTOTYPE) {
+        if (element.kind == ElementKind.ClassPrototype) {
             let clzPrototype = <ClassPrototype>element;
             return AstUtil.hasSpecifyDecorator(clzPrototype.declaration, ContractDecoratorKind.SERIALIZER);
         }
@@ -57,7 +57,7 @@ export class ElementUtil {
     }
 
     static isOptionalClassPrototype(element: Element): boolean {
-        if (element.kind == ElementKind.CLASS_PROTOTYPE) {
+        if (element.kind == ElementKind.ClassPrototype) {
             let clzPrototype = <ClassPrototype>element;
             return AstUtil.hasSpecifyDecorator(clzPrototype.declaration, ContractDecoratorKind.OPTIONAL);
         }
@@ -65,7 +65,7 @@ export class ElementUtil {
     }
 
     static isBinaryExtensionClassPrototype(element: Element): boolean {
-        if (element.kind == ElementKind.CLASS_PROTOTYPE) {
+        if (element.kind == ElementKind.ClassPrototype) {
             let clzPrototype = <ClassPrototype>element;
             return AstUtil.hasSpecifyDecorator(clzPrototype.declaration, ContractDecoratorKind.BINARYEXTENSION);
         }
@@ -73,7 +73,7 @@ export class ElementUtil {
     }
 
     static isVariantClassPrototype(element: Element): boolean {
-        if (element.kind == ElementKind.CLASS_PROTOTYPE) {
+        if (element.kind == ElementKind.ClassPrototype) {
             let clzPrototype = <ClassPrototype>element;
             return AstUtil.hasSpecifyDecorator(clzPrototype.declaration, ContractDecoratorKind.VARIANT);
         }
@@ -81,7 +81,7 @@ export class ElementUtil {
     }
 
     static isExtendCodec(element: Element): boolean {
-        if (element.kind == ElementKind.CLASS_PROTOTYPE) {
+        if (element.kind == ElementKind.ClassPrototype) {
             return ElementUtil.impledInterfaces(<ClassPrototype>element).includes("Codec");
         }
         return false;
@@ -113,7 +113,7 @@ export class ElementUtil {
      * @param element 
      */
     static isActionFuncPrototype(element: Element): boolean {
-        if (element.kind == ElementKind.FUNCTION_PROTOTYPE) {
+        if (element.kind == ElementKind.FunctionPrototype) {
             let funcType = <FunctionPrototype>element;
             return AstUtil.hasSpecifyDecorator(funcType.declaration, ContractDecoratorKind.ACTION);
         }
@@ -121,7 +121,7 @@ export class ElementUtil {
     }
 
     static isPrimaryFuncPrototype(element: Element): boolean {
-        if (element.kind == ElementKind.PROPERTY_PROTOTYPE) {
+        if (element.kind == ElementKind.PropertyPrototype) {
             let funcType = <PropertyPrototype>element;
             return AstUtil.hasSpecifyDecorator(funcType.declaration, ContractDecoratorKind.PRIMARY);
         }
@@ -129,7 +129,7 @@ export class ElementUtil {
     }
 
     static isSecondaryFuncPrototype(element: Element): boolean {
-        if (element.kind == ElementKind.PROPERTY_PROTOTYPE) {
+        if (element.kind == ElementKind.PropertyPrototype) {
             let funcType = <PropertyPrototype>element;
             return AstUtil.hasSpecifyDecorator(funcType.declaration, ContractDecoratorKind.SECONDARY);
         }
@@ -143,13 +143,13 @@ export class AstUtil {
     }
  
     static getIdentifier(expression: Expression): string {
-        if (expression.kind == NodeKind.IDENTIFIER) {
+        if (expression.kind == NodeKind.Identifier) {
             return (<IdentifierExpression>expression).text;
-        } else if (expression.kind == NodeKind.BINARY) {
+        } else if (expression.kind == NodeKind.Binary) {
             return (<BinaryExpression>expression).left.range.toString();
-        } else if (expression.kind == NodeKind.LITERAL) {
+        } else if (expression.kind == NodeKind.Literal) {
             let literal = <LiteralExpression>expression;
-            if (literal.literalKind == LiteralKind.STRING) {
+            if (literal.literalKind == LiteralKind.String) {
                 return (<StringLiteralExpression>literal).value;
             }
         }
@@ -157,7 +157,7 @@ export class AstUtil {
     }
 
     static getBinaryExprRight(expression: Expression): string {
-        if (expression.kind == NodeKind.BINARY) {
+        if (expression.kind == NodeKind.Binary) {
             return (<BinaryExpression>expression).right.range.toString();
         }
         return Strings.EMPTY;
@@ -228,7 +228,7 @@ export class AstUtil {
     }
 
     static checkPublic(declaration: DeclarationStatement): void {
-        if (declaration.isAny(CommonFlags.PRIVATE)) {
+        if (declaration.isAny(CommonFlags.Private)) {
             throw new Error(`Method: ${declaration.name.range.toString()} should be public. Trace: ${RangeUtil.location(declaration.range)}.`);
         }
     }

@@ -6,7 +6,7 @@ import {
     ElementKind,
     TypeDefinition,
     ClassPrototype,
-} from "assemblyscript";
+} from "assemblyscript/dist/assemblyscript.js";
 
 import { RangeUtil } from "../utils/utils";
 
@@ -142,9 +142,9 @@ export class NamedTypeNodeDef extends BaseNamedTypeDef {
     }
 
     private getNodeTypeInfo(buildinElement: Element): NodeTypeInfo {
-        if (buildinElement.kind == ElementKind.FUNCTION_PROTOTYPE) {
+        if (buildinElement.kind == ElementKind.FunctionPrototype) {
             return new NodeTypeInfo(TypeKindEnum.NUMBER);
-        } else if (buildinElement.kind == ElementKind.TYPEDEFINITION) {
+        } else if (buildinElement.kind == ElementKind.TypeDefinition) {
             if (buildinElement.name == Strings.VOID) {
                 return new NodeTypeInfo(TypeKindEnum.VOID);
             } else if (TypeHelper.nativeType.includes(buildinElement.name)) {
@@ -160,7 +160,7 @@ export class NamedTypeNodeDef extends BaseNamedTypeDef {
 
             return new NodeTypeInfo(type);
 
-        } else if (buildinElement.kind == ElementKind.CLASS_PROTOTYPE) {
+        } else if (buildinElement.kind == ElementKind.ClassPrototype) {
             let type = TypeHelper.getTypeKindFromUnCodec(buildinElement.name);
             if (type) {
                 return new NodeTypeInfo(type);
@@ -182,7 +182,7 @@ export class NamedTypeNodeDef extends BaseNamedTypeDef {
      * declare U8Array = Array<u8>
      * declare u8Arr = u8Array
      *
-     * FUNCTION_PROTOTYPE, u8
+     * FunctionPrototype, u8
      * TYPEDEFINITION, void
      * CLASS_PROTOTYPE, string
      * CLASS_PROTOTYPE, u128
@@ -200,9 +200,9 @@ export class NamedTypeNodeDef extends BaseNamedTypeDef {
             return TypeKindEnum.VOID;
         }
 
-        if (element.kind == ElementKind.FUNCTION_PROTOTYPE) {
+        if (element.kind == ElementKind.FunctionPrototype) {
             return TypeKindEnum.NUMBER;
-        } else if (element.kind == ElementKind.TYPEDEFINITION) {
+        } else if (element.kind == ElementKind.TypeDefinition) {
             if (element.name == Strings.VOID) {
                 return TypeKindEnum.VOID;
             } else if (TypeHelper.nativeType.includes(element.name)) {
@@ -214,7 +214,7 @@ export class NamedTypeNodeDef extends BaseNamedTypeDef {
             // console.log(`TYPEDEFINITION ${definitionNode.range.toString()},  ${buildinElement.name}`);
             let name = definitionNode.name.range.toString();
             return TypeHelper.getTypeKindByName(name);
-        } else if (element.kind == ElementKind.CLASS_PROTOTYPE) {
+        } else if (element.kind == ElementKind.ClassPrototype) {
             let type = TypeHelper.getTypeKindFromUnCodec(element.name);
             if (type) {
                 return type;
@@ -235,7 +235,7 @@ export class NamedTypeNodeDef extends BaseNamedTypeDef {
     */
     private findBuildinElement(element: Element): Element {
         // console.log(`element: ${element.name}, ${ElementKind[element.kind]}`);
-        if (element && element.kind == ElementKind.TYPEDEFINITION) {
+        if (element && element.kind == ElementKind.TypeDefinition) {
             let defineElement = <TypeDefinition>element;
             let aliasTypeName = defineElement.typeNode.range.toString();
             // console.log(`aliasTypeName: ${aliasTypeName}`);
@@ -254,7 +254,7 @@ export class NamedTypeNodeDef extends BaseNamedTypeDef {
         var args = this.typeNode.typeArguments;
         if (args) {
             for (let arg of args) {
-                if (arg.kind == NodeKind.NAMEDTYPE) {
+                if (arg.kind == NodeKind.NamedType) {
                     let argumentTypeNode: NamedTypeNodeDef = new NamedTypeNodeDef(this.parent, <NamedTypeNode>arg);
                     this.typeArguments.push(argumentTypeNode);
                 }

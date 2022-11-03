@@ -11,7 +11,7 @@ import {
     Range,
     DecoratorNode,
     FunctionDeclaration
-} from "assemblyscript";
+} from "assemblyscript/dist/assemblyscript.js";
 
 import { AstUtil, DecoratorUtil, ElementUtil, RangeUtil, EosioUtils } from "../utils/utils";
 import { ContractDecoratorKind } from "../enums/decorator";
@@ -71,7 +71,7 @@ export class FieldDef {
     private resolveField(): void {
         let fieldDeclaration: FieldDeclaration = <FieldDeclaration>this.fieldPrototype.declaration;
         let commonType: TypeNode | null = fieldDeclaration.type;
-        if (commonType && commonType.kind == NodeKind.NAMEDTYPE) {
+        if (commonType && commonType.kind == NodeKind.NamedType) {
             let typeNode = <NamedTypeNode>commonType;
             this.type = new NamedTypeNodeDef(this.fieldPrototype, typeNode);
         }
@@ -115,7 +115,7 @@ export class DecoratorNodeDef {
         this.pairs = new Map<string, string>();
         if (decorator.args) {
             decorator.args.forEach(expression => {
-                if (expression.kind == NodeKind.BINARY) {
+                if (expression.kind == NodeKind.Binary) {
                     let identifier = AstUtil.getIdentifier(expression);
                     let val = AstUtil.getBinaryExprRight(expression);
                     this.pairs.set(identifier, val);

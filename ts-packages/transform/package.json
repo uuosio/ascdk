@@ -2,9 +2,10 @@
   "name": "eosio-asc",
   "version": "0.2.75",
   "description": "Build tool for building AssemblyScript projects",
-  "main": "index.ts",
+  "main": "./dist/index.js",
   "author": "learnforpractice <learnforpractice@gmail.com>",
   "license": "MIT",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/uuosio/ascdk.git"
@@ -12,6 +13,7 @@
   "bugs": {
     "url": "https://github.com/uuosio/ascdk/issues"
   },
+  "type": "module",
   "scripts": {
     "checks": "tsc -p tsconfig.json --noEmit",
     "build": "rm -rf dist/* && tsc -p tsconfig.json"
@@ -20,9 +22,14 @@
     "eosio-asc": "bin/eosio-asc.js"
   },
   "dependencies": {
-    "assemblyscript": "0.18",
+    "@types/node": "^18.11.9",
+    "@types/typescript": "^2.0.0",
+    "assemblyscript": "0.22.0",
     "handlebars": "4.7.7",
     "ts-dedent": "^2.2.0",
     "yargs": "^17.4.1"
+  },
+  "devDependencies": {
+    "assemblyscript": "0.22.0"
   }
 }

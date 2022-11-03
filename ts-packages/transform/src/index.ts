@@ -1,12 +1,14 @@
-import { Transform } from "assemblyscript/cli/transform";
-import * as preprocess from "./preprocess";
-import { getContractInfo } from "./contract/contract";
-import { Program } from "assemblyscript";
+import * as assemblyscript from "assemblyscript/dist/assemblyscript.js";
+import { Transform } from "assemblyscript/dist/transform.js"
+import { Program } from "assemblyscript/dist/assemblyscript.js";
+
+import * as preprocess from "./preprocess/index.js";
+import { getContractInfo } from "./contract/contract.js";
 import * as path from "path";
 import process from "process"
 
 // TODO: refactor to ts code
-export class ContractTransform extends Transform {
+export default class ContractTransform extends Transform {
     afterInitialize(program: Program): void {
         // TODO: support cli args, see https://github.com/AssemblyScript/assemblyscript/issues/1691
         // TODO: add a config file

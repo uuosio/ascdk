@@ -15,10 +15,10 @@
   resolved "https://registry.yarnpkg.com/@assemblyscript/loader/-/loader-0.18.32.tgz#2216fc7df235df247c95004457efd9c0a7da33ed"
   integrity sha512-fq+nWvQuwASkTgchjMsnLyharobzPJIKx4KGoSlkS1ffrsnjabok2oOH7jAIFW4RMz3JXjHxMONbAmcxzyrcUw==
 
-"@assemblyscript/loader@^0.19.22":
-  version "0.19.23"
-  resolved "https://registry.yarnpkg.com/@assemblyscript/loader/-/loader-0.19.23.tgz#7fccae28d0a2692869f1d1219d36093bc24d5e72"
-  integrity sha512-ulkCYfFbYj01ie1MDOyxv2F6SpRN1TOj7fQxbP07D6HmeR+gr2JLSmINKjga2emB+b1L2KGrFKBTc+e00p54nw==
+"@assemblyscript/loader@^0.22.0":
+  version "0.22.0"
+  resolved "https://registry.yarnpkg.com/@assemblyscript/loader/-/loader-0.22.0.tgz#85d495539657e3c4b08448ff6c029d247c05b255"
+  integrity sha512-gdPnGoYUhEz5VER9etY2MHpayCUfznlKE35lMbo5XveAJaeJQZEdy9KATQlETpbMUQUDtxq6f2VtZ8EfQo8cVA==
 
 "@babel/code-frame@7.12.11":
   version "7.12.11"
@@ -913,6 +913,11 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.18.23.tgz#70f5f20b0b1b38f696848c1d3647bb95694e615e"
   integrity sha512-MhbCWN18R4GhO8ewQWAFK4TGQdBpXWByukz7cWyJmXhvRuCIaM/oWytGPqVmDzgEnnaIc9ss6HbU5mUi+vyZPA==
 
+"@types/node@^18.11.9":
+  version "18.11.9"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.11.9.tgz#02d013de7058cea16d36168ef2fc653464cfbad4"
+  integrity sha512-CRpX21/kGdzjOpFsZSkcrXMGIBWMGNIHXXBVFSH+ggkftxg+XYP20TESbh+zFvFj3EQOl5byk0HTRn1IL6hbqg==
+
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.1.tgz#d3357479a0fdfdd5907fe67e17e0a85c906e1301"
@@ -927,6 +932,13 @@
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-2.0.1.tgz#20f18294f797f2209b5f65c8e3b5c8e8261d127c"
   integrity sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==
+
+"@types/typescript@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@types/typescript/-/typescript-2.0.0.tgz#c433539c98bae28682b307eaa7a0fd2115b83c28"
+  integrity sha512-WMEWfMISiJ2QKyk5/dSdgL0ZwP//PZj0jmDU0hMh51FmLq4WIYzjlngsUQZXejQL+QtkXJUOGjb3G3UCvgZuSQ==
+  dependencies:
+    typescript "*"
 
 "@types/yargs-parser@*":
   version "21.0.0"
@@ -1169,24 +1181,15 @@ array-unique@^0.3.2:
 as-chain@./as-packages/chain:
   version "0.1.0"
   dependencies:
-    "@assemblyscript/loader" "^0.19.22"
+    "@assemblyscript/loader" "^0.22.0"
 
-assemblyscript@0.18:
-  version "0.18.32"
-  resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.18.32.tgz#cbb76076bd4d9702f4baae0a2910c9755c8e4ecd"
-  integrity sha512-Py6zremwGhO3nSoI/VxyVUzTZfNhTjzNzFDaUdG4JhPJHeG+FzVlEoNCrw4bE5nPc7F+P2DJ8tZQCqIt15ceKw==
+assemblyscript@0.22.0, assemblyscript@^0.22.0:
+  version "0.22.0"
+  resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.22.0.tgz#4ca71d6790c0f26db5d3e358e860b2d542f6e02b"
+  integrity sha512-BC4tV2hc+oNgKOWfXXrl5iD2W+NkQV1MbRNCMi7YE83VoSzrmJj7LqSJMHYc39nKNnX+MiL4DHzp9zCKIMal/g==
   dependencies:
-    binaryen "100.0.0-nightly.20210413"
-    long "^4.0.0"
-
-assemblyscript@^0.19.22:
-  version "0.19.23"
-  resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.19.23.tgz#16ece69f7f302161e2e736a0f6a474e6db72134c"
-  integrity sha512-fwOQNZVTMga5KRsfY80g7cpOl4PsFQczMwHzdtgoqLXaYhkhavufKb0sB0l3T1DUxpAufA0KNhlbpuuhZUwxMA==
-  dependencies:
-    binaryen "102.0.0-nightly.20211028"
+    binaryen "110.0.0-nightly.20221019"
     long "^5.2.0"
-    source-map-support "^0.5.20"
 
 assign-symbols@^1.0.0:
   version "1.0.0"
@@ -1328,15 +1331,10 @@ bignumber@^1.1.0:
   resolved "https://registry.yarnpkg.com/bignumber/-/bignumber-1.1.0.tgz#e6ab0a743da5f3ea018e5c17597d121f7868c159"
   integrity sha512-EGqHCKkEAwVwufcEOCYhZQqdVH+7cNCyPZ9yxisYvSjHFB+d9YcGMvorsFpeN5IJpC+lC6K+FHhu8+S4MgJazw==
 
-binaryen@100.0.0-nightly.20210413:
-  version "100.0.0-nightly.20210413"
-  resolved "https://registry.yarnpkg.com/binaryen/-/binaryen-100.0.0-nightly.20210413.tgz#b7f2a5bb1f76b2d6f9c67486ca218714b3766790"
-  integrity sha512-EeGLIxQmJS0xnYl+SH34mNBqVMoixKd9nsE7S7z+CtS9A4eoWn3Qjav+XElgunUgXIHAI5yLnYT2TUGnLX2f1w==
-
-binaryen@102.0.0-nightly.20211028:
-  version "102.0.0-nightly.20211028"
-  resolved "https://registry.yarnpkg.com/binaryen/-/binaryen-102.0.0-nightly.20211028.tgz#8f1efb0920afd34509e342e37f84313ec936afb2"
-  integrity sha512-GCJBVB5exbxzzvyt8MGDv/MeUjs6gkXDvf4xOIItRBptYl0Tz5sm1o/uG95YK0L0VeG5ajDu3hRtkBP2kzqC5w==
+binaryen@110.0.0-nightly.20221019:
+  version "110.0.0-nightly.20221019"
+  resolved "https://registry.yarnpkg.com/binaryen/-/binaryen-110.0.0-nightly.20221019.tgz#3c458f114ea3eb34c64d47d6a03b9529199638c7"
+  integrity sha512-BmuVpV5hpeU1G9ENWQUslwaxbmol810S3+yd7xVJap+vrSQz7ybXiirwya1FfYSFtuDbfGYPfQAObiW5O2PS1w==
 
 brace-expansion@^1.1.7:
   version "1.1.11"
@@ -3768,11 +3766,6 @@ lodash@4.x, lodash@^4.7.0:
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
-long@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/long/-/long-4.0.0.tgz#9a7b71cfb7d361a194ea555241c92f7468d5bf28"
-  integrity sha512-XsP+KhQif4bjX1kbuSiySJFNAehNxgLb6hPRGJ9QsUr8ajHkuXGdrHmFUTUUXhDwVX2R5bY4JNZEwbUiMhV+MA==
-
 long@^5.2.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/long/-/long-5.2.0.tgz#2696dadf4b4da2ce3f6f6b89186085d94d52fd61"
@@ -4666,7 +4659,7 @@ source-map-support@0.5.13:
     buffer-from "^1.0.0"
     source-map "^0.6.0"
 
-source-map-support@^0.5.17, source-map-support@^0.5.20, source-map-support@^0.5.6:
+source-map-support@^0.5.17, source-map-support@^0.5.6:
   version "0.5.21"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.21.tgz#04fe7c7f9e1ed2d662233c28cb2b35b9f63f6e4f"
   integrity sha512-uBHU3L3czsIyYXKX88fdrGovxdSCoTGDRZ6SYXtSRxLZUzHg5P/66Ht6uoUlHu9EZod+inXhKo3qQgwXUT/y1w==
@@ -5067,6 +5060,11 @@ typedarray-to-buffer@^3.1.5:
   integrity sha512-zdu8XMNEDepKKR+XYOXAVPtWui0ly0NtohUscw+UmaHiAWT8hrV1rr//H6V+0DvJ3OQ19S979M0laLfX8rm82Q==
   dependencies:
     is-typedarray "^1.0.0"
+
+typescript@*:
+  version "4.8.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.8.4.tgz#c464abca159669597be5f96b8943500b238e60e6"
+  integrity sha512-QCh+85mCy+h0IGff8r5XWzOVSbBO+KfeYrMQh7NJ58QujwcE22u+NUSmUxqF+un70P9GXKxa2HCNiTTMJknyjQ==
 
 typescript@4.0:
   version "4.0.8"

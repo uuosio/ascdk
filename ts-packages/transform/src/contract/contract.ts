@@ -3,7 +3,7 @@ import {
     Program,
     ElementKind,
     CommonFlags,
-} from "assemblyscript";
+} from "assemblyscript/dist/assemblyscript.js";
 
 import { ElementUtil } from "../utils/utils";
 
@@ -67,8 +67,8 @@ export class ContractProgram {
         for (let it = values.next(); !it.done; it = values.next() ) {
             let element = it.value;
             if (element.name == "apply" && 
-                    element.kind == ElementKind.FUNCTION_PROTOTYPE &&
-                    (element.flags && CommonFlags.EXPORT) == CommonFlags.EXPORT) {
+                    element.kind == ElementKind.FunctionPrototype &&
+                    (element.flags && CommonFlags.Export) == CommonFlags.Export) {
                 this.hasApplyFunc = true;
                 break;
             }
@@ -321,7 +321,7 @@ export class ContractProgram {
         className = className.replace('Array<', '').replace('>', '');    
 
         if (TypeHelper.primitiveToAbiMap.get(className)) {
-            return
+            return null;
         }
 
         let cls = this.allClasses.find(cls => {
@@ -330,6 +330,7 @@ export class ContractProgram {
         if (cls) {
             return new SerializerInterpreter(cls.classPrototype);
         }
+        return null;
     }
 
     findAllAbiTypes() {

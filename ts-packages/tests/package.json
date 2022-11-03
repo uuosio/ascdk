@@ -25,10 +25,10 @@
     "test:inspect": "npx eosio-asc testinspection.ts --target release && ipyeos -m pytest -s -x test.py -k test_inspect"
   },
   "dependencies": {
-    "@assemblyscript/loader": "^0.19.22"
+    "@assemblyscript/loader": "^0.22.0"
   },
   "devDependencies": {
-    "assemblyscript": "^0.19.22"
+    "assemblyscript": "^0.22.0"
   },
   "files": [
     "assembly/",

@@ -1,4 +1,4 @@
-import { APIOptions } from "assemblyscript/cli/asc";
+import { APIOptions } from "assemblyscript/dist/asc";
 import { SourceModifier, ModifyPoint, ModifyType } from "./preprocess";
 import * as path from "path";
 import * as fs from "fs";

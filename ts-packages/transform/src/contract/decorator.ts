@@ -1,10 +1,10 @@
-import { DecoratorKind, DecoratorNode, Expression, IdentifierExpression, NodeKind } from "assemblyscript";
+import { DecoratorKind, DecoratorNode, Expression, IdentifierExpression, NodeKind } from "assemblyscript/dist/assemblyscript.js";
 import { ContractDecoratorKind } from "../enums/decorator";
 import { LowerCaseCode } from "../utils/charutil";
 import { RangeUtil } from "../utils/utils";
 
 function fromNode(nameNode: Expression): ContractDecoratorKind {
-    if (nameNode.kind == NodeKind.IDENTIFIER) {
+    if (nameNode.kind == NodeKind.Identifier) {
         let nameStr = (<IdentifierExpression>nameNode).text;
         switch (nameStr.charCodeAt(0)) {
             case LowerCaseCode.a: {
@@ -51,7 +51,7 @@ function fromNode(nameNode: Expression): ContractDecoratorKind {
 }
 
 export function getCustomDecoratorKind(decorator: DecoratorNode): ContractDecoratorKind {
-    if (decorator.decoratorKind != DecoratorKind.CUSTOM) {
+    if (decorator.decoratorKind != DecoratorKind.Custom) {
         return ContractDecoratorKind.INTERNAL;
     }
     let kind = fromNode(decorator.name);

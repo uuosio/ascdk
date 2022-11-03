@@ -1,3 +1,5 @@
+console.log("++++++++++++++++hello++++++++++");
+
 /**
  * @license
  * Copyright 2020 Daniel Wirtz / The AssemblyScript Authors.
@@ -33,12 +35,42 @@
 const fs = require("fs");
 const path = require("path");
 const process = require("process"); // ensure shim
-const utf8 = require("assemblyscript/cli/util/utf8");
-const colorsUtil = require("assemblyscript/cli/util/colors");
-const optionsUtil = require("assemblyscript/cli/util/options");
-const mkdirp = require("assemblyscript/cli/util/mkdirp");
-const find = require("assemblyscript/cli//util/find");
-const binaryen = global.binaryen || (global.binaryen = require("binaryen"));
+const utf8 = require("eosio-asc/dist/cli/util/utf8");
+const colorsUtil = require("eosio-asc/dist/cli/util/colors");
+const optionsUtil = require("eosio-asc/dist/cli/util/options");
+const mkdirp = require("eosio-asc/dist/cli/util/mkdirp");
+const find = require("eosio-asc/dist/cli//util/find");
+// import binaryen from "binaryen"
+
+var binaryen;
+// import('binaryen').then(mod => {
+//         binaryen = mod;
+//         console.log(binaryen);
+//     }
+// ).catch(e => {
+//     console.log("+++++++++e:", e);
+// });
+
+var assemblyscriptjs;
+// import('./path/to/mod.mjs').then(mod => {
+//         assemblyscriptjs = mod;
+//         console.log(assemblyscriptjs);
+//     }
+// ).catch(e => {
+//     console.log("+++++++++e:", e);
+// });
+
+// await new Promise(resolve => setTimeout(resolve, 1000));
+
+// import("assemblyscript/dist/assemblyscript")
+// console.log('++++++assemblyscriptjs:', assemblyscriptjs);
+
+// const loadModules = require("eosio-asc/dist/utils/loader.js");
+// let [binaryen, assemblyscriptjs] = loadModules();
+
+// const binaryen = loader.loadBinaryen();
+// const assemblyscriptjs = loader.loadAssemblyscript();
+// const binaryen = global.binaryen || (global.binaryen = require("binaryen"));
 
 const dynrequire = typeof __webpack_require__ === "function"
     ? __non_webpack_require__
@@ -64,7 +96,8 @@ function setupExtension(ext) {
 const defaultExtension = setupExtension(".ts");
 
 function readJson(fileName) {
-    let filePath = path.join(path.dirname(require.resolve(`assemblyscript`)), fileName);
+//    let filePath = path.join(path.dirname(require.resolve(`assemblyscript`)), fileName);
+    let filePath = "/Users/newworld/dev/as/ascdk/ts-packages/transform/src/asc/asc.json";//fileName;
     let jsonStr = fs.readFileSync(filePath);
     return JSON.parse(jsonStr);
 }
@@ -84,14 +117,15 @@ function loadAssemblyScriptJS() {
     try {
         // note that this case will always trigger in recent node.js versions for typical installs
         // see: https://nodejs.org/api/packages.html#packages_self_referencing_a_package_using_its_name
-        exports = require("assemblyscript");
+        exports = assemblyscriptjs;
     } catch (e) {
+        console.log(e);
         try { // `asc` on the command line (unnecessary in recent node)
-            exports = dynrequire("../dist/assemblyscript.js");
+            exports = dynrequire("assemblyscript/dist/assemblyscript.js");
         } catch (e) {
             try { // `asc` on the command line without dist files (unnecessary in recent node)
                 dynrequire("ts-node").register({
-                    project: path.join(__dirname, "..", "src", "tsconfig.json"),
+                    project: path.join(__dirname, "../..", "tsconfig.json"),
                     skipIgnore: true,
                     compilerOptions: { target: "ES2016" }
                 });
@@ -165,15 +199,15 @@ loadAssemblyScript();
 exports.isBundle = typeof BUNDLE_VERSION === "string";
 
 /** AssemblyScript version. */
-exports.version = exports.isBundle ? BUNDLE_VERSION : readJson("package.json").version;
+exports.version = exports.isBundle ? BUNDLE_VERSION : "0.0.1";//readJson("package.json").version;
 // exports.version = exports.isBundle ? BUNDLE_VERSION : dynrequire("assemblyscript/package.json").version;
 
 /** Available CLI options. */
-exports.options = readJson("cli/asc.json");
+exports.options = readJson("asc.json");
 // exports.options = require("assemblyscript/cli/asc.json");
 
 /** Prefix used for library files. */
-exports.libraryPrefix = __getString(assemblyscript.LIBRARY_PREFIX.valueOf());
+exports.libraryPrefix = "";//__getString(assemblyscript.LIBRARY_PREFIX.valueOf());
 
 /** Default Binaryen optimization level. */
 exports.defaultOptimizeLevel = 3;
@@ -237,6 +271,16 @@ exports.compileString = (sources, options) => {
     });
     return output;
 };
+
+exports.setExports = (_binaryen, _assemblyscript) => {
+    binaryen = _binaryen;
+    assemblyscript = _assemblyscript;//loadAssemblyScriptJS();
+    __newString = str => str;
+    __getString = ptr => ptr;
+    __pin = ptr => ptr;
+    __unpin = ptr => undefined;
+    __collect = incremental => undefined;
+}
 
 /** Runs the command line utility using the specified arguments array. */
 exports.main = function main(argv, options, callback) {
@@ -329,10 +373,12 @@ exports.main = function main(argv, options, callback) {
 
     // Check if a config file is present
     let asconfigPath = optionsUtil.resolvePath(opts.config || "asconfig.json", baseDir);
+    // let asconfigPath = "/Users/newworld/dev/as/ascdk/ts-packages/transform/asconfig.json";
     let asconfigFile = path.basename(asconfigPath);
     let asconfigDir = path.dirname(asconfigPath);
     let asconfig = getAsconfig(asconfigFile, asconfigDir, readFile);
     let asconfigHasEntries = asconfig != null && Array.isArray(asconfig.entries) && asconfig.entries.length;
+    console.log("+++++++++asc", argv, asconfigHasEntries, asconfig);
 
     // Print the help message if requested or no source files are provided
     if (opts.help || (!argv.length && !asconfigHasEntries)) {
@@ -429,7 +475,7 @@ exports.main = function main(argv, options, callback) {
     assemblyscript.setSharedMemory(compilerOptions, opts.sharedMemory);
     assemblyscript.setImportTable(compilerOptions, opts.importTable);
     assemblyscript.setExportTable(compilerOptions, opts.exportTable);
-    assemblyscript.setExplicitStart(compilerOptions, opts.explicitStart);
+    // assemblyscript.setExplicitStart(compilerOptions, opts.explicitStart);
     assemblyscript.setMemoryBase(compilerOptions, opts.memoryBase >>> 0);
     assemblyscript.setTableBase(compilerOptions, opts.tableBase >>> 0);
     assemblyscript.setSourceMap(compilerOptions, opts.sourceMap != null);
@@ -466,7 +512,7 @@ exports.main = function main(argv, options, callback) {
             {
                 let aliasPtr = __pin(__newString(alias));
                 let namePtr = __newString(name);
-                assemblyscript.setGlobalAlias(compilerOptions, aliasPtr, namePtr);
+                // assemblyscript.setGlobalAlias(compilerOptions, aliasPtr, namePtr);
                 __unpin(aliasPtr);
             }
         }
@@ -525,7 +571,7 @@ exports.main = function main(argv, options, callback) {
         for (let i = 0, k = transformArgs.length; i < k; ++i) {
             let filename = transformArgs[i].trim();
             if (!tsNodeRegistered && filename.endsWith(".ts")) { // ts-node requires .ts specifically
-                dynrequire("ts-node").register({ transpileOnly: true, skipProject: true, compilerOptions: { target: "ES2016" } });
+                // dynrequire("ts-node").register({ transpileOnly: true, skipProject: true, compilerOptions: { target: "ES2016" } });
                 tsNodeRegistered = true;
             }
             try {
@@ -752,6 +798,7 @@ exports.main = function main(argv, options, callback) {
 
     // Include runtime before entry files so its setup runs first
     {
+        console.log("+++++++++opts:", opts);
         let runtimeName = String(opts.runtime);
         let runtimePath = "rt/index-" + runtimeName;
         let runtimeText = exports.libraryFiles[runtimePath];
@@ -770,7 +817,6 @@ exports.main = function main(argv, options, callback) {
             __unpin(textPtr);
         });
     }
-
     // Include entry files
     for (let i = 0, k = argv.length; i < k; ++i) {
         const filename = argv[i];

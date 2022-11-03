@@ -9,7 +9,7 @@ import {
     ClassDeclaration,
     OperatorKind,
     DecoratorNode,
-} from "assemblyscript";
+} from "assemblyscript/dist/assemblyscript.js";
 
 import { AstUtil, ElementUtil, DecoratorUtil, EosioUtils } from "../utils/utils";
 
@@ -42,7 +42,7 @@ export class ClassInterpreter {
         this.classPrototype = clzPrototype;
         this.declaration = <ClassDeclaration>this.classPrototype.declaration;
         this.range = this.declaration.range;
-        if (this.declaration.isAny(CommonFlags.EXPORT)) {
+        if (this.declaration.isAny(CommonFlags.Export)) {
             this.export = "export ";
         }
         this.className = clzPrototype.name;
@@ -105,7 +105,7 @@ export class ClassInterpreter {
 
         this.classPrototype.instanceMembers &&
             this.classPrototype.instanceMembers.forEach((element, _) => {
-                if (element.kind == ElementKind.FIELD_PROTOTYPE) {
+                if (element.kind == ElementKind.FieldPrototype) {
                     this.fields.push(new FieldDef(<FieldPrototype>element));
                 }
             });
@@ -118,7 +118,7 @@ export class ClassInterpreter {
 
         this.classPrototype.instanceMembers &&
             this.classPrototype.instanceMembers.forEach((element, _) => {
-                if (element.kind == ElementKind.FUNCTION_PROTOTYPE) {
+                if (element.kind == ElementKind.FunctionPrototype) {
                     let func = new FunctionDef(<FunctionPrototype>element);
                     if (!func.isConstructor) {
                         this.functions.push(func);
@@ -160,7 +160,7 @@ export class ContractInterpreter extends ClassInterpreter {
         if (!member) {
             return false;
         }
-        if (member.kind == ElementKind.FUNCTION_PROTOTYPE) {
+        if (member.kind == ElementKind.FunctionPrototype) {
             let funcType = <FunctionPrototype>member;
             return funcType.name == "finalize"
         }

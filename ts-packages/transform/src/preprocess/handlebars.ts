@@ -7,11 +7,11 @@ import { TypeHelper } from "../utils/typeutil";
 import { TableInterpreter, ClassInterpreter } from "../contract/classdef";
 import { RangeUtil } from "../utils/utils";
 import { NamedTypeNodeDef } from "../contract/typedef";
-import { Range, DecoratorNode } from "assemblyscript";
+import { Range, DecoratorNode } from "assemblyscript/dist/assemblyscript";
 
-import { CommonFlags } from "assemblyscript";
+import { CommonFlags } from "assemblyscript/dist/assemblyscript.js";
 
-import dedent from "ts-dedent"
+import { dedent } from "ts-dedent"
 import process from "process"
 
 import { AstUtil } from "../utils/utils";
@@ -76,7 +76,7 @@ function parseTypeName(tp: NamedTypeNodeDef, isActionType: boolean = false) {
         return plainType;
     }
 
-    if (!tp.current.isAny(CommonFlags.EXPORT)) {
+    if (!tp.current.isAny(CommonFlags.Export)) {
         return plainType;
     }
     
@@ -527,7 +527,7 @@ function handleAction(action: ActionFunctionDef): string {
            ${fieldSerialize("ret_value", action.returnType!, false, "")}
            _chain.setActionReturnValue(enc.getBytes());`
         : `mycontract.${action.methodName}(${parameters.join(',')});`
-
+    console.log("++++++++++dedent:", dedent);
     return dedent`
         if (action == ${actionNameHex}) {//${actionName}
                     const args = new ${action.methodName}Action();
