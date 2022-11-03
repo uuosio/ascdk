@@ -1,4 +1,4 @@
-import { CONFIG } from "../config/compile";
+import { CONFIG } from "../config/compile.js";
 
 export const mainTpl = `
 

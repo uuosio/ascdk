@@ -13,8 +13,8 @@ import {
     variantTpl,
 } from "../tpl/index.js";
 
-import { CONFIG } from "../config/compile";
-import { EosioUtils, RangeUtil } from "../utils/utils";
+import { CONFIG } from "../config/compile.js";
+import { EosioUtils, RangeUtil } from "../utils/utils.js";
 
 export class ModifyPoint {
     range: Range;

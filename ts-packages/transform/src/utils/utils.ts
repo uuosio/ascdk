@@ -20,9 +20,9 @@ import {
     StringLiteralExpression
 } from "assemblyscript/dist/assemblyscript.js";
 
-import { getCustomDecoratorKind } from "../contract/decorator";
-import { ContractDecoratorKind } from "../enums/decorator";
-import { Strings } from "./primitiveutil";
+import { getCustomDecoratorKind } from "../contract/decorator.js";
+import { ContractDecoratorKind } from "../enums/decorator.js";
+import { Strings } from "./primitiveutil.js";
 export class ElementUtil {
     static isClass(element: Element): boolean {
         if (element.kind == ElementKind.ClassPrototype) {

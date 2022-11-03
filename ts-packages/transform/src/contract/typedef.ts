@@ -8,13 +8,13 @@ import {
     ClassPrototype,
 } from "assemblyscript/dist/assemblyscript.js";
 
-import { RangeUtil } from "../utils/utils";
+import { RangeUtil } from "../utils/utils.js";
 
-import { TypeHelper } from "../utils/typeutil";
-import { TypeKindEnum } from "../enums/customtype";
-import { ClassInterpreter } from "./classdef";
-import { Strings } from "../utils/primitiveutil";
-import { CONFIG } from "../config/compile";
+import { TypeHelper } from "../utils/typeutil.js";
+import { TypeKindEnum } from "../enums/customtype.js";
+import { ClassInterpreter } from "./classdef.js";
+import { Strings } from "../utils/primitiveutil.js";
+import { CONFIG } from "../config/compile.js";
 export class NodeTypeInfo {
     constructor(public type: TypeKindEnum) {}
 }
