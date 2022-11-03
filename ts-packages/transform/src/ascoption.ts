@@ -1,5 +1,5 @@
 import { APIOptions } from "assemblyscript/dist/asc.js";
-import { SourceModifier, ModifyPoint, ModifyType } from "./preprocess/index.js";
+import { SourceModifier, ModifyPoint, ModifyType } from "./preprocess";
 import * as path from "path";
 import * as fs from "fs";
 export class APIOptionImpl implements APIOptions {

@@ -1,7 +1,7 @@
-export { mainTpl } from "./main.js";
-export { actionTpl } from "./action.js";
-export { tableTpl } from "./table.js";
-export { serializerTpl } from "./serializer.js";
-export { optionalTpl } from "./optional.js";
-export { binaryExtensionTpl } from "./binaryextension.js";
-export { variantTpl } from "./variant.js";
+export { mainTpl } from "./main";
+export { actionTpl } from "./action";
+export { tableTpl } from "./table";
+export { serializerTpl } from "./serializer";
+export { optionalTpl } from "./optional";
+export { binaryExtensionTpl } from "./binaryextension";
+export { variantTpl } from "./variant";

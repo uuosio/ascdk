@@ -13,11 +13,11 @@ import {
     FunctionDeclaration
 } from "assemblyscript/dist/assemblyscript.js";
 
-import { AstUtil, DecoratorUtil, ElementUtil, RangeUtil, EosioUtils } from "../utils/utils.js";
-import { ContractDecoratorKind } from "../enums/decorator.js";
-import { FieldDefHelper, TypeHelper } from "../utils/typeutil.js";
-import { TypeKindEnum } from "../enums/customtype.js";
-import { NamedTypeNodeDef } from "./typedef.js";
+import { AstUtil, DecoratorUtil, ElementUtil, RangeUtil, EosioUtils } from "../utils/utils";
+import { ContractDecoratorKind } from "../enums/decorator";
+import { FieldDefHelper, TypeHelper } from "../utils/typeutil";
+import { TypeKindEnum } from "../enums/customtype";
+import { NamedTypeNodeDef } from "./typedef";
 
 export class DecoratorsInfo {
     decorators: DecoratorNode[] | null;

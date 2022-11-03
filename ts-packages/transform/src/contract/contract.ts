@@ -5,7 +5,7 @@ import {
     CommonFlags,
 } from "assemblyscript/dist/assemblyscript.js";
 
-import { ElementUtil } from "../utils/utils.js";
+import { ElementUtil } from "../utils/utils";
 
 import {
     ContractInterpreter,
@@ -13,10 +13,10 @@ import {
     ClassInterpreter,
     TableInterpreter,
     VariantInterpreter,
-} from "./classdef.js";
+} from "./classdef";
 
-import { NamedTypeNodeDef } from "./typedef.js";
-import { RangeUtil } from "../utils/utils.js";
+import { NamedTypeNodeDef } from "./typedef";
+import { RangeUtil } from "../utils/utils";
 import {
     ABI,
     ABIAction,
@@ -25,11 +25,11 @@ import {
     ABITable,
     ABIActionResult,
     VariantDef,
-} from "../abi/abi.js";
+} from "../abi/abi";
 
-import { ActionFunctionDef } from "../contract/elementdef.js";
-import { TypeKindEnum } from "../enums/customtype.js";
-import { TypeHelper } from "../utils/typeutil.js";
+import { ActionFunctionDef } from "../contract/elementdef";
+import { TypeKindEnum } from "../enums/customtype";
+import { TypeHelper } from "../utils/typeutil";
 import * as path from "path"
 
 export class ContractProgram {

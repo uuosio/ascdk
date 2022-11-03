@@ -16,7 +16,7 @@
   "type": "module",
   "scripts": {
     "checks": "tsc -p tsconfig.json --noEmit",
-    "build": "rm -rf dist/* && tsc -p tsconfig.json"
+    "build": "rm -rf dist/* && npx esbuild ./src/index.ts --bundle --platform=node --target=esnext --format='esm' --outfile=./dist/index.js"
   },
   "bin": {
     "eosio-asc": "bin/eosio-asc.js"
@@ -25,6 +25,7 @@
     "@types/node": "^18.11.9",
     "@types/typescript": "^2.0.0",
     "assemblyscript": "0.22.0",
+    "esbuild": "^0.15.13",
     "handlebars": "4.7.7",
     "ts-dedent": "^2.2.0",
     "yargs": "^17.4.1"

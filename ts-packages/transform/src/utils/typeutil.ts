@@ -1,8 +1,8 @@
-import { CONFIG } from "../config/compile.js";
-import { FieldDef } from "../contract/elementdef.js";
-import { TypeKindEnum } from "../enums/customtype.js";
-import { Strings } from "./primitiveutil.js";
-import { AstUtil } from "./utils.js";
+import { CONFIG } from "../config/compile"
+import { FieldDef } from "../contract/elementdef";
+import { TypeKindEnum } from "../enums/customtype";
+import { Strings } from "./primitiveutil";
+import { AstUtil } from "./utils";
 
 export class TypeHelper {
 

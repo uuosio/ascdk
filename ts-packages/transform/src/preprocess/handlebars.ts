@@ -1,12 +1,12 @@
 import Handlebars from "handlebars";
-import { CONFIG } from "../config/compile.js";
-import { FieldDef, ParameterNodeDef, ActionFunctionDef, DBIndexFunctionDef } from "../contract/elementdef.js";
-import { TypeKindEnum } from "../enums/customtype.js";
-import { EosioUtils } from "../utils/utils.js";
-import { TypeHelper } from "../utils/typeutil.js";
+import { CONFIG } from "../config/compile";
+import { FieldDef, ParameterNodeDef, ActionFunctionDef, DBIndexFunctionDef } from "../contract/elementdef";
+import { TypeKindEnum } from "../enums/customtype";
+import { EosioUtils } from "../utils/utils";
+import { TypeHelper } from "../utils/typeutil";
 import { TableInterpreter, ClassInterpreter } from "../contract/classdef";
-import { RangeUtil } from "../utils/utils.js";
-import { NamedTypeNodeDef } from "../contract/typedef.js";
+import { RangeUtil } from "../utils/utils";
+import { NamedTypeNodeDef } from "../contract/typedef";
 import { Range, DecoratorNode } from "assemblyscript/dist/assemblyscript.js";
 
 import { CommonFlags } from "assemblyscript/dist/assemblyscript.js";
@@ -14,7 +14,7 @@ import { CommonFlags } from "assemblyscript/dist/assemblyscript.js";
 import { dedent } from "ts-dedent"
 import process from "process"
 
-import { AstUtil } from "../utils/utils.js";
+import { AstUtil } from "../utils/utils";
 import * as path from 'path'
 
 const WIN = process.platform === "win32";

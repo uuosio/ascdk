@@ -2,8 +2,8 @@ import * as assemblyscript from "assemblyscript/dist/assemblyscript.js";
 import { Transform } from "assemblyscript/dist/transform.js"
 import { Program } from "assemblyscript/dist/assemblyscript.js";
 
-import * as preprocess from "./preprocess/index.js";
-import { getContractInfo } from "./contract/contract.js";
+import * as preprocess from "./preprocess";
+import { getContractInfo } from "./contract/contract";
 import * as path from "path";
 import process from "process"
 
@@ -26,6 +26,7 @@ export default class ContractTransform extends Transform {
         const info = getContractInfo(program);
         const out = preprocess.getExtCodeInfo(info);
         process.sourceModifier = out;
+        console.log("++++++++out:", out);
         if (!info.contract) {
             return;
         }
