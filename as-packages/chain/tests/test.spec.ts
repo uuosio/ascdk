@@ -5,9 +5,8 @@ it('test name', async () => {
     let tester = new ChainTester();
     await tester.init();
     try {
-        let ret = await tester.deployContract("hello", "target/testname.wasm", "target/testname.abi");
-        ret = await tester.pushAction("hello", "test", {}, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.deployContract("hello", "target/testname.wasm", "target/testname.abi");
+        await tester.pushAction("hello", "test", {}, {"hello": "active"});
     } finally {
         await tester.free();
     }
@@ -18,9 +17,8 @@ it('test serializer', async () => {
     let tester = new ChainTester();
     await tester.init();
     try {
-        let ret = await tester.deployContract("hello", "target/testserializer.wasm", "target/testserializer.abi");
-        ret = await tester.pushAction("hello", "test1", {}, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.deployContract("hello", "target/testserializer.wasm", "target/testserializer.abi");
+        await tester.pushAction("hello", "test1", {}, {"hello": "active"});
 
         let args = {
             a1: true,
@@ -56,8 +54,7 @@ it('test serializer', async () => {
             a32: ['helloo', 'worldd'],    
         }
 
-        ret = await tester.pushAction("hello", "test2", args, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.pushAction("hello", "test2", args, {"hello": "active"});
     } finally {
         await tester.free();
     }
@@ -67,7 +64,7 @@ it('test action', async () => {
     let tester = new ChainTester();
     await tester.init();
     try {
-        let ret = await tester.deployContract("hello", "target/testaction.wasm", "target/testaction.abi");
+        await tester.deployContract("hello", "target/testaction.wasm", "target/testaction.abi");
 
         let updateauth_args = {
             "account": "hello",
@@ -86,11 +83,10 @@ it('test action', async () => {
             }
         };
 
-        ret = await tester.pushAction("eosio", "updateauth", updateauth_args, {"hello": "active"});
+        await tester.pushAction("eosio", "updateauth", updateauth_args, {"hello": "active"});
         await tester.produceBlock();
 
-        ret = await tester.pushAction("hello", "sayhello", {name: "bob"}, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.pushAction("hello", "sayhello", {name: "bob"}, {"hello": "active"});
         await tester.produceBlock();
 
         let args = {
@@ -100,8 +96,7 @@ it('test action', async () => {
                 a4: [1, 2, 3],
                 a5: ['1.0001 EOS', '2.0002 EOS'],
         };
-        ret = await tester.pushAction("hello", "testgencode", args, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.pushAction("hello", "testgencode", args, {"hello": "active"});
     } finally {
         await tester.free();
     }
@@ -112,9 +107,8 @@ it('test multi-index', async () => {
     let tester = new ChainTester();
     await tester.init();
     try {
-        let ret = await tester.deployContract("hello", "target/testmi.wasm", "target/testmi.abi");
-        ret = await tester.pushAction("hello", "testmi2", {}, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.deployContract("hello", "target/testmi.wasm", "target/testmi.abi");
+        await tester.pushAction("hello", "testmi2", {}, {"hello": "active"});
     } finally {
         await tester.free();
     }
@@ -122,13 +116,11 @@ it('test multi-index', async () => {
     tester = new ChainTester();
     await tester.init();
     try {
-        let ret = await tester.deployContract("hello", "target/testmi.wasm", "target/testmi.abi");
-        ret = await tester.pushAction("hello", "testend", {}, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.deployContract("hello", "target/testmi.wasm", "target/testmi.abi");
+        await tester.pushAction("hello", "testend", {}, {"hello": "active"});
         await tester.produceBlock();
 
-        ret = await tester.pushAction("hello", "testend", {}, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.pushAction("hello", "testend", {}, {"hello": "active"});
     } finally {
         await tester.free();
     }
@@ -139,9 +131,8 @@ it('test asset', async () => {
     let tester = new ChainTester();
     await tester.init();
     try {
-        let ret = await tester.deployContract("hello", "target/testasset.wasm", "target/testasset.abi");
-        ret = await tester.pushAction("hello", "test1", {}, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.deployContract("hello", "target/testasset.wasm", "target/testasset.abi");
+        await tester.pushAction("hello", "test1", {}, {"hello": "active"});
     } finally {
         await tester.free();
     }
@@ -151,14 +142,13 @@ it('test public key', async () => {
     let tester = new ChainTester();
     await tester.init();
     try {
-        let ret = await tester.deployContract("hello", "target/testpublickey.wasm", "target/testpublickey.abi");
+        await tester.deployContract("hello", "target/testpublickey.wasm", "target/testpublickey.abi");
         let args = {
             k1: 'PUB_K1_11DsZ6Lyr1aXpm9aBqqgV4iFJpNbSw5eE9LLTwNAxqjJgXSdB8',
             r1: 'PUB_R1_6FPFZqw5ahYrR9jD96yDbbDNTdKtNqRbze6oTDLntrsANgQKZu',
             webAuthN: 'PUB_WA_8PPYTWYNkRqrveNAoX7PJWDtSqDUp3c29QGBfr6MD9EaLocaPBmsk5QAHWq4vEQt2',
         }
-        ret = await tester.pushAction("hello", "testpub", args, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.pushAction("hello", "testpub", args, {"hello": "active"});
     } finally {
         await tester.free();
     }
@@ -168,15 +158,14 @@ it('test crypto', async () => {
     let tester = new ChainTester();
     await tester.init();
     try {
-        let ret = await tester.deployContract("hello", "target/testcrypto.wasm", "target/testcrypto.abi");
+        await tester.deployContract("hello", "target/testcrypto.wasm", "target/testcrypto.abi");
         let args = {
             'message': 'hello,world',
             'digest': '77df263f49123356d28a4a8715d25bf5b980beeeb503cab46ea61ac9f3320eda',
             'sig': 'SIG_K1_KXdabr1z4G6e2o2xmi7jPhzxH3Lj5igjR5v3q9LY7KbLWyXBZyES748bPzfM2MhQQVsLrouJzXT9YFfw1CywzMVCcNVMGH',
             'pub': 'EOS87J9kj21dvniKhqd7A7QPXRz498ek3H3doXoQVPf4VnHHNtt1M',
         }
-        ret = await tester.pushAction("hello", "test", args, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.pushAction("hello", "test", args, {"hello": "active"});
     } finally {
         await tester.free();
     }
@@ -202,13 +191,12 @@ it('test system', async () => {
     let tester = new ChainTester();
     await tester.init();
     try {
-        let ret = await tester.deployContract("hello", "target/testsystem.wasm", "target/testsystem.abi");
+        await tester.deployContract("hello", "target/testsystem.wasm", "target/testsystem.abi");
         let args = {
             a1: '2021-09-03T04:13:21', // chain.TimePoint,
             a2: '2021-09-03T04:13:21', // chain.TimePointSec,
         }
-        ret = await tester.pushAction("hello", "test", args, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.pushAction("hello", "test", args, {"hello": "active"});
     } finally {
         await tester.free();
     }
@@ -218,12 +206,11 @@ it('test print', async () => {
     let tester = new ChainTester();
     await tester.init();
     try {
-        let ret = await tester.deployContract("hello", "target/testprint.wasm", "target/testprint.abi");
+        await tester.deployContract("hello", "target/testprint.wasm", "target/testprint.abi");
         let args = {
             a1: '0x7fffffffffffffffffffffffffffffff',
         }
-        ret = await tester.pushAction("hello", "test", args, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.pushAction("hello", "test", args, {"hello": "active"});
     } finally {
         await tester.free();
     }
@@ -250,16 +237,14 @@ it('test transaction', async () => {
         }
     };
 
-    let ret = await tester.pushAction("eosio", "updateauth", updateauth_args, {"hello": "active"});
-    expect(ret.except).toBeUndefined();
+    await tester.pushAction("eosio", "updateauth", updateauth_args, {"hello": "active"});
     await tester.produceBlock();
 
     try {
-        let ret = await tester.deployContract("hello", "target/testtransaction.wasm", "target/testtransaction.abi");
+        await tester.deployContract("hello", "target/testtransaction.wasm", "target/testtransaction.abi");
         let args = {
         }
-        ret = await tester.pushAction("hello", "testtx", args, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.pushAction("hello", "testtx", args, {"hello": "active"});
     } finally {
         await tester.free();
     }
@@ -270,12 +255,11 @@ it('test singleton', async () => {
     let tester = new ChainTester();
     await tester.init();
     try {
-        let ret = await tester.deployContract("hello", "target/testsingleton.wasm", "target/testsingleton.abi");
+        await tester.deployContract("hello", "target/testsingleton.wasm", "target/testsingleton.abi");
         let args = {
             
         }
-        ret = await tester.pushAction("hello", "test", args, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.pushAction("hello", "test", args, {"hello": "active"});
     } finally {
         await tester.free();
     }
@@ -285,13 +269,12 @@ it('test nocodegen', async () => {
     let tester = new ChainTester();
     await tester.init();
     try {
-        let ret = await tester.deployContract("hello", "target/testnocodegen.wasm", "target/testnocodegen.abi");
+        await tester.deployContract("hello", "target/testnocodegen.wasm", "target/testnocodegen.abi");
         let args = {
             "a1": {"a": 123},
             "a2": {"aaa": 123, "bbb": 456},            
         }
-        ret = await tester.pushAction("hello", "testnogen", args, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.pushAction("hello", "testnogen", args, {"hello": "active"});
     } finally {
         await tester.free();
     }
@@ -301,10 +284,9 @@ it('test finalize', async () => {
     let tester = new ChainTester();
     await tester.init();
     try {
-        let ret = await tester.deployContract("hello", "target/testfinalize.wasm", "target/testfinalize.abi");
+        await tester.deployContract("hello", "target/testfinalize.wasm", "target/testfinalize.abi");
         let args = {}
-        ret = await tester.pushAction("hello", "test", args, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.pushAction("hello", "test", args, {"hello": "active"});
     } finally {
         await tester.free();
     }
@@ -315,12 +297,11 @@ it('test apply', async () => {
     let tester = new ChainTester();
     await tester.init();
     try {
-        let ret = await tester.deployContract("hello", "target/testapply.wasm", "target/testapply.abi");
+        await tester.deployContract("hello", "target/testapply.wasm", "target/testapply.abi");
         let args = {
             'name': 'alice'
         }
-        ret = await tester.pushAction("hello", "sayhello", args, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.pushAction("hello", "sayhello", args, {"hello": "active"});
     } finally {
         await tester.free();
     }
@@ -331,21 +312,19 @@ it('test binaryextension', async () => {
     let tester = new ChainTester();
     await tester.init();
     try {
-        let ret = await tester.deployContract("hello", "target/testbinaryextension.wasm", "target/testbinaryextension.abi");
+        await tester.deployContract("hello", "target/testbinaryextension.wasm", "target/testbinaryextension.abi");
         let args = {
             'a1': null,
             'a2': '1.0000 EOS',
             'a3': {'a': 1234}
         }
-        ret = await tester.pushAction("hello", "testext", args, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.pushAction("hello", "testext", args, {"hello": "active"});
 
         let args2 = {
             'a1': null,
             'a2': '1.0000 EOS'
         }
-        ret = await tester.pushAction("hello", "testext2", args2, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.pushAction("hello", "testext2", args2, {"hello": "active"});
     } finally {
         await tester.free();
     }
@@ -355,7 +334,7 @@ it('test optional', async () => {
     let tester = new ChainTester();
     await tester.init();
     try {
-        let ret = await tester.deployContract("hello", "target/testoptional.wasm", "target/testoptional.abi");
+        await tester.deployContract("hello", "target/testoptional.wasm", "target/testoptional.abi");
         let args = {
             'a1': null,
             'a2': '1.0000 EOS',
@@ -367,8 +346,7 @@ it('test optional', async () => {
             'a8': null,
             'a9': null,
         }
-        ret = await tester.pushAction("hello", "testopt", args, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.pushAction("hello", "testopt", args, {"hello": "active"});
 
         let args2 = {
             'a1': null,
@@ -376,8 +354,7 @@ it('test optional', async () => {
             'a3': null,
             'a4': '4.0000 EOS',
         }
-        ret = await tester.pushAction("hello", "testopt2", args2, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.pushAction("hello", "testopt2", args2, {"hello": "active"});
     } finally {
         await tester.free();
     }
@@ -388,16 +365,14 @@ it('test variant', async () => {
     let tester = new ChainTester();
     await tester.init();
     try {
-        let ret = await tester.deployContract("hello", "target/testvariant.wasm", "target/testvariant.abi");
+        await tester.deployContract("hello", "target/testvariant.wasm", "target/testvariant.abi");
         let args = {
             a: ['uint64', 10],
             b: ['asset', '1.0000 EOS']    
         }
-        ret = await tester.pushAction("hello", "test", args, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
 
-        ret = await tester.pushAction("hello", "test2", {}, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.pushAction("hello", "test", args, {"hello": "active"});
+        await tester.pushAction("hello", "test2", {}, {"hello": "active"});
 
         let args2 = {
             a1: ["int8", 1],
@@ -423,8 +398,7 @@ it('test variant', async () => {
             a21: ["float128[]", ["0xaafffffffffffffffffffffffffffffa", "0xfffffffffffffffffffffffffffffffb"]],
             a22: ["string[]", ["hello", "world"]],
         }
-        ret = await tester.pushAction("hello", "test3", args2, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.pushAction("hello", "test3", args2, {"hello": "active"});
     } finally {
         await tester.free();
     }
@@ -434,15 +408,14 @@ it('test contract', async () => {
     let tester = new ChainTester();
     await tester.init();
     try {
-        let ret = await tester.deployContract("hello", "./testcontract/testcontract/target/testcontract.wasm", "./testcontract/testcontract/target/testcontract.abi");
+        await tester.deployContract("hello", "./testcontract/testcontract/target/testcontract.wasm", "./testcontract/testcontract/target/testcontract.abi");
         let args = {
             'data1': {'name': 'data1'},
             'data2': {'name': 'data2'},
             'data3': {'name': 'data3'},
             'data4': '1.0000 EOS'
         }
-        ret = await tester.pushAction("hello", "testmydata", args, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.pushAction("hello", "testmydata", args, {"hello": "active"});
     } finally {
         await tester.free();
     }
@@ -452,14 +425,12 @@ it('test block time', async () => {
     let tester = new ChainTester();
     await tester.init();
     try {
-        let ret = await tester.deployContract("hello", "target/testtime.wasm", "target/testtime.abi");
+        await tester.deployContract("hello", "target/testtime.wasm", "target/testtime.abi");
         let args = {}
-        ret = await tester.pushAction("hello", "test", args, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.pushAction("hello", "test", args, {"hello": "active"});
 
         tester.produceBlock(10);
-        ret = await tester.pushAction("hello", "test", args, {"hello": "active"});
-        expect(ret.except).toBeUndefined();           
+        await tester.pushAction("hello", "test", args, {"hello": "active"});
     } finally {
         await tester.free();
     }
@@ -469,14 +440,13 @@ it('test new intrinsics', async () => {
     let tester = new ChainTester();
     await tester.init();
     try {
-        let ret = await tester.deployContract("hello", "target/testnewintrinsics.wasm", "target/testnewintrinsics.abi");
+        await tester.deployContract("hello", "target/testnewintrinsics.wasm", "target/testnewintrinsics.abi");
 
         let info = await tester.getInfo();
         let args = {
             num: info.head_block_num + 1
         }
-        ret = await tester.pushAction("hello", "test", args, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.pushAction("hello", "test", args, {"hello": "active"});
     } finally {
         await tester.free();
     }
@@ -486,10 +456,8 @@ it('test table', async () => {
     let tester = new ChainTester();
     await tester.init();
     try {
-        let ret = await tester.deployContract("hello", "target/testtable.wasm", "target/testtable.abi");
-
-        ret = await tester.pushAction("hello", "testtable", {}, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.deployContract("hello", "target/testtable.wasm", "target/testtable.abi");
+        await tester.pushAction("hello", "testtable", {}, {"hello": "active"});
     } finally {
         await tester.free();
     }

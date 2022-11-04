@@ -18,14 +18,11 @@ it('test hello', async () => {
         console.log(key);
 
         console.log(await tester.getPublicKey(key.private));
-        let ret = await tester.createAccount("hello", "helloworld33", key["public"], key["public"]);
-        expect(ret.except).toBeUndefined();
+        await tester.createAccount("hello", "helloworld33", key["public"], key["public"]);
 
-        ret = await tester.deployContract("hello", "tests/hello.wasm", "tests/hello.abi");
-        expect(ret.except).toBeUndefined();
+        await tester.deployContract("hello", "tests/hello.wasm", "tests/hello.abi");
 
-        ret = await tester.pushAction("hello", "sayhello", {}, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        let ret = await tester.pushAction("hello", "sayhello", {}, {"hello": "active"});
         console.log(ret.elapsed);
         await tester.produceBlock();
 
@@ -36,7 +33,6 @@ it('test hello', async () => {
             permissions: {"hello": "active"},
         };
         ret = await tester.pushActions([action]);
-        expect(ret.except).toBeUndefined();
         // ret = await tester.getAccount("hello");
         // console.log(ret);
     } finally {
@@ -51,7 +47,7 @@ it('test get_table_rows', async () => {
 
     try {
         let rows = await tester.getTableRows(true, "eosio.token", "hello", "accounts", "EOS", "", 1);
-        console.log("++++++++=rows:", rows);
+        // console.log("++++++++=rows:", rows);
         let oldBalance = await tester.getBalance("hello");
         let args = {
             "from": "hello",

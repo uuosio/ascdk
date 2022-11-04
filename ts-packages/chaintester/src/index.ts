@@ -20,6 +20,11 @@ interface Action {
     arguments: object; //dict
 }
 
+interface PushTransactionReturn {
+    except: object;
+    elapsed: number;
+}
+
 export class ChainTester {
     id: number
     constructor() {
@@ -79,7 +84,7 @@ export class ChainTester {
     }
 
     async createAccount(creator: string, account: string, owner_key: string, active_key: string, ram_bytes: number = 5 * 1024 * 1024, stake_net: number = 0, stake_cpu: number = 0) {
-        return this.callMethod('create_account', {
+        let ret = this.callMethod('create_account', {
                 id: this.id,
                 creator,
                 account,
@@ -90,35 +95,71 @@ export class ChainTester {
                 stake_cpu
             }
         );
+
+        let except = ret['except'];
+        if (except) {
+            throw new Error(except);
+        }
+
+        return new Promise((resolve) => {
+                return resolve(ret);
+        })
     }
 
-    async deployContract(account: string, wasm_file: string, abi_file: string) {
+    async deployContract(account: string, wasm_file: string, abi_file: string): Promise<PushTransactionReturn> {
         let wasm = readFileSync(wasm_file);
         let abi = readFileSync(abi_file, {encoding: "utf8"});
 
-        return this.callMethod('deploy_contract', {
+        let ret = this.callMethod('deploy_contract', {
             id: this.id,
             account: account,
             wasm: wasm.toString('hex'),
             abi: abi
         });
+
+        let except = ret['except'];
+        if (except) {
+            throw new Error(except);
+        }
+
+        return new Promise((resolve) => {
+                return resolve(ret);
+        })
     }
 
-    async pushAction(account: string, action: string, args: object, permissions: object) {
-        return this.callMethod('push_action', {
+    async pushAction(account: string, action: string, args: object, permissions: object): Promise<PushTransactionReturn> {
+        let ret = this.callMethod('push_action', {
             id: this.id,
             account: account,
             action: action,
             arguments: JSON.stringify(args),
             permissions: JSON.stringify(permissions)
         });
+
+        let except = ret['except'];
+        if (except) {
+            throw new Error(except);
+        }
+
+        return new Promise((resolve) => {
+            return resolve(ret);
+        })
     }
 
-    async pushActions(actions: Action[]) {
-        return this.callMethod('push_actions', {
+    async pushActions(actions: Action[]): Promise<PushTransactionReturn>{
+        let ret = this.callMethod('push_actions', {
             id: this.id,
             actions: JSON.stringify(actions),
         });
+
+        let except = ret['except'];
+        if (except) {
+            throw new Error(except);
+        }
+
+        return new Promise((resolve) => {
+                return resolve(ret);
+        })
     }
 
     async packActionArgs(contract: string, action: string, action_args: object) {
@@ -146,7 +187,7 @@ export class ChainTester {
             });
         } else {
             let data = ret['rows'][0]['data'];
-            console.log("++++++++++=data:", data);
+            // console.log("++++++++++=data:", data);
             let balance = parseInt("0x" + data.slice(0, 16).match(/../g).reverse().join(''));
             return new Promise((resolve, reject) => {
                 resolve(balance);
