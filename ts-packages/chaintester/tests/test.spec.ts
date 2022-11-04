@@ -2,8 +2,6 @@ import {ChainTester} from "../src/index"
 
 it('test hello', async () => {
     let tester = new ChainTester();
-    await tester.init();
-
     try {
         let info = await tester.getInfo();
         console.log(info.head_block_time);
@@ -43,7 +41,6 @@ it('test hello', async () => {
 
 it('test get_table_rows', async () => {
     let tester = new ChainTester();
-    await tester.init();
 
     try {
         let rows = await tester.getTableRows(true, "eosio.token", "hello", "accounts", "EOS", "", 1);

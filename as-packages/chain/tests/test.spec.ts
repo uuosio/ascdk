@@ -3,7 +3,6 @@ import { BigNumber } from 'bignumber.js';
 
 it('test name', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         await tester.deployContract("hello", "target/testname.wasm", "target/testname.abi");
         await tester.pushAction("hello", "test", {}, {"hello": "active"});
@@ -15,7 +14,6 @@ it('test name', async () => {
 
 it('test serializer', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         await tester.deployContract("hello", "target/testserializer.wasm", "target/testserializer.abi");
         await tester.pushAction("hello", "test1", {}, {"hello": "active"});
@@ -62,7 +60,6 @@ it('test serializer', async () => {
 
 it('test action', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         await tester.deployContract("hello", "target/testaction.wasm", "target/testaction.abi");
 
@@ -105,7 +102,6 @@ it('test action', async () => {
 
 it('test multi-index', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         await tester.deployContract("hello", "target/testmi.wasm", "target/testmi.abi");
         await tester.pushAction("hello", "testmi2", {}, {"hello": "active"});
@@ -114,7 +110,6 @@ it('test multi-index', async () => {
     }
 
     tester = new ChainTester();
-    await tester.init();
     try {
         await tester.deployContract("hello", "target/testmi.wasm", "target/testmi.abi");
         await tester.pushAction("hello", "testend", {}, {"hello": "active"});
@@ -129,7 +124,6 @@ it('test multi-index', async () => {
 
 it('test asset', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         await tester.deployContract("hello", "target/testasset.wasm", "target/testasset.abi");
         await tester.pushAction("hello", "test1", {}, {"hello": "active"});
@@ -140,7 +134,6 @@ it('test asset', async () => {
 
 it('test public key', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         await tester.deployContract("hello", "target/testpublickey.wasm", "target/testpublickey.abi");
         let args = {
@@ -156,7 +149,6 @@ it('test public key', async () => {
 
 it('test crypto', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         await tester.deployContract("hello", "target/testcrypto.wasm", "target/testcrypto.abi");
         let args = {
@@ -189,7 +181,6 @@ it('test crypto', async () => {
 
 it('test system', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         await tester.deployContract("hello", "target/testsystem.wasm", "target/testsystem.abi");
         let args = {
@@ -204,7 +195,6 @@ it('test system', async () => {
 
 it('test print', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         await tester.deployContract("hello", "target/testprint.wasm", "target/testprint.abi");
         let args = {
@@ -219,7 +209,6 @@ it('test print', async () => {
 
 it('test transaction', async () => {
     let tester = new ChainTester();
-    await tester.init();
     let updateauth_args = {
         "account": "hello",
         "permission": "active",
@@ -253,7 +242,6 @@ it('test transaction', async () => {
 
 it('test singleton', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         await tester.deployContract("hello", "target/testsingleton.wasm", "target/testsingleton.abi");
         let args = {
@@ -267,7 +255,6 @@ it('test singleton', async () => {
 
 it('test nocodegen', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         await tester.deployContract("hello", "target/testnocodegen.wasm", "target/testnocodegen.abi");
         let args = {
@@ -282,7 +269,6 @@ it('test nocodegen', async () => {
 
 it('test finalize', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         await tester.deployContract("hello", "target/testfinalize.wasm", "target/testfinalize.abi");
         let args = {}
@@ -295,7 +281,6 @@ it('test finalize', async () => {
 
 it('test apply', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         await tester.deployContract("hello", "target/testapply.wasm", "target/testapply.abi");
         let args = {
@@ -310,7 +295,6 @@ it('test apply', async () => {
 
 it('test binaryextension', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         await tester.deployContract("hello", "target/testbinaryextension.wasm", "target/testbinaryextension.abi");
         let args = {
@@ -332,7 +316,6 @@ it('test binaryextension', async () => {
 
 it('test optional', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         await tester.deployContract("hello", "target/testoptional.wasm", "target/testoptional.abi");
         let args = {
@@ -363,7 +346,6 @@ it('test optional', async () => {
 
 it('test variant', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         await tester.deployContract("hello", "target/testvariant.wasm", "target/testvariant.abi");
         let args = {
@@ -406,7 +388,6 @@ it('test variant', async () => {
 
 it('test contract', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         await tester.deployContract("hello", "./testcontract/testcontract/target/testcontract.wasm", "./testcontract/testcontract/target/testcontract.abi");
         let args = {
@@ -423,7 +404,6 @@ it('test contract', async () => {
 
 it('test block time', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         await tester.deployContract("hello", "target/testtime.wasm", "target/testtime.abi");
         let args = {}
@@ -438,7 +418,6 @@ it('test block time', async () => {
 
 it('test new intrinsics', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         await tester.deployContract("hello", "target/testnewintrinsics.wasm", "target/testnewintrinsics.abi");
 
@@ -454,7 +433,6 @@ it('test new intrinsics', async () => {
 
 it('test table', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         await tester.deployContract("hello", "target/testtable.wasm", "target/testtable.abi");
         await tester.pushAction("hello", "testtable", {}, {"hello": "active"});

@@ -26,14 +26,19 @@ interface PushTransactionReturn {
 }
 
 export class ChainTester {
-    id: number
+    id: number;
+    initialize: Promise<number>;
     constructor() {
         this.id = 0;
+        this.initialize = this.init();
     }
 
     async init() {
-        let ret = await this.newChain();
-        this.id = ret.id;
+        if (this.id == 0) {
+            let ret = await this.newChain();
+            this.id = ret.id;
+        }
+        return new Promise<number>(resolve => resolve(this.id));
     }
 
     sayHello() {
@@ -41,22 +46,36 @@ export class ChainTester {
     }
 
     async callMethod(method: string, args: object) {
+        if (this.id == 0) {
+            if ("id" in args) {
+                await this.initialize;
+                args["id"] = this.id;
+            }
+        }
+        return this.callMethodEx(method, args);
+    }
+
+    async callMethodEx(method: string, args: object) {
         const response = await fetch(`http://127.0.0.1:9093/api/${method}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(args)
-            });
-            return response.json();   
+        });
+        return response.json();   
     }
 
     async newChain() {
-        return this.callMethod('new_chain', {});
+        return this.callMethodEx('new_chain', {});
     }
 
     async free() {
-        return this.callMethod('free_chain', {id: this.id});
+        if (this.id == 0) {
+            return;
+        }
+        await this.callMethod('free_chain', {id: this.id});
+        this.id = 0;
     }
 
     async produceBlock(nextBlockSkipSeconds: number=0) {

@@ -7,7 +7,6 @@ async function deployContract(tester: ChainTester, testName: string) {
 
 it('test finalizer', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         let ret = await deployContract(tester, "finalizer");
         expect(ret.except).toBeUndefined();
@@ -21,7 +20,6 @@ it('test finalizer', async () => {
 
 it('test singleton', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         let ret = await deployContract(tester, "singleton");
         expect(ret.except).toBeUndefined();
@@ -38,7 +36,6 @@ it('test singleton', async () => {
 
 it('test notify', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         let ret = await tester.deployContract("hello", "./notify/target/sender.wasm", "./notify/target/sender.abi");
         expect(ret.except).toBeUndefined();
@@ -56,7 +53,6 @@ it('test notify', async () => {
 
 it('test codegeneration', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         let ret = await deployContract(tester, "codegeneration");
         expect(ret.except).toBeUndefined();
@@ -71,7 +67,6 @@ it('test codegeneration', async () => {
 
 it('test counter', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         let ret = await deployContract(tester, "counter");
         expect(ret.except).toBeUndefined();
@@ -88,7 +83,6 @@ it('test counter', async () => {
 
 it('test action', async () => {
     let tester = new ChainTester();
-    await tester.init();
     let updateauth_args = {
         "account": "hello",
         "permission": "active",
@@ -126,7 +120,6 @@ it('test action', async () => {
 
 it('test hello', async () => {
     let tester = new ChainTester();
-    await tester.init();
     try {
         let ret = await deployContract(tester, "hello");
         expect(ret.except).toBeUndefined();
