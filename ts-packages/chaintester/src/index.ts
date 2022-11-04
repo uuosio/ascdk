@@ -13,6 +13,13 @@ function parse_ret(ret) {
     }
 }
 
+interface Action {
+    account: string;
+    action: string;
+    permissions: object; //dict like {"hello": "active"}
+    arguments: object; //dict
+}
+
 export class ChainTester {
     id: number
     constructor() {
@@ -104,6 +111,13 @@ export class ChainTester {
             action: action,
             arguments: JSON.stringify(args),
             permissions: JSON.stringify(permissions)
+        });
+    }
+
+    async pushActions(actions: Action[]) {
+        return this.callMethod('push_actions', {
+            id: this.id,
+            actions: JSON.stringify(actions),
         });
     }
 

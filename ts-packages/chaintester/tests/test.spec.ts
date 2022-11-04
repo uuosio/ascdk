@@ -27,6 +27,16 @@ it('test hello', async () => {
         ret = await tester.pushAction("hello", "sayhello", {}, {"hello": "active"});
         expect(ret.except).toBeUndefined();
         console.log(ret.elapsed);
+        await tester.produceBlock();
+
+        let action = {
+            account: "hello",
+            action: "sayhello",
+            arguments: {},
+            permissions: {"hello": "active"},
+        };
+        ret = await tester.pushActions([action]);
+        expect(ret.except).toBeUndefined();
         // ret = await tester.getAccount("hello");
         // console.log(ret);
     } finally {
