@@ -1,5 +1,3 @@
-console.log("++++++++++++++++hello++++++++++");
-
 /**
  * @license
  * Copyright 2020 Daniel Wirtz / The AssemblyScript Authors.
@@ -32,49 +30,25 @@ console.log("++++++++++++++++hello++++++++++");
 
 /* global BUNDLE_VERSION, BUNDLE_LIBRARY, BUNDLE_DEFINITIONS */
 
-const fs = require("fs");
-const path = require("path");
-const process = require("process"); // ensure shim
-const utf8 = require("eosio-asc/dist/cli/util/utf8");
-const colorsUtil = require("eosio-asc/dist/cli/util/colors");
-const optionsUtil = require("eosio-asc/dist/cli/util/options");
-const mkdirp = require("eosio-asc/dist/cli/util/mkdirp");
-const find = require("eosio-asc/dist/cli//util/find");
-// import binaryen from "binaryen"
+import fs from "fs";
+import process from "process"; // ensure shim
+import utf8 from "eosio-asc/dist/cli/util/utf8.cjs";
+import colorsUtil from "eosio-asc/dist/cli/util/colors.cjs";
+import optionsUtil from "eosio-asc/dist/cli/util/options.cjs";
+import mkdirp from "eosio-asc/dist/cli/util/mkdirp.cjs";
+import find from "eosio-asc/dist/cli//util/find.cjs";
 
-var binaryen;
-// import('binaryen').then(mod => {
-//         binaryen = mod;
-//         console.log(binaryen);
-//     }
-// ).catch(e => {
-//     console.log("+++++++++e:", e);
-// });
+import path from "path";
+import {fileURLToPath} from "url";
+import { createRequire } from "module";
+import binaryen from "binaryen";
+import * as assemblyscriptjs from "assemblyscript/dist/assemblyscript.js"
 
-var assemblyscriptjs;
-// import('./path/to/mod.mjs').then(mod => {
-//         assemblyscriptjs = mod;
-//         console.log(assemblyscriptjs);
-//     }
-// ).catch(e => {
-//     console.log("+++++++++e:", e);
-// });
+const require = createRequire(import.meta.url);
+var assemblyscript_package_dir = path.dirname(path.dirname(require.resolve('assemblyscript/dist/assemblyscript.js')));
 
-// await new Promise(resolve => setTimeout(resolve, 1000));
-
-// import("assemblyscript/dist/assemblyscript")
-// console.log('++++++assemblyscriptjs:', assemblyscriptjs);
-
-// const loadModules = require("eosio-asc/dist/utils/loader.js");
-// let [binaryen, assemblyscriptjs] = loadModules();
-
-// const binaryen = loader.loadBinaryen();
-// const assemblyscriptjs = loader.loadAssemblyscript();
-// const binaryen = global.binaryen || (global.binaryen = require("binaryen"));
-
-const dynrequire = typeof __webpack_require__ === "function"
-    ? __non_webpack_require__
-    : require;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const WIN = process.platform === "win32";
 const EOL = WIN ? "\r\n" : "\n";
@@ -96,44 +70,46 @@ function setupExtension(ext) {
 const defaultExtension = setupExtension(".ts");
 
 function readJson(fileName) {
-//    let filePath = path.join(path.dirname(require.resolve(`assemblyscript`)), fileName);
-    let filePath = "/Users/newworld/dev/as/ascdk/ts-packages/transform/src/asc/asc.json";//fileName;
+    let filePath = path.join(assemblyscript_package_dir, fileName)
     let jsonStr = fs.readFileSync(filePath);
     return JSON.parse(jsonStr);
 }
 
 // Proxy Binaryen's ready event
-Object.defineProperty(exports, "ready", {
-    get() { return binaryen.ready; }
-});
+// Object.defineProperty(exports, "ready", {
+//     get() { return binaryen.ready; }
+// });
+
+export const ready = () => {
+    return binaryen.ready;
+}
 
 // Emscripten adds an `uncaughtException` listener to Binaryen that results in an additional
 // useless code fragment on top of an actual error. suppress this:
 if (process.removeAllListeners) process.removeAllListeners("uncaughtException");
 
 // Use distribution files if present, otherwise run the sources directly.
-function loadAssemblyScriptJS() {
+async function loadAssemblyScriptJS() {
     var exports;
     try {
         // note that this case will always trigger in recent node.js versions for typical installs
         // see: https://nodejs.org/api/packages.html#packages_self_referencing_a_package_using_its_name
         exports = assemblyscriptjs;
     } catch (e) {
-        console.log(e);
         try { // `asc` on the command line (unnecessary in recent node)
-            exports = dynrequire("assemblyscript/dist/assemblyscript.js");
+            exports = await import("assemblyscript/dist/assemblyscript.js");
         } catch (e) {
             try { // `asc` on the command line without dist files (unnecessary in recent node)
-                dynrequire("ts-node").register({
+                await import("ts-node").register({
                     project: path.join(__dirname, "../..", "tsconfig.json"),
                     skipIgnore: true,
                     compilerOptions: { target: "ES2016" }
                 });
-                dynrequire("../src/glue/js");
-                exports = dynrequire("../src");
+                await import("../src/glue/js");
+                exports = await import("../src");
             } catch (e_ts) {
                 try { // `require("dist/asc.js")` in explicit browser tests
-                    exports = dynrequire("./assemblyscript");
+                    exports = await import("./assemblyscript");
                 } catch (e) {
                     throw Error(e_ts.stack + "\n---\n" + e.stack);
                 }
@@ -173,7 +149,7 @@ function __wrap(ptrOrObj, wrapperClass) {
 
 var assemblyscript, __newString, __getString, __pin, __unpin, __collect;
 
-function loadAssemblyScript() {
+async function loadAssemblyScript() {
     const wasmArg = process.argv.findIndex(arg => arg == "--wasm");
     if (~wasmArg) {
         let binaryPath = process.argv[wasmArg + 1];
@@ -185,7 +161,7 @@ function loadAssemblyScript() {
         __unpin = assemblyscript.__unpin;
         __collect = assemblyscript.__collect;
     } else {
-        assemblyscript = loadAssemblyScriptJS();
+        assemblyscript = await loadAssemblyScriptJS();
         __newString = str => str;
         __getString = ptr => ptr;
         __pin = ptr => ptr;
@@ -193,31 +169,34 @@ function loadAssemblyScript() {
         __collect = incremental => undefined;
     }
 }
-loadAssemblyScript();
+await loadAssemblyScript();
 
 /** Whether this is a webpack bundle or not. */
-exports.isBundle = typeof BUNDLE_VERSION === "string";
+export const isBundle = typeof BUNDLE_VERSION === "string";
 
 /** AssemblyScript version. */
-exports.version = exports.isBundle ? BUNDLE_VERSION : "0.0.1";//readJson("package.json").version;
-// exports.version = exports.isBundle ? BUNDLE_VERSION : dynrequire("assemblyscript/package.json").version;
+export const version = isBundle ? BUNDLE_VERSION : readJson("package.json").version;
+
+function readOptionsJson() {
+    let jsonStr = fs.readFileSync(path.join(__dirname, "options.json"));
+    return JSON.parse(jsonStr);
+}
 
 /** Available CLI options. */
-exports.options = readJson("asc.json");
-// exports.options = require("assemblyscript/cli/asc.json");
+export const export_options = readOptionsJson();
 
 /** Prefix used for library files. */
-exports.libraryPrefix = "";//__getString(assemblyscript.LIBRARY_PREFIX.valueOf());
+export const libraryPrefix = __getString(assemblyscript.LIBRARY_PREFIX.valueOf());
 
 /** Default Binaryen optimization level. */
-exports.defaultOptimizeLevel = 3;
+export const defaultOptimizeLevel = 3;
 
 /** Default Binaryen shrink level. */
-exports.defaultShrinkLevel = 1;
+export const defaultShrinkLevel = 1;
 
 /** Bundled library files. */
-exports.libraryFiles = exports.isBundle ? BUNDLE_LIBRARY : (() => { // set up if not a bundle
-    const libDir = path.join(__dirname, "../../../../node_modules/assemblyscript", "std", "assembly");
+export const libraryFiles = isBundle ? BUNDLE_LIBRARY : (() => { // set up if not a bundle
+    const libDir = path.join(assemblyscript_package_dir, "std", "assembly");
     const bundled = {};
     find
         .files(libDir, defaultExtension.re_except_d)
@@ -228,9 +207,9 @@ exports.libraryFiles = exports.isBundle ? BUNDLE_LIBRARY : (() => { // set up if
 })();
 
 /** Bundled definition files. */
-exports.definitionFiles = exports.isBundle ? BUNDLE_DEFINITIONS : (() => { // set up if not a bundle
+export const definitionFiles = isBundle ? BUNDLE_DEFINITIONS : (() => { // set up if not a bundle
     const readDefinition = name => fs.readFileSync(
-        path.join(__dirname, "../../../../node_modules/assemblyscript", "std", name, "index" + defaultExtension.ext_d),
+        path.join(assemblyscript_package_dir, "std", name, "index" + defaultExtension.ext_d),
         "utf8"
     );
     return {
@@ -240,7 +219,7 @@ exports.definitionFiles = exports.isBundle ? BUNDLE_DEFINITIONS : (() => { // se
 })();
 
 /** Convenience function that parses and compiles source strings directly. */
-exports.compileString = (sources, options) => {
+export const compileString = (sources, options) => {
     if (typeof sources === "string") sources = { ["input" + defaultExtension.ext]: sources };
     const output = Object.create({
         stdout: createMemoryStream(),
@@ -252,7 +231,7 @@ exports.compileString = (sources, options) => {
     ];
     Object.keys(options || {}).forEach(key => {
         var val = options[key];
-        var opt = exports.options[key];
+        var opt = export_options[key];
         if (opt && opt.type === "b") {
             if (val) argv.push("--" + key);
         } else {
@@ -262,7 +241,7 @@ exports.compileString = (sources, options) => {
             else argv.push("--" + key, String(val));
         }
     });
-    exports.main(argv.concat(Object.keys(sources)), {
+    main(argv.concat(Object.keys(sources)), {
         stdout: output.stdout,
         stderr: output.stderr,
         readFile: name => Object.prototype.hasOwnProperty.call(sources, name) ? sources[name] : null,
@@ -272,18 +251,8 @@ exports.compileString = (sources, options) => {
     return output;
 };
 
-exports.setExports = (_binaryen, _assemblyscript) => {
-    binaryen = _binaryen;
-    assemblyscript = _assemblyscript;//loadAssemblyScriptJS();
-    __newString = str => str;
-    __getString = ptr => ptr;
-    __pin = ptr => ptr;
-    __unpin = ptr => undefined;
-    __collect = incremental => undefined;
-}
-
 /** Runs the command line utility using the specified arguments array. */
-exports.main = function main(argv, options, callback) {
+export const main = async function main(argv, options, callback) {
     let transform_phase = argv.find(x => {
         return x == "--transform";
     });
@@ -297,7 +266,7 @@ exports.main = function main(argv, options, callback) {
 
     // Bundle semantic version
     let bundleMinorVersion = 0, bundleMajorVersion = 0, bundlePatchVersion = 0;
-    const versionParts = (exports.version || "").split(".");
+    const versionParts = (version || "").split(".");
     if (versionParts.length === 3) {
         bundleMajorVersion = parseInt(versionParts[0]) | 0;
         bundleMinorVersion = parseInt(versionParts[1]) | 0;
@@ -317,17 +286,16 @@ exports.main = function main(argv, options, callback) {
     if (!stderr) throw Error("'options.stderr' must be specified");
 
     // Parse command line options but do not populate option defaults yet
-    const optionsResult = optionsUtil.parse(argv, exports.options, false);
+    const optionsResult = optionsUtil.parse(argv, export_options, false);
     let opts = optionsResult.options;
     argv = optionsResult.arguments;
 
-    if (opts.noColors) {
-        colorsUtil.stdout.supported =
-            colorsUtil.stderr.supported = false;
-    } else {
-        colorsUtil.stdout = colorsUtil.from(stdout);
-        colorsUtil.stderr = colorsUtil.from(stderr);
-    }
+    // if (opts.noColors) {
+    //     colorsUtil.stdout.supported = colorsUtil.stderr.supported = false;
+    // } else {
+    //     colorsUtil.stdout = colorsUtil.from(stdout);
+    //     colorsUtil.stderr = colorsUtil.from(stderr);
+    // }
 
     // Check for unknown options
     const unknownOpts = optionsResult.unknown;
@@ -355,7 +323,7 @@ exports.main = function main(argv, options, callback) {
 
     // Just print the version if requested
     if (opts.version) {
-        stdout.write("Version " + exports.version + EOL);
+        stdout.write("Version " + version + EOL);
         return callback(null);
     }
 
@@ -378,7 +346,6 @@ exports.main = function main(argv, options, callback) {
     let asconfigDir = path.dirname(asconfigPath);
     let asconfig = getAsconfig(asconfigFile, asconfigDir, readFile);
     let asconfigHasEntries = asconfig != null && Array.isArray(asconfig.entries) && asconfig.entries.length;
-    console.log("+++++++++asc", argv, asconfigHasEntries, asconfig);
 
     // Print the help message if requested or no source files are provided
     if (opts.help || (!argv.length && !asconfigHasEntries)) {
@@ -396,7 +363,7 @@ exports.main = function main(argv, options, callback) {
             "",
             color.white("OPTIONS"),
         ].concat(
-            optionsUtil.help(exports.options, 24, EOL)
+            optionsUtil.help(export_options, 24, EOL)
         ).join(EOL) + EOL);
         return callback(null);
     }
@@ -417,13 +384,13 @@ exports.main = function main(argv, options, callback) {
         if (asconfig.targets) {
             const targetOptions = asconfig.targets[target];
             if (targetOptions) {
-                opts = optionsUtil.merge(exports.options, opts, targetOptions, asconfigDir);
+                opts = optionsUtil.merge(export_options, opts, targetOptions, asconfigDir);
             }
         }
         // Merge general options
         const generalOptions = asconfig.options;
         if (generalOptions) {
-            opts = optionsUtil.merge(exports.options, opts, generalOptions, asconfigDir);
+            opts = optionsUtil.merge(export_options, opts, generalOptions, asconfigDir);
         }
 
         // Append entries
@@ -447,7 +414,7 @@ exports.main = function main(argv, options, callback) {
     }
 
     // Populate option defaults once user-defined options are set
-    optionsUtil.addDefaults(exports.options, opts);
+    optionsUtil.addDefaults(export_options, opts);
 
     // If showConfig print options and exit
     if (opts.showConfig) {
@@ -545,8 +512,8 @@ exports.main = function main(argv, options, callback) {
     var optimizeLevel = 0;
     var shrinkLevel = 0;
     if (opts.optimize) {
-        optimizeLevel = exports.defaultOptimizeLevel;
-        shrinkLevel = exports.defaultShrinkLevel;
+        optimizeLevel = defaultOptimizeLevel;
+        shrinkLevel = defaultShrinkLevel;
     }
     if (typeof opts.optimizeLevel === "number") optimizeLevel = opts.optimizeLevel;
     if (typeof opts.shrinkLevel === "number") shrinkLevel = opts.shrinkLevel;
@@ -575,7 +542,8 @@ exports.main = function main(argv, options, callback) {
                 tsNodeRegistered = true;
             }
             try {
-                transforms.push(dynrequire(dynrequire.resolve(filename, { paths: [baseDir, process.cwd()] })));
+                const { default: ContractTransform } = await import(filename)
+                transforms.push(ContractTransform);
             } catch (e) {
                 return callback(e);
             }
@@ -622,12 +590,12 @@ exports.main = function main(argv, options, callback) {
     }
 
     // Parse library files
-    Object.keys(exports.libraryFiles).forEach(libPath => {
+    Object.keys(libraryFiles).forEach(libPath => {
         if (libPath.indexOf("/") >= 0) return; // in sub-directory: imported on demand
         stats.parseCount++;
         stats.parseTime += measure(() => {
-            let textPtr = __pin(__newString(exports.libraryFiles[libPath]));
-            let pathPtr = __newString(exports.libraryPrefix + libPath + extension.ext);
+            let textPtr = __pin(__newString(libraryFiles[libPath]));
+            let pathPtr = __newString(libraryPrefix + libPath + extension.ext);
             assemblyscript.parse(program, textPtr, pathPtr, false);
             __unpin(textPtr);
         });
@@ -652,10 +620,10 @@ exports.main = function main(argv, options, callback) {
                 let libText = readFile(libPath, libDir);
                 if (libText === null) return callback(Error("Library file '" + libPath + "' not found."));
                 stats.parseCount++;
-                exports.libraryFiles[libPath.replace(extension.re, "")] = libText;
+                libraryFiles[libPath.replace(extension.re, "")] = libText;
                 stats.parseTime += measure(() => {
                     let textPtr = __pin(__newString(libText));
-                    let pathPtr = __newString(exports.libraryPrefix + libPath);
+                    let pathPtr = __newString(libraryPrefix + libPath);
                     assemblyscript.parse(program, textPtr, pathPtr, false);
                     __unpin(textPtr);
                 });
@@ -673,8 +641,8 @@ exports.main = function main(argv, options, callback) {
         var sourceText = null; // text reported back to the compiler
         var sourcePath = null; // path reported back to the compiler
 
-        const libraryPrefix = exports.libraryPrefix;
-        const libraryFiles = exports.libraryFiles;
+        // const libraryPrefix = libraryPrefix;
+        // const libraryFiles = libraryFiles;
 
         // Try file.ext, file/index.ext, file.d.ext
         if (!internalPath.startsWith(libraryPrefix)) {
@@ -798,10 +766,9 @@ exports.main = function main(argv, options, callback) {
 
     // Include runtime before entry files so its setup runs first
     {
-        console.log("+++++++++opts:", opts);
         let runtimeName = String(opts.runtime);
         let runtimePath = "rt/index-" + runtimeName;
-        let runtimeText = exports.libraryFiles[runtimePath];
+        let runtimeText = libraryFiles[runtimePath];
         if (runtimeText == null) {
             runtimePath = runtimeName;
             runtimeText = readFile(runtimePath + extension.ext, baseDir);
@@ -1270,7 +1237,7 @@ function isObject(arg) {
     return toString.call(arg) === "[object Object]";
 }
 
-function getAsconfig(file, baseDir, readFile) {
+export function getAsconfig(file, baseDir, readFile) {
     const contents = readFile(file, baseDir);
     const location = path.join(baseDir, file);
     if (!contents) return null;
@@ -1312,10 +1279,9 @@ function getAsconfig(file, baseDir, readFile) {
     return config;
 }
 
-exports.getAsconfig = getAsconfig;
 
 /** Checks diagnostics emitted so far for errors. */
-function checkDiagnostics(program, stderr, reportDiagnostic, checkAll) {
+export function checkDiagnostics(program, stderr, reportDiagnostic, checkAll) {
     var numErrors = 0;
     do {
         let diagnosticPtr = assemblyscript.nextDiagnostic(program);
@@ -1363,10 +1329,8 @@ function checkDiagnostics(program, stderr, reportDiagnostic, checkAll) {
     return numErrors;
 }
 
-exports.checkDiagnostics = checkDiagnostics;
-
 /** Creates an empty set of stats. */
-function createStats() {
+export function createStats() {
     return {
         readTime: 0,
         readCount: 0,
@@ -1389,17 +1353,13 @@ function createStats() {
     };
 }
 
-exports.createStats = createStats;
-
 /** Measures the execution time of the specified function.  */
-function measure(fn) {
+export function measure(fn) {
     const start = process.hrtime();
     fn();
     const times = process.hrtime(start);
     return times[0] * 1e9 + times[1];
 }
-
-exports.measure = measure;
 
 function pad(str, len) {
     while (str.length < len) str = " " + str;
@@ -1407,14 +1367,12 @@ function pad(str, len) {
 }
 
 /** Formats a high resolution time to a human readable string. */
-function formatTime(time) {
+export function formatTime(time) {
     return time ? (time / 1e6).toFixed(3) + " ms" : "n/a";
 }
 
-exports.formatTime = formatTime;
-
 /** Formats and prints out the contents of a set of stats. */
-function printStats(stats, output) {
+export function printStats(stats, output) {
     const format = (time, count) => pad(formatTime(time), 12) + "  n=" + count;
     (output || process.stdout).write([
         "I/O Read   : " + format(stats.readTime, stats.readCount),
@@ -1430,14 +1388,12 @@ function printStats(stats, output) {
     ].join(EOL) + EOL);
 }
 
-exports.printStats = printStats;
-
 var allocBuffer = typeof global !== "undefined" && global.Buffer
     ? global.Buffer.allocUnsafe || (len => new global.Buffer(len))
     : len => new Uint8Array(len);
 
 /** Creates a memory stream that can be used in place of stdout/stderr. */
-function createMemoryStream(fn) {
+export function createMemoryStream(fn) {
     var stream = [];
     stream.write = function (chunk) {
         if (fn) fn(chunk);
@@ -1470,10 +1426,8 @@ function createMemoryStream(fn) {
     return stream;
 }
 
-exports.createMemoryStream = createMemoryStream;
-
 /** Compatible TypeScript compiler options for syntax highlighting etc. */
-exports.tscOptions = {
+export const tscOptions = {
     alwaysStrict: true,
     noImplicitAny: true,
     noImplicitReturns: true,

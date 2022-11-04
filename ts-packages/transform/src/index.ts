@@ -7,6 +7,8 @@ import { getContractInfo } from "./contract/contract";
 import * as path from "path";
 import process from "process"
 
+export { APIOptionImpl } from "./ascoption"
+
 // TODO: refactor to ts code
 export default class ContractTransform extends Transform {
     afterInitialize(program: Program): void {
@@ -14,6 +16,7 @@ export default class ContractTransform extends Transform {
         // TODO: add a config file
         let source = program.sources[0];
         // TODO: make sure the semantics
+        console.log("++++++++afterInitialize:");
         for (let src of program.sources) {
             if (
                 src.sourceKind === 1 &&
@@ -26,7 +29,6 @@ export default class ContractTransform extends Transform {
         const info = getContractInfo(program);
         const out = preprocess.getExtCodeInfo(info);
         process.sourceModifier = out;
-        console.log("++++++++out:", out);
         if (!info.contract) {
             return;
         }

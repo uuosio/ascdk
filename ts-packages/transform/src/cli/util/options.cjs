@@ -4,7 +4,7 @@
  */
 
 const path = require("path");
-const colorsUtil = require("./colors");
+const colorsUtil = require("./colors.cjs");
 
 // type | meaning
 // -----|---------------

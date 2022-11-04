@@ -11,12 +11,6 @@
     "type": "b",
     "alias": "h"
   },
-  "noColors": {
-    "category": "General",
-    "description": "Disables terminal colors.",
-    "type": "b",
-    "default": false
-  },
   "config": {
     "category": "General",
     "description": "Configuration file to apply. CLI arguments take precedence.",
@@ -25,7 +19,7 @@
   },
   "target": {
     "category": "General",
-    "description": "Target configuration to use. Defaults to 'release'.",
+    "description": "Configuration file target to use. Defaults to 'release'.",
     "type": "s",
     "cliOnly": true
   },
@@ -70,45 +64,30 @@
 
   "outFile": {
     "category": "Output",
-    "description": "Specifies the output file. File extension indicates format.",
+    "description": "Specifies the WebAssembly output file (.wasm).",
     "type": "s",
     "alias": "o",
     "isPath": true
   },
-  "binaryFile": {
-    "category": "Output",
-    "description": "Specifies the binary output file (.wasm).",
-    "type": "s",
-    "alias": "b",
-    "isPath": true
-  },
   "textFile": {
     "category": "Output",
-    "description": "Specifies the text output file (.wat).",
+    "description": "Specifies the WebAssembly text output file (.wat).",
     "type": "s",
     "alias": "t",
     "isPath": true
   },
-  "jsFile": {
+  "bindings": {
     "category": "Output",
-    "description": "Specifies the JavaScript (via wasm2js) output file (.js).",
-    "type": "s",
-    "alias": "j",
-    "isPath": true
-  },
-  "idlFile": {
-    "category": "Output",
-    "description": "Specifies the WebIDL output file (.webidl).",
-    "type": "s",
-    "alias": "i",
-    "isPath": true
-  },
-  "tsdFile": {
-    "category": "Output",
-    "description": "Specifies the TypeScript definition output file (.d.ts).",
-    "type": "s",
-    "alias": "d",
-    "isPath": true
+    "description": [
+      "Specifies the bindings to generate (.js + .d.ts).",
+      "",
+      "  esm  JavaScript bindings & typings for ESM integration.",
+      "  raw  Like esm, but exports just the instantiate function.",
+      "       Useful where modules are meant to be instantiated",
+      "       multiple times or non-ESM imports must be provided."
+    ],
+    "type": "S",
+    "alias": "b"
   },
 
   "sourceMap": {
@@ -158,7 +137,7 @@
   },
   "zeroFilledMemory": {
     "category": "Features",
-    "description": "Assume that imported memory is zero filled. Requires importMemory.",
+    "description": "Assume imported memory is zeroed. Requires importMemory.",
     "type": "b",
     "default": false
   },
@@ -173,6 +152,15 @@
     "description": "Exports the function table as 'table'.",
     "type": "b",
     "default": false
+  },
+  "exportStart": {
+    "category": "Features",
+    "description": [
+      "Exports the start function using the specified name instead",
+      "of calling it implicitly. Useful to obtain the exported memory",
+      "before executing any code accessing it."
+    ],
+    "type": "s"
   },
   "runtime": {
     "category": "Features",
@@ -190,7 +178,10 @@
   },
   "exportRuntime": {
     "category": "Features",
-    "description": "Exports the runtime helpers (__new, __collect etc.).",
+    "description": [
+      "Always exports the runtime helpers (__new, __collect, __pin etc.).",
+      "Automatically determined when generation of --bindings is enabled."
+    ],
     "type": "b",
     "default": false
   },
@@ -199,35 +190,30 @@
     "description": [
       "Overrides the stack size. Only relevant for incremental GC",
       "or when using a custom runtime that requires stack space.",
-      "Defaults to 0 without and to 16384 with incremental GC."
+      "Defaults to 0 without and to 32768 with incremental GC."
     ],
     "default": 0,
     "type": "i"
-  },
-  "explicitStart": {
-    "category": "Features",
-    "description": "Exports an explicit '_start' function to call.",
-    "type": "b",
-    "default": false
   },
   "enable": {
     "category": "Features",
     "description": [
       "Enables WebAssembly features being disabled by default.",
       "",
-      " nontrapping-f2i     Non-trapping float to integer ops.",
-      " bulk-memory         Bulk memory operations.",
-      " simd                SIMD types and operations.",
       " threads             Threading and atomic operations.",
+      " simd                SIMD types and operations.",
       " reference-types     Reference types and operations.",
       " gc                  Garbage collection (WIP).",
+      " stringref           String reference types.",
       ""
     ],
     "TODO_doesNothingYet": [
       " exception-handling  Exception handling.",
       " tail-calls          Tail call operations.",
       " multi-value         Multi value types.",
-      " memory64            Memory64 operations."
+      " memory64            Memory64 operations.",
+      " relaxed-simd        Relaxed SIMD operations.",
+      " extended-const      Extended const expressions."
     ],
     "type": "S",
     "mutuallyExclusive": "disable"
@@ -239,6 +225,8 @@
       "",
       " mutable-globals     Mutable global imports and exports.",
       " sign-extension      Sign-extension operations",
+      " nontrapping-f2i     Non-trapping float to integer ops.",
+      " bulk-memory         Bulk memory operations.",
       ""
     ],
     "type": "S",
@@ -276,7 +264,7 @@
 
   "transform": {
     "category": "API",
-    "description": "Specifies the path to a custom transform to 'require'.",
+    "description": "Specifies the path to a custom transform to load.",
     "type": "S",
     "isPath": true,
     "useNodeResolution": true
@@ -297,7 +285,7 @@
   },
   "runPasses": {
     "category": "Binaryen",
-    "description":  [
+    "description": [
       "Specifies additional Binaryen passes to run after other",
       "optimizations, if any. See: Binaryen/src/passes/pass.cpp"
     ],
@@ -315,10 +303,10 @@
     "type": "s",
     "default": "."
   },
-  "extension": {
-    "description": "Specifies an alternative file extension to use.",
-    "type": "s",
-    "cliOnly": true
+  "noColors": {
+    "description": "Disables terminal colors.",
+    "type": "b",
+    "default": false
   },
   "noUnsafe": {
     "description": [
@@ -327,6 +315,13 @@
     ],
     "type": "b",
     "default": false
+  },
+  "disableWarning": {
+    "description": [
+      "Disables warnings matching the given diagnostic code.",
+      "If no diagnostic code is given, all warnings are disabled."
+    ],
+    "type": "I"
   },
   "noEmit": {
     "description": "Performs compilation as usual but does not emit code.",
@@ -338,8 +333,8 @@
     "type": "b",
     "default": false
   },
-  "measure": {
-    "description": "Prints measuring information on I/O and compile times.",
+  "stats": {
+    "description": "Prints statistics on I/O and compile times.",
     "type": "b",
     "default": false
   },
@@ -365,16 +360,6 @@
     "type": "S",
     "isPath": true
   },
-  "traceResolution": {
-    "description": "Enables tracing of package resolution.",
-    "type": "b",
-    "default": false
-  },
-  "listFiles": {
-    "description": "Lists files to be compiled and exits.",
-    "type": "b",
-    "default": false
-  },
   "wasm": {
     "description": "Uses the specified Wasm binary of the compiler.",
     "type": "s"
@@ -397,5 +382,6 @@
   "-O2z": { "value": { "optimizeLevel": 2, "shrinkLevel": 2 } },
   "-O3z": { "value": { "optimizeLevel": 3, "shrinkLevel": 2 } },
   "-Ospeed": { "value": { "optimizeLevel": 3, "shrinkLevel": 0 } },
-  "-Osize": { "value": { "optimizeLevel": 0, "shrinkLevel": 2, "converge": true } }
+  "-Osize": { "value": { "optimizeLevel": 0, "shrinkLevel": 2, "converge": true } },
+  "--measure": { "value": { "stats": true } }
 }

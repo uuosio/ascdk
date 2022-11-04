@@ -1,4 +1,4 @@
-#!/usr/bin/env ts-node-transpile-only
+#!/usr/bin/env node
 
 const tailArgs = process.argv.indexOf("--");
 if (~tailArgs) {
@@ -9,14 +9,21 @@ if (~tailArgs) {
         ),
         { stdio: "inherit" }
     );
-    return;
+    process.exit(1);
 }
+// await new Promise(r => setTimeout(r, 2000));
+// console.log("++++++++go here!");
 
-try { require("source-map-support").install(); } catch (e) { }
+try { (await import("source-map-support")).install(); } catch (e) { }
 
-const asc = module.exports = require("eosio-asc/src/asc/asc.js");
+export const asc = await import("eosio-asc/src/asc/asc.js");
 // const asc = module.exports = require("assemblyscript/cli/asc.js");
-const path = require("path");
+import { APIOptionImpl } from "eosio-asc/dist/index.js"
+
+import path from "path";
+import yargs from 'yargs'
+import { hideBin } from 'yargs/helpers'
+
 const ARGS = [
     "--initialMemory", "1",
     "--runtime", "stub",
@@ -26,52 +33,51 @@ const ARGS = [
     "--disable", "sign-extension",
     "--disable", "nontrapping-f2i",
     "--disable", "bulk-memory",
-    "--transform", "eosio-asc/index.ts"
+    "--transform", "eosio-asc/dist/index.js"
 ]
 
 if (true) {
     console.log("Build Starting ······")
-    asc.ready.then(() => {
-        let args = require('yargs').argv;
-        if (args['_'] && args['_'][0] == "gencode") {
-            let inputFile = args['_'][1];
-            let outputDir = args['o'];
-            args = args['_'].slice(1).concat(ARGS);
-            process.exitCode = asc.main(args);
-            const ascOption = require("eosio-asc/src/ascoption.js");
-            let apiOption = new ascOption.APIOptionImpl();
-            apiOption.writeGeneratedFile(outputDir);
-            return;
+    var args = yargs(hideBin(process.argv)).argv
+    if (args['_'].length > 0 && args['_'][0] == "gencode") {
+        if (args['_'].length == 1) {
+            console.log('usage: eosio-asc gencode [input file] -o [output dir]');
+            process.exit(1);
         }
+        let inputFile = args['_'][1];
+        let outputDir = args['o'];
+        args = args['_'].slice(1).concat(ARGS);
+        process.exitCode = await asc.main(args);
+        let apiOption = new APIOptionImpl();
+        console.log('+++++++outputDir:', outputDir);
+        apiOption.writeGeneratedFile(outputDir);
+        process.exit(0);
+    }
 
-        args = process.argv.slice(2).concat(ARGS);
-        process.exitCode = asc.main(args);
-        // if (process.exitCode != 0) {
-        //     return process.exitCode;
-        // }
-        asc.ready.then(()=> {
-            args.pop(), args.pop();
-            let sourcePath = process.argv[2];
-            if (sourcePath) {
-                console.log("Build progressing. Generating target files ······")
-                let dirname = path.dirname(sourcePath);
-                let targetName = sourcePath.split("/").slice(-1)[0].replace(/.ts$/, '')
-                let wasmPath = path.join(dirname, "target", `${targetName}.wasm`);
-                let wastPath = path.join(dirname, "target", `${targetName}.wast`);
-                args.push("-b", wasmPath)
-                args.push("-t", wastPath)
-                const ascOption = require("eosio-asc/src/ascoption.js");
-                let apiOption = new ascOption.APIOptionImpl();
-                try {
-                    process.exitCode = asc.main(args, apiOption);
-                } catch(e) {
-                    throw e
-                } finally {
-                    apiOption.writeExtensionFile();
-                }
-                console.log(`Build Done. Targets generated. Target directory: ${path.join(dirname, "target")}.`);
-            }
-        });
-        return process.exitCode
-    });
+    args = process.argv.slice(2).concat(ARGS);
+    process.exitCode = await asc.main(args);
+    // if (process.exitCode != 0) {
+    //     return process.exitCode;
+    // }
+    args.pop(), args.pop();
+    let sourcePath = process.argv[2];
+    if (sourcePath) {
+        console.log("Build progressing. Generating target files ······")
+        let dirname = path.dirname(sourcePath);
+        let targetName = sourcePath.split("/").slice(-1)[0].replace(/.ts$/, '')
+        let wasmPath = path.join(dirname, "target", `${targetName}.wasm`);
+        let wastPath = path.join(dirname, "target", `${targetName}.wast`);
+        args.push("-b", wasmPath)
+        args.push("-t", wastPath)
+        let apiOption = new APIOptionImpl();
+        try {
+            process.exitCode = await asc.main(args, apiOption);
+        } catch(e) {
+            throw e
+        } finally {
+            apiOption.writeExtensionFile();
+        }
+        console.log(`Build Done. Targets generated. Target directory: ${path.join(dirname, "target")}.`);
+    }
+    process.exit(process.exitCode);
 }

@@ -16,7 +16,7 @@
   "type": "module",
   "scripts": {
     "checks": "tsc -p tsconfig.json --noEmit",
-    "build": "rm -rf dist/* && npx esbuild ./src/index.ts --bundle --platform=node --target=esnext --format='esm' --external:assemblyscript/dist/assemblyscript.js --external:assemblyscript/dist/asc.js --external:binaryen --external:long --outfile=./dist/index.js"
+    "build": "rm -rf dist/* && npx esbuild ./src/index.ts --bundle --platform=node --target=esnext --format='esm' --external:assemblyscript/dist/assemblyscript.js --external:assemblyscript/dist/asc.js --external:binaryen --external:long --outfile=./dist/index.js && cp -r ./src/cli ./dist/cli"
   },
   "bin": {
     "eosio-asc": "bin/eosio-asc.js"
