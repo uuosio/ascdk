@@ -66,7 +66,8 @@ export class ContractProgram {
         values = this.program.elementsByName.values();
         for (let it = values.next(); !it.done; it = values.next() ) {
             let element = it.value;
-            if (element.name == "apply" && 
+            //filter out ~lib/bindings/dom/Reflect.apply
+            if (!element.internalName.startsWith('~lib') && element.name == "apply" &&
                     element.kind == ElementKind.FunctionPrototype &&
                     (element.flags && CommonFlags.Export) == CommonFlags.Export) {
                 this.hasApplyFunc = true;
