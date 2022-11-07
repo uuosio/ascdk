@@ -83,7 +83,7 @@
   },
   "devDependencies": {
     "@types/bignumber.js": "^5.0.0",
-    "@types/jest": "^28.1.6",
+    "@types/jest": "^28.1.8",
     "assemblyscript": "^0.22.0",
     "bignumber": "^1.1.0",
     "jest": "^28.1.3",

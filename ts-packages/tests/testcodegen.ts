@@ -54,7 +54,6 @@ class MyContract extends Contract {
         ${a2},
         ${a3},
         ${a4},
-        ${a5},
         \n`);
     }
 
@@ -69,15 +68,14 @@ class MyContract extends Contract {
         a7: MyData,
         a8: BinaryExtension<Asset>,
     ): void {
-        check(a6.value == new Asset(10000, new Symbol("EOS", 4)), "bad value");
+        check(a6.value! == new Asset(10000, new Symbol("EOS", 4)), "bad value");
         check(a7.name == "alice", "bad value");
-        check(a8.value == new Asset(120000, new Symbol("EOS", 4)), "bad value");
+        check(a8.value! == new Asset(120000, new Symbol("EOS", 4)), "bad value");
         printString(`+++test gen code
         ${a1},
         ${a2},
         ${a3},
         ${a4},
-        ${a5},
         \n`);
     }
 

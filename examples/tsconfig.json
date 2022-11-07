@@ -1,3 +1,18 @@
 {
-  "extends": "assemblyscript/std/assembly.json"
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+
+    "baseUrl": ".",
+    "types": ["jest", "node", "assembly"],
+    "typeRoots": ["./node_modules/@types", "../node_modules/assemblyscript/std/types"]
+  },
+  "exclude": ["node_modules", "**/*.spec.ts", "**/*.test.ts"],
+  "include": ["./**/*.ts"]
 }

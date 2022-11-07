@@ -31,10 +31,10 @@ class MyContract extends Contract {
         // a1={"data": {"name":"hello", "asset": "1.0000 EOS"}},
         // a2={"a": 123, "b": {"data": {"name":"hello", "asset": "1.0000 EOS"}}}
         check(a1.data.name == "hello", "test 1");
-        check(a1.data.asset == new Asset(10000, new Symbol("EOS", 4)), "test 2");
+        check(a1.data.asset! == new Asset(10000, new Symbol("EOS", 4)), "test 2");
 
         check(a2.a == 123, "test 3");
         check(a2.b.data.name == "hello", "test 4");
-        check(a2.b.data.asset == new Asset(10000, new Symbol("EOS", 4)), "test 5");
+        check(a2.b.data.asset! == new Asset(10000, new Symbol("EOS", 4)), "test 5");
     }
 }

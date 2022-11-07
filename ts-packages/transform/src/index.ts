@@ -16,7 +16,6 @@ export default class ContractTransform extends Transform {
         // TODO: add a config file
         let source = program.sources[0];
         // TODO: make sure the semantics
-        console.log("++++++++afterInitialize:");
         for (let src of program.sources) {
             if (
                 src.sourceKind === 1 &&

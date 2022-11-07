@@ -25,7 +25,7 @@ class MyContract extends Contract {
         a3: BinaryExtension<MyData>,
     ): void {
         check(!a1.value, "bad value 1");
-        check(a2.value == new Asset(10000, new Symbol("EOS", 4)), "bad value 2");
+        check(a2.value! == new Asset(10000, new Symbol("EOS", 4)), "bad value 2");
         check(a3.value!.a == 1234, "bad value 3");
 
         let a5 = new BinaryExtension<Asset>(new Asset(10000, new Symbol("EOS", 4)));
@@ -43,7 +43,7 @@ class MyContract extends Contract {
         a3: BinaryExtension<MyData>,
     ): void {
         check(!a1.value, "bad value 1");
-        check(a2.value == new Asset(10000, new Symbol("EOS", 4)), "bad value 2");
+        check(a2.value! == new Asset(10000, new Symbol("EOS", 4)), "bad value 2");
         check(!a3.value, "bad value 3");
         printString("testext2 done!");
     }

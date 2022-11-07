@@ -21,7 +21,7 @@
   "scripts": {
     "test": "yarn gencode && yarn build && ipyeos -m pytest -s -x tests/testmixinproxy.py",
     "gencode": "npx eosio-asc gencode ./tables.ts -o generated && npx eosio-asc gencode ./structs.ts -o generated",
-    "build": "npx eosio-asc ./mixinproxy.ts"
+    "build": "yarn gencode && npx eosio-asc ./mixinproxy.ts"
   },
   "dependencies": {
     "@assemblyscript/loader": "^0.22.0",

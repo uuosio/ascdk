@@ -11,8 +11,8 @@
 
     "baseUrl": ".",
     "types": ["jest", "node", "assembly"],
-    "typeRoots": ["./node_modules/@types", "../../../node_modules/assemblyscript/std/types"]
+    "typeRoots": ["./node_modules/@types", "../../node_modules/assemblyscript/std/types"]
   },
   "exclude": ["node_modules", "**/*.spec.ts", "**/*.test.ts"],
-  "include": ["*.ts"]
+  "include": ["./**/*.ts"]
 }
