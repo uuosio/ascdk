@@ -67,7 +67,7 @@ if (true) {
         let targetName = sourcePath.split("/").slice(-1)[0].replace(/.ts$/, '')
         let wasmPath = path.join(dirname, "target", `${targetName}.wasm`);
         let wastPath = path.join(dirname, "target", `${targetName}.wast`);
-        args.push("-b", wasmPath)
+        args.push("-o", wasmPath)
         args.push("-t", wastPath)
         let apiOption = new APIOptionImpl();
         try {
