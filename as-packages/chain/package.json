@@ -26,9 +26,9 @@
     "test:ci": "asp 2> /dev/null"
   },
   "dependencies": {
-    "@assemblyscript/loader": "^0.22.0"
   },
   "devDependencies": {
+    "@assemblyscript/loader": "^0.22.0",
     "assemblyscript": "^0.22.0"
   },
   "files": [

@@ -1,16 +1,3 @@
 {
-    "compilerOptions": {
-        "skipLibCheck": true,
-        "target": "es6",
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "allowJs": true,
-        "resolveJsonModule": true,
-        "esModuleInterop": true,
-
-        "types": ["jest", "node"],
-        "typeRoots": ["./types", "./node_modules/@types"],
-    },
-    "exclude": ["node_modules", "**/*.spec.ts", "**/*.test.ts"],
-    "include": ["./src/**/*.tsx", "./src/**/*.ts"]
+  "extends": "assemblyscript/std/assembly.json"
 }
