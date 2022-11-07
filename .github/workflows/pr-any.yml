@@ -26,8 +26,6 @@ jobs:
       - name: Install dependencies
         run: |
           python3 -m pip install -U pip setuptools
-          python3 -m pip install pytest
-          python3 -m pip install pyeoskit
       - name: Install EOS test framework
         if: ${{ matrix.os != 'windows-latest' }}
         run: |
@@ -39,4 +37,4 @@ jobs:
       - name: ${{ matrix.step }}
         run: |
           yarn install --immutable | grep -v 'YN0013'
-          PYTHON_SHARED_LIB_PATH=${{ env.pythonLocation }}/lib/libpython3.9.so yarn ${{ matrix.step }}
+          yarn ${{ matrix.step }}
