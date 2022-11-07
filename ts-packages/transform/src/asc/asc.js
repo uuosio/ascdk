@@ -470,18 +470,15 @@ export const main = async function main(argv, options, callback) {
     if (opts.use) {
         let aliases = opts.use;
         for (let i = 0, k = aliases.length; i < k; ++i) {
-            let part = aliases[i];
-            let p = part.indexOf("=");
-            if (p < 0) return callback(Error("Global alias '" + part + "' is invalid."));
-            let alias = part.substring(0, p).trim();
-            let name = part.substring(p + 1).trim();
-            if (!alias.length) return callback(Error("Global alias '" + part + "' is invalid."));
-            {
-                let aliasPtr = __pin(__newString(alias));
-                let namePtr = __newString(name);
-                // assemblyscript.setGlobalAlias(compilerOptions, aliasPtr, namePtr);
-                __unpin(aliasPtr);
-            }
+        let part = aliases[i];
+        let p = part.indexOf("=");
+        if (p < 0) return prepareResult(Error(`Global alias '${part}' is invalid.`));
+        let alias = part.substring(0, p).trim();
+        let name = part.substring(p + 1).trim();
+        if (!alias.length) {
+            return prepareResult(Error(`Global alias '${part}' is invalid.`));
+        }
+        assemblyscript.addGlobalAlias(compilerOptions, alias, name);
         }
     }
 
