@@ -129,16 +129,15 @@ export class ChainTester {
         let wasm = readFileSync(wasm_file);
         let abi = readFileSync(abi_file, {encoding: "utf8"});
 
-        let ret = this.callMethod('deploy_contract', {
+        let ret = await this.callMethod('deploy_contract', {
             id: this.id,
             account: account,
             wasm: wasm.toString('hex'),
             abi: abi
         });
-
         let except = ret['except'];
         if (except) {
-            throw new Error(except);
+            throw new Error(JSON.stringify(except, null, 2));
         }
 
         return new Promise((resolve) => {
