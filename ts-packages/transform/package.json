@@ -1,11 +1,10 @@
 {
   "name": "eosio-asc",
-  "version": "0.2.75",
+  "version": "0.3.0",
   "description": "Build tool for building AssemblyScript projects",
   "main": "./dist/index.js",
   "author": "learnforpractice <learnforpractice@gmail.com>",
   "license": "MIT",
-  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/uuosio/ascdk.git"
