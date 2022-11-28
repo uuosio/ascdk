@@ -25,11 +25,10 @@ import { Encoder, Decoder, Packer } from "../../serializer";
 @lazy const HEX_CHARS = '0123456789abcdef';
 
 export class u128 implements Packer {
-  pack(): u8[] {
-    let enc = new Encoder(16);
+  pack(enc: Encoder): usize {
     enc.packNumber<u64>(this.lo);
     enc.packNumber<u64>(this.hi);
-    return enc.getBytes();
+    return this.getSize();
   }
 
   unpack(data: u8[]): usize {

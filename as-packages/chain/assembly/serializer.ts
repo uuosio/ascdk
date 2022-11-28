@@ -3,15 +3,14 @@ import { memcpy } from "./env";
 import { check } from "./system";
 
 export interface Packer {
-    pack(): u8[];
+    pack(enc: Encoder): usize;
     unpack(data: u8[]): usize;
     getSize(): usize;
 }
 
 class Template implements Packer {
-    pack(): u8[] {
-        let enc = new Encoder(this.getSize());
-        return enc.getBytes();
+    pack(enc: Encoder): usize {
+        return 0;
     }
 
     unpack(data: u8[]): usize {
@@ -45,19 +44,29 @@ export class Encoder {
         }
     }
 
-    pack(ser: Packer): usize {
-        let raw = ser.pack();
-        return this.packBytes(raw);
+    getPos(): usize {
+        return this.pos;
     }
 
-    packBytes(arr: u8[]): usize {
+    @inline
+    public static pack<T extends Packer>(packer: T): u8[] {
+        let enc = new Encoder(packer.getSize());
+        packer.pack(enc);
+        return enc.getBytes();
+    }
+    
+    pack<T extends Packer>(ser: T): usize {
+        return ser.pack(this);
+    }
+
+    writeBytes(arr: u8[]): usize {
         let dataSize = arr.length;
         this.checkPos(dataSize);
         let src = arr.dataStart;
         let pos = this.pos;
-        this.incPos(dataSize);
         let dest = this.buf.dataStart + pos;
         memcpy(dest, src, dataSize);
+        this.incPos(dataSize);
         return dataSize;
     }
 

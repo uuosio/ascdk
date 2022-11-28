@@ -8,12 +8,12 @@ export const optionalTpl = `
 
     {{{ExtractClassBody range}}}
 
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldSize = enc.getPos();
         {{#each fields}}
         {{{optionalSerialize .}}}
         {{/each}}
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {

@@ -3,6 +3,7 @@ import {
     Asset,
     Optional,
     BinaryExtension,
+    Encoder,
 
     Contract,
     check,
@@ -29,7 +30,7 @@ class MyContract extends Contract {
         check(a3.value!.a == 1234, "bad value 3");
 
         let a5 = new BinaryExtension<Asset>(new Asset(10000, new Symbol("EOS", 4)));
-        let data = a5.pack();
+        let data = Encoder.pack(a5);
         let a6 = new BinaryExtension<Asset>();
         a6.unpack(data);
         check(a5.value! == a6.value!, "bad value 4");

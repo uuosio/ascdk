@@ -14,12 +14,12 @@ class {{methodName}}Action implements _chain.Packer {
     ) {
     }
 
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldPos = enc.getPos();
         {{#each parameters}}
         {{{actionParameterSerialize .}}}
         {{/each}}
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {

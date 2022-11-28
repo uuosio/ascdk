@@ -25,8 +25,8 @@ class Checksum implements Packer {
         env.memcpy(this.data.dataStart, value.dataStart, this.getSize());
     }
 
-    pack(): u8[] {
-        return this.data.slice(0);
+    pack(enc: Encoder): usize {
+        return enc.writeBytes(this.data)
     }
 
     unpack(data: u8[]): usize {
@@ -55,19 +55,19 @@ class Checksum implements Packer {
 }
 
 export class Checksum160 extends Checksum {
-    getSize(): usize {
+    override getSize(): usize {
         return 20;
     }
 }
 
 export class Checksum256 extends Checksum {
-    getSize(): usize {
+    override getSize(): usize {
         return 32;
     }
 }
 
 export class Checksum512 extends Checksum {
-    getSize(): usize {
+    override getSize(): usize {
         return 64;
     }
 }
@@ -82,8 +82,8 @@ export class ECCPublicKey implements Packer {
         this.data = data;
     }
 
-    pack(): u8[] {
-        return this.data!;
+    pack(enc: Encoder): usize {
+        return enc.writeBytes(this.data!);
     }
 
     unpack(data: u8[]): usize {
@@ -131,8 +131,8 @@ export class ECCUncompressedPublicKey implements Packer {
         this.data = data;
     }
 
-    pack(): u8[] {
-        return this.data!;
+    pack(enc: Encoder): usize {
+        return enc.writeBytes(this.data!);
     }
 
     unpack(data: u8[]): usize {
@@ -181,12 +181,12 @@ export class WebAuthNPublicKey implements Packer {
     public userPresence: UserPresence;
     public rpid: string = "";
 
-    pack(): u8[] {
-        let enc = new Encoder(this.getSize());
-        enc.pack(this.key!);
+    pack(enc: Encoder): usize {
+        let oldPos = enc.getPos();
+        this.key!.pack(enc);
         enc.packNumber<u8>(<u8>this.userPresence);
         enc.packString(this.rpid);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
 
     unpack(data: u8[]): usize {
@@ -227,15 +227,15 @@ export class WebAuthNPublicKey implements Packer {
 
     @inline @operator('>')
     static gt(a: WebAuthNPublicKey, b: WebAuthNPublicKey): bool {
-        let rawA = a.pack();
-        let rawB = b.pack();
+        let rawA = Encoder.pack(a);
+        let rawB = Encoder.pack(b);
         return Utils.bytesCmp(rawA, rawB) > 0;
     }
 
     @inline @operator('<')
     static lt(a: WebAuthNPublicKey, b: WebAuthNPublicKey): bool {
-        let rawA = a.pack();
-        let rawB = b.pack();
+        let rawA = Encoder.pack(a);
+        let rawB = Encoder.pack(b);
         return Utils.bytesCmp(rawA, rawB) < 0;
     }
 }
@@ -261,12 +261,12 @@ export class PublicKey implements Packer {
     }
 
     toString(): string {
-        let raw = this.pack();
+        let raw = Encoder.pack(this);
         return Utils.bytesToHex(raw);
     }
 
-    pack(): u8[] {
-        let enc = new Encoder(this.getSize());
+    pack(enc: Encoder): usize {
+        let oldPos = enc.getPos();
         enc.packNumber<u8>(<u8>this.keyType);
         if (this.keyType == PublicKeyType.K1) {
             enc.pack(this.k1!);
@@ -277,7 +277,7 @@ export class PublicKey implements Packer {
         } else {
             check(false, "invalid Public Key type");
         }
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
 
     unpack(data: u8[]): usize {
@@ -367,8 +367,8 @@ export class PublicKey implements Packer {
 export class Signature implements Packer {
     data!: u8[];
 
-    pack(): u8[] {
-        return this.data.slice(0);
+    pack(enc: Encoder): usize {
+        return enc.writeBytes(this.data);
     }
 
     unpack(data: u8[]): usize {
@@ -403,8 +403,8 @@ export class Signature implements Packer {
  */
 
 export function recoverKey(digest: Checksum256, sig: Signature): PublicKey {
-    let rawDigest = digest.pack();
-    let rawSig = sig.pack();
+    let rawDigest = Encoder.pack(digest);
+    let rawSig = Encoder.pack(sig);
     let rawPub = new Array<u8>(34);
     let ret = env.recover_key(rawDigest.dataStart, rawSig.dataStart, rawSig.length, rawPub.dataStart, rawPub.length);
     check(ret == 34, "bad recover_key return");
@@ -414,15 +414,15 @@ export function recoverKey(digest: Checksum256, sig: Signature): PublicKey {
 }
 
 export function assertRecoverKey(digest: Checksum256, sig: Signature, pub: PublicKey): void {
-    let rawDigest = digest.pack();
-    let rawSig = sig.pack();
-    let rawPub = pub.pack();
+    let rawDigest = Encoder.pack(digest);
+    let rawSig = Encoder.pack(sig);
+    let rawPub = Encoder.pack(pub);
     env.assert_recover_key(rawDigest.dataStart, rawSig.dataStart, rawSig.length, rawPub.dataStart, rawPub.length);
 }
 
 export function k1Recover(sig: Signature, digest: Checksum256): ECCUncompressedPublicKey | null {
-    let rawSig = sig.pack();
-    let rawDigest = digest.pack();
+    let rawSig = Encoder.pack(sig);
+    let rawDigest = Encoder.pack(digest);
     let rawPub = new Array<u8>(65);
     let ret = env.k1_recover(rawSig.dataStart + 1, 65, rawDigest.dataStart, rawDigest.length, rawPub.dataStart, rawPub.length);
     if (ret == -1) {
@@ -506,19 +506,19 @@ export function blake2(rounds: u32, state: u8[], msg: u8[], t0_offset: u8[], t1_
  * Assert Hashing
  */
 export function assertRipemd160(data: u8[], hash: Checksum160): void {
-    env.assert_ripemd160(data.dataStart, data.length, hash.pack().dataStart);
+    env.assert_ripemd160(data.dataStart, data.length, Encoder.pack(hash).dataStart);
 }
 
 export function assertSha256(data: u8[], hash: Checksum256): void {
-    env.assert_sha256(data.dataStart, data.length, hash.pack().dataStart);
+    env.assert_sha256(data.dataStart, data.length, Encoder.pack(hash).dataStart);
 }
 
 export function assertSha1(data: u8[], hash: Checksum160): void {
-    env.assert_sha1(data.dataStart, data.length, hash.pack().dataStart);
+    env.assert_sha1(data.dataStart, data.length, Encoder.pack(hash).dataStart);
 }
 
 export function assertSha512(data: u8[], hash: Checksum512): void {
-    env.assert_sha512(data.dataStart, data.length, hash.pack().dataStart);
+    env.assert_sha512(data.dataStart, data.length, Encoder.pack(hash).dataStart);
 }
 
 export function assertSha3(data: u8[], hash: Checksum256): void {
@@ -540,10 +540,11 @@ export class AltBn128G1 implements Packer {
         public y: U256 = new U256()
     ) {}
 
-    pack(): u8[] {
-        const rawX = this.x.toBytes(true);
-        const rawY = this.y.toBytes(true)
-        return rawX.concat(rawY);
+    pack(enc: Encoder): usize {
+        let oldPos = enc.getPos();
+        enc.writeBytes(this.x.toBytes(true));
+        enc.writeBytes(this.y.toBytes(true));
+        return enc.getPos() - oldPos;
     }
 
     packLE(): u8[] {
@@ -571,7 +572,7 @@ export class AltBn128G1 implements Packer {
     }
 
     toString(): string {
-        return Utils.bytesToHex(this.pack())
+        return Utils.bytesToHex(Encoder.pack(this));
     }
 
     @inline @operator('==')
@@ -593,12 +594,13 @@ export class AltBn128G2 implements Packer {
         public y2: U256 = new U256()
     ) {}
 
-    pack(): u8[] {
-        const rawX1 = this.x1.toBytes(true);
-        const rawX2 = this.x2.toBytes(true);
-        const rawY1 = this.y1.toBytes(true);
-        const rawY2 = this.y2.toBytes(true);
-        return rawX1.concat(rawX2).concat(rawY1).concat(rawY2);
+    pack(enc: Encoder): usize {
+        let oldPos = enc.getPos();
+        enc.writeBytes(this.x1.toBytes(true));
+        enc.writeBytes(this.x2.toBytes(true));
+        enc.writeBytes(this.y1.toBytes(true));
+        enc.writeBytes(this.y2.toBytes(true));
+        return enc.getPos() - oldPos;
     }
 
     packLE(): u8[] {
@@ -632,7 +634,7 @@ export class AltBn128G2 implements Packer {
     }
 
     toString(): string {
-        return Utils.bytesToHex(this.pack())
+        return Utils.bytesToHex(Encoder.pack(this))
     }
 
     @inline @operator('==')
@@ -654,10 +656,11 @@ export class AltBn128Pair implements Packer {
         public g2: AltBn128G2 = new AltBn128G2(),
     ) {}
 
-    pack(): u8[] {
-        const rawG1 = this.g1.pack();
-        const rawG2 = this.g2.pack();
-        return rawG1.concat(rawG2);
+    pack(enc: Encoder): usize {
+        let oldPos = enc.getPos();
+        this.g1.pack(enc);
+        this.g2.pack(enc);
+        return enc.getPos() - oldPos;
     }
 
     packLE(): u8[] {
@@ -686,8 +689,8 @@ export class AltBn128Pair implements Packer {
 }
 
 export function bn128Add(op1: AltBn128G1, op2: AltBn128G1): AltBn128G1 {
-    const rawOp1 = op1.pack();
-    const rawOp2 = op2.pack();
+    const rawOp1 = Encoder.pack(op1);
+    const rawOp2 = Encoder.pack(op2);
     const rawResult = new Array<u8>(64);
     const ret = env.alt_bn128_add(rawOp1.dataStart, rawOp1.length, rawOp2.dataStart, rawOp2.length, rawResult.dataStart, rawResult.length)
     check(ret == 0, "bn128Add error");
@@ -697,7 +700,7 @@ export function bn128Add(op1: AltBn128G1, op2: AltBn128G1): AltBn128G1 {
 }
 
 export function bn128Mul(g1: AltBn128G1, scalar: U256): AltBn128G1 {
-    const rawG1 = g1.pack();
+    const rawG1 = Encoder.pack(g1);
     const rawScalar = scalar.toBytes(true);
     const rawResult = new Array<u8>(64);
     const ret = env.alt_bn128_mul(rawG1.dataStart, rawG1.length, rawScalar.dataStart, rawScalar.length, rawResult.dataStart, rawResult.length)
@@ -710,7 +713,7 @@ export function bn128Mul(g1: AltBn128G1, scalar: U256): AltBn128G1 {
 export function bn128Pair(pairs: AltBn128Pair[]): boolean {
     let input: u8[] = []
     for (let i=0; i<pairs.length; i++) {
-        input = input.concat(pairs[i].pack())
+        input = input.concat(Encoder.pack(pairs[i]));
     }
     const ret = env.alt_bn128_pair(input.dataStart, input.length)
     check(ret != -1, "bn128Pair error");

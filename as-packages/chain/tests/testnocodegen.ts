@@ -11,10 +11,9 @@ import * as _chain from "as-chain";
 class MyData implements Packer {
     
     public a: u64
-    pack(): u8[] {
-        let enc = new Encoder(this.getSize());
+    pack(enc: Encoder): usize {
         enc.packNumber<u64>(this.a);
-        return enc.getBytes();
+        return this.getSize();
     }
     
     unpack(data: u8[]): usize {
@@ -47,11 +46,10 @@ class MyTable implements _chain.MultiIndexValue {
         this.bbb = bbb;
     }
 
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: Encoder): usize {
         enc.packNumber<u64>(this.aaa);
         enc.packNumber<u64>(this.bbb);
-        return enc.getBytes();
+        return this.getSize();
     }
     
     unpack(data: u8[]): usize {

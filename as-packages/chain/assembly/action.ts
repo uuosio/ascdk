@@ -66,11 +66,10 @@ export class PermissionLevel implements Packer {
         public permission: Name = Name.fromString("active")) {
     }
 
-    pack(): u8[] {
-        let enc = new Encoder(8*2);
+    pack(enc: Encoder): usize {
         enc.packName(this.actor);
         enc.packName(this.permission);
-        return enc.getBytes();
+        return this.getSize();
     }
 
     unpack(data: u8[]): usize {
@@ -98,24 +97,24 @@ export class Action implements Packer{
         name: Name,
         authorization: PermissionLevel[],
         packer: Packer): Action {
-        return new Action(account, name, authorization, packer.pack());
+        return new Action(account, name, authorization, Encoder.pack(packer));
     }
 
     send(): void {
-        let data = this.pack();
+        let data = Encoder.pack(this);
         env.send_inline(data.dataStart, data.length);
     }
 
-    pack(): u8[] {
-        let enc = new Encoder(this.getSize());
+    pack(enc: Encoder): usize {
+        let oldPos = enc.getPos();
         enc.packName(this.account);
         enc.packName(this.name);
         enc.packLength(this.authorization.length);
         for (let i = 0; i<this.authorization.length; i++) {
-            enc.pack(this.authorization[i]);
+            this.authorization[i].pack(enc);
         }
         enc.packNumberArray<u8>(this.data);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
 
     unpack(data: u8[]): usize {
@@ -154,14 +153,14 @@ export class GetCodeHashResult implements Packer {
         public vmVersion: u8 = 0
     ) {}
 
-    pack(): u8[] {
-        let enc = new Encoder(this.getSize());
-        enc.pack(this.structVersion);
+    pack(enc: Encoder): usize {
+        let oldPos = enc.getPos()
+        this.structVersion.pack(enc);
         enc.packNumber<u64>(this.codeSequence);
-        enc.pack(this.codeHash);
+        this.codeHash.pack(enc);
         enc.packNumber<u8>(this.vmType);
         enc.packNumber<u8>(this.vmVersion);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {

@@ -16,11 +16,11 @@ class KeyWeight implements _chain.Packer {
     ){
 
     }
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldPos = enc.getPos();
         enc.pack(this.key);
         enc.packNumber<u16>(this.weight);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {
@@ -53,11 +53,11 @@ export class PermissionLevelWeight implements _chain.Packer {
     ){
 
     }
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldPos = enc.getPos();
         enc.pack(this.permission);
         enc.packNumber<u16>(this.weight);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {
@@ -86,11 +86,11 @@ export class WaitWeight implements _chain.Packer {
     
 	waitSec: u16
 	weight:  u16
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldPos = enc.getPos();
         enc.packNumber<u16>(this.waitSec);
         enc.packNumber<u16>(this.weight);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {
@@ -119,13 +119,13 @@ export class Authority implements _chain.Packer {
         public waits: WaitWeight[] = new Array<WaitWeight>()
         ) {
     }
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldPos = enc.getPos();
         enc.packNumber<u32>(this.threshold);
         enc.packObjectArray(this.keys);
         enc.packObjectArray(this.accounts);
         enc.packObjectArray(this.waits);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {
@@ -199,13 +199,13 @@ export class NewAccount implements _chain.Packer {
         public owner: Authority = new Authority(),
         public active: Authority = new Authority(),
     ){}
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldPos = enc.getPos();
         enc.pack(this.creator);
         enc.pack(this.name);
         enc.pack(this.owner);
         enc.pack(this.active);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {
@@ -256,12 +256,12 @@ export class BuyRamBytes implements _chain.Packer {
         public newAccount: Name = new Name(),
         public ramBytes: u32 = 0,
     ){}
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldPos = enc.getPos();
         enc.pack(this.creator);
         enc.pack(this.newAccount);
         enc.packNumber<u32>(this.ramBytes);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {
@@ -319,8 +319,8 @@ export class TxRequest implements _chain.Packer {
         public extra:     u8[] = [],
         public timestamp: u64 = 0
     ){}
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldPos = enc.getPos();
         enc.packNumber<u64>(this.nonce);
         enc.pack(this.contract);
         enc.pack(this.process);
@@ -330,7 +330,7 @@ export class TxRequest implements _chain.Packer {
         enc.pack(this.amount);
         enc.packNumberArray<u8>(this.extra)
         enc.packNumber<u64>(this.timestamp);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {
@@ -404,10 +404,10 @@ export class ErrorMessage implements _chain.Packer {
     constructor(
         public err: string = ""
     ){}
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldPos = enc.getPos();
         enc.packString(this.err);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {

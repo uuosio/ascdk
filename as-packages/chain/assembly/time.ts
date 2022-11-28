@@ -22,10 +22,9 @@ export class Microseconds implements Packer {
         return this._count.toString()
     }
 
-    pack(): u8[] {
-        let enc = new Encoder(this.getSize());
+    pack(enc: Encoder): usize {
         enc.packNumber<u64>(this._count);
-        return enc.getBytes();
+        return this.getSize();
     }
 
     unpack(data: u8[]): usize {
@@ -143,10 +142,8 @@ export class TimePoint implements Packer {
         return this.elapsed;
     }
 
-    pack(): u8[] {
-        let enc = new Encoder(this.getSize());
-        enc.pack(this.elapsed)
-        return enc.getBytes();
+    pack(enc: Encoder): usize {
+        return this.elapsed.pack(enc)
     }
 
     unpack(data: u8[]): usize {
@@ -236,10 +233,8 @@ export class TimePointSec implements Packer {
         return this.utcSeconds.toString()
     }
 
-    pack(): u8[] {
-        let enc = new Encoder(this.getSize());
-        enc.packNumber<u32>(this.utcSeconds);
-        return enc.getBytes();
+    pack(enc: Encoder): usize {
+        return enc.packNumber<u32>(this.utcSeconds);
     }
 
     unpack(data: u8[]): usize {
@@ -358,10 +353,8 @@ export class BlockTimestamp implements Packer {
         return this.slot.toString()
     }
 
-    pack(): u8[] {
-        let enc = new Encoder(this.getSize());
-        enc.packNumber<u32>(this.slot);
-        return enc.getBytes();
+    pack(enc: Encoder): usize {
+        return enc.packNumber<u32>(this.slot);
     }
 
     unpack(data: u8[]): usize {

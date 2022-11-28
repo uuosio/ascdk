@@ -17,11 +17,10 @@ import { atou128 } from '../utils';
 import { Encoder, Decoder, Packer } from "../../serializer";
 
 export class i128 implements Packer {
-  pack(): u8[] {
-    let enc = new Encoder(16);
+  pack(enc: Encoder): usize {
     enc.packNumber<u64>(this.lo);
     enc.packNumber<i64>(this.hi);
-    return enc.getBytes();
+    return this.getSize();
   }
 
   unpack(data: u8[]): usize {

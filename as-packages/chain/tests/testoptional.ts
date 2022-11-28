@@ -9,6 +9,7 @@ import {
     Contract,
     check,
     printString,
+    Encoder,
 } from "as-chain";
 
 class MyClass {
@@ -58,7 +59,7 @@ class MyContract extends Contract {
         check(!a9.hasValue, "bad value ");
         {
             let a5 = new Optional<Asset>(new Asset(10000, new Symbol("EOS", 4)));
-            let data = a5.pack();
+            let data = Encoder.pack(a5);
             let a6 = new Optional<Asset>();
             a6.unpack(data);
             check(a5.value! == a6.value!, "bad value 5");    

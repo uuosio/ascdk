@@ -1,6 +1,6 @@
 import * as env from "./env";
 import { printString } from "./debug";
-import { Packer } from "./serializer";
+import { Encoder, Packer } from "./serializer";
 import { check } from "./system";
 
 export function say_hello(): void {
@@ -66,7 +66,7 @@ export class DBI64<T extends PrimaryValue> {
     }
 
     store(id: u64, value: T, payer: u64): PrimaryIterator<T> {
-        let data = value.pack();
+        let data = Encoder.pack(value);
         let data_ptr = data.dataStart;
         let i = env.db_store_i64(this.scope, this.table, payer, id, data_ptr, data.length );
         return new PrimaryIterator<T>(this, i, id, true);
@@ -74,7 +74,7 @@ export class DBI64<T extends PrimaryValue> {
 
     // export declare function db_update_i64(iterator: i32, payer: u64, data: usize, len: usize): void
     update(iterator: PrimaryIterator<T>, payer: u64, value: T): void {
-        let data = value.pack();
+        let data = Encoder.pack(value);
         let data_ptr = data.dataStart;
         env.db_update_i64(iterator.i, payer, data_ptr, data.length);
     }

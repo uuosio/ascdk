@@ -1,4 +1,5 @@
-import { Packer } from "./serializer";
+import { Encoder, Packer } from "./serializer";
+import { check } from "./system";
 
 export function calcPackedVarUint32Length(val: u32): usize {
     let n: u32 = 0;
@@ -13,8 +14,9 @@ export function calcPackedVarUint32Length(val: u32): usize {
 }
 
 export class VarInt32 implements Packer {
-    pack(): u8[] {
-        return new Array<u8>();
+    pack(enc: Encoder): usize {
+        check(false, "not implemented");
+        return 0;
     }
 
     unpack(data: u8[]): usize {
@@ -31,7 +33,7 @@ export class VarUint32 implements Packer {
         public n: u32 = 0,
     ){}
 
-    pack(): u8[] {
+    pack(enc: Encoder): usize {
         let val = this.n;
         let result = new Array<u8>();
         while (true) {
@@ -45,7 +47,8 @@ export class VarUint32 implements Packer {
                 break;
             }
         }
-        return result;
+        enc.writeBytes(result);
+        return result.length;
     }
 
     unpack(val: u8[]): usize {

@@ -62,11 +62,11 @@ export class TransactionExtension implements Packer {
     type: u16;
     data!: u8[];
 
-    pack(): u8[] {
-        let enc = new Encoder(this.getSize());
+    pack(enc: Encoder): usize {
+        let oldPos = enc.getPos();
         enc.packNumber<u16>(this.type);
         enc.packNumberArray<u8>(this.data)
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {
@@ -123,11 +123,11 @@ export class Transaction implements Packer {
     }
 
     send(senderId: U128, replaceExisting: bool, payer: Name): void {
-        sendDeferred(senderId, payer, this.pack(), replaceExisting);
+        sendDeferred(senderId, payer, Encoder.pack(this), replaceExisting);
     }
 
-    pack(): u8[] {
-        let enc = new Encoder(this.getSize());
+    pack(enc: Encoder): usize {
+        let oldPos = enc.getPos();
         enc.pack(this.expiration);
         enc.packNumber<u16>(this.refBlockNum);
         enc.packNumber<u32>(this.refBlockPrefix);
@@ -137,7 +137,7 @@ export class Transaction implements Packer {
         enc.packObjectArray(this.contextFreeActions);
         enc.packObjectArray(this.actions);
         enc.packObjectArray(this.extention);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {

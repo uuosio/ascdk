@@ -11,6 +11,7 @@ import {
     Contract,
     unpackActionData,
     readActionData,
+    Encoder,
 } from "as-chain";
 
 
@@ -20,10 +21,10 @@ class MyData implements _chain.Packer {
     constructor(
         public name: string
     ){}
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: Encoder): usize {
+        let oldPos = enc.getPos();
         enc.packString(this.name);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {
@@ -52,15 +53,14 @@ class MyClass implements _chain.Packer {
         this.aaa = aaa;
         this.bbb = bbb;
     }
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
-        enc.packNumber<u64>(this.aaa);
-        
+    pack(enc: Encoder): usize {
+        let oldPos = enc.getPos();
+        enc.packNumber<u64>(this.aaa);        
         if (!this.bbb) {
             _chain.check(false, "bbb can not be null");
         }
         enc.packNumber<u64>(this.bbb!);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {

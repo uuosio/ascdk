@@ -7,13 +7,11 @@ export class BinaryExtension<T extends Packer> implements Packer {
 
     }
 
-    pack(): u8[] {
+    pack(enc: Encoder): usize {
         if (this.value) {
-            let enc = new Encoder(this.getSize());
-            enc.pack(this.value!);
-            return enc.getBytes();    
+            return this.value!.pack(enc);
         } else {
-            return [];
+            return 0;
         }
     }
 

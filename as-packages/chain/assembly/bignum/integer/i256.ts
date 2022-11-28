@@ -2,13 +2,12 @@ import { u256 } from './u256';
 import { Encoder, Decoder, Packer } from "../../serializer";
 
 export class i256 {
-  pack(): u8[] {
-    let enc = new Encoder(32);
+  pack(enc: Encoder): usize {
     enc.packNumber<i64>(this.lo1);
     enc.packNumber<i64>(this.lo2);
     enc.packNumber<i64>(this.hi1);
     enc.packNumber<i64>(this.hi2);
-    return enc.getBytes();
+    return this.getSize();
   }
 
   unpack(data: u8[]): usize {

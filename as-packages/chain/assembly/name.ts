@@ -1,4 +1,4 @@
-import { Decoder, Packer } from "./serializer";
+import { Encoder, Decoder, Packer } from "./serializer";
 import { check } from "./system"
 
 const charToSymbol = (c: u16): u16 => {
@@ -166,10 +166,9 @@ export class Name implements Packer {
         return nameToPrefix(this)
     }
 
-    pack(): u8[] {
-        let ret = new Array<u8>(8);
-        store<u64>(ret.dataStart, this.N);
-        return ret;
+    pack(enc: Encoder): usize {
+        enc.packNumber<u64>(this.N);
+        return this.getSize();
     }
 
     unpack(data: u8[]): usize {

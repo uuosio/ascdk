@@ -9,6 +9,7 @@ import {
     getSender,
     Contract,
     unpackActionData,
+    Encoder,
 } from "as-chain";
 
 @packer
@@ -85,11 +86,11 @@ class MyContract extends Contract {
             this.receiver,
             Name.fromString("saygoodbye"),
             [new PermissionLevel(this.receiver, Name.fromString("active"))],
-            hello.pack(),
+            Encoder.pack(hello),
         );
-        let raw1 = a.pack();
+        let raw1 = Encoder.pack(a);
         a.unpack(raw1);
-        let raw2 = a.pack();
+        let raw2 = Encoder.pack(a);
         check(raw1.length == raw2.length, "bad value");
         for (let i=0; i<raw1.length; i++) {
             check(raw1[i] == raw2[i], "bad value");

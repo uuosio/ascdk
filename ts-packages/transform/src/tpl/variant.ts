@@ -8,13 +8,13 @@ export const variantTpl = `
     _index: u8;
     value: usize;
 
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldPos = enc.getPos();
         enc.packNumber<u8>(this._index);
         {{#each fields}}
         {{{variantSerialize .}}}
         {{/each}}
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {

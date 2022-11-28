@@ -1,4 +1,4 @@
-import { PublicKey, printString, printHex, check, Contract } from "as-chain";
+import { PublicKey, printString, printHex, check, Contract, Encoder } from "as-chain";
 
 @packer
 class MyData {
@@ -50,15 +50,15 @@ class MyContract extends Contract {
         check(k1 == _k1, "bad k1 key");
         check(r1 == _r1, "bad r1 key");
         check(webAuthN == _webAuthN, "bad webauthn key");
-        check(this.bytesEqual(webAuthN.pack(), rawWebauthn), "bad raw webauthn key");
+        check(this.bytesEqual(Encoder.pack(webAuthN), rawWebauthn), "bad raw webauthn key");
 
         check(!(k1 != _k1), "bad k1 key");
         check(!(r1 != _r1), "bad r1 key");
         check(!(webAuthN != _webAuthN), "bad webauthn key");
 
-        check(this.bytesEqual(k1.pack(), _k1.pack()), "bad k1 key");
-        check(this.bytesEqual(r1.pack(), _r1.pack()), "bad k1 key");
-        check(this.bytesEqual(webAuthN.pack(), _webAuthN.pack()), "bad k1 key");
+        check(this.bytesEqual(Encoder.pack(k1), Encoder.pack(_k1)), "bad k1 key");
+        check(this.bytesEqual(Encoder.pack(r1), Encoder.pack(_r1)), "bad k1 key");
+        check(this.bytesEqual(Encoder.pack(webAuthN), Encoder.pack(_webAuthN)), "bad k1 key");
 
         check(k1 < r1, "bad value 1");
         check(k1 < webAuthN, "bad value 2");

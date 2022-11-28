@@ -10,7 +10,8 @@ import {
     Utils,
     check,
     Asset,
-    Symbol
+    Symbol,
+    Encoder
 } from "as-chain";
 
 @packer
@@ -49,9 +50,9 @@ class MyContract extends Contract{
         );
         t.addAction(action);
 
-        let packedTx1 = t.pack();
+        let packedTx1 = Encoder.pack(t);
         t.unpack(packedTx1);
-        let packedTx2 = t.pack();
+        let packedTx2 = Encoder.pack(t);
         check(Utils.bytesCmp(packedTx1, packedTx2) == 0, "bad value");
         printHex(packedTx1);
         t.send(new U128(1), true, this.receiver);

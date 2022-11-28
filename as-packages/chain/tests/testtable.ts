@@ -99,12 +99,12 @@ class MyTable2 implements MultiIndexValue {
         return this.a;
     }
 
-    pack(): u8[] {
-        let enc = new Encoder(this.getSize());
+    pack(enc: Encoder): usize {
+        let oldPos = enc.getPos();
         enc.packNumber<u64>(this.a);
         enc.packNumber<u64>(this.b);
-        enc.pack(this.c);
-        return enc.getBytes();
+        this.c.pack(enc);
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {

@@ -1197,7 +1197,7 @@ array-unique@^0.3.2:
   integrity sha512-SleRWjh9JUud2wH1hPs9rZBZ33H6T9HOiL0uwGnGx9FpE6wKGyfWugmbkEOIs6qWrZhg0LWeLziLrEwQJhs5mQ==
 
 as-chain@./as-packages/chain:
-  version "0.1.0"
+  version "0.1.1"
 
 assemblyscript@0.22.0, assemblyscript@^0.22.0:
   version "0.22.0"

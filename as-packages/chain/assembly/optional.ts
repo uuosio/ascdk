@@ -10,16 +10,15 @@ export class Optional<T extends Packer> implements Packer {
         this.value = value;
     }
 
-    pack(): u8[] {
-        let enc = new Encoder(this.getSize())
+    pack(enc: Encoder): usize {
+        let oldPos = enc.getPos();
         if (this.value) {
             enc.packNumber<u8>(1);
             enc.pack(this.value!);
-            return enc.getBytes();
         } else {
             enc.packNumber<u8>(0);
-            return enc.getBytes();
         }
+        return enc.getPos() - oldPos;
     }
 
     unpack(data: u8[]): usize {
@@ -55,16 +54,15 @@ export class OptionalNumber<T> implements Packer {
         this.hasValue = hasValue;
     }
 
-    pack(): u8[] {
-        let enc = new Encoder(this.getSize())
+    pack(enc: Encoder): usize {
+        let oldPos = enc.getPos();
         if (this.value) {
             enc.packNumber<u8>(1);
             enc.packNumber<T>(this.value);
-            return enc.getBytes();
         } else {
             enc.packNumber<u8>(0);
-            return enc.getBytes();
         }
+        return enc.getPos() - oldPos;
     }
 
     unpack(data: u8[]): usize {
@@ -98,16 +96,15 @@ export class OptionalString implements Packer {
         this.hasValue = hasValue;
     }
 
-    pack(): u8[] {
-        let enc = new Encoder(this.getSize())
+    pack(enc: Encoder): usize {
+        let oldPos = enc.getPos();
         if (this.hasValue) {
             enc.packNumber<u8>(1);
             enc.packString(this.value);
-            return enc.getBytes();
         } else {
             enc.packNumber<u8>(0);
-            return enc.getBytes();
         }
+        return enc.getPos() - oldPos;
     }
 
     unpack(data: u8[]): usize {

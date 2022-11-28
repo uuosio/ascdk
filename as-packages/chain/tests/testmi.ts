@@ -15,6 +15,7 @@ import {
     Contract,
     print,
     newSecondaryValue_Float128,
+    Encoder,
 } from "as-chain";
 
 @table("mydata")
@@ -150,7 +151,7 @@ class MyContract extends Contract{
                             new Float128(0x5000000000000000, 0x4012e847ffffeb07)//999999.99999
                         );
         mi.store(value, this.receiver);
-        printHex(new U256(11).pack());
+        printHex(Encoder.pack(new U256(11)));
     }
 
     @action("testmi2")

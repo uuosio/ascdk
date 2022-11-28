@@ -28,11 +28,11 @@ export class Signer implements _chain.MultiIndexValue {
         return this.account;
     }
 
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldPos = enc.getPos();
         enc.packNumber<u64>(this.account);
         enc.pack(this.public_key);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {
@@ -107,10 +107,10 @@ export class global implements _chain.MultiIndexValue {
     ) {
     }
 
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldPos = enc.getPos();
         enc.packNumber<u64>(this.escrow_id);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {
@@ -188,8 +188,8 @@ export class TxEvent implements _chain.MultiIndexValue {
         return this.nonce
     }
 
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldPos = enc.getPos();
         enc.packNumber<u64>(this.nonce);
         enc.pack(this.process);
         enc.pack(this.asset);
@@ -199,7 +199,7 @@ export class TxEvent implements _chain.MultiIndexValue {
         enc.packNumberArray<u8>(this.extra)
         enc.packNumber<u64>(this.timestamp);
         enc.packObjectArray(this.signatures);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {
@@ -333,11 +333,11 @@ export class AccountCache implements _chain.MultiIndexValue {
         return this.id
     }
 
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldPos = enc.getPos();
         enc.packNumber<u64>(this.id);
         enc.pack(this.account);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {
@@ -445,11 +445,11 @@ export class MixinAsset implements _chain.MultiIndexValue {
         this.asset_id = value;
     }
 
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldPos = enc.getPos();
         enc.pack(this.symbol);
         enc.pack(this.asset_id);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {
@@ -549,10 +549,10 @@ export class CreateAccountFee implements _chain.MultiIndexValue {
         public fee: Asset = new Asset()
     ){}
 
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldPos = enc.getPos();
         enc.pack(this.fee);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {
@@ -648,11 +648,11 @@ export class MixinAccount implements _chain.MultiIndexValue {
         this.client_id = value;
     }
 
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldPos = enc.getPos();
         enc.pack(this.eos_account);
         enc.pack(this.client_id);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {
@@ -758,11 +758,11 @@ export class Counter implements _chain.MultiIndexValue {
         return this.id
     }
 
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldPos = enc.getPos();
         enc.packNumber<u64>(this.id);
         enc.packNumber<u64>(this.count);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {
@@ -837,11 +837,11 @@ export class Process implements _chain.MultiIndexValue {
         return this.contract.N
     }
 
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldPos = enc.getPos();
         enc.pack(this.contract);
         enc.pack(this.process);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {
@@ -965,8 +965,8 @@ export class PendingEvent implements _chain.MultiIndexValue {
     }
 
 
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldPos = enc.getPos();
         
         if (!this.event) {
             _chain.check(false, "event can not be null");
@@ -974,7 +974,7 @@ export class PendingEvent implements _chain.MultiIndexValue {
         enc.pack(this.event!);
         enc.pack(this.account);
         enc.pack(this.hash);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {
@@ -1101,10 +1101,10 @@ export class SubmittedEvent implements _chain.MultiIndexValue {
         return this.nonce;
     }
 
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldPos = enc.getPos();
         enc.packNumber<u64>(this.nonce);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {
@@ -1185,12 +1185,12 @@ export class ErrorTxEvent implements _chain.MultiIndexValue {
         return this.event.nonce
     }
 
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldPos = enc.getPos();
         enc.pack(this.event);
         enc.packString(this.reason);
         enc.packNumberArray<u8>(this.origin_extra)
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {
@@ -1271,10 +1271,10 @@ export class TransferFee implements _chain.MultiIndexValue {
         return this.fee.symbol.code();
     }
 
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldPos = enc.getPos();
         enc.pack(this.fee);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {
@@ -1351,10 +1351,10 @@ export class TotalFee implements _chain.MultiIndexValue {
         return this.total.symbol.code();
     }
 
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldPos = enc.getPos();
         enc.pack(this.total);
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {

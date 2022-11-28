@@ -2,7 +2,7 @@ import { PermissionLevel, Action } from "./action"
 import { SecondaryValue, newSecondaryValue_u64, IDXDB } from "./idxdb"
 import { MultiIndex, MultiIndexValue } from "./mi"
 import { Name, EMPTY_NAME } from "./name"
-import { Packer } from "./serializer"
+import { Encoder, Packer } from "./serializer"
 import { check } from "./system"
 
 export class Variant implements Packer {
@@ -24,9 +24,9 @@ export class Variant implements Packer {
         return false
     }
 
-    pack(): u8[] {
+    pack(enc: Encoder): usize {
         check(false, "not implemented");
-        return []
+        return 0;
     }
 
     unpack(data: u8[]): usize {
@@ -44,7 +44,7 @@ export class InlineActionAct <T extends Packer> {
 
     send(data: T): void {
         const permissions = [this.permissionLevel]
-        const action = new Action(this.contract, this.action, permissions, data.pack())
+        const action = new Action(this.contract, this.action, permissions, Encoder.pack(data))
         action.send()
     }
 }
@@ -84,9 +84,9 @@ export class Contract {
 }
 
 export class MockPacker implements Packer {
-    pack(): u8[] {
+    pack(enc: Encoder): usize {
         check(false, "not implemented");
-        return [];
+        return 0;
     }
     
     unpack(_: u8[]): usize {

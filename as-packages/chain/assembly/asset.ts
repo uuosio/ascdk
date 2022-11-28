@@ -56,10 +56,9 @@ export class SymbolCode implements Packer {
         }
     }
 
-    pack(): u8[] {
-        let enc = new Encoder(8);
+    pack(enc: Encoder): usize {
         enc.packNumber<u64>(this.value);
-        return enc.getBytes();
+        return this.getSize();
     }
 
     unpack(data: u8[]): usize {
@@ -159,10 +158,9 @@ export class Symbol implements Packer {
         return (this.value & 0xFF).toString(10) + "," + this.getSymbolString();
     }
 
-    pack(): u8[] {
-        let enc = new Encoder(8);
+    pack(enc: Encoder): usize {
         enc.packNumber<u64>(this.value);
-        return enc.getBytes();
+        return this.getSize();
     }
 
     unpack(data: u8[]): usize {
@@ -202,11 +200,10 @@ export class ExtendedSymbol implements Packer {
         return this.sym.toString() + "@" + this.contract.toString();
     }
 
-    pack(): u8[] {
-        let enc = new Encoder(this.getSize());
-        enc.pack(this.sym);
-        enc.pack(this.contract);
-        return enc.getBytes();
+    pack(enc: Encoder): usize {
+        this.sym.pack(enc);
+        this.contract.pack(enc);
+        return this.getSize();
     }
 
     unpack(data: u8[]): usize {
@@ -277,11 +274,10 @@ export class Asset implements Packer {
         return rawAmount + " " + this.symbol.getSymbolString()
     }
 
-    pack(): u8[] {
-        let enc = new Encoder(8*2);
+    pack(enc: Encoder): usize {
         enc.packNumber<i64>(this.amount);
-        enc.pack(this.symbol);
-        return enc.getBytes();
+        this.symbol.pack(enc);
+        return this.getSize();
     }
 
     unpack(data: u8[]): usize {
@@ -394,11 +390,10 @@ export class ExtendedAsset implements Packer {
         return this.quantity.toString() + "@" + this.contract.toString();
     }
 
-    pack(): u8[] {
-        let enc = new Encoder(this.getSize());
-        enc.pack(this.quantity);
-        enc.pack(this.contract);
-        return enc.getBytes();
+    pack(enc: Encoder): usize {
+        this.quantity.pack(enc);
+        this.contract.pack(enc);
+        return this.getSize();
     }
 
     unpack(data: u8[]): usize {

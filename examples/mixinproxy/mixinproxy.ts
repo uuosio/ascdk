@@ -20,6 +20,7 @@ import {
     currentTimeMs,
     assertSha256,
     Utils,
+    printString,
 } from "as-chain";
 
 import {

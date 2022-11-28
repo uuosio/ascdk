@@ -77,7 +77,7 @@ class MyContract extends Contract{
             let obj2 = new MyData(1, 2, 3);
             arr.push(obj2);
 
-            let data = obj2.pack();
+            let data = Encoder.pack(obj2);
 
             let dec = new Decoder(data);
             dec.unpack(arr[0]);
@@ -85,7 +85,7 @@ class MyContract extends Contract{
         }
 
         let n = new VarUint32(0xfff);
-        let packed = n.pack();
+        let packed = Encoder.pack(n);
 
         let m = new VarUint32(0);
         m.unpack(packed);

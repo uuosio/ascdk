@@ -8,12 +8,12 @@ export const binaryExtensionTpl = `
 
     {{{ExtractClassBody range}}}
 
-    pack(): u8[] {
-        let enc = new _chain.Encoder(this.getSize());
+    pack(enc: _chain.Encoder): usize {
+        let oldPos = enc.getPos():
         {{#each fields}}
         {{{binaryExtensionSerialize .}}}
         {{/each}}
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {

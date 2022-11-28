@@ -51,8 +51,8 @@ class MyVariant2 implements Packer {
     _index: u8;
     value: usize;
 
-    pack(): u8[] {
-        let enc = new Encoder(this.getSize());
+    pack(enc: Encoder): usize {
+        let oldPos = enc.getPos();
         enc.packNumber<u8>(this._index);
         if (this._index == 0) {
             let value = changetype<VariantValue<u64>>(this.value);
@@ -61,10 +61,10 @@ class MyVariant2 implements Packer {
 
         if (this._index == 1) {
             let value = changetype<VariantValue<Asset>>(this.value);
-            enc.pack(value.value);
+            value.value.pack(enc);
         }
 
-        return enc.getBytes();
+        return enc.getPos() - oldPos;
     }
     
     unpack(data: u8[]): usize {
@@ -173,9 +173,9 @@ class MyContract extends Contract{
         check(!a.is<u64>(), "!a.is<u64>() 111");
         check(a.is<Asset>(), "a.is<Asset>()");
 
-        let raw = a.pack();
+        let raw = Encoder.pack(a);
         a.unpack(raw);
-        let raw2 = a.pack();
+        let raw2 = Encoder.pack(a);
         check(Utils.bytesCmp(raw, raw2) == 0, "bad value");
 
         let b = MyVariant.new(<u64>11);
@@ -187,9 +187,9 @@ class MyContract extends Contract{
 
         b.geta();
 
-        raw = b.pack();
+        raw = Encoder.pack(b);
         b.unpack(raw);
-        raw2 = b.pack();
+        raw2 = Encoder.pack(b);
         check(Utils.bytesCmp(raw, raw2) == 0, "bad value");
         print(`${a._index}`);
         print(`${b._index}`);
