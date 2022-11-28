@@ -32,11 +32,11 @@
 
 import fs from "fs";
 import process from "process"; // ensure shim
-import utf8 from "eosio-asc/dist/cli/util/utf8.cjs";
-import colorsUtil from "eosio-asc/dist/cli/util/colors.cjs";
-import optionsUtil from "eosio-asc/dist/cli/util/options.cjs";
-import mkdirp from "eosio-asc/dist/cli/util/mkdirp.cjs";
-import find from "eosio-asc/dist/cli//util/find.cjs";
+import utf8 from "as-contract/dist/cli/util/utf8.cjs";
+import colorsUtil from "as-contract/dist/cli/util/colors.cjs";
+import optionsUtil from "as-contract/dist/cli/util/options.cjs";
+import mkdirp from "as-contract/dist/cli/util/mkdirp.cjs";
+import find from "as-contract/dist/cli//util/find.cjs";
 
 import path from "path";
 import {fileURLToPath} from "url";

@@ -65,7 +65,7 @@ Boilerplate to build your own contract + testing: https://github.com/ProtonProto
 
 ## Installation
 ```
-npm i eosio-asc
+npm i as-contract
 ```
 
 ## Tests

@@ -25,8 +25,8 @@
     "test:chain": "yarn --cwd ./as-packages/chain/tests && yarn --cwd ./as-packages/chain/tests test-all",
     "test:examples": "yarn --cwd ./examples test-all",
     "test:chaintester": "yarn --cwd ./ts-packages/chaintester && yarn --cwd ./ts-packages/chaintester build && yarn --cwd ./ts-packages/chaintester test",
-    "build:eosio-asc": "yarn --cwd ./ts-packages/transform && yarn --cwd ./ts-packages/transform build",
-    "test": "yarn build:eosio-asc && yarn test:chaintester && yarn test:chain && yarn test:examples && yarn test:codegen"
+    "build:as-contract": "yarn --cwd ./ts-packages/transform && yarn --cwd ./ts-packages/transform build",
+    "test": "yarn build:as-contract && yarn test:chaintester && yarn test:chain && yarn test:examples && yarn test:codegen"
   },
   "private": true,
   "devDependencies": {

@@ -20,8 +20,8 @@
   ],
   "scripts": {
     "test": "yarn build:debug && ipyeos -m pytest -s -x test.py",
-    "build:debug": "yarn exec cp .env-debug.ts .env.ts && npx eosio-asc ./testconfig.ts",
-    "build:release": "yarn exec cp .env-release.ts .env.ts && npx eosio-asc ./testconfig.ts"
+    "build:debug": "yarn exec cp .env-debug.ts .env.ts && npx as-contract build ./testconfig.ts",
+    "build:release": "yarn exec cp .env-release.ts .env.ts && npx as-contract build ./testconfig.ts"
   },
   "dependencies": {
      "@assemblyscript/loader": "^0.24.1",
