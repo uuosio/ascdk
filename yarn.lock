@@ -10,15 +10,10 @@
     "@jridgewell/gen-mapping" "^0.1.0"
     "@jridgewell/trace-mapping" "^0.3.9"
 
-"@assemblyscript/loader@^0.18":
-  version "0.18.32"
-  resolved "https://registry.yarnpkg.com/@assemblyscript/loader/-/loader-0.18.32.tgz#2216fc7df235df247c95004457efd9c0a7da33ed"
-  integrity sha512-fq+nWvQuwASkTgchjMsnLyharobzPJIKx4KGoSlkS1ffrsnjabok2oOH7jAIFW4RMz3JXjHxMONbAmcxzyrcUw==
-
-"@assemblyscript/loader@^0.22.0":
-  version "0.22.0"
-  resolved "https://registry.yarnpkg.com/@assemblyscript/loader/-/loader-0.22.0.tgz#85d495539657e3c4b08448ff6c029d247c05b255"
-  integrity sha512-gdPnGoYUhEz5VER9etY2MHpayCUfznlKE35lMbo5XveAJaeJQZEdy9KATQlETpbMUQUDtxq6f2VtZ8EfQo8cVA==
+"@assemblyscript/loader@^0.24.1":
+  version "0.24.1"
+  resolved "https://registry.yarnpkg.com/@assemblyscript/loader/-/loader-0.24.1.tgz#faff4272237af5d86be5ed54f785b986d5867829"
+  integrity sha512-22ZeD6aX8J/Yy02ABQgV09aJnpA6NdRFQTaH58POnhZ3GazMT00rlsxkWrIw3RrNY2ILiGVsyCWg5HwYOTL9xw==
 
 "@babel/code-frame@7.12.11":
   version "7.12.11"
@@ -1199,12 +1194,20 @@ array-unique@^0.3.2:
 as-chain@./as-packages/chain:
   version "0.1.1"
 
-assemblyscript@0.22.0, assemblyscript@^0.22.0:
+assemblyscript@0.22.0:
   version "0.22.0"
   resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.22.0.tgz#4ca71d6790c0f26db5d3e358e860b2d542f6e02b"
   integrity sha512-BC4tV2hc+oNgKOWfXXrl5iD2W+NkQV1MbRNCMi7YE83VoSzrmJj7LqSJMHYc39nKNnX+MiL4DHzp9zCKIMal/g==
   dependencies:
     binaryen "110.0.0-nightly.20221019"
+    long "^5.2.0"
+
+assemblyscript@0.24.1, assemblyscript@^0.24.1:
+  version "0.24.1"
+  resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.24.1.tgz#87a32da2cd2962ffdb4d44e159751b52d3594421"
+  integrity sha512-uqR7NW0z/QFuqOkszoCb2F2jJI0VsmmmATRYG2JGzspC9nkct/8+6Pad7amCnIRriAC/T9AknEs+Qv/U/+fNpQ==
+  dependencies:
+    binaryen "110.0.0-nightly.20221105"
     long "^5.2.0"
 
 assign-symbols@^1.0.0:
@@ -1351,6 +1354,11 @@ binaryen@110.0.0-nightly.20221019:
   version "110.0.0-nightly.20221019"
   resolved "https://registry.yarnpkg.com/binaryen/-/binaryen-110.0.0-nightly.20221019.tgz#3c458f114ea3eb34c64d47d6a03b9529199638c7"
   integrity sha512-BmuVpV5hpeU1G9ENWQUslwaxbmol810S3+yd7xVJap+vrSQz7ybXiirwya1FfYSFtuDbfGYPfQAObiW5O2PS1w==
+
+binaryen@110.0.0-nightly.20221105:
+  version "110.0.0-nightly.20221105"
+  resolved "https://registry.yarnpkg.com/binaryen/-/binaryen-110.0.0-nightly.20221105.tgz#9e3c47e8ffa31521acd125013dca3ceea143d0bf"
+  integrity sha512-OBESOc51q3SwgG8Uv8nMzGnSq7LJpSB/Fu8B3AjlZg6YtCEwRnlDWlnwNB6mdql+VdexfKmNcsrs4K7MYidmdQ==
 
 brace-expansion@^1.1.7:
   version "1.1.11"

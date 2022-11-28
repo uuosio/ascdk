@@ -28,8 +28,8 @@
   "dependencies": {
   },
   "devDependencies": {
-    "@assemblyscript/loader": "^0.22.0",
-    "assemblyscript": "^0.22.0"
+    "@assemblyscript/loader": "^0.24.1",
+    "assemblyscript": "^0.24.1"
   },
   "files": [
     "assembly/",
