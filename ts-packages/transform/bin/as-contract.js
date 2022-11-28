@@ -57,7 +57,7 @@ if (true) {
             args = process.argv.slice(3).concat(ARGS);
             process.exitCode = await asc.main(args);
             args.pop(), args.pop();
-            let sourcePath = process.argv[2];
+            let sourcePath = process.argv[3];
             if (sourcePath) {
                 console.log("Build progressing. Generating target files ······")
                 let dirname = path.dirname(sourcePath);
