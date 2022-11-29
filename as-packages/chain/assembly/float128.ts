@@ -12,8 +12,8 @@ export class Float128 implements Packer {
 
     pack(enc: Encoder): usize {
         let size = this.getSize();
-        memcpy(enc.buf.dataStart, this.data.dataStart, size);
-        enc.incPos(size);
+        enc.packNumber(this.data[0]);
+        enc.packNumber(this.data[1]);
         return size;
     }
 
