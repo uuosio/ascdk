@@ -17,12 +17,11 @@ class MyClass {
     a2: OptionalNumber<u64>;
     a3: OptionalString;
     constructor(a1: Asset | null = null, a2: u64 = 0, a3: string="") {
-        this.a1 = new Optional<Asset>(a1!);
+        this.a1 = new Optional<Asset>(a1);
         this.a2 = new OptionalNumber<u64>(a2);
         this.a3 = new OptionalString(a3);
     }
 }
-
 
 @packer
 class MyData {
