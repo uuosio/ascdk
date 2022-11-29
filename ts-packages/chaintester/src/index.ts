@@ -25,6 +25,14 @@ interface PushTransactionReturn {
     elapsed: number;
 }
 
+class ChainException extends Error {
+    json: object;
+    constructor(ret: object) {
+        super(JSON.stringify(ret, null, 2));
+        this.json = ret
+    }
+}
+
 export class ChainTester {
     id: number;
     initialize: Promise<number>;
@@ -103,7 +111,7 @@ export class ChainTester {
     }
 
     async createAccount(creator: string, account: string, owner_key: string, active_key: string, ram_bytes: number = 5 * 1024 * 1024, stake_net: number = 0, stake_cpu: number = 0) {
-        let ret = this.callMethod('create_account', {
+        let ret = await this.callMethod('create_account', {
                 id: this.id,
                 creator,
                 account,
@@ -117,7 +125,7 @@ export class ChainTester {
 
         let except = ret['except'];
         if (except) {
-            throw new Error(except);
+            throw new ChainException(ret);
         }
 
         return new Promise((resolve) => {
@@ -137,7 +145,7 @@ export class ChainTester {
         });
         let except = ret['except'];
         if (except) {
-            throw new Error(JSON.stringify(except, null, 2));
+            throw new ChainException(ret);
         }
 
         return new Promise((resolve) => {
@@ -146,7 +154,7 @@ export class ChainTester {
     }
 
     async pushAction(account: string, action: string, args: object, permissions: object): Promise<PushTransactionReturn> {
-        let ret = this.callMethod('push_action', {
+        let ret = await this.callMethod('push_action', {
             id: this.id,
             account: account,
             action: action,
@@ -156,7 +164,7 @@ export class ChainTester {
 
         let except = ret['except'];
         if (except) {
-            throw new Error(except);
+            throw new ChainException(ret);
         }
 
         return new Promise((resolve) => {
@@ -165,14 +173,14 @@ export class ChainTester {
     }
 
     async pushActions(actions: Action[]): Promise<PushTransactionReturn>{
-        let ret = this.callMethod('push_actions', {
+        let ret = await this.callMethod('push_actions', {
             id: this.id,
             actions: JSON.stringify(actions),
         });
 
         let except = ret['except'];
         if (except) {
-            throw new Error(except);
+            throw new ChainException(ret);
         }
 
         return new Promise((resolve) => {

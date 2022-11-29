@@ -8,14 +8,13 @@ it('test hello', async () => {
     let tester = new ChainTester();
     await tester.init();
     try {
-        let ret = await tester.deployContract("hello", "./assembly/target/counter.wasm", "./assembly/target/counter.abi");
-        expect(ret.except).toBeUndefined();
+        await tester.deployContract("hello", "./assembly/target/counter.wasm", "./assembly/target/counter.abi");
 
-        ret = await tester.pushAction("hello", "inc", {}, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+        await tester.pushAction("hello", "inc", {}, {"hello": "active"});
         await tester.produceBlock();
-        ret = await tester.pushAction("hello", "inc", {}, {"hello": "active"});
-        expect(ret.except).toBeUndefined();
+
+        await tester.pushAction("hello", "inc", {}, {"hello": "active"});
+        await tester.produceBlock();
     } finally {
         await tester.free();
     }
