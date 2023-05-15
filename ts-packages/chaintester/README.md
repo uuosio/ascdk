@@ -32,6 +32,9 @@ constructor()
 ```
 
 ## free
+
+close the test chain
+
 ```typescript
 async free()
 ```
