@@ -1,5 +1,5 @@
 {
-  "name": "chaintester",
+  "name": "@uuosio/chaintester",
   "version": "0.1.5",
   "description": "chain tester for AssemblyScript Smart Contract",
   "main": "dist/index.js",
