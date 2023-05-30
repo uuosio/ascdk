@@ -64,16 +64,16 @@ export function createNewAccount(creatorName: Name, ownerAccountName: Name, newA
     Action.new(
         Name.fromString("eosio"),
         Name.fromString("newaccount"),
-        new PermissionLevel(creatorName, Name.fromString("active"))
+        new PermissionLevel(creatorName, Name.fromString("active")),
         newAccount
     ).send();
 
     Action.new(
         Name.fromString("eosio"),
         Name.fromString("buyrambytes"),
-        new PermissionLevel(creatorName, Name.fromString("active"))
+        new PermissionLevel(creatorName, Name.fromString("active")),
         new BuyRamBytes(creatorName, newAccountName, RAM_BYTES),
-    ).send()
+    ).send();
 }
 
 
