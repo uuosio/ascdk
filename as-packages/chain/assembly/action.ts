@@ -95,6 +95,14 @@ export class Action implements Packer{
     static new(
         account: Name,
         name: Name,
+        authorization: PermissionLevel,
+        packer: Packer): Action {
+        return new Action(account, name, [authorization], Encoder.pack(packer));
+    }
+
+    static new_ex(
+        account: Name,
+        name: Name,
         authorization: PermissionLevel[],
         packer: Packer): Action {
         return new Action(account, name, authorization, Encoder.pack(packer));

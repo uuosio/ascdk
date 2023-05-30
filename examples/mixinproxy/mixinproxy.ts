@@ -320,7 +320,7 @@ class MyContract extends Contract{
         Action.new(
             this.receiver,
             Name.fromString("error"),
-            [new PermissionLevel(this.receiver, Name.fromString("active"))],
+            new PermissionLevel(this.receiver, Name.fromString("active")),
             msg
         ).send();
     }
@@ -526,7 +526,7 @@ class MyContract extends Contract{
         Action.new(
             MTG_XIN,
             Name.fromString("txrequest"),
-            [new PermissionLevel(this.receiver, Name.fromString("active"))],
+            new PermissionLevel(this.receiver, Name.fromString("active")),
             request,
         ).send();
     }
@@ -572,7 +572,7 @@ class MyContract extends Contract{
         Action.new(
             MTG_XIN,
             Name.fromString("txrequest"),
-            [new PermissionLevel(this.receiver, Name.fromString("active"))],
+            new PermissionLevel(this.receiver, Name.fromString("active")),
             notify,
         ).send();
     }
