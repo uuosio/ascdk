@@ -32,7 +32,6 @@
   },
   "dependencies": {
     "@types/node": "^18.11.9",
-    "@types/typescript": "^2.0.0",
     "assemblyscript": "0.22.0",
     "esbuild": "^0.15.13",
     "handlebars": "4.7.7",
