@@ -20,7 +20,7 @@ import {
     ExtendedAsset,
     I128,
     U128,
-} from "as-chain";
+} from "asm-chain";
 
 @packer
 class MyData {

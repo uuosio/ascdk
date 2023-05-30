@@ -90,7 +90,7 @@ function parseTypeName(tp: NamedTypeNodeDef, isActionType: boolean = false) {
 
     let name = tp.current!.internalName;
     if (name.startsWith("~lib")) {
-        if (name.startsWith("~lib/as-chain")) {
+        if (name.startsWith("~lib/asm-chain")) {
             if (plainType.indexOf(".") < 0) {
                 plainType = "_chain." + plainType;
             }

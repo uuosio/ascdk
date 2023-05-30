@@ -4,9 +4,9 @@ import {
     Decoder,
     Packer,
     Contract,
-} from "as-chain";
+} from "asm-chain";
 
-import * as _chain from "as-chain";
+import * as _chain from "asm-chain";
 
 class MyData implements Packer {
     

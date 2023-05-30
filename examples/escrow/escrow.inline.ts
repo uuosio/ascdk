@@ -1,4 +1,4 @@
-import { Name, Table, PermissionLevel, InlineAction } from "as-chain"
+import { Name, Table, PermissionLevel, InlineAction } from "asm-chain"
 import { Escrow } from "./escrow.tables";
 
 /* LogEscrow is a table that contains a single escrow and its status */

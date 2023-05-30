@@ -1,4 +1,4 @@
-import { Contract, PermissionLevel, printString, InlineAction, Asset, Symbol, Table } from "as-chain"
+import { Contract, PermissionLevel, printString, InlineAction, Asset, Symbol, Table } from "asm-chain"
 
 @packer
 class SayGoodbye extends Table {

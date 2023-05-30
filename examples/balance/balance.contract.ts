@@ -1,4 +1,4 @@
-import { ExtendedAsset, unpackActionData, Name, check, requireAuth, MultiIndex, SAME_PAYER } from 'as-chain'
+import { ExtendedAsset, unpackActionData, Name, check, requireAuth, MultiIndex, SAME_PAYER } from 'asm-chain'
 import { atomicassets } from '../atomicassets/atomicassets.constants';
 import { AllowContract } from '../allow';
 import { sendTransferTokens, sendTransferNfts, NftTransfer, TokenTransfer } from './balance.inline';

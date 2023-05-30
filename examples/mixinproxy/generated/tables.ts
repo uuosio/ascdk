@@ -1,4 +1,4 @@
-import * as _chain from "as-chain";
+import * as _chain from "asm-chain";
 import {
     Table,
     U128,
@@ -8,7 +8,7 @@ import {
     Signature,
     Symbol,
     Asset,
-} from "as-chain"
+} from "asm-chain"
 
 
 

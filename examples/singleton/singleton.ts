@@ -3,7 +3,7 @@ import {
     Table,
     Contract,
     print,
-} from "as-chain";
+} from "asm-chain";
 
 @table("counter", singleton)
 class Counter extends Table {

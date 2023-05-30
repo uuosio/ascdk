@@ -1,4 +1,4 @@
-import { ExtendedAsset, Asset, Symbol, check, isValid, printString, Contract, Name } from "as-chain";
+import { ExtendedAsset, Asset, Symbol, check, isValid, printString, Contract, Name } from "asm-chain";
 
 @contract
 class MyContract extends Contract{

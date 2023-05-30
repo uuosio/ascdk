@@ -1,10 +1,10 @@
-import * as _chain from "as-chain";
+import * as _chain from "asm-chain";
 import {
     Name,
     PublicKey,
     PermissionLevel,
     U128,
-} from "as-chain"
+} from "asm-chain"
 
 
 @packer(nocodegen)

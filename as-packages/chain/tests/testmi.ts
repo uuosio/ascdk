@@ -16,7 +16,7 @@ import {
     print,
     newSecondaryValue_Float128,
     Encoder,
-} from "as-chain";
+} from "asm-chain";
 
 @table("mydata")
 class MyData extends Table {

@@ -1,4 +1,4 @@
-import * as _chain from "as-chain";
+import * as _chain from "asm-chain";
 import {
     Asset,
     Symbol,
@@ -12,7 +12,7 @@ import {
     unpackActionData,
     readActionData,
     Encoder,
-} from "as-chain";
+} from "asm-chain";
 
 
 @packer(nocodegen)

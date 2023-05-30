@@ -1,4 +1,4 @@
-import { check } from "as-chain";
+import { check } from "asm-chain";
 import { ATTRIBUTE_MAP_SINGLE, findIndexOfAttribute, FORMAT } from "./atomicdata";
 
 /*

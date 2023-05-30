@@ -10,7 +10,7 @@ import {
     Contract,
     unpackActionData,
     Encoder,
-} from "as-chain";
+} from "asm-chain";
 
 @packer
 class MyData {

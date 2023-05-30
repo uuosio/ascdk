@@ -8,10 +8,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/uuosio/as-chain.git"
+    "url": "https://github.com/uuosio/asm-chain.git"
   },
   "bugs": {
-    "url": "https://github.com/uuosio/as-chain/issues"
+    "url": "https://github.com/uuosio/asm-chain/issues"
   },
   "keywords": [
     "wasm",
@@ -34,18 +34,18 @@
     "test:config": "yarn --cwd ./config test",
     "test:finalizer": "yarn build:finalizer && ipyeos -m pytest -s -x test.py -k test_finalizer",
     "build": "run-p build:* --max-parallel 3",
-    "build:hello": "npx as-contract build ./hello/hello.ts",
-    "build:inlineaction": "npx as-contract build ./inlineaction/inlineaction.ts",
-    "build:counter": "npx as-contract build ./counter/counter.ts",
-    "build:singleton": "npx as-contract build ./singleton/singleton.ts",
-    "build:codegeneration": "npx as-contract build ./codegeneration/codegeneration.ts",
-    "build:sender": "npx as-contract build ./notify/sender.ts",
-    "build:receiver": "npx as-contract build ./notify/receiver.ts",
-    "build:eosio.token": "npx as-contract build ./eosio.token/eosio.token.contract.ts",
-    "build:escrow": "npx as-contract build ./escrow/escrow.contract.ts",
-    "build:allow": "npx as-contract build ./allow/allow.contract.ts",
-    "build:balance": "npx as-contract build ./balance/balance.contract.ts",
-    "build:finalizer": "npx as-contract build ./finalizer/finalizer.ts",
+    "build:hello": "npx asm-contract build ./hello/hello.ts",
+    "build:inlineaction": "npx asm-contract build ./inlineaction/inlineaction.ts",
+    "build:counter": "npx asm-contract build ./counter/counter.ts",
+    "build:singleton": "npx asm-contract build ./singleton/singleton.ts",
+    "build:codegeneration": "npx asm-contract build ./codegeneration/codegeneration.ts",
+    "build:sender": "npx asm-contract build ./notify/sender.ts",
+    "build:receiver": "npx asm-contract build ./notify/receiver.ts",
+    "build:eosio.token": "npx asm-contract build ./eosio.token/eosio.token.contract.ts",
+    "build:escrow": "npx asm-contract build ./escrow/escrow.contract.ts",
+    "build:allow": "npx asm-contract build ./allow/allow.contract.ts",
+    "build:balance": "npx asm-contract build ./balance/balance.contract.ts",
+    "build:finalizer": "npx asm-contract build ./finalizer/finalizer.ts",
     "test": "jest --no-cache"
   },
   "jest": {
@@ -60,7 +60,7 @@
     ]
   },
   "dependencies": {
-    "as-chain": "./as-packages/chain"
+    "asm-chain": "./as-packages/chain"
   },
   "devDependencies": {
     "@types/jest": "^28.1.6",

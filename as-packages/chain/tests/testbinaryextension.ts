@@ -8,7 +8,7 @@ import {
     Contract,
     check,
     printString
-} from "as-chain";
+} from "asm-chain";
 
 @packer
 class MyData {

@@ -1,4 +1,4 @@
-import { Name } from "as-chain"
+import { Name } from "asm-chain"
 
 /**
  * The name of the constant and the string must be exactly the same

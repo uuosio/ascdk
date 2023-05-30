@@ -1,4 +1,4 @@
-import { Name, Table } from "as-chain"
+import { Name, Table } from "asm-chain"
 
 // Contract
 export const escrow = Name.fromString("escrow")

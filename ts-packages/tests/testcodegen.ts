@@ -11,7 +11,7 @@ import {
     getSender,
     Contract,
     Encoder,
-} from "as-chain";
+} from "asm-chain";
 
 @packer
 class MyData {

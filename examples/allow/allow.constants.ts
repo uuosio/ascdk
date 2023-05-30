@@ -1,4 +1,4 @@
-import { Name } from "as-chain"
+import { Name } from "asm-chain"
 
 // Contract
 export const allow = Name.fromString("allow")

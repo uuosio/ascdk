@@ -44,7 +44,7 @@ jobs:
       # - name: Setup upterm session
       #   if: ${{ startsWith(github.ref, 'refs/heads/master') && matrix.os == 'ubuntu-20.04' }}
       #   uses: lhotari/action-upterm@v1
-      - name: publish chaintester & as-contract & as-chain
+      - name: publish chaintester & asm-contract & asm-chain
         if: ${{ startsWith(github.ref, 'refs/tags/') && matrix.os == 'ubuntu-20.04' }}
         run:
           pushd ./ts-packages/transform

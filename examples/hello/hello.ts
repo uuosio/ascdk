@@ -1,4 +1,4 @@
-import { print, Name } from "as-chain"
+import { print, Name } from "asm-chain"
 
 @contract
 class MyContract {

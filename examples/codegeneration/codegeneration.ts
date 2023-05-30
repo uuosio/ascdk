@@ -1,4 +1,4 @@
-import * as chain from "as-chain";
+import * as chain from "asm-chain";
 import { MyTable } from "./utils";
 
 

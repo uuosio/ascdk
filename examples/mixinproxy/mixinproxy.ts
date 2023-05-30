@@ -21,7 +21,7 @@ import {
     assertSha256,
     Utils,
     printString,
-} from "as-chain";
+} from "asm-chain";
 
 import {
     GetAccountNameFromId,

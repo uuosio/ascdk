@@ -60,8 +60,8 @@ export class ClassInterpreter {
 
         if (this.classPrototype.interfacePrototypes) {
             let hasPackerInterface = this.classPrototype.interfacePrototypes.find(x => {
-                return x.internalName == "~lib/as-chain/serializer/Packer" || 
-                    x.internalName == "~lib/as-chain/mi/MultiIndexValue";
+                return x.internalName == "~lib/asm-chain/serializer/Packer" || 
+                    x.internalName == "~lib/asm-chain/mi/MultiIndexValue";
             });
 
             if (hasPackerInterface) {

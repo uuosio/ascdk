@@ -1,5 +1,5 @@
 {
-  "name": "as-contract",
+  "name": "asm-contract",
   "version": "0.3.2",
   "description": "Build tool for building AssemblyScript projects",
   "main": "./dist/index.js",
@@ -28,7 +28,7 @@
     "tsconfig.json"
   ],
   "bin": {
-    "as-contract": "bin/as-contract.js"
+    "asm-contract": "bin/asm-contract.js"
   },
   "dependencies": {
     "@types/node": "^18.11.9",

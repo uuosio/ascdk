@@ -16,9 +16,9 @@ if (~tailArgs) {
 
 try { (await import("source-map-support")).install(); } catch (e) { }
 
-export const asc = await import("as-contract/src/asc/asc.js");
+export const asc = await import("asm-contract/src/asc/asc.js");
 // const asc = module.exports = require("assemblyscript/cli/asc.js");
-import { APIOptionImpl } from "as-contract/dist/index.js"
+import { APIOptionImpl } from "asm-contract/dist/index.js"
 
 import path from "path";
 import yargs from 'yargs'
@@ -33,7 +33,7 @@ const ARGS = [
     "--disable", "sign-extension",
     "--disable", "nontrapping-f2i",
     "--disable", "bulk-memory",
-    "--transform", "as-contract/dist/index.js"
+    "--transform", "asm-contract/dist/index.js"
 ]
 
 if (true) {
@@ -42,7 +42,7 @@ if (true) {
     if (args['_'].length > 0) {
         if (args['_'][0] == "gencode") {
             if (args['_'].length == 1) {
-                console.log('usage: as-contract gencode [input file] -o [output dir]');
+                console.log('usage: asm-contract gencode [input file] -o [output dir]');
                 process.exit(1);
             }
             let inputFile = args['_'][1];
@@ -78,8 +78,8 @@ if (true) {
             }
             process.exit(process.exitCode);
         } else {
-            console.log('usage: as-contract gencode [input file] -o [output dir]');
-            console.log('       as-contract build [input file] --target [release/debug]');
+            console.log('usage: asm-contract gencode [input file] -o [output dir]');
+            console.log('       asm-contract build [input file] --target [release/debug]');
             process.exit(1);
         }
     }

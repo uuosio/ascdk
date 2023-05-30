@@ -3,7 +3,7 @@ import {
     requireRecipient,
     Name,
     Contract,
-} from "as-chain";
+} from "asm-chain";
 
 @contract
 class MyContract extends Contract {

@@ -15,8 +15,8 @@ declare function packer(_?: any): any
 declare function optional(_?: any): any
 declare function binaryextension(_?: any): any
 
-declare module 'as-chain' {
-    import main = require('as-chain/assembly/index');
+declare module 'asm-chain' {
+    import main = require('asm-chain/assembly/index');
     export = main;
 }
 

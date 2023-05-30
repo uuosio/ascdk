@@ -7,7 +7,7 @@ import {
     Signature,
     Symbol,
     Asset,
-} from "as-chain"
+} from "asm-chain"
 
 @table("signers")
 export class Signer extends Table {

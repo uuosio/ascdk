@@ -1,5 +1,5 @@
 {
-  "name": "as-chain",
+  "name": "asm-chain",
   "version": "0.1.2",
   "description": "chain module for assemblyscript",
   "main": "js/index.js",

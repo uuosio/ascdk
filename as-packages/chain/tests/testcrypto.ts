@@ -16,7 +16,7 @@ import {
     print,
     check,
     Contract,
-} from "as-chain";
+} from "asm-chain";
 
 @packer
 class MyData {

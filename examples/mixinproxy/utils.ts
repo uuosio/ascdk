@@ -6,7 +6,7 @@ import {
     Decoder,
 
     print
-} from "as-chain"
+} from "asm-chain"
 
 import {
     NewAccount,

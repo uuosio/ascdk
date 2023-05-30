@@ -4,7 +4,7 @@ import {
     Action,
     PermissionLevel,
     ActionData
-} from "as-chain"
+} from "asm-chain"
 
 export const MIXIN_WTOKENS: Name = Name.fromString("mixinwtokens");
 export const MAX_SUPPLY: i64 = 100000000000000;

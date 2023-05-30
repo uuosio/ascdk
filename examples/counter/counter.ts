@@ -2,7 +2,7 @@ import {
     Name,
     Contract,
     print,
-} from "as-chain";
+} from "asm-chain";
 
 @table("counter")
 class Counter {

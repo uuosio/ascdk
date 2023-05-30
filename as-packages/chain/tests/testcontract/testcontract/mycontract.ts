@@ -3,7 +3,7 @@ import {
     Symbol,
     check,
     Contract,
-} from "as-chain";
+} from "asm-chain";
 
 import { MyData } from "./mydata"
 import { MyData2 } from "./mydata2/mydata2"

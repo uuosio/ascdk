@@ -1,4 +1,4 @@
-import { PublicKey, printString, printHex, check, Contract, Encoder } from "as-chain";
+import { PublicKey, printString, printHex, check, Contract, Encoder } from "asm-chain";
 
 @packer
 class MyData {

@@ -3,7 +3,7 @@ import {
     PublicKey,
     PermissionLevel,
     U128,
-} from "as-chain"
+} from "asm-chain"
 
 @packer
 class KeyWeight {

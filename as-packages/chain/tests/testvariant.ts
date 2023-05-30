@@ -12,7 +12,7 @@ import {
     Encoder,
     Decoder,
     printString,
-} from "as-chain";
+} from "asm-chain";
 
 @variant
 class ATOMIC_ATTRIBUTE {

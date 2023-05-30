@@ -3,7 +3,7 @@ import {
     check,
     Contract,
     printString,
-} from "as-chain";
+} from "asm-chain";
 
 @contract
 class MyContract extends Contract{

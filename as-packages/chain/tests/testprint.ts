@@ -12,7 +12,7 @@ import {
     Contract,
 
     U256,
-} from "as-chain";
+} from "asm-chain";
 
 @contract
 class MyContract extends Contract{

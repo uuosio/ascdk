@@ -13,7 +13,7 @@ import {
     SecondaryType,
     MultiIndex,
     IDXDB,
-} from "as-chain";
+} from "asm-chain";
 
 
 @table("globall", singleton)

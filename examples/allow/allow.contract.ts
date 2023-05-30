@@ -1,4 +1,4 @@
-import { Name, Singleton, Contract, check, requireAuth, MultiIndex, SAME_PAYER } from 'as-chain'
+import { Name, Singleton, Contract, check, requireAuth, MultiIndex, SAME_PAYER } from 'asm-chain'
 import { AllowedActor, Paused } from './allow.tables';
 
 enum UpdateFields {

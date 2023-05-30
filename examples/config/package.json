@@ -8,10 +8,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/uuosio/as-chain.git"
+    "url": "https://github.com/uuosio/asm-chain.git"
   },
   "bugs": {
-    "url": "https://github.com/uuosio/as-chain/issues"
+    "url": "https://github.com/uuosio/asm-chain/issues"
   },
   "keywords": [
     "wasm",
@@ -20,12 +20,12 @@
   ],
   "scripts": {
     "test": "yarn build:debug && ipyeos -m pytest -s -x test.py",
-    "build:debug": "yarn exec cp .env-debug.ts .env.ts && npx as-contract build ./testconfig.ts",
-    "build:release": "yarn exec cp .env-release.ts .env.ts && npx as-contract build ./testconfig.ts"
+    "build:debug": "yarn exec cp .env-debug.ts .env.ts && npx asm-contract build ./testconfig.ts",
+    "build:release": "yarn exec cp .env-release.ts .env.ts && npx asm-contract build ./testconfig.ts"
   },
   "dependencies": {
      "@assemblyscript/loader": "^0.24.1",
-    "as-chain": "../as-packages/chain"
+    "asm-chain": "../as-packages/chain"
   },
   "devDependencies": {
     "assemblyscript": "^0.24.1",

@@ -5,7 +5,7 @@ import {
     check,
     print,
     currentTimeMs,
-} from "as-chain";
+} from "asm-chain";
 
 @contract
 class MyContract extends Contract{

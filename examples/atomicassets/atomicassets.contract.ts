@@ -1,4 +1,4 @@
-import { Name, check, requireAuth, MultiIndex, Contract, hasAuth, isAccount, Singleton, print, nameToSuffix } from 'as-chain'
+import { Name, check, requireAuth, MultiIndex, Contract, hasAuth, isAccount, Singleton, print, nameToSuffix } from 'asm-chain'
 import { MAX_MARKET_FEE } from './atomicassets.constants';
 import { Collections, Config } from './atomicassets.tables';
 import { ATTRIBUTE_MAP_SINGLE, serialize, FORMAT, deserialize } from './atomicdata';

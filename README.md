@@ -8,7 +8,7 @@ import {
     Name,
     Contract,
     print,
-} from "as-chain";
+} from "asm-chain";
 
 @table("counter")
 class Counter {
@@ -65,7 +65,7 @@ Boilerplate to build your own contract + testing: https://github.com/ProtonProto
 
 ## Installation
 ```
-npm i as-contract
+npm i asm-contract
 ```
 
 ## Tests

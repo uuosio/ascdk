@@ -1,4 +1,4 @@
-import { check, ExtendedAsset, Table } from "as-chain"
+import { check, ExtendedAsset, Table } from "asm-chain"
 import { Account } from "./balance.tables";
 
 /**

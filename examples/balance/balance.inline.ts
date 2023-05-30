@@ -1,4 +1,4 @@
-import { Name, Asset, Table, InlineAction, ExtendedAsset, PermissionLevel } from "as-chain"
+import { Name, Asset, Table, InlineAction, ExtendedAsset, PermissionLevel } from "asm-chain"
 import { atomicassets } from "./balance.constants";
 
 /* This is a class that represents a transfer of token */

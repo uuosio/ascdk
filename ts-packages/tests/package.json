@@ -8,10 +8,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/uuosio/as-chain.git"
+    "url": "https://github.com/uuosio/asm-chain.git"
   },
   "bugs": {
-    "url": "https://github.com/uuosio/as-chain/issues"
+    "url": "https://github.com/uuosio/asm-chain/issues"
   },
   "keywords": [
     "wasm",
@@ -21,8 +21,8 @@
   "scripts": {
     "build": "yarn build:release",
     "test": "run-p test:* --max-parallel 1",
-    "test:codegen": "npx as-contract build testcodegen.ts --target release && ipyeos -m pytest -s -x test.py -k test_codegen",
-    "test:inspect": "npx as-contract build testinspection.ts --target release && ipyeos -m pytest -s -x test.py -k test_inspect"
+    "test:codegen": "npx asm-contract build testcodegen.ts --target release && ipyeos -m pytest -s -x test.py -k test_codegen",
+    "test:inspect": "npx asm-contract build testinspection.ts --target release && ipyeos -m pytest -s -x test.py -k test_inspect"
   },
   "dependencies": {
      "@assemblyscript/loader": "^0.24.1"

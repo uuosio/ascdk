@@ -4,7 +4,7 @@ import {
     print,
     check,
     Contract,
-} from "as-chain";
+} from "asm-chain";
 
 class MyData2 {
     public name!: string

@@ -1,4 +1,4 @@
-import * as _chain from "as-chain";
+import * as _chain from "asm-chain";
 import {
     Symbol,
     Asset,
@@ -10,7 +10,7 @@ import {
     check,
     printString,
     Encoder,
-} from "as-chain";
+} from "asm-chain";
 
 class MyClass {
     a1: Optional<Asset>;

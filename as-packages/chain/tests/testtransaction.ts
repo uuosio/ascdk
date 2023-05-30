@@ -12,7 +12,7 @@ import {
     Asset,
     Symbol,
     Encoder
-} from "as-chain";
+} from "asm-chain";
 
 @packer
 class Transfer {

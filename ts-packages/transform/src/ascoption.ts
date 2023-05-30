@@ -84,7 +84,7 @@ export class APIOptionImpl {
         let relativePath = path.relative(baseDir, name).split("\\").join("/");
     
         // Transform library imports
-        if (relativePath.indexOf('/as-chain/') === -1 && !sourceModifier.fileExtMap.has(relativePath)) {
+        if (relativePath.indexOf('/asm-chain/') === -1 && !sourceModifier.fileExtMap.has(relativePath)) {
             const alternativePath = relativePath.replace(/.*node_modules/, '~lib').replace('/assembly', '')
             if (sourceModifier.fileExtMap.has(alternativePath)) {
                 relativePath = alternativePath
@@ -100,7 +100,7 @@ export class APIOptionImpl {
             }).forEach(function (item) {
                 text_1 = modifySourceText(text_1, item);
             });
-            let importLang = `import * as _chain from "as-chain";\n`;
+            let importLang = `import * as _chain from "asm-chain";\n`;
             if (text_1.indexOf(importLang) < 0) {
                 text_1 = importLang + text_1;
             }
@@ -153,7 +153,7 @@ export class APIOptionImpl {
             }).forEach(function (item) {
                 text_1 = modifySourceText(text_1, item);
             });
-            let importLang = `import * as _chain from "as-chain";\n`;
+            let importLang = `import * as _chain from "asm-chain";\n`;
             if (text_1.indexOf(importLang) < 0) {
                 text_1 = importLang + text_1;
             }
