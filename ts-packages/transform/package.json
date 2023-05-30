@@ -1,6 +1,6 @@
 {
   "name": "as-contract",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Build tool for building AssemblyScript projects",
   "main": "./dist/index.js",
   "author": "learnforpractice <learnforpractice@gmail.com>",
@@ -17,7 +17,16 @@
     "checks": "tsc -p tsconfig.json --noEmit",
     "build": "rm -rf dist/* && npx esbuild ./src/index.ts --bundle --platform=node --target=esnext --format='esm' --external:assemblyscript/dist/assemblyscript.js --external:assemblyscript/dist/asc.js --external:binaryen --external:long --outfile=./dist/index.js && cp -r ./src/cli ./dist/cli"
   },
-  "files": ["dist"],
+  "files": [
+    "dist/",
+    "bin/",
+    "src/",
+    "asconfig.json",
+    "index.ts",
+    "package.json",
+    "README.md",
+    "tsconfig.json"
+  ],
   "bin": {
     "as-contract": "bin/as-contract.js"
   },
