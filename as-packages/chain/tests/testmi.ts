@@ -348,10 +348,10 @@ class MyContract extends Contract{
 
             let secondary = newSecondaryValue_U256(new U256(44));
             let ret = idx256.lowerBoundEx(secondary);
-            check(ret.value.value[0] == 44, "idx256.lowerBound 1: bad secondary value!");
+            check(ret.value.value[2] == 44, "idx256.lowerBound 1: bad secondary value!");
 
             ret = idx256.upperBoundEx(secondary);
-            check(ret.value.value[0] == 77, "idx256.lowerBound 2: bad secondary value!");
+            check(ret.value.value[2] == 77, "idx256.lowerBound 2: bad secondary value!");
         }
 
         print("++++++++++++++test IDXFloat128 ++++++++++++++");

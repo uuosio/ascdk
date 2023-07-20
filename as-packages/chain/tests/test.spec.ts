@@ -458,10 +458,11 @@ it('test secondaryu256', async () => {
         let rows = await tester.getTableRows(true, "hello", "", "mydata", "", "", 10);
         console.log(JSON.stringify(rows));
 
-        rows = await tester.getTableRows(true, "hello", "", "mydata", "0x0000000000000000000000000000000000000000000000000000000000000000", "", 10, "i256", "2");
+        rows = await tester.getTableRows(true, "hello", "", "mydata", "0x0000000000000000000000000000000100000000000000000000000000000000", "0x0000000000000000000000000000000100000000000000000000000000000000", 10, "i256", "2");
         console.log(JSON.stringify(rows));
+        expect(rows['rows'][0]['data']["b"] == "0000000000000000000000000000000100000000000000000000000000000000").toEqual(true);
 
-        rows = await tester.getTableRows(true, "hello", "", "mydata", "0000000000000000000000000000000100000000000000000000000000000000", "", 10, "sha256", "2");
+        rows = await tester.getTableRows(true, "hello", "", "mydata", "0000000000000000000000000000000100000000000000000000000000000000", "0000000000000000000000000000000100000000000000000000000000000000", 10, "sha256", "2");
         console.log(JSON.stringify(rows));
         expect(rows['rows'][0]['data']["b"] == "0000000000000000000000000000000100000000000000000000000000000000").toEqual(true);
     } finally {

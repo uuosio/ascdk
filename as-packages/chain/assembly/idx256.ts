@@ -68,10 +68,10 @@ export class IDX256 extends IDXDB {
         let it = env.db_idx256_find_primary(this.code, this.scope, this.table, secondary_ptr, 2, primary);
         let i = new SecondaryIterator(it, primary, this.dbIndex);
         let value = new U256();
-        value.lo1 = load<u64>(secondary_ptr);
-        value.lo2 = load<u64>(secondary_ptr+8);
-        value.hi1 = load<u64>(secondary_ptr+16);
-        value.hi2 = load<u64>(secondary_ptr+24);
+        value.hi1 = load<u64>(secondary_ptr+0);
+        value.hi2 = load<u64>(secondary_ptr+8);
+        value.lo1 = load<u64>(secondary_ptr+16);
+        value.lo2 = load<u64>(secondary_ptr+24);
         return new IDX256ReturnValue(i, value);
     }
 
@@ -91,17 +91,17 @@ export class IDX256 extends IDXDB {
     find(secondary: U256): SecondaryIterator {
         let primary_ptr = __alloc(sizeof<u64>());
         let secondaryCopy = new Array<u64>(4);
-        secondaryCopy[0] = secondary.lo1;
-        secondaryCopy[1] = secondary.lo2;
-        secondaryCopy[2] = secondary.hi1;
-        secondaryCopy[3] = secondary.hi2;
+        secondaryCopy[0] = secondary.hi1;
+        secondaryCopy[1] = secondary.hi2;
+        secondaryCopy[2] = secondary.lo1;
+        secondaryCopy[3] = secondary.lo2;
 
         let it = env.db_idx256_lowerbound(this.code, this.scope, this.table, secondaryCopy.dataStart, 2, primary_ptr);
         if (
-            secondaryCopy[0] == secondary.lo1 &&
-            secondaryCopy[1] == secondary.lo2 &&
-            secondaryCopy[2] == secondary.hi1 &&
-            secondaryCopy[3] == secondary.hi2
+            secondaryCopy[0] == secondary.hi1 &&
+            secondaryCopy[1] == secondary.hi2 &&
+            secondaryCopy[2] == secondary.lo1 &&
+            secondaryCopy[3] == secondary.lo2
         ) {
             return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
         } else {
@@ -112,10 +112,10 @@ export class IDX256 extends IDXDB {
     lowerBound(value: U256): SecondaryIterator {
         let primary_ptr = __alloc(sizeof<u64>());
         let secondary = new Array<u64>(4);
-        secondary[0] = value.lo1;
-        secondary[1] = value.lo2;
-        secondary[2] = value.hi1;
-        secondary[3] = value.hi2;
+        secondary[0] = value.hi1;
+        secondary[1] = value.hi2;
+        secondary[2] = value.lo1;
+        secondary[3] = value.lo2;
 
         let it = env.db_idx256_lowerbound(this.code, this.scope, this.table, secondary.dataStart, 2, primary_ptr);
 
@@ -127,15 +127,18 @@ export class IDX256 extends IDXDB {
         assert(secondary.value.length == 4, "lowerBoundEx: idx256: bad value");
         let primary_ptr = __alloc(sizeof<u64>());
 
-        let secondaryCopy = new Array<u64>(2);
+        let secondaryCopy = new Array<u64>(4);
         secondaryCopy[0] = secondary.value[0];
         secondaryCopy[1] = secondary.value[1];
+        secondaryCopy[2] = secondary.value[2];
+        secondaryCopy[3] = secondary.value[3];
+
         let secondary_ptr = secondaryCopy.dataStart;
 
         let it = env.db_idx256_lowerbound(this.code, this.scope, this.table, secondary_ptr, 2, primary_ptr);
 
         let iterator = new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);
-        
+
         let value = new SecondaryValue(SecondaryType.U256, secondaryCopy);
         return new SecondaryReturnValue(iterator, value);
     }
@@ -143,10 +146,10 @@ export class IDX256 extends IDXDB {
     upperBound(value: U256): SecondaryIterator {
         let primary_ptr = __alloc(sizeof<u64>());
         let secondary = new Array<u64>(4);
-        secondary[0] = value.lo1;
-        secondary[1] = value.lo2;
-        secondary[2] = value.hi1;
-        secondary[3] = value.hi2;
+        secondary[0] = value.hi1;
+        secondary[1] = value.hi2;
+        secondary[2] = value.lo1;
+        secondary[3] = value.lo2;
         
         let it = env.db_idx256_upperbound(this.code, this.scope, this.table, secondary.dataStart, 2, primary_ptr);
         return new SecondaryIterator(it, load<u64>(primary_ptr), this.dbIndex);

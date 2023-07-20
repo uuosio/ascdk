@@ -82,7 +82,8 @@
     ]
   },
   "dependencies": {
-     "@assemblyscript/loader": "^0.24.1"
+     "@assemblyscript/loader": "^0.24.1",
+     "asm-chain": "./as-packages/chain"
   },
   "devDependencies": {
     "chaintester": "./ts-packages/chaintester",
