@@ -440,3 +440,32 @@ it('test table', async () => {
         await tester.free();
     }
 })
+
+it('test secondaryu256', async () => {
+    let tester = new ChainTester();
+    try {
+        await tester.deployContract("hello", "target/testsecondaryu256.wasm", "target/testsecondaryu256.abi");
+        
+        let args = {key: 2, value: '00000000000000000000000000000001' + '00000000000000000000000000000000'}
+        await tester.pushAction("hello", "teststore", args, {"hello": "active"});
+    
+        args = {key: 3, value: '00000000000000000000000000000000' + '00000000000000000000000000000001'}
+        await tester.pushAction("hello", "teststore", args, {"hello": "active"});
+
+        args = {key: 4, value: '00000000000000000000000000000000' + '00000000000000000000000000000002'}
+        await tester.pushAction("hello", "teststore", args, {"hello": "active"});
+
+        let rows = await tester.getTableRows(true, "hello", "", "mydata", "", "", 10);
+        console.log(JSON.stringify(rows));
+
+        rows = await tester.getTableRows(true, "hello", "", "mydata", "0x0000000000000000000000000000000000000000000000000000000000000000", "", 10, "i256", "2");
+        console.log(JSON.stringify(rows));
+
+        rows = await tester.getTableRows(true, "hello", "", "mydata", "0000000000000000000000000000000100000000000000000000000000000000", "", 10, "sha256", "2");
+        console.log(JSON.stringify(rows));
+        expect(rows['rows'][0]['data']["b"] == "0000000000000000000000000000000100000000000000000000000000000000").toEqual(true);
+    } finally {
+        await tester.free();
+    }
+})
+

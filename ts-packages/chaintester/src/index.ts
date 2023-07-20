@@ -198,10 +198,10 @@ export class ChainTester {
         return parse_ret(ret);
     }
 
-    async getTableRows(_json: boolean, code: string, scope: string, table: string, lower_bound: string, upper_bound: string, limit: number, key_type: string="", index_position: string="", reverse: boolean=false, show_payer: boolean=true) {
+    async getTableRows(_json: boolean, code: string, scope: string, table: string, lower_bound: string, upper_bound: string, limit: number, key_type: string="", index_position: string="", encode_type: string="", reverse: boolean=false, show_payer: boolean=true) {
         return await this.callMethod('get_table_rows', {
             id: this.id,
-            _json, code, scope, table, lower_bound, upper_bound, limit, key_type, index_position, reverse, show_payer
+            _json, code, scope, table, lower_bound, upper_bound, limit, key_type, index_position, encode_type, reverse, show_payer
         });
     }
 

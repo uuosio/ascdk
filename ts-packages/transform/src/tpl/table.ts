@@ -104,8 +104,14 @@ export const tableTpl = `
     static new(code: _chain.Name, scope: _chain.Name = _chain.EMPTY_NAME): _chain.Singleton<{{className}}> {
         return new _chain.Singleton<{{className}}>(code, scope, this.tableName);
     }
+    static new_table(code: _chain.Name, scope: _chain.Name = _chain.EMPTY_NAME): _chain.Singleton<{{className}}> {
+        return new _chain.Singleton<{{className}}>(code, scope, this.tableName);
+    }
     {{else}}
     static new(code: _chain.Name, scope: _chain.Name  = _chain.EMPTY_NAME): {{className}}DB {
+        return new {{className}}DB(code, scope, this.tableName, this.tableIndexes(code, scope));
+    }
+    static new_table(code: _chain.Name, scope: _chain.Name  = _chain.EMPTY_NAME): {{className}}DB {
         return new {{className}}DB(code, scope, this.tableName, this.tableIndexes(code, scope));
     }
     {{/if}}

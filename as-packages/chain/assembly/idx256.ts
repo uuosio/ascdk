@@ -1,7 +1,7 @@
 import { IDXDB, SecondaryValue, SecondaryType, SecondaryIterator, SecondaryReturnValue } from "./idxdb";
 import * as env from "./env";
 import { assert } from "./system";
-import { U256 } from "./bignum";
+import { U128, U256 } from "./bignum";
 
 class IDX256ReturnValue {
     constructor(
@@ -13,10 +13,10 @@ class IDX256ReturnValue {
 export class IDX256 extends IDXDB {
     store(id: u64, value: U256, payer: u64): SecondaryIterator {
         let secondary = new Array<u64>(4);
-        secondary[0] = value.lo1;
-        secondary[1] = value.lo2;
-        secondary[2] = value.hi1;
-        secondary[3] = value.hi2;
+        secondary[0] = value.hi1;
+        secondary[1] = value.hi2;
+        secondary[2] = value.lo1;
+        secondary[3] = value.lo2;
         let it = env.db_idx256_store(this.scope, this.table, payer, id, secondary.dataStart, 2);
         return new SecondaryIterator(it, id, this.dbIndex);
     }
@@ -31,10 +31,10 @@ export class IDX256 extends IDXDB {
 
     update(iterator: SecondaryIterator, value: U256, payer: u64): void {
         let secondary = new Array<u64>(4);
-        secondary[0] = value.lo1;
-        secondary[1] = value.lo2;
-        secondary[2] = value.hi1;
-        secondary[3] = value.hi2;
+        secondary[0] = value.hi1;
+        secondary[1] = value.hi2;
+        secondary[2] = value.lo1;
+        secondary[3] = value.lo2;
         env.db_idx256_update(iterator.i, payer, secondary.dataStart, 2);
     }
 

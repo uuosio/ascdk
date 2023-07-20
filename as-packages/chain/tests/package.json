@@ -42,6 +42,7 @@
     "build:finalize": "npx asm-contract build testfinalize.ts --target release",
     "build:time": "npx asm-contract build testtime.ts --target release",
     "build:newintrinsics": "npx asm-contract build testnewintrinsics.ts --target release",
+    "build:secondaryu256": "npx asm-contract build testsecondaryu256.ts --target release",
     "test-all": "yarn build && yarn test",
     "test:name": "yarn build:name && jest --no-cache -t 'test name'",
     "test:publickey": "yarn build:publickey && jest --no-cache -t 'test public key'",
@@ -65,6 +66,8 @@
     "test:finalize": "yarn build:finalize && jest --no-cache -t 'test finalize'",
     "test:time": "yarn build:time && jest --no-cache -t 'test block time'",
     "test:newintrinsics": "yarn build:newintrinsics && jest --no-cache -t 'test new intrinsics'",
+    "test:secondaryu256": "yarn build:secondaryu256 && jest --no-cache -t 'test secondaryu256'",
+
     "test": "jest --no-cache"
   },
   "jest": {
@@ -82,6 +85,7 @@
      "@assemblyscript/loader": "^0.24.1"
   },
   "devDependencies": {
+    "chaintester": "./ts-packages/chaintester",
     "@types/bignumber.js": "^5.0.0",
     "@types/jest": "^28.1.8",
     "assemblyscript": "^0.24.1",
