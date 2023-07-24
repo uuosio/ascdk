@@ -8,20 +8,17 @@ import { Encoder, Decoder, Packer } from "../../serializer";
 export class u256 implements Packer {
 
   pack(enc: Encoder): usize {
-    enc.packNumber<u64>(bswap(this.hi2));
-    enc.packNumber<u64>(bswap(this.hi1));
-    enc.packNumber<u64>(bswap(this.lo2));
-    enc.packNumber<u64>(bswap(this.lo1));
+    let raw = this.toBytes();
+    enc.writeBytes(raw);
     return this.getSize();
   }
 
   unpack(data: u8[]): usize {
       let dec = new Decoder(data);
-      this.hi2 = bswap(dec.unpackNumber<u64>());
-      this.hi1 = bswap(dec.unpackNumber<u64>());
-
-      this.lo2 = bswap(dec.unpackNumber<u64>());
-      this.lo1 = bswap(dec.unpackNumber<u64>());      
+      this.lo1 = dec.unpackNumber<u64>();
+      this.lo2 = dec.unpackNumber<u64>();
+      this.hi1 = dec.unpackNumber<u64>();
+      this.hi2 = dec.unpackNumber<u64>();
       return 32;
   }
 

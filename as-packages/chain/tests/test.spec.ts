@@ -446,25 +446,36 @@ it('test secondaryu256', async () => {
     try {
         await tester.deployContract("hello", "target/testsecondaryu256.wasm", "target/testsecondaryu256.abi");
         
-        let args = {key: 2, value: '00000000000000000000000000000001' + '00000000000000000000000000000000'}
+        let args = {key: 2, value: '00000000000000000000000000000000' + '01000000000000000000000000000000'}
         await tester.pushAction("hello", "teststore", args, {"hello": "active"});
     
-        args = {key: 3, value: '00000000000000000000000000000000' + '00000000000000000000000000000001'}
+        args = {key: 3, value: '01000000000000000000000000000000' + '00000000000000000000000000000000'}
         await tester.pushAction("hello", "teststore", args, {"hello": "active"});
 
-        args = {key: 4, value: '00000000000000000000000000000000' + '00000000000000000000000000000002'}
+        args = {key: 4, value: '02000000000000000000000000000000' + '00000000000000000000000000000000'}
         await tester.pushAction("hello", "teststore", args, {"hello": "active"});
-
+        
+        //sort by primary key
         let rows = await tester.getTableRows(true, "hello", "", "mydata", "", "", 10);
         console.log(JSON.stringify(rows));
 
+        //sort by secondary key
+        rows = await tester.getTableRows(true, "hello", "", "mydata", "0x0000000000000000000000000000000000000000000000000000000000000000", "", 10, "i256", "2");
+        console.log(JSON.stringify(rows));
+        expect(rows['rows'][0]['data']["b"] == '0100000000000000000000000000000000000000000000000000000000000000').toEqual(true);
+        expect(rows['rows'][1]['data']["b"] == '0200000000000000000000000000000000000000000000000000000000000000').toEqual(true);
+        expect(rows['rows'][2]['data']["b"] == '0000000000000000000000000000000001000000000000000000000000000000').toEqual(true);
+
+        // key is in big endian
         rows = await tester.getTableRows(true, "hello", "", "mydata", "0x0000000000000000000000000000000100000000000000000000000000000000", "0x0000000000000000000000000000000100000000000000000000000000000000", 10, "i256", "2");
         console.log(JSON.stringify(rows));
-        expect(rows['rows'][0]['data']["b"] == "0000000000000000000000000000000100000000000000000000000000000000").toEqual(true);
+        // "b" is in little endian, the same byte order as value in args
+        expect(rows['rows'][0]['data']["b"] == '00000000000000000000000000000000' + '01000000000000000000000000000000').toEqual(true);
 
+        // key is in big endian
         rows = await tester.getTableRows(true, "hello", "", "mydata", "0000000000000000000000000000000100000000000000000000000000000000", "0000000000000000000000000000000100000000000000000000000000000000", 10, "sha256", "2");
         console.log(JSON.stringify(rows));
-        expect(rows['rows'][0]['data']["b"] == "0000000000000000000000000000000100000000000000000000000000000000").toEqual(true);
+        expect(rows['rows'][0]['data']["b"] == '00000000000000000000000000000000' + '01000000000000000000000000000000').toEqual(true);
     } finally {
         await tester.free();
     }
