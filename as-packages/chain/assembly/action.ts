@@ -106,6 +106,11 @@ export class Action implements Packer{
         env.send_inline(data.dataStart, data.length);
     }
 
+    send_context_free(): void {
+        let data = this.pack();
+        env.send_context_free_inline(data.dataStart, data.length);
+    }
+
     pack(): u8[] {
         let enc = new Encoder(this.getSize());
         enc.packName(this.account);

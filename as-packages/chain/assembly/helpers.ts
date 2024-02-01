@@ -47,6 +47,12 @@ export class InlineActionAct <T extends Packer> {
         const action = new Action(this.contract, this.action, permissions, data.pack())
         action.send()
     }
+
+    send_context_free(data: T): void {
+        const permissions = [this.permissionLevel]
+        const action = new Action(this.contract, this.action, permissions, data.pack())
+        action.send_context_free()
+    }
 }
 
 export class InlineAction <T extends Packer> {
